@@ -3,6 +3,8 @@ const Router = require('koa-router');
 const cors = require('koa-cors');
 const config = require('./config.json');
 
+const database = require('./database');
+
 const app = new Koa();
 const router = new Router();
 
@@ -17,7 +19,15 @@ checkAuthorization = (auth) => {
         }
     }
 }
+router.get('/user/:id/records', async ctx => {
+    if (!checkAuthorization(ctx.request.headers.authorization)) {
+        ctx.response.status = 403;
+        return;
+    }
 
+    await database.all().then(data => ctx.body = JSON.stringify(data));
+
+})
 router.get('/', ctx => {
 
     if (!checkAuthorization(ctx.request.headers.authorization)) {

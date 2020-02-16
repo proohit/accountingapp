@@ -3,7 +3,7 @@ const Router = require('koa-router');
 const cors = require('koa-cors');
 const config = require('./config.json');
 
-const database = require('./database');
+const database = require('./src/database/database');
 
 const app = new Koa();
 const router = new Router();

@@ -1,4 +1,5 @@
-const database = require('../src/database/database')
+const recordmapper = require('../src/database/RecordMapper')
+const {close} = require('../src/database/database')
 
-database.all().then(data => console.log(data))
-database.close();
+recordmapper.all().then(data => console.log(data))
+close();

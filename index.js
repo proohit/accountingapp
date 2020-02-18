@@ -72,7 +72,7 @@ router.get('/', async ctx => {
 
 app.use(cors());
 app.use(parser());
-app.use(router.routes()).use(router.allowedMethods());
+app.use(router.routes()).use(router.allowedMethods({throw:true}));
 
 try {
     app.listen('3000');

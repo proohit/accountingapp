@@ -23,7 +23,22 @@ router.get('/user/:id/records', async ctx => {
     await database.all().then(data => ctx.body = JSON.stringify(data));
 
 })
-router.post('/register',async ctx => {
+router.post('/records', async ctx => {
+    await database.verify(ctx.request).then(async decoded => {
+        await recordMapper.createRecord(ctx.request.body.description, ctx.request.body.value, ctx.request.body.wallet, decoded.username).then(res => {
+            ctx.response.type = 'application/json'
+            ctx.response.status = 201;
+            ctx.response.body = JSON.stringify(res)
+        }).catch(err => {
+            ctx.response.status = 400;
+            ctx.response.body = JSON.stringify(err);
+        })
+    }).catch(err => {
+        ctx.response.status = 403;
+        ctx.response.body = JSON.stringify(err);
+    })
+})
+router.post('/register', async ctx => {
     await database.register(ctx.request.body.username, ctx.request.body.password).then(res => {
         ctx.response.status = 201;
         ctx.response.body = JSON.stringify(res);
@@ -45,6 +60,7 @@ router.post('/login', async ctx => {
 router.get('/', async ctx => {
     await database.verify(ctx.request).then(async decoded => {
         await recordMapper.allByUser(decoded.username).then(data => {
+            ctx.response.type= 'application/json';
             ctx.response.status = 200;
             ctx.response.body = JSON.stringify(data);
         })

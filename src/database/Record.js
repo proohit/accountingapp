@@ -1,8 +1,10 @@
 module.exports = class Record {
-    constructor(id=0, value, description, wallet) {
-        this.id = id;
-        this.value = value;
-        this.description = description;
-        this.wallet = wallet;
+    constructor() {
     }
+
+    setId(id) { this.id = id; }
+    setValue(value) { this.value = value; }
+    setDescription(description) { this.description = description; }
+    setWallet(wallet) { this.wallet = wallet; }
+    setOwner(owner) { this.owner = owner; }
 }

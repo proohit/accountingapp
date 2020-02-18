@@ -12,9 +12,9 @@ all = () => {
     })
 }
 
-allByUser = (userId) => {
+allByUser = (username) => {
     return new Promise((resolve, reject) => {
-        con.query(`SELECT * FROM Record WHERE user=${userId};`, (err, data) => {
+        con.query(`SELECT * FROM Record WHERE owner='${username}';`, (err, data) => {
             if (err) reject(err);
             resolve(data);
         });

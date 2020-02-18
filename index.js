@@ -4,7 +4,9 @@ const cors = require('koa-cors');
 const config = require('./config.json');
 const parser = require('koa-bodyparser');
 
+
 const database = require('./src/database/database');
+const recordMapper = require('./src/database/RecordMapper')
 
 const app = new Koa();
 const router = new Router();
@@ -21,8 +23,18 @@ router.get('/user/:id/records', async ctx => {
     await database.all().then(data => ctx.body = JSON.stringify(data));
 
 })
-router.post('/login', ctx => {
-    database.login(ctx.request).then(res => {
+router.post('/register',async ctx => {
+    await database.register(ctx.request.body.username, ctx.request.body.password).then(res => {
+        ctx.response.status = 201;
+        ctx.response.body = JSON.stringify(res);
+    }).catch(err => {
+        console.log(err);
+        ctx.response.status = 400;
+        ctx.response.body = JSON.stringify(err);
+    });
+})
+router.post('/login', async ctx => {
+    await database.login(ctx.request).then(res => {
         ctx.response.status = 201;
         ctx.response.body = JSON.stringify(res);
     }).catch(err => {
@@ -30,43 +42,16 @@ router.post('/login', ctx => {
         ctx.response.body = JSON.stringify(err);
     })
 })
-router.get('/', ctx => {
-    database.verify(ctx.request).then(decoded => {
-        //do Api stuff
-        const data = {
-            id: 1,
-            username: "direnc",
-            records: [
-                { date: new Date(), value: -1, description: "einkaufen" },
-                { date: new Date(), value: -35, description: "switch game" },
-                { date: new Date(), value: 12, description: "essen" }
-
-            ]
-        };
-        ctx.response.status = 200;
-        ctx.response.body = JSON.stringify(data);
+router.get('/', async ctx => {
+    await database.verify(ctx.request).then(async decoded => {
+        await recordMapper.allByUser(decoded.username).then(data => {
+            ctx.response.status = 200;
+            ctx.response.body = JSON.stringify(data);
+        })
     }).catch(err => {
         ctx.response.status = 403;
         ctx.response.body = JSON.stringify(err);
     });
-    /* 
-    if (database.verify) {
-        ctx.response.status = 403;
-        return;
-    }
- 
-    const data = {
-        id: 1,
-        username: "direnc",
-        records: [
-            { date: new Date(), value: -1, description: "einkaufen" },
-            { date: new Date(), value: -35, description: "switch game" },
-            { date: new Date(), value: 12, description: "essen" }
- 
-        ]
-    };
-    ctx.response.status = 200;
-    ctx.response.body = JSON.stringify(data); */
 })
 
 app.use(cors());

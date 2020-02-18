@@ -16,7 +16,7 @@ register = (username, password) => {
         }
         const hashedPassword = crypto.enc.Utf8.parse(password);
         let passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
-        con.query(`INSERT INTO User(username, password, private_key) VALUES('${username}','${passwordEncrypted},'${private_key}')`)
+        con.query(`INSERT INTO User(username, password, private_key) VALUES('${username}','${passwordEncrypted}','${private_key}')`)
         con.query(`SELECT * from User WHERE username='${username}'`, (err, res) => {
             if (err) reject(err);
             else resolve(res)

@@ -11,6 +11,9 @@ const recordMapper = require('./src/database/RecordMapper')
 const app = new Koa();
 const router = new Router();
 
+app.use(parser());
+app.use(cors());
+
 checkAuthorization = (req) => {
     database.verify(req)
 }
@@ -70,12 +73,11 @@ router.get('/', async ctx => {
     });
 })
 
-app.use(cors());
-app.use(parser());
-app.use(router.routes()).use(router.allowedMethods({throw:true}));
-
+app.use(router.allowedMethods({throw:true}));
+app.use(router.routes())
 try {
     app.listen('3000');
+    console.log('running on port 3000');
 } catch (e) {
     console.log(e);
 }

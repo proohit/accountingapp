@@ -38,12 +38,11 @@ router.get('/', async ctx => {
 router.delete('/:id', async ctx => {
     await database.verify(ctx.request).then(async decoded => {
         await recordMapper.byId(ctx.params.id).then(async res => {
-            console.log(res);
             if (res.message.length <= 0) {
                 ctx.response.type = 'application/json';
                 ctx.response.status = 400;
                 ctx.response.body = JSON.stringify({ success: false, message: `no record with id ${ctx.params.id}` });
-            } else if (res[0].owner !== decoded.username) {
+            } else if (res.message.owner !== decoded.username) {
                 ctx.response.status = 403;
                 ctx.response.body = JSON.stringify({ success: false, message: `not permitted` });
             } else {
@@ -82,6 +81,29 @@ router.get('/:id', async ctx => {
     }).catch(err => {
         ctx.response.status = 403;
         ctx.response.body = JSON.stringify({ success: false, message: `not permitted` });
+    })
+})
+
+router.put('/', async ctx => {
+    await database.verify(ctx.request).then(async decoded => {
+        await recordMapper.byId(ctx.request.body.id).then(async record => {
+            if (record.message.owner !== decoded.username) {
+                ctx.response.status = 403;
+                ctx.response.body = JSON.stringify({ success: false, message: `not permitted` });
+            } else {
+                await recordMapper.update(ctx.request.body.id, ctx.request.body.description, ctx.request.body.value, ctx.request.body.walletName, decoded.username).then(updatedRecord => {
+                    ctx.response.type = 'application/json'
+                    ctx.response.status = 200;
+                    ctx.response.body = JSON.stringify(updatedRecord);
+                })
+            }
+        }).catch(err => {
+            ctx.response.status = 400;
+            ctx.response.body = JSON.stringify(err);
+        })
+    }).catch(err => {
+        ctx.response.status = 403;
+        ctx.response.body = JSON.stringify(err);
     })
 })
 

@@ -4,7 +4,7 @@ const Wallet = require('./Wallet')
 byName = (walletName) => {
     return new Promise((reject, resolve) => {
 
-        con.query(`SELECT * FROM Wallet WHERE walletName = '${walletName}'`, (err, res) => {
+        con.query(`SELECT * FROM Wallet WHERE name = '${walletName}'`, (err, res) => {
             if (err) reject({ success: false, err, message: `Something went wrong retrieving wallet with name ${walletName}` })
             else resolve({ success: true, message: res })
         })
@@ -14,7 +14,7 @@ byName = (walletName) => {
 create = (walletName, balance, owner) => {
     return new Promise((resolve, reject) => {
 
-        con.query(`INSERT INTO Wallet(walletName, balance, owner) VALUES('${walletName}',${balance},'${owner}') `, (err, res) => {
+        con.query(`INSERT INTO Wallet(name, balance, owner) VALUES('${walletName}',${balance},'${owner}') `, (err, res) => {
             if (err) reject({ success: false, err, message: `Something went wrong creating the wallet` })
             else byName(walletName).then(res => resolve(res)).catch(err => reject(err))
         })

@@ -1,9 +1,9 @@
 const recordmapper = require('../src/database/RecordMapper')
-const { close } = require('../src/database/database')
+const database = require('../src/database/database')
 const AES = require('crypto-js/aes')
 const crypto = require('crypto-js')
 const Record = require('../src/database/Record')
-/* 
+/*
 recordmapper.all().then(data => console.log(data))
 close(); */
 /* const key = crypto.enc.Utf8.parse('ABCDEFG');
@@ -13,7 +13,13 @@ let decrypted = AES.decrypt('U2FsdGVkX1+4qYFkzsnysJm17E1YwagSDlENI2jovyw=','1234
 decrypted = crypto.enc.Utf8.stringify(decrypted)
 console.log(decrypted); */
 
-const record = new Record();
-record.setId(2)
-record.setDescription('hallo, test')
-console.log(record);
+// const record = new Record();
+// record.setId(2)
+// record.setDescription('hallo, test')
+// console.log(record);
+
+// database.con.query("SELECT * FROM User WHERE username='direnc'", (err, data) => {
+//     let decrypted = AES.decrypt(data[0].password, data[0].private_key);
+//     decrypted = crypto.enc.Utf8.stringify(decrypted)
+//     console.log(decrypted);
+// })

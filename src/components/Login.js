@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Container, InputAdornment, TextField, Button, Grid, Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { AccountCircle, Lock } from '@material-ui/icons'
-import { Redirect } from 'react-router-dom'
 
 export default class Login extends Component {
     constructor() {
@@ -10,10 +9,19 @@ export default class Login extends Component {
         this.state = {
             alert: null,
             toDashboard: false,
-            open: false
         }
         this.usernameFieldValue = ''
         this.passwordFieldValue = ''
+    }
+
+    componentDidMount() {
+        this.props.functionSet.changeHeader('Login');
+    }
+    componentDidUpdate() {
+        if (this.state.toDashboard) {
+            this.props.functionSet.changeHeader('Dashboard')
+            window.location.href = '/'
+        }
     }
     confirm = (e) => {
         if ((e.key && e.key === 'Enter') || e.currentTarget.tagName === 'BUTTON') {
@@ -28,23 +36,17 @@ export default class Login extends Component {
                 .then(res => {
                     console.log(res);
                     if (!res.success) {
-                        this.setState({
-                            alert:
-                                <Alert severity="error">{res.message}</Alert>,
-                            open: true
-                        })
+                        this.props.functionSet.openAlert(<Alert severity="error">{res.message}</Alert>);
                     } else {
-                        this.setState({ alert: <Alert severity="success">{res.message}</Alert>, toDashboard: true })
+                        this.props.functionSet.openAlert(<Alert severity="success">{res.message}</Alert>);
                         this.props.changeToken(res.token)
+                        this.setState({ toDashboard: true })
                     }
                 }).catch(err => console.log(err.message))
             return;
         }
     }
     render() {
-        if (this.state.toDashboard) {
-            return <Redirect to='/' />
-        }
         return (
             <Container>
                 <Grid
@@ -70,6 +72,7 @@ export default class Login extends Component {
                         id="password"
                         label="Password"
                         variant="standard"
+                        type="password"
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
@@ -81,13 +84,6 @@ export default class Login extends Component {
                     />
                     <Button onClick={this.confirm}>Login</Button>
                 </Grid>
-                <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    autoHideDuration={4000}
-                    open={this.state.open}
-                    onClose={(e, reason) => this.setState({ open: false })}>
-                    {this.state.alert}
-                </Snackbar>
             </Container>
         );
     }

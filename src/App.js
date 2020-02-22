@@ -51,7 +51,7 @@ class App extends Component {
       <Router>
         <div>
           <nav>
-            <NavBar header={this.state.header}></NavBar>
+            <NavBar token={this.state.token} header={this.state.header}></NavBar>
             <ul>
               <li>
                 <Link to="/">Home</Link>

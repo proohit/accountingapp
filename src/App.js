@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import { Snackbar } from '@material-ui/core'
+import { Snackbar, CircularProgress, Grid, Backdrop } from '@material-ui/core'
 import './App.css';
 import Login from './components/Login'
 import NavBar from './components/NavBar'
 import Test2 from './components/Test2'
-
 
 
 
@@ -17,6 +15,8 @@ class App extends Component {
       alert: null,
       openAlert: false,
       header: 'Dashboard',
+      content: null,
+      isLoading: false
     }
     this.functionSet = {
       changeHeader: (header) => {
@@ -27,60 +27,52 @@ class App extends Component {
       },
       closeAlert: () => {
         this.setState({ alert: null, openAlert: false })
+      },
+      setContent: (content) => {
+        this.setState({ content: content })
+      },
+      toggleLoading: () => {
+        this.setState({ isLoading: !this.state.isLoading })
       }
     }
   }
 
   changeToken = (token) => {
-    localStorage.setItem('token', token);
-    this.setState({ token: localStorage.getItem('token') })
+    if (!token || !token === null) {
+      localStorage.removeItem('token');
+      this.setState({ token: null })
+    }
+    else {
+      localStorage.setItem('token', token);
+      this.setState({ token: localStorage.getItem('token') })
+    }
   }
+
   render() {
-    let loginRoute = { link: null, route: null };
-    if (!this.state.token) {
-      loginRoute = {
-        link: <li>
-          <Link to="/login">login</Link>
-        </li>,
-        route: <Route path="/login">
-          <Login functionSet={this.functionSet} changeToken={this.changeToken} />
-        </Route>
-      };
+    let loadingIndicator = null;
+    if (this.state.isLoading) {
+      loadingIndicator =
+        <Backdrop open={this.state.isLoading}>
+          <CircularProgress />
+        </Backdrop>
     }
     return (
-      <Router>
-        <div>
-          <nav>
-            <NavBar token={this.state.token} header={this.state.header}></NavBar>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              {loginRoute.link}
-              <li>
-                <Link to="/test2">Users</Link>
-              </li>
-            </ul>
-          </nav>
-
-          {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
-          <Switch>
-            {loginRoute.route}
-            <Route path="/test2">
-              <Test2 />
-            </Route>
-          </Switch>
-          <Snackbar
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            autoHideDuration={4000}
-            open={this.state.openAlert}
-            onClose={this.functionSet.closeAlert}>
-            {this.state.alert}
-          </Snackbar>
-        </div>
-      </Router >
-
+      <div>
+        <nav>
+          <NavBar functionSet={this.functionSet} changeToken={this.changeToken} token={this.state.token} header={this.state.header}></NavBar>
+        </nav>
+        <Grid container direction='column' justify='center' alignItems='center'>
+          {loadingIndicator}
+          {this.state.content}
+        </Grid>
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          autoHideDuration={4000}
+          open={this.state.openAlert}
+          onClose={this.functionSet.closeAlert}>
+          {this.state.alert}
+        </Snackbar>
+      </div>
     );
   }
 }

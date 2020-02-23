@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Container, InputAdornment, TextField, Button, Grid, Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import { AccountCircle, Lock } from '@material-ui/icons'
+import Dashboard from './Dashboard'
 
 export default class Login extends Component {
     constructor() {
@@ -20,7 +21,7 @@ export default class Login extends Component {
     componentDidUpdate() {
         if (this.state.toDashboard) {
             this.props.functionSet.changeHeader('Dashboard')
-            window.location.href = '/'
+            this.props.functionSet.setContent(<Dashboard></Dashboard>)
         }
     }
     confirm = (e) => {
@@ -32,9 +33,8 @@ export default class Login extends Component {
                 body: JSON.stringify(loginData),
                 headers: { "Content-Type": 'application/json' }
             }
-            fetch('http://localhost:3000/login', params).then(res => res.json())
+            fetch('https://localhost:3000/login', params).then(res => res.json())
                 .then(res => {
-                    console.log(res);
                     if (!res.success) {
                         this.props.functionSet.openAlert(<Alert severity="error">{res.message}</Alert>);
                     } else {

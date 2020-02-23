@@ -1,6 +1,7 @@
 import React from 'react'
-import { Container, Typography } from '@material-ui/core'
+import { Container, Typography, Grid } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
+import Record from './Record'
 
 export default class RecordView extends React.Component {
     state = {
@@ -30,7 +31,7 @@ export default class RecordView extends React.Component {
     render() {
         const records = this.state.records.map(record => <Typography>{record.description}</Typography>)
         return (
-            this.state.records.map(record => <Typography key={record.id}>{record.description}</Typography>)
+            this.state.records.map(record => <Record description={record.description} value={record.value} id={record.id} />)
         )
     }
 }

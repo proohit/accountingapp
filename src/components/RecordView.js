@@ -15,6 +15,7 @@ export default class RecordView extends React.Component {
             headers: { "Authorization": this.props.token, "Content-Type": 'application/json' },
             method: 'GET'
         }
+
         fetch('http://localhost:3000/records', params).then(res => res.json()).then(records => {
             if (records.success) {
                 this.setState({ records: records.message })

@@ -16,6 +16,7 @@ export default class NavBar extends React.Component {
     removeToken = () => {
         this.props.changeToken(null)
         this.props.functionSet.openAlert(<Alert severity='success'>successfully logged out</Alert>)
+        this.navigateToLogin();
     }
     render() {
         let accountButton = null;

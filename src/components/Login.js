@@ -33,7 +33,7 @@ export default class Login extends Component {
                 body: JSON.stringify(loginData),
                 headers: { "Content-Type": 'application/json' }
             }
-            fetch('https://localhost:3000/login', params).then(res => res.json())
+            fetch('http://localhost:3000/login', params).then(res => res.json())
                 .then(res => {
                     if (!res.success) {
                         this.props.functionSet.openAlert(<Alert severity="error">{res.message}</Alert>);

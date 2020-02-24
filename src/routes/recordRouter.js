@@ -3,7 +3,7 @@ const Router = require('koa-router')
 const database = require('../database/database');
 const recordMapper = require('../database/RecordMapper')
 
-const router = new Router({ prefix: 'api/records' });
+const router = new Router();
 
 router.post('/', async ctx => {
     await database.verify(ctx.request).then(async decoded => {
@@ -121,4 +121,4 @@ router.put('/', async ctx => {
     })
 })
 
-module.exports = router;
+module.exports = router.routes();

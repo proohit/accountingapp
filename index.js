@@ -8,11 +8,16 @@ const database = require('./src/database/database');
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
-const combinedRouter = require('./src/routes/router')
+// const combinedRouter = require('./src/routes/router')
+const recordRouter = require('./src/routes/recordRouter')
+const walletRouter = require('./src/routes/walletRouter')
 
 app.use(parser());
 app.use(cors());
-app.use(combinedRouter());
+
+router.use('/records', recordRouter)
+router.use('/wallets', walletRouter)
+
 
 router.post('/register', async ctx => {
     await database.register(ctx.request.body.username, ctx.request.body.password).then(res => {

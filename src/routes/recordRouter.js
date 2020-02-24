@@ -3,7 +3,7 @@ const Router = require('koa-router')
 const database = require('../database/database');
 const recordMapper = require('../database/RecordMapper')
 
-const router = new Router({ prefix: '/records' });
+const router = new Router({ prefix: 'api/records' });
 
 router.post('/', async ctx => {
     await database.verify(ctx.request).then(async decoded => {

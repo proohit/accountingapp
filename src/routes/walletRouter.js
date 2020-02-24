@@ -3,7 +3,7 @@ const Router = require('koa-router')
 const database = require('../database/database');
 const walletMapper = require('../database/WalletMapper')
 
-const router = new Router({prefix: '/wallets'});
+const router = new Router({ prefix: '/api/wallets' });
 
 router.post('/', async ctx => {
     await database.verify(ctx.request).then(async decoded => {

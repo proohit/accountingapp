@@ -7,7 +7,7 @@ const parser = require('koa-bodyparser');
 const database = require('./src/database/database');
 
 const app = new Koa();
-const router = new Router();
+const router = new Router({ prefix: '/api' });
 const combinedRouter = require('./src/routes/router')
 
 app.use(parser());
@@ -38,8 +38,8 @@ router.post('/login', async ctx => {
 app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes())
 try {
-    app.listen('3000');
-    console.log('running on port 3000');
+    app.listen(config.backendPort);
+    console.log(`running on port ${config.backendPort}`);
 } catch (e) {
     console.log(e);
 }

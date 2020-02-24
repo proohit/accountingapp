@@ -2,11 +2,16 @@ import React from 'react'
 import { Container, Typography, Grid } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import Record from './Record'
+import config from '../config.js'
 
 export default class RecordView extends React.Component {
-    state = {
-        records: []
+    constructor(props) {
+        super();
+        this.state = {
+            records: []
+        }
     }
+
 
     componentDidMount() {
         this.props.functionSet.changeHeader('Records');
@@ -16,18 +21,20 @@ export default class RecordView extends React.Component {
             method: 'GET'
         }
 
-        fetch('http://localhost:3000/records', params).then(res => res.json()).then(records => {
-            if (records.success) {
-                this.setState({ records: records.message })
-            } else {
-                this.props.functionSet.openAlert(<Alert severity='error'>{records.message}</Alert>)
-            }
-            this.props.functionSet.toggleLoading();
-        }).catch(err => {
-            console.log(err);
-            this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
-            this.props.functionSet.toggleLoading();
-        })
+        fetch(config.api + '/records', params)
+            .then(res => res.json())
+            .then(records => {
+                if (records.success) {
+                    this.setState({ records: records.message })
+                } else {
+                    this.props.functionSet.openAlert(<Alert severity='error'>{records.message}</Alert>)
+                }
+                this.props.functionSet.toggleLoading();
+            }).catch(err => {
+                console.log(err);
+                this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
+                this.props.functionSet.toggleLoading();
+            })
     }
     render() {
         const records = this.state.records.map(record => <Typography>{record.description}</Typography>)

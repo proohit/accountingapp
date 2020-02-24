@@ -3,6 +3,7 @@ import { Container, InputAdornment, TextField, Button, Grid, Snackbar } from '@m
 import { Alert } from '@material-ui/lab'
 import { AccountCircle, Lock } from '@material-ui/icons'
 import Dashboard from './Dashboard'
+import config from '../config.js'
 
 export default class Login extends Component {
     constructor() {
@@ -33,7 +34,7 @@ export default class Login extends Component {
                 body: JSON.stringify(loginData),
                 headers: { "Content-Type": 'application/json' }
             }
-            fetch('http://localhost:3000/login', params).then(res => res.json())
+            fetch(config.api + '/login', params).then(res => res.json())
                 .then(res => {
                     if (!res.success) {
                         this.props.functionSet.openAlert(<Alert severity="error">{res.message}</Alert>);

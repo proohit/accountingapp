@@ -1,12 +1,27 @@
-
 import React from 'react'
-import { AppBar, Toolbar, IconButton, Typography, Grid } from '@material-ui/core'
+import { AppBar, Toolbar, IconButton, Typography, Grid, SwipeableDrawer, List, ListItem, ListItemText } from '@material-ui/core'
 import { Menu, AccountCircle } from '@material-ui/icons'
 import Login from './Login'
 import RecordView from './RecordView'
 import { Alert } from '@material-ui/lab'
+import { withStyles } from '@material-ui/core/styles'
 
-export default class NavBar extends React.Component {
+const styles = {
+    list: {
+        width: '250px'
+    },
+    entry: {
+        width: 250
+    }
+}
+
+class NavBar extends React.Component {
+    state = {
+        drawer: false
+    }
+    toggleDrawer = () => {
+        this.setState({ drawer: !this.state.drawer })
+    }
     navigateToLogin = () => {
         this.props.functionSet.setContent(<Login changeToken={this.props.changeToken} functionSet={this.props.functionSet}></Login>)
     }
@@ -42,8 +57,19 @@ export default class NavBar extends React.Component {
         }
         return (
             <AppBar position="sticky">
+                <SwipeableDrawer style={{ width: 'auto' }} open={this.state.drawer} onClose={this.toggleDrawer} onOpen={this.toggleDrawer} anchor="left">
+                    <List>
+                        <ListItem button>
+                            <ListItemText> test1 </ListItemText>
+                        </ListItem>
+                        <ListItem>
+                            <ListItemText> test2 </ListItemText>
+                        </ListItem>
+                    </List>
+                    {/* <Typography className={useStyles.entry}></Typography> */}
+                </SwipeableDrawer>
                 <Toolbar>
-                    <IconButton edge="start" color="inherit">
+                    <IconButton onClick={this.toggleDrawer} edge="start" color="inherit">
                         <Menu />
                     </IconButton>
                     <Typography variant="h6">{this.props.header}</Typography>
@@ -58,7 +84,8 @@ export default class NavBar extends React.Component {
                         {accountButton}
                     </Grid>
                 </Toolbar>
-            </AppBar>
+            </AppBar >
         );
     }
 }
+export default withStyles(styles)(NavBar)

@@ -30,7 +30,23 @@ allByUser = (username) => {
         });
     })
 }
-
+byWallet = async (username, wallet) => {
+    try {
+        let result = await con.query(`SELECT * FROM Record WHERE owner='${username}' AND walletName='${wallet}'`)
+        const records = result[0].map(record => {
+            const record1 = new Record();
+            record1.setDescription(record.description)
+            record1.setId(record.id)
+            record1.setValue(record.value)
+            record1.setOwner(record.owner)
+            record1.setWallet(record.walletName)
+            return record1;
+        })
+        return { success: true, message: records }
+    } catch (err) {
+        return { success: false, message: err.message }
+    }
+}
 byId = (id) => {
     return new Promise((resolve, reject) => {
         if (!id) reject({ success: false, message: `no id provided` })
@@ -109,5 +125,5 @@ update = (id, description, value, wallet, owner) => {
 }
 
 module.exports = {
-    all, allByUser, createRecord, deleteRecord, byId, update
+    all, allByUser, createRecord, deleteRecord, byId, update, byWallet
 }

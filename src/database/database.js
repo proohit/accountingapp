@@ -1,10 +1,10 @@
-const mysql = require('mysql')
+const mysql = require('mysql2')
 const config = require('../../config.json')
 let jwt = require('jsonwebtoken')
 const AES = require('crypto-js/aes')
 const crypto = require('crypto-js')
 
-const con = mysql.createConnection({ host: config.host, port: 3306, user: config.user, password: config.password, database: config.database });
+const con = mysql.createConnection({ host: config.host, port: 3306, user: config.user, password: config.password, database: config.database }).promise();
 
 register = (username, password) => {
     return new Promise((resolve, reject) => {
@@ -32,9 +32,10 @@ login = (req) => {
     return new Promise((resolve, reject) => {
         con.query(`SELECT * FROM User WHERE username='${username}'`, (err, res) => {
             if (err) reject(err)
-            if (!username || !password || res.length <= 0)
+            if (!username || !password || res.length <= 0 || !res) {
                 reject({ success: false, message: 'Incorrect username or password' })
-
+                return;
+            }
             let passwordDecrypted = AES.decrypt(res[0].password, res[0].private_key)
             passwordDecrypted = crypto.enc.Utf8.stringify(passwordDecrypted);
 

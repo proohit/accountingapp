@@ -35,7 +35,7 @@ router.post('/login', async ctx => {
 })
 
 
-app.use(router.allowedMethods({throw:true}));
+app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes())
 try {
     app.listen('3000');

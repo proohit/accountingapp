@@ -84,6 +84,20 @@ router.get('/:id', async ctx => {
     })
 })
 
+router.get('/wallet/:wallet', async ctx => {
+    try {
+        const decoded = await database.verify(ctx.request);
+        const result = await recordMapper.byWallet(decoded.username, ctx.params.wallet);
+        ctx.response.type = 'application/json'
+        ctx.response.status = 200;
+        ctx.response.body = JSON.stringify(result);
+    } catch (err) {
+        ctx.response.status = 400;
+        ctx.response.body = JSON.stringify(err);
+    }
+
+})
+
 router.put('/', async ctx => {
     await database.verify(ctx.request).then(async decoded => {
         await recordMapper.byId(ctx.request.body.id).then(async record => {

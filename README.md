@@ -30,3 +30,6 @@ GET /wallets/:name
 
 POST /wallets, body: name, balance
 
+## sidenotes
+
+routes for sub-routes should be appended with index.js/router.use('YOURROUTEPREFIX',exportedRouterFromRouterFile). See [index.js as an example ](./index.js)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Typography, Grid, Fab } from '@material-ui/core'
+import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import Record from './Record'
 import config from '../config.js'
@@ -38,12 +38,28 @@ export default class RecordView extends React.Component {
             })
     }
     render() {
-        const records = this.state.records.map(record => <Record description={record.description} value={record.value} id={record.id} />)
+        const records = this.state.records.map(record =>
+            <Record description={record.description} value={record.value} id={record.id} />
+        )
         return (
             <Container>
-                <Grid container direction='column' justify='center' alignItems='center' spacing={4}>
-                    {records}
-                </Grid>
+
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="left">description</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {this.state.records.map(row => (
+                                <TableRow>
+                                    <TableCell align="left">{row.description}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
                     <Fab style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
                         <AddCircle />

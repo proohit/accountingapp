@@ -4,6 +4,7 @@ import { Alert } from '@material-ui/lab'
 import Record from './Record'
 import config from '../config.js'
 import { AddCircleOutlined, AddCircle } from '@material-ui/icons'
+import MUIDataTable from 'mui-datatables'
 
 export default class RecordView extends React.Component {
     constructor(props) {
@@ -41,25 +42,22 @@ export default class RecordView extends React.Component {
         const records = this.state.records.map(record =>
             <Record description={record.description} value={record.value} id={record.id} />
         )
+        const deleteParam = { method: 'DELETE', headers: [{ "Content-Type": 'application/json' }] }
         return (
             <Container>
 
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="left">description</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.records.map(row => (
-                                <TableRow>
-                                    <TableCell align="left">{row.description}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <MUIDataTable
+                    title={""}
+                    data={this.state.records}
+                    columns={["description", "value", "time", "wallet"]}
+                    options={{
+                        onRowsDelete: (rows) => rows.data.forEach(row => {
+                            // console.log(this.state.records[row.index].id);
+                            // fetch(config.api + '/records/' + this.state.records[row.index].id, deleteParam)
+                        }),
+                        responsive: "scrollFullHeight"
+                    }}
+                />
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
                     <Fab style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
                         <AddCircle />

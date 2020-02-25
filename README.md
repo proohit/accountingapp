@@ -7,6 +7,8 @@ To run the backend, type `npm start`. You can also use nodemon with `nodemon ind
 
 ### Records
 
+URL for the backend will be url/api. It is necessary  that the header for each requests includes "Content-Type":"application/json".
+
 POST /records, body: description, value, timestamp (tbd), wallet
 
 PUT /records/:id, body: description, value, timestamp (tbd), wallet
@@ -17,6 +19,7 @@ GET /records
 
 GET /records/:id
 
+Record Schema: id: number, description: string, value: number, timestamp: date, wallet: string
 
 ### Verification
 

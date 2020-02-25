@@ -1,8 +1,9 @@
 import React from 'react'
-import { Container, Typography, Grid } from '@material-ui/core'
+import { Container, Typography, Grid, Fab } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import Record from './Record'
 import config from '../config.js'
+import { AddCircleOutlined, AddCircle } from '@material-ui/icons'
 
 export default class RecordView extends React.Component {
     constructor(props) {
@@ -37,9 +38,18 @@ export default class RecordView extends React.Component {
             })
     }
     render() {
-        const records = this.state.records.map(record => <Typography>{record.description}</Typography>)
+        const records = this.state.records.map(record => <Record description={record.description} value={record.value} id={record.id} />)
         return (
-            this.state.records.map(record => <Record description={record.description} value={record.value} id={record.id} />)
+            <Container>
+                <Grid container direction='column' justify='center' alignItems='center' spacing={4}>
+                    {records}
+                </Grid>
+                <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
+                    <Fab style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
+                        <AddCircle />
+                    </Fab>
+                </Grid>
+            </Container>
         )
     }
 }

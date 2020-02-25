@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Snackbar, CircularProgress, Grid, Backdrop } from '@material-ui/core'
+import { Snackbar, CircularProgress, Grid, Backdrop, Container } from '@material-ui/core'
 import './App.css';
 import Login from './components/Login'
 import NavBar from './components/NavBar'
@@ -61,10 +61,12 @@ class App extends Component {
         <nav>
           <NavBar functionSet={this.functionSet} changeToken={this.changeToken} token={this.state.token} header={this.state.header}></NavBar>
         </nav>
-        <Grid container direction='column' justify='center' alignItems='center'>
-          {loadingIndicator}
-          {this.state.content}
-        </Grid>
+        <Container>
+          <Grid container direction='column' justify='center' alignItems='center'>
+            {loadingIndicator}
+            {this.state.content}
+          </Grid>
+        </Container>
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           autoHideDuration={4000}

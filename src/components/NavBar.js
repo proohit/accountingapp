@@ -1,32 +1,15 @@
 import React from 'react'
 import { AppBar, Toolbar, IconButton, Typography, Grid, SwipeableDrawer, List, ListItem, ListItemText } from '@material-ui/core'
 import { Menu, AccountCircle } from '@material-ui/icons'
-import Login from './Login'
-import RecordView from './RecordView'
 import { Alert } from '@material-ui/lab'
-import { withStyles } from '@material-ui/core/styles'
+import NavBarMenu from './NavBarMenu'
 
-const styles = {
-    list: {
-        width: '250px'
-    },
-    entry: {
-        width: 250
-    }
-}
-
-class NavBar extends React.Component {
+export default class NavBar extends React.Component {
     state = {
         drawer: false
     }
     toggleDrawer = () => {
         this.setState({ drawer: !this.state.drawer })
-    }
-    navigateToLogin = () => {
-        this.props.functionSet.setContent(<Login changeToken={this.props.changeToken} functionSet={this.props.functionSet}></Login>)
-    }
-    navigateToRecords = () => {
-        this.props.functionSet.setContent(<RecordView functionSet={this.props.functionSet} token={this.props.token} />)
     }
     removeToken = () => {
         this.props.changeToken(null)
@@ -42,7 +25,7 @@ class NavBar extends React.Component {
                         <AccountCircle />
                     </IconButton>
                     <IconButton onClick={this.removeToken}>
-                        <Typography variant="h6">
+                        <Typography color="inherit" variant="h6">
                             Logout
                         </Typography>
                     </IconButton>
@@ -57,29 +40,13 @@ class NavBar extends React.Component {
         }
         return (
             <AppBar position="sticky">
-                <SwipeableDrawer style={{ width: 'auto' }} open={this.state.drawer} onClose={this.toggleDrawer} onOpen={this.toggleDrawer} anchor="left">
-                    <List>
-                        <ListItem button>
-                            <ListItemText> test1 </ListItemText>
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText> test2 </ListItemText>
-                        </ListItem>
-                    </List>
-                    {/* <Typography className={useStyles.entry}></Typography> */}
-                </SwipeableDrawer>
+                <NavBarMenu token={this.props.token} drawer={this.state.drawer} toggleDrawer={this.toggleDrawer} functionSet={this.props.functionSet} />
                 <Toolbar>
                     <IconButton onClick={this.toggleDrawer} edge="start" color="inherit">
                         <Menu />
                     </IconButton>
                     <Typography variant="h6">{this.props.header}</Typography>
-                    <Grid container direction='row' justify='center' alignItems='center'>
-                        <IconButton onClick={this.navigateToRecords}>
-                            <Typography color="inherit" variant="h6">
-                                Records
-                        </Typography>
-                        </IconButton>
-                    </Grid>
+
                     <Grid container direction='row' justify='flex-end'>
                         {accountButton}
                     </Grid>
@@ -88,4 +55,3 @@ class NavBar extends React.Component {
         );
     }
 }
-export default withStyles(styles)(NavBar)

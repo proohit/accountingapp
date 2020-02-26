@@ -69,7 +69,7 @@ export default class RecordView extends React.Component {
         )
         return (
             <Container>
-                <AddRecordDialog open={this.state.addModal} closeDialog={this.closeDialog} />
+                <AddRecordDialog token={this.props.token} open={this.state.addModal} closeDialog={this.closeDialog} />
                 <MUIDataTable
                     title={""}
                     data={this.state.records}

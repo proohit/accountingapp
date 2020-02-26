@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { SwipeableDrawer, Grid, Typography, IconButton, List, ListItem, Divider, } from '@material-ui/core'
+import { SwipeableDrawer, Grid, Typography, IconButton, List, ListItem, Divider, ListItemText, ListItemIcon, } from '@material-ui/core'
 import Login from './Login'
 import RecordView from './RecordView'
+import { Alert } from '@material-ui/lab'
+import { Assignment } from '@material-ui/icons'
 
 export class NavBarMenu extends Component {
 
@@ -10,6 +12,11 @@ export class NavBarMenu extends Component {
         this.props.toggleDrawer();
     }
     navigateToRecords = () => {
+        if (!this.props.token || this.props.token === null || this.props.token.length < 10) {
+            this.props.functionSet.openAlert(<Alert severity="error">You must be logged in!</Alert>)
+            this.navigateToLogin();
+            return;
+        }
         this.props.functionSet.setContent(<RecordView functionSet={this.props.functionSet} token={this.props.token} />)
         this.props.toggleDrawer();
     }
@@ -18,15 +25,12 @@ export class NavBarMenu extends Component {
             <SwipeableDrawer open={this.props.drawer} onClose={this.props.toggleDrawer} onOpen={this.props.toggleDrawer} anchor="left">
                 <List>
                     <ListItem>
-                        <Typography style={{ width: 250 }} variant="h5">Accounting App</Typography>
+                        <ListItemText style={{ width: 200 }} primary="AccountingApp"></ListItemText>
                     </ListItem>
                     <Divider></Divider>
-                    <ListItem>
-                        <IconButton onClick={this.navigateToRecords}>
-                            <Typography color="inherit" variant="h6">
-                                Records
-                            </Typography>
-                        </IconButton>
+                    <ListItem button onClick={this.navigateToRecords}>
+                        <ListItemIcon><Assignment></Assignment></ListItemIcon>
+                        <ListItemText primary="Records"></ListItemText>
                     </ListItem>
                 </List>
             </SwipeableDrawer>

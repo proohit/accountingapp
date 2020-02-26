@@ -3,14 +3,15 @@ import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHea
 import { Alert } from '@material-ui/lab'
 import Record from './Record'
 import config from '../config.js'
-import { AddCircleOutlined, AddCircle } from '@material-ui/icons'
+import { AddCircleOutlined, AddCircle, NoteAdd } from '@material-ui/icons'
 import MUIDataTable from 'mui-datatables'
 
 export default class RecordView extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            records: []
+            records: [],
+            addModal: false
         }
     }
 
@@ -38,11 +39,12 @@ export default class RecordView extends React.Component {
                 this.props.functionSet.toggleLoading();
             })
     }
+
     render() {
         const records = this.state.records.map(record =>
             <Record description={record.description} value={record.value} id={record.id} />
         )
-        const deleteParam = { method: 'DELETE', headers: [{ "Content-Type": 'application/json' }] }
+        const deleteParam = { method: 'DELETE', headers: { "Authorization": this.props.token, "Content-Type": 'application/json' } }
         return (
             <Container>
 
@@ -52,15 +54,16 @@ export default class RecordView extends React.Component {
                     columns={["description", "value", "time", "wallet"]}
                     options={{
                         onRowsDelete: (rows) => rows.data.forEach(row => {
-                            // console.log(this.state.records[row.index].id);
-                            // fetch(config.api + '/records/' + this.state.records[row.index].id, deleteParam)
+                            console.log(this.state.records[row.index].id);
+                            fetch(config.api + '/records/' + this.state.records[row.index].id, deleteParam).then(res => res.json()).then(result => { if (!result.success) this.props.functionSet.openAlert(<Alert severity="error">{result.message}</Alert>) })
                         }),
-                        responsive: "scrollFullHeight"
+                        responsive: "scrollMaxHeight",
+                        expandableRows: true
                     }}
                 />
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
                     <Fab style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
-                        <AddCircle />
+                        <NoteAdd />
                     </Fab>
                 </Grid>
             </Container>

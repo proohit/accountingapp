@@ -73,7 +73,7 @@ export default class RecordView extends React.Component {
                 <MUIDataTable
                     title={""}
                     data={this.state.records}
-                    columns={["description", "value", "time", "wallet"]}
+                    columns={["description", "value", "timestamp", "wallet"]}
                     options={{
                         onRowsDelete: this.deleteRecords,
                         responsive: "scrollMaxHeight",

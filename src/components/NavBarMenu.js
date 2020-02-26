@@ -22,7 +22,7 @@ export class NavBarMenu extends Component {
     }
     render() {
         return (
-            <SwipeableDrawer open={this.props.drawer} onClose={this.props.toggleDrawer} onOpen={this.props.toggleDrawer} anchor="left">
+            <SwipeableDrawer disableBackdropTransition={true} open={this.props.drawer} onClose={this.props.toggleDrawer} onOpen={this.props.toggleDrawer} anchor="left">
                 <List>
                     <ListItem>
                         <ListItemText style={{ width: 200 }} primary="AccountingApp"></ListItemText>

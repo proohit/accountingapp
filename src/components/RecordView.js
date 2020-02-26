@@ -1,10 +1,12 @@
 import React from 'react'
-import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core'
+import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import Record from './Record'
 import config from '../config.js'
-import { AddCircleOutlined, AddCircle, NoteAdd } from '@material-ui/icons'
+import { AddCircleOutlined, AddCircle, NoteAdd, ReplayOutlined } from '@material-ui/icons'
 import MUIDataTable from 'mui-datatables'
+import { AddRecordDialog } from './AddRecordDialog'
+import CustomToolbar from './CustomToolbar'
 
 export default class RecordView extends React.Component {
     constructor(props) {
@@ -14,11 +16,9 @@ export default class RecordView extends React.Component {
             addModal: false
         }
     }
-
-
-    componentDidMount() {
-        this.props.functionSet.changeHeader('Records');
+    fetchItems = () => {
         this.props.functionSet.toggleLoading();
+
         const params = {
             headers: { "Authorization": this.props.token, "Content-Type": 'application/json' },
             method: 'GET'
@@ -39,30 +39,49 @@ export default class RecordView extends React.Component {
                 this.props.functionSet.toggleLoading();
             })
     }
+    closeDialog = () => {
+        this.setState({ addModal: false })
+    }
+    deleteRecords = (rows) => {
+        const deleteParam = { method: 'DELETE', headers: { "Authorization": this.props.token, "Content-Type": 'application/json' } }
+        rows.data.forEach(async row => {
+            const res = await fetch(config.api + '/records/' + this.state.records[row.index].id, deleteParam)
+            const result = await res.json();
+            if (!result.success) {
+
+            } else {
+                const newRecords = this.state.records.filter(rec => !(rec.id === this.state.records[row.index].id))
+                this.setState({ records: newRecords })
+            }
+        })
+        this.props.functionSet.openAlert(<Alert severity="success">deleted records</Alert>)
+    }
+    componentDidMount() {
+        this.props.functionSet.changeHeader('Records');
+        this.props.functionSet.toggleLoading();
+
+        this.fetchItems();
+    }
 
     render() {
         const records = this.state.records.map(record =>
             <Record description={record.description} value={record.value} id={record.id} />
         )
-        const deleteParam = { method: 'DELETE', headers: { "Authorization": this.props.token, "Content-Type": 'application/json' } }
         return (
             <Container>
-
+                <AddRecordDialog open={this.state.addModal} closeDialog={this.closeDialog} />
                 <MUIDataTable
                     title={""}
                     data={this.state.records}
                     columns={["description", "value", "time", "wallet"]}
                     options={{
-                        onRowsDelete: (rows) => rows.data.forEach(row => {
-                            console.log(this.state.records[row.index].id);
-                            fetch(config.api + '/records/' + this.state.records[row.index].id, deleteParam).then(res => res.json()).then(result => { if (!result.success) this.props.functionSet.openAlert(<Alert severity="error">{result.message}</Alert>) })
-                        }),
+                        onRowsDelete: this.deleteRecords,
                         responsive: "scrollMaxHeight",
-                        expandableRows: true
+                        customToolbar: () => <CustomToolbar refresh={this.fetchItems} />
                     }}
                 />
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
-                    <Fab style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
+                    <Fab onClick={() => this.setState({ addModal: true })} style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
                         <NoteAdd />
                     </Fab>
                 </Grid>

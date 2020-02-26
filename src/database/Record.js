@@ -7,4 +7,5 @@ module.exports = class Record {
     setDescription(description) { this.description = description; }
     setWallet(wallet) { this.wallet = wallet; }
     setOwner(owner) { this.owner = owner; }
+    setTimestamp(timestamp) { this.timestamp = timestamp; }
 }

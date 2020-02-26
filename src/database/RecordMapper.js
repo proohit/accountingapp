@@ -24,6 +24,7 @@ allByUser = (username) => {
                     record1.setValue(record.value)
                     record1.setOwner(record.owner)
                     record1.setWallet(record.walletName)
+                    record1.setTimestamp(record.timestamp)
                     return record1;
                 })
             });
@@ -40,6 +41,7 @@ byWallet = async (username, wallet) => {
             record1.setValue(record.value)
             record1.setOwner(record.owner)
             record1.setWallet(record.walletName)
+            record1.setTimestamp(record.timestamp)
             return record1;
         })
         return { success: true, message: records }
@@ -60,6 +62,7 @@ byId = (id) => {
                 createdRecord.setValue(res[0].value);
                 createdRecord.setWallet(res[0].walletName);
                 createdRecord.setOwner(res[0].owner);
+                createdRecord.setTimestamp(res[0].timestamp)
                 resolve({ success: true, message: createdRecord })
             }
         })
@@ -102,13 +105,15 @@ deleteRecord = (id) => {
 /**
  * 
  */
-update = (id, description, value, wallet, owner) => {
+update = (id, description, value, wallet, timestamp, owner) => {
     return new Promise((resolve, reject) => {
         let sql = `UPDATE Record SET id=${id}`;
         if (description) sql += `, description='${description}'`;
         if (value) sql += `, value=${value}`;
         if (wallet) sql += `, walletName='${wallet}'`;
         if (owner) sql += `, owner='${owner}'`;
+        if (timestamp) sql += `, timestamp='${timestamp}'`;
+
         sql += ` WHERE id = ${id}`
         con.query(sql, (err, res) => {
             if (err) reject(err);

@@ -10,7 +10,15 @@ byName = (walletName) => {
         })
     })
 }
-
+byUser = async (owner) => {
+    try {
+        const query = await con.query(`SELECT * FROM Wallet WHERE owner='${owner}'`);
+        const result = query[0].map(wallet => wallet);
+        return { success: true, message: result }
+    } catch (error) {
+        return { success: false, message: error.message }
+    }
+}
 create = (walletName, balance, owner) => {
     return new Promise((resolve, reject) => {
 
@@ -22,5 +30,5 @@ create = (walletName, balance, owner) => {
 }
 
 module.exports = {
-    byName, create
+    byName, create, byUser
 }

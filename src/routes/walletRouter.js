@@ -21,6 +21,20 @@ router.post('/', async ctx => {
     })
 })
 
+router.get('/', async ctx => {
+    try {
+        const decoded = await database.verify(ctx.request);
+        const result = await walletMapper.byUser(decoded.username)
+
+        ctx.response.type = 'application/json'
+        ctx.response.status = 200;
+        ctx.response.body = JSON.stringify(result)
+        return;
+    } catch (error) {
+        ctx.response.body = JSON.stringify(error.message)
+    }
+})
+
 router.get('/:name', async ctx => {
     await database.verify(ctx.request).then(async decoded => {
         await walletMapper.byName(ctx.params.name).then(data => {

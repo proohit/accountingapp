@@ -1,7 +1,7 @@
 const { con } = require('./database')
 const Record = require('./Record')
 
-all = () => {
+const all = () => {
     return new Promise((resolve, reject) => {
         con.query('SELECT * FROM Record;', (err, data) => {
             if (err) reject(err);
@@ -12,7 +12,7 @@ all = () => {
     })
 }
 
-allByUser = (username) => {
+const allByUser = (username) => {
     return new Promise((resolve, reject) => {
         con.query(`SELECT * FROM Record WHERE owner='${username}';`, (err, data) => {
             if (err) reject(err);
@@ -31,7 +31,8 @@ allByUser = (username) => {
         });
     })
 }
-byWallet = async (username, wallet) => {
+
+const byWallet = async (username, wallet) => {
     try {
         let result = await con.query(`SELECT * FROM Record WHERE owner='${username}' AND walletName='${wallet}'`)
         const records = result[0].map(record => {
@@ -49,7 +50,8 @@ byWallet = async (username, wallet) => {
         return { success: false, message: err.message }
     }
 }
-byId = (id) => {
+
+const byId = (id) => {
     return new Promise((resolve, reject) => {
         if (!id) reject({ success: false, message: `no id provided` })
         con.query(`SELECT * FROM Record WHERE id=${id}`, (err, res) => {
@@ -90,7 +92,7 @@ const createRecord = async (description, value, wallet, timestamp, owner) => {
 /**
  * expects an id as parameter. This id will be deleted from the database
  */
-deleteRecord = (id) => {
+const deleteRecord = (id) => {
     return new Promise((resolve, reject) => {
         if (!id) reject({ success: false, message: `no id provided to delete` });
         con.query(`DELETE FROM Record WHERE id=${id}`, (err, res) => {
@@ -103,8 +105,8 @@ deleteRecord = (id) => {
 /**
  * 
  */
-update = (id, description, value, wallet, timestamp, owner) => {
-    return new Promise((resolve, reject) => {
+const update = async (id, description, value, wallet, timestamp, owner) => {
+    try {
         let sql = `UPDATE Record SET id=${id}`;
         if (description) sql += `, description='${description}'`;
         if (value) sql += `, value=${value}`;
@@ -113,18 +115,12 @@ update = (id, description, value, wallet, timestamp, owner) => {
         if (timestamp) sql += `, timestamp='${timestamp}'`;
 
         sql += ` WHERE id = ${id}`
-        con.query(sql, (err, res) => {
-            if (err) reject(err);
-            else {
-                byId(id).then(updatedRecord => {
-                    resolve({ success: true, message: updatedRecord.message })
-                }).catch(err => {
-                    console.log(err);
-                    reject(err)
-                });
-            }
-        })
-    })
+        const res = await con.query(sql);
+        const updatedRecord = await byId(id);
+        return { success: true, message: updatedRecord.message }
+    } catch (error) {
+
+    }
 }
 
 module.exports = {

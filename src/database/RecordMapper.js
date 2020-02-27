@@ -71,22 +71,20 @@ byId = (id) => {
 
 /**
  * creates a record. Parameters are necessary: description (description for the record), value (the value for the record, negative will reduce wallet balance), wallet (in which this record is cretided), owner (the user that this record belong to)
+ * @param {string} description
+ * @param {number} value
+ * @param {string} wallet
+ * @param {object} timestamp
+ * @param {string} owner
  */
-createRecord = (description, value, wallet, owner) => {
-    return new Promise((resolve, reject) => {
-        con.query(`INSERT INTO Record(description, value, walletName, owner) VALUES ('${description}',${value},'${wallet}','${owner}')`, (err, res) => {
-            if (err) reject(err);
-            else {
-                byId(res.insertId).then(createdRecord => {
-                    console.log(createdRecord.message.owner);
-                    resolve({ success: true, message: createdRecord.message })
-                }).catch(err => {
-                    console.log(err);
-                    reject(err)
-                });
-            }
-        })
-    })
+const createRecord = async (description, value, wallet, timestamp, owner) => {
+    try {
+        const result = await con.query(`INSERT INTO Record(description, value, walletName,timestamp, owner) VALUES ('${description}',${value},'${wallet}','${timestamp}','${owner}')`)
+        const insertedRecord = await byId(result[0].insertId);
+        return { success: true, message: insertedRecord.message }
+    } catch (error) {
+        return { success: false, message: 'Error in SQL!', error: error }
+    }
 }
 
 /**

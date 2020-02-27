@@ -7,7 +7,7 @@ const router = new Router();
 
 router.post('/', async ctx => {
     await database.verify(ctx.request).then(async decoded => {
-        await recordMapper.createRecord(ctx.request.body.description, ctx.request.body.value, ctx.request.body.wallet, decoded.username).then(res => {
+        await recordMapper.createRecord(ctx.request.body.description, ctx.request.body.value, ctx.request.body.wallet, ctx.request.body.timestamp, decoded.username).then(res => {
             ctx.response.type = 'application/json'
             ctx.response.status = 201;
             ctx.response.body = JSON.stringify(res)

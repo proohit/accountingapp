@@ -51,22 +51,17 @@ class App extends Component {
   render() {
     let loadingIndicator = null;
     if (this.state.isLoading) {
-      loadingIndicator =
-        <Backdrop open={this.state.isLoading}>
-          <CircularProgress />
-        </Backdrop>
+      loadingIndicator = <CircularProgress style={{ position: 'fixed', top: '50%', left: '50%' }} />
     }
     return (
       <div>
         <nav>
           <NavBar functionSet={this.functionSet} changeToken={this.changeToken} token={this.state.token} header={this.state.header}></NavBar>
         </nav>
-        <Container>
-          <Grid container direction='column' justify='center' alignItems='center'>
-            {loadingIndicator}
-            {this.state.content}
-          </Grid>
-        </Container>
+        <Grid container direction='column' justify='center' alignItems='center'>
+          {this.state.content}
+        </Grid>
+        {loadingIndicator}
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           autoHideDuration={4000}

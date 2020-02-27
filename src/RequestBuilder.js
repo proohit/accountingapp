@@ -8,7 +8,13 @@ const params = (token, method, body) => {
         headers: { "Authorization": token, "Content-Type": 'application/json', },
         method: method,
     }
-    if (!method === 'GET') reqParams.body = JSON.stringify(body)
+    switch (method) {
+        case 'GET':
+        case 'DELETE': break;
+        case 'POST':
+        case 'PUT': reqParams.body = JSON.stringify(body)
+        default: break;
+    }
 
     return reqParams
 }

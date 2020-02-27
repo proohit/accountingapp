@@ -64,20 +64,42 @@ export default class RecordView extends React.Component {
     }
 
     render() {
-        const records = this.state.records.map(record =>
-            <Record description={record.description} value={record.value} id={record.id} />
-        )
+        const records = this.state.records.map(record => {
+            let item = {};
+            item.description = record.description;
+            item.id = record.id;
+            item.value = record.value;
+            item.wallet = record.wallet;
+            const date = new Date(record.timestamp);
+            const year = date.getFullYear();
+            let month = (date.getMonth() + 1).toString();
+            month = month.length < 2 ? '0' + month : month
+            let day = date.getDate().toString();
+            day = day.length < 2 ? '0' + day : day
+
+            let hour = date.getHours().toString();
+            hour = hour.length < 2 ? '0' + hour : hour
+            let minutes = date.getMinutes().toString();
+            minutes = minutes.length < 2 ? '0' + minutes : minutes
+            let seconds = date.getSeconds().toString();
+            seconds = seconds.length < 2 ? '0' + seconds : seconds
+            item.timestamp = `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
+            return item;
+        })
         return (
             <Container>
-                <AddRecordDialog token={this.props.token} open={this.state.addModal} closeDialog={this.closeDialog} />
+                <AddRecordDialog refreshRecords={this.fetchItems} token={this.props.token} open={this.state.addModal} functionSet={this.props.functionSet} closeDialog={this.closeDialog} />
                 <MUIDataTable
                     title={""}
-                    data={this.state.records}
+                    data={records}
                     columns={["description", "value", "timestamp", "wallet"]}
                     options={{
                         onRowsDelete: this.deleteRecords,
-                        responsive: "scrollMaxHeight",
-                        customToolbar: () => <CustomToolbar refresh={this.fetchItems} />
+                        responsive: "scrollFullHeight",
+                        customToolbar: () => <CustomToolbar refresh={this.fetchItems} />,
+                        rowHover: true,
+                        searchOpen: true,
+
                     }}
                 />
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>

@@ -7,8 +7,8 @@ const params = (token, method, body) => {
     const reqParams = {
         headers: { "Authorization": token, "Content-Type": 'application/json', },
         method: method,
-        body: JSON.stringify(body)
     }
+    if (!method === 'GET') reqParams.body = JSON.stringify(body)
 
     return reqParams
 }

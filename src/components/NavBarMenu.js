@@ -7,14 +7,12 @@ import { Assignment } from '@material-ui/icons'
 
 export class NavBarMenu extends Component {
 
-    navigateToLogin = () => {
-        this.props.functionSet.setContent(<Login changeToken={this.props.changeToken} functionSet={this.props.functionSet}></Login>)
-        this.props.toggleDrawer();
-    }
+
     navigateToRecords = () => {
         if (!this.props.token || this.props.token === null || this.props.token.length < 10) {
             this.props.functionSet.openAlert(<Alert severity="error">You must be logged in!</Alert>)
-            this.navigateToLogin();
+            this.props.navigateToLogin();
+            this.props.toggleDrawer();
             return;
         }
         this.props.functionSet.setContent(<RecordView functionSet={this.props.functionSet} token={this.props.token} />)

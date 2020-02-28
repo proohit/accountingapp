@@ -1,12 +1,16 @@
-import React from 'react'
-import { AppBar, Toolbar, IconButton, Typography, Grid, SwipeableDrawer, List, ListItem, ListItemText } from '@material-ui/core'
-import { Menu, AccountCircle } from '@material-ui/icons'
+import { AppBar, Grid, IconButton, Toolbar, Typography } from '@material-ui/core'
+import { AccountCircle, Menu } from '@material-ui/icons'
 import { Alert } from '@material-ui/lab'
+import React from 'react'
 import NavBarMenu from './NavBarMenu'
+import Login from "./Login";
 
 export default class NavBar extends React.Component {
     state = {
         drawer: false
+    }
+    navigateToLogin = () => {
+        this.props.functionSet.setContent(<Login changeToken={this.props.changeToken} functionSet={this.props.functionSet}></Login>)
     }
     toggleDrawer = () => {
         this.setState({ drawer: !this.state.drawer })
@@ -40,7 +44,7 @@ export default class NavBar extends React.Component {
         }
         return (
             <AppBar position="sticky">
-                <NavBarMenu token={this.props.token} drawer={this.state.drawer} toggleDrawer={this.toggleDrawer} functionSet={this.props.functionSet} />
+                <NavBarMenu navigateToLogin={this.navigateToLogin} token={this.props.token} drawer={this.state.drawer} toggleDrawer={this.toggleDrawer} functionSet={this.props.functionSet} />
                 <Toolbar>
                     <IconButton onClick={this.toggleDrawer} edge="start" color="inherit">
                         <Menu />

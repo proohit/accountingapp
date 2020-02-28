@@ -1,12 +1,13 @@
 import React from 'react'
-import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton } from '@material-ui/core'
+import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, FormControlLabel, Switch, TextField, Checkbox } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import Record from './Record'
 import config from '../config.js'
 import { AddCircleOutlined, AddCircle, NoteAdd, ReplayOutlined } from '@material-ui/icons'
-import MUIDataTable from 'mui-datatables'
+import MUIDataTable, { TableBodyRow, TableBodyCell } from 'mui-datatables'
 import { AddRecordDialog } from './AddRecordDialog'
 import CustomToolbar from './CustomToolbar'
+import { params } from '../RequestBuilder'
 
 export default class RecordView extends React.Component {
     constructor(props) {
@@ -17,14 +18,11 @@ export default class RecordView extends React.Component {
         }
     }
     fetchItems = () => {
+        this.setState({ records: [] })
         this.props.functionSet.toggleLoading();
+        const reqParams = params(this.props.token, 'GET');
 
-        const params = {
-            headers: { "Authorization": this.props.token, "Content-Type": 'application/json' },
-            method: 'GET'
-        }
-
-        fetch(config.api + '/records', params)
+        fetch(config.api + '/records', reqParams)
             .then(res => res.json())
             .then(records => {
                 if (records.success) {
@@ -103,7 +101,7 @@ export default class RecordView extends React.Component {
                     }}
                 />
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
-                    <Fab onClick={() => this.setState({ addModal: true })} style={{ position: 'fixed', right: 25, bottom: 25 }} color="primary" aria-label="add">
+                    <Fab onClick={() => this.setState({ addModal: true })} style={{ position: 'fixed', right: '5%', bottom: '5%' }} color="primary" aria-label="add">
                         <NoteAdd />
                     </Fab>
                 </Grid>

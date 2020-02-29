@@ -84,16 +84,7 @@ export class AddRecordDialog extends Component {
             console.log(error);
         }
     }
-    async componentDidMount() {
-        try {
-            const res = await fetch(config.api + '/wallets', { headers: { "Authorization": this.props.token, "Content-Type": 'application/json' }, method: 'GET' })
-            const result = await res.json();
-            this.setState({ wallets: result.message })
-            console.log(result);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+
     render() {
         const wallets = this.props.wallets;
         return (

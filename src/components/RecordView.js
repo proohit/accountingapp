@@ -39,6 +39,7 @@ export default class RecordView extends React.Component {
         return new Promise((resolve, reject) => {
             const reqParams = params(this.props.token, 'PUT', { id: newData.id, description: newData.description, value: newData.value, timestamp: newData.timestamp, walletName: newData.wallet, })
             fetch(config.api + '/records', reqParams).then(res => res.json()).then((updatedRecord) => {
+                this.props.functionSet.openAlert(<Alert severity="success">edited Record</Alert>)
                 resolve(updatedRecord);
                 this.fetchItems();
             }).catch(err => reject(err))
@@ -75,7 +76,7 @@ export default class RecordView extends React.Component {
             }
             this.props.functionSet.toggleLoading(false);
         } catch (err) {
-            this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
+            this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your wallets</Alert>)
             this.props.functionSet.toggleLoading(false);
         }
     }
@@ -110,13 +111,12 @@ export default class RecordView extends React.Component {
     componentDidMount() {
         this.props.functionSet.changeHeader('Records');
         this.props.functionSet.toggleLoading();
-
-        this.fetchItems();
         this.fetchWallets();
+        this.fetchItems();
     }
 
     render() {
-        const records = this.state.records.map(record => {
+        let records = this.state.records.map(record => {
             let item = {};
             item.description = record.description;
             item.id = record.id;
@@ -136,6 +136,7 @@ export default class RecordView extends React.Component {
             let seconds = date.getSeconds().toString();
             seconds = seconds.length < 2 ? '0' + seconds : seconds
             item.timestamp = `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
+            item.month = `${month}-${year}`
             return item;
         })
         const walletLookup = Object.assign({}, ...this.state.wallets.map(wallet => ({ [wallet.name]: wallet.name })));
@@ -143,13 +144,16 @@ export default class RecordView extends React.Component {
             <Container>
                 <AddRecordDialog wallets={this.state.wallets} refreshRecords={this.fetchItems} token={this.props.token} open={this.state.addModal} functionSet={this.props.functionSet} closeDialog={this.closeDialog} />
                 <MaterialTable
+
                     icons={tableIcons}
                     title=''
                     columns={[
                         { title: "Description", field: "description" },
                         { title: "Value", field: "value", type: 'numeric' },
-                        { title: "Timestamp", field: "timestamp", type: "datetime", defaultSort: 'desc' },
+                        { title: "Timestamp", field: "timestamp", type: "datetime", },
                         { title: "Wallet", field: "wallet", lookup: walletLookup },
+                        { title: "month", field: "month", defaultGroupOrder: 0, defaultGroupSort: "desc", },
+
                     ]}
                     data={records}
                     editable={{
@@ -159,7 +163,7 @@ export default class RecordView extends React.Component {
                         onRowUpdate: this.updateRecord
                     }}
                     options={{
-                        sorting: true
+                        sorting: true,
                     }}
                 >
 

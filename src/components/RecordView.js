@@ -37,7 +37,7 @@ export default class RecordView extends React.Component {
     }
     updateRecord = (newData) => {
         return new Promise((resolve, reject) => {
-            const reqParams = params(this.props.token, 'PUT', newData)
+            const reqParams = params(this.props.token, 'PUT', { id: newData.id, description: newData.description, value: newData.value, timestamp: newData.timestamp, walletName: newData.wallet, })
             fetch(config.api + '/records', reqParams).then(res => res.json()).then((updatedRecord) => {
                 resolve(updatedRecord);
                 this.fetchItems();

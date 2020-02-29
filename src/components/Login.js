@@ -1,9 +1,9 @@
+import { Button, Container, Grid, InputAdornment, TextField } from '@material-ui/core';
+import { AccountCircle, Lock } from '@material-ui/icons';
+import { Alert } from '@material-ui/lab';
 import React, { Component } from "react";
-import { Container, InputAdornment, TextField, Button, Grid, Snackbar } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
-import { AccountCircle, Lock } from '@material-ui/icons'
-import Dashboard from './Dashboard'
-import config from '../config.js'
+import config from '../config.js';
+import Dashboard from './Dashboard';
 
 export default class Login extends Component {
     constructor() {

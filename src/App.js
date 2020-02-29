@@ -1,9 +1,7 @@
+import { CircularProgress, Grid, Snackbar } from '@material-ui/core';
 import React, { Component } from 'react';
-import { Snackbar, CircularProgress, Grid, Backdrop, Container } from '@material-ui/core'
 import './App.css';
-import Login from './components/Login'
-import NavBar from './components/NavBar'
-import Test2 from './components/Test2'
+import NavBar from './components/NavBar';
 
 
 
@@ -31,8 +29,13 @@ class App extends Component {
       setContent: (content) => {
         this.setState({ content: content })
       },
-      toggleLoading: () => {
-        this.setState({ isLoading: !this.state.isLoading })
+      toggleLoading: (loading) => {
+        if (loading === null || loading === undefined || typeof loading !== 'boolean') {
+          this.setState({ isLoading: !this.state.isLoading })
+        }
+        else {
+          this.setState({ isLoading: loading })
+        }
       }
     }
   }

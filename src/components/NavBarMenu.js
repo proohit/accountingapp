@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
-import { SwipeableDrawer, Grid, Typography, IconButton, List, ListItem, Divider, ListItemText, ListItemIcon, } from '@material-ui/core'
-import Login from './Login'
-import RecordView from './RecordView'
-import { Alert } from '@material-ui/lab'
+import { Divider, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer } from '@material-ui/core'
 import { Assignment } from '@material-ui/icons'
+import { Alert } from '@material-ui/lab'
+import React, { Component } from 'react'
+import RecordView from './RecordView'
 
 export class NavBarMenu extends Component {
 

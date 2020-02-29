@@ -12,7 +12,7 @@ const params = (token, method, body) => {
         case 'GET':
         case 'DELETE': break;
         case 'POST':
-        case 'PUT': reqParams.body = JSON.stringify(body)
+        case 'PUT': reqParams.body = JSON.stringify(body); break;
         default: break;
     }
 

@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
-import { Container, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, Grid, MenuItem } from '@material-ui/core'
+import moment from "@date-io/moment";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, TextField } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import React, { Component } from 'react';
 import config from '../config';
 import { params } from '../RequestBuilder';
-import moment from "@date-io/moment";
-import { MuiPickersUtilsProvider, DatePicker, DateTimePicker } from '@material-ui/pickers'
-import { string } from 'prop-types';
-import { Alert } from '@material-ui/lab';
 
 // TODO make controlled so that input from textfields get inserted into state
 
@@ -13,7 +12,6 @@ export class AddRecordDialog extends Component {
     constructor(props) {
         super();
         this.state = {
-            wallets: [],
             selectedWallet: '',
             description: '',
             value: '',
@@ -76,9 +74,9 @@ export class AddRecordDialog extends Component {
             })
             const res = await fetch(config.api + '/records', reqParams)
             const result = await res.json();
+            console.log(result);
             if (result.success) {
                 this.props.functionSet.openAlert(<Alert severity="success">Created Record</Alert>)
-                console.log(result.message);
                 this.props.refreshRecords();
             }
             this.props.closeDialog();
@@ -97,7 +95,7 @@ export class AddRecordDialog extends Component {
         }
     }
     render() {
-        const wallets = this.state.wallets;
+        const wallets = this.props.wallets;
         return (
             <Dialog open={this.props.open}>
                 <DialogTitle>Add new Record</DialogTitle>

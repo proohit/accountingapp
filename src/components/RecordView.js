@@ -35,9 +35,17 @@ export default class RecordView extends React.Component {
             addModal: false
         }
     }
-
+    updateRecord = (newData) => {
+        return new Promise((resolve, reject) => {
+            const reqParams = params(this.props.token, 'PUT', newData)
+            fetch(config.api + '/records', reqParams).then(res => res.json()).then((updatedRecord) => {
+                resolve(updatedRecord);
+                this.fetchItems();
+            }).catch(err => reject(err))
+        })
+    }
     fetchItems = async () => {
-        this.props.functionSet.toggleLoading();
+        this.props.functionSet.toggleLoading(true);
         const reqParams = params(this.props.token, 'GET');
         try {
             const res = await fetch(config.api + '/records', reqParams)
@@ -47,16 +55,32 @@ export default class RecordView extends React.Component {
             } else {
                 this.props.functionSet.openAlert(<Alert severity='error'>{records.message}</Alert>)
             }
-            this.props.functionSet.toggleLoading();
+            this.props.functionSet.toggleLoading(false);
         } catch (err) {
             console.log(err);
             this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
-            this.props.functionSet.toggleLoading();
+            this.props.functionSet.toggleLoading(false);
         }
     }
     fetchWallets = async () => {
-
+        this.props.functionSet.toggleLoading(true);
+        const reqParams = params(this.props.token, 'GET')
+        try {
+            const res = await fetch(config.api + '/wallets', reqParams)
+            const wallets = await res.json();
+            if (wallets.success) {
+                this.setState({ wallets: wallets.message })
+            } else {
+                this.props.functionSet.openAlert(<Alert severity='error'>{wallets.message}</Alert>)
+            }
+            this.props.functionSet.toggleLoading(false);
+        } catch (err) {
+            this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
+            this.props.functionSet.toggleLoading(false);
+        }
     }
+
+
     closeDialog = () => {
         this.setState({ addModal: false })
     }
@@ -79,6 +103,7 @@ export default class RecordView extends React.Component {
         this.props.functionSet.toggleLoading();
 
         this.fetchItems();
+        this.fetchWallets();
     }
 
     render() {
@@ -104,21 +129,27 @@ export default class RecordView extends React.Component {
             item.timestamp = `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
             return item;
         })
+        const walletLookup = Object.assign({}, ...this.state.wallets.map(wallet => ({ [wallet.name]: wallet.name })));
         return (
             <Container>
-                <AddRecordDialog refreshRecords={this.fetchItems} token={this.props.token} open={this.state.addModal} functionSet={this.props.functionSet} closeDialog={this.closeDialog} />
+                <AddRecordDialog wallets={this.state.wallets} refreshRecords={this.fetchItems} token={this.props.token} open={this.state.addModal} functionSet={this.props.functionSet} closeDialog={this.closeDialog} />
                 <MaterialTable
                     icons={tableIcons}
+                    title=''
                     columns={[
                         { title: "Description", field: "description" },
-                        { title: "Value", field: "value" },
+                        { title: "Value", field: "value", type: 'numeric' },
                         { title: "Timestamp", field: "timestamp", type: "datetime" },
-                        { title: "Wallet", field: "wallet", lookup: { 1: "test", 2: "test2" } },
+                        { title: "Wallet", field: "wallet", lookup: walletLookup },
                     ]}
-                    data={records}
+                    data={records.map(record => {
+                        return {
+                            id: record.id, description: record.description, value: record.value, timestamp: record.timestamp, wallet: record.wallet
+                        }
+                    })}
                     editable={{
                         isEditable: rowData => true,
-                        onRowUpdate: newData => console.log(newData)
+                        onRowUpdate: this.updateRecord
                     }}
                     options={{
                         filtering: true
@@ -131,7 +162,7 @@ export default class RecordView extends React.Component {
                         <NoteAdd />
                     </Fab>
                 </Grid>
-            </Container>
+            </Container >
         )
     }
 }

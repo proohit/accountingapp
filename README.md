@@ -8,10 +8,11 @@ To run the backend, type `npm start`. You can also use nodemon with `nodemon ind
 ### Records
 
 URL for the backend will be url/api. It is necessary  that the header for each requests includes "Content-Type":"application/json".
+Format for the timestamp is "YYYY-MM-DD HH:MM:SS"
 
-POST /records, body: description, value, timestamp (tbd), wallet
+POST /records, body: description, value, timestamp, wallet
 
-PUT /records/:id, body: description, value, timestamp (tbd), wallet
+PUT /records, body: id, description, value, timestamp, wallet
 
 DELETE /records/:id
 

@@ -1,41 +1,61 @@
-import React from 'react'
-import { Container, Typography, Grid, Fab, Grow, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, FormControlLabel, Switch, TextField, Checkbox } from '@material-ui/core'
+import { Container, Fab, Grid } from '@material-ui/core'
+import { NoteAdd, AddBox, Check, Clear, DeleteOutline, ChevronRight, Edit, SaveAlt, FilterList, FirstPage, LastPage, ChevronLeft, Search, ArrowDownward, Remove, ViewColumn } from '@material-ui/icons'
 import { Alert } from '@material-ui/lab'
-import Record from './Record'
+import MaterialTable from 'material-table'
+import React, { forwardRef } from 'react'
 import config from '../config.js'
-import { AddCircleOutlined, AddCircle, NoteAdd, ReplayOutlined } from '@material-ui/icons'
-import MUIDataTable, { TableBodyRow, TableBodyCell } from 'mui-datatables'
-import { AddRecordDialog } from './AddRecordDialog'
-import CustomToolbar from './CustomToolbar'
 import { params } from '../RequestBuilder'
+import { AddRecordDialog } from './AddRecordDialog'
 
+const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+}
 export default class RecordView extends React.Component {
     constructor(props) {
         super();
         this.state = {
             records: [],
+            wallets: [],
             addModal: false
         }
     }
-    fetchItems = () => {
-        this.setState({ records: [] })
+
+    fetchItems = async () => {
         this.props.functionSet.toggleLoading();
         const reqParams = params(this.props.token, 'GET');
+        try {
+            const res = await fetch(config.api + '/records', reqParams)
+            const records = await res.json();
+            if (records.success) {
+                this.setState({ records: records.message })
+            } else {
+                this.props.functionSet.openAlert(<Alert severity='error'>{records.message}</Alert>)
+            }
+            this.props.functionSet.toggleLoading();
+        } catch (err) {
+            console.log(err);
+            this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
+            this.props.functionSet.toggleLoading();
+        }
+    }
+    fetchWallets = async () => {
 
-        fetch(config.api + '/records', reqParams)
-            .then(res => res.json())
-            .then(records => {
-                if (records.success) {
-                    this.setState({ records: records.message })
-                } else {
-                    this.props.functionSet.openAlert(<Alert severity='error'>{records.message}</Alert>)
-                }
-                this.props.functionSet.toggleLoading();
-            }).catch(err => {
-                console.log(err);
-                this.props.functionSet.openAlert(<Alert severity='error'>oops, something went wrong retrieveing your records</Alert>)
-                this.props.functionSet.toggleLoading();
-            })
     }
     closeDialog = () => {
         this.setState({ addModal: false })
@@ -87,19 +107,25 @@ export default class RecordView extends React.Component {
         return (
             <Container>
                 <AddRecordDialog refreshRecords={this.fetchItems} token={this.props.token} open={this.state.addModal} functionSet={this.props.functionSet} closeDialog={this.closeDialog} />
-                <MUIDataTable
-                    title={""}
+                <MaterialTable
+                    icons={tableIcons}
+                    columns={[
+                        { title: "Description", field: "description" },
+                        { title: "Value", field: "value" },
+                        { title: "Timestamp", field: "timestamp", type: "datetime" },
+                        { title: "Wallet", field: "wallet", lookup: { 1: "test", 2: "test2" } },
+                    ]}
                     data={records}
-                    columns={["description", "value", "timestamp", "wallet"]}
-                    options={{
-                        onRowsDelete: this.deleteRecords,
-                        responsive: "scrollFullHeight",
-                        customToolbar: () => <CustomToolbar refresh={this.fetchItems} />,
-                        rowHover: true,
-                        searchOpen: true,
-
+                    editable={{
+                        isEditable: rowData => true,
+                        onRowUpdate: newData => console.log(newData)
                     }}
-                />
+                    options={{
+                        filtering: true
+                    }}
+                >
+
+                </MaterialTable>
                 <Grid container direction='row' justify='flex-end' alignItems='flex-end'>
                     <Fab onClick={() => this.setState({ addModal: true })} style={{ position: 'fixed', right: '5%', bottom: '5%' }} color="primary" aria-label="add">
                         <NoteAdd />

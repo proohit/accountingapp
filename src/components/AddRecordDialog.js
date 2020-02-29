@@ -93,19 +93,30 @@ export class AddRecordDialog extends Component {
                 <DialogContent>
                     <Grid container direction="column" justify="center">
                         <TextField id="description" onChange={this.changeInput} label="Description" />
-                        <TextField error={this.state.valueError} id="value" onChange={this.changeInput} type="number" label="Value"></TextField>
-                        <TextField error={this.state.walletError} id="wallet" onChange={this.changeInput} select label="Wallet" defaultValue=''>
+                        <TextField
+                            error={this.state.valueError}
+                            id="value"
+                            onChange={this.changeInput}
+                            type="number"
+                            label="Value" />
+                        <TextField
+                            error={this.state.walletError}
+                            id="wallet"
+                            onChange={this.changeInput}
+                            select
+                            label="Wallet"
+                            defaultValue=''>
                             {wallets.map(wallet =>
                                 <MenuItem key={wallet.name} value={wallet.name}>
                                     {wallet.name}
                                 </MenuItem>)}
                         </TextField>
                         <MuiPickersUtilsProvider utils={moment}>
-                            <DateTimePicker error={this.state.timestampError} value={this.state.timestamp} onChange={this.handleDateChange} label="timestamp"></DateTimePicker>
+                            <DateTimePicker error={this.state.timestampError} value={this.state.timestamp} onChange={this.handleDateChange} label="timestamp">
 
+                            </DateTimePicker>
                         </MuiPickersUtilsProvider>
                     </Grid>
-                    {/* <Select> Wallet</Select> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.submit}>

@@ -1,5 +1,5 @@
 import { Container, Fab, Grid } from '@material-ui/core'
-import { NoteAdd, AddBox, Check, Clear, DeleteOutline, ChevronRight, Edit, SaveAlt, FilterList, FirstPage, LastPage, ChevronLeft, Search, ArrowDownward, Remove, ViewColumn } from '@material-ui/icons'
+import { NoteAdd, AddBox, Check, Clear, DeleteOutline, Delete, ChevronRight, Edit, SaveAlt, FilterList, FirstPage, LastPage, ChevronLeft, Search, ArrowDownward, Remove, ViewColumn } from '@material-ui/icons'
 import { Alert } from '@material-ui/lab'
 import MaterialTable from 'material-table'
 import React, { forwardRef } from 'react'
@@ -85,28 +85,19 @@ export default class RecordView extends React.Component {
     closeDialog = () => {
         this.setState({ addModal: false })
     }
-    deleteRecords = (rows) => {
-        return new Promise((resolve, reject) => {
-            const deleteParam = {
-                method: 'DELETE',
-                headers: {
-                    "Authorization": this.props.token,
-                    "Content-Type": 'application/json'
-                }
-            }
-            fetch(config.api + '/records/' + rows.id, deleteParam)
-                .then(res => res.json())
-                .then(result => {
-                    if (!result.success) {
-                        reject();
-                    } else {
-                        this.fetchItems();
-                        this.props.functionSet.openAlert(<Alert severity="success">deleted records</Alert>)
-                        resolve();
-                    }
-                }).catch(err => reject(err))
-        })
+    deleteRecords = (event, rows) => {
+        const deleteParam = { method: 'DELETE', headers: { "Authorization": this.props.token, "Content-Type": 'application/json' } }
+        rows.forEach(async row => {
+            const res = await fetch(config.api + '/records/' + row.id, deleteParam)
+            const result = await res.json();
+            if (!result.success) {
 
+            } else {
+                const newRecords = this.state.records.filter(rec => !(rec.id === row.id))
+                this.setState({ records: newRecords })
+            }
+        })
+        this.props.functionSet.openAlert(<Alert severity="success">deleted records</Alert>)
     }
     componentDidMount() {
         this.props.functionSet.changeHeader('Records');
@@ -144,9 +135,7 @@ export default class RecordView extends React.Component {
             <Container>
                 <AddRecordDialog wallets={this.state.wallets} refreshRecords={this.fetchItems} token={this.props.token} open={this.state.addModal} functionSet={this.props.functionSet} closeDialog={this.closeDialog} />
                 <MaterialTable
-
                     icons={tableIcons}
-                    title=''
                     columns={[
                         { title: "Description", field: "description" },
                         { title: "Value", field: "value", type: 'numeric' },
@@ -158,13 +147,22 @@ export default class RecordView extends React.Component {
                     data={records}
                     editable={{
                         isEditable: rowData => true,
-                        isDeletable: rowData => true,
-                        onRowDelete: this.deleteRecords,
-                        onRowUpdate: this.updateRecord
+                        onRowUpdate: this.updateRecord,
                     }}
                     options={{
                         sorting: true,
+                        showTitle: false,
+                        selection: true,
+
                     }}
+                    actions={[
+                        {
+                            icon: () => <Delete />,
+                            position: 'toolbarOnSelect',
+                            onClick: this.deleteRecords
+                        },
+                    ]}
+
                 >
 
                 </MaterialTable>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { List, ListItem, ListItemText } from '@material-ui/core'
+import { List, ListItem, ListItemText, Container, Typography, Grid } from '@material-ui/core'
 import { params } from '../RequestBuilder'
 import config from '../config'
 import { Alert } from '@material-ui/lab'
@@ -45,9 +45,14 @@ export class WalletView extends Component {
             return <WalletCard records={records} key={wallet.name} name={wallet.name} balance={wallet.balance} />
         })
         return (
-            <List>
-                {wallets}
-            </List >
+            <Grid container direction="column" justify="flex-start" alignItems="center">
+                <Typography variant="h2">
+                    Wallets
+                </Typography>
+                <List style={{ width: '90%' }}>
+                    {wallets}
+                </List >
+            </Grid>
         )
     }
 }

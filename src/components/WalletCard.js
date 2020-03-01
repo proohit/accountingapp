@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Card, CardHeader, CardContent, Typography, CardActions, IconButton, Collapse, List, ListItem, ListItemText } from '@material-ui/core'
+import { Card, CardHeader, CardContent, Typography, CardActions, IconButton, Collapse, List, ListItem, ListItemText, Divider } from '@material-ui/core'
 import { Edit, ExpandMore } from '@material-ui/icons'
 
 const styles = {
 
     card: {
+        width: '100%',
         marginTop: 10
     },
     expand: {
@@ -53,10 +54,11 @@ export class WalletCard extends Component {
                     </IconButton>
                 </CardActions>
                 <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                    <Divider />
                     <CardContent>
 
                         <List>
-                            {this.props.records.map(record => <ListItem key={record.id}><ListItemText>{record.description}</ListItemText></ListItem>)}
+                            {this.props.records.map(record => <ListItem dense divider key={record.id}><ListItemText>{record.description}</ListItemText></ListItem>)}
                         </List>
                     </CardContent>
                 </Collapse>

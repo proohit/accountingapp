@@ -32,7 +32,7 @@ export class AddRecordDialog extends Component {
         }
     }
     handleDateChange = (event) => {
-        this.setState({ timestamp: event._i })
+        this.setState({ timestamp: event._d })
     }
     submit = async () => {
         let error = false;

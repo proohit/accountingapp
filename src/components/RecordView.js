@@ -153,7 +153,18 @@ export default class RecordView extends React.Component {
                         sorting: true,
                         showTitle: false,
                         selection: true,
-
+                        exportButton: true,
+                        exportCsv: (columns, data) => {
+                            let csvContent = "data:text/csv;charset=utf-8,"
+                            csvContent += columns.map(col => col.title).join(',') + "\n"
+                            let dataAsArray = data[0].data.map(e => e.description + "," + e.value + "," + e.timestamp + "," + e.wallet + "\n")
+                            dataAsArray.forEach(row => csvContent += row)
+                            var encodedUri = encodeURI(csvContent);
+                            const link = document.createElement('a');
+                            link.href = encodedUri;
+                            link.download = 'data.csv'
+                            link.click();
+                        }
                     }}
                     actions={[
                         {

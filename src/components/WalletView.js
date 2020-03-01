@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { List, ListItem, ListItemText, Container, Typography, Grid } from '@material-ui/core'
-import { params } from '../RequestBuilder'
-import config from '../config'
+import { Grid, List, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
+import React, { Component } from 'react'
+import config from '../config'
+import { params } from '../RequestBuilder'
 import WalletCard from './WalletCard'
 
 export class WalletView extends Component {
@@ -41,8 +41,8 @@ export class WalletView extends Component {
     }
     render() {
         const wallets = this.state.wallets.map(wallet => {
-            const records = this.state.records.filter(rec => rec.wallet === wallet.name).sort((a, b) => a.timestamp > b.timestamp);
-            return <WalletCard records={records} key={wallet.name} name={wallet.name} balance={wallet.balance} />
+            const records = this.state.records.filter(rec => rec.wallet === wallet.name).sort((a, b) => a.timestamp > b.timestamp ? -1 : 1);
+            return <WalletCard records={records} key={wallet.name + "_card"} name={wallet.name} balance={wallet.balance} />
         })
         return (
             <Grid container direction="column" justify="flex-start" alignItems="center">

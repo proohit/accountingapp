@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Card, CardHeader, CardContent, Typography, CardActions, IconButton, Collapse, List, ListItem, ListItemText, Divider } from '@material-ui/core'
+import { Card, CardActions, CardContent, CardHeader, Collapse, Divider, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Tooltip } from '@material-ui/core'
 import { Edit, ExpandMore } from '@material-ui/icons'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
 const styles = {
 
@@ -43,23 +43,41 @@ export class WalletCard extends Component {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <IconButton>
-                        <Edit />
-                    </IconButton>
-                    <IconButton
-                        style={expandedStyle}
-                        onClick={this.handleExpand}
-                    >
-                        <ExpandMore />
-                    </IconButton>
+                    <Tooltip title="edit wallet">
+                        <IconButton>
+                            <Edit />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="show records of wallet">
+                        <IconButton
+                            style={expandedStyle}
+                            onClick={this.handleExpand}
+                        >
+                            <ExpandMore />
+                        </IconButton>
+                    </Tooltip>
                 </CardActions>
                 <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
                     <Divider />
                     <CardContent>
-
-                        <List>
-                            {this.props.records.map(record => <ListItem dense divider key={record.id}><ListItemText>{record.description}</ListItemText></ListItem>)}
-                        </List>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Description</TableCell>
+                                    <TableCell>Value</TableCell>
+                                    <TableCell>Timestamp</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {this.props.records.map(row => (
+                                    <TableRow key={row.id}>
+                                        <TableCell>{row.description}</TableCell>
+                                        <TableCell>{row.value}</TableCell>
+                                        <TableCell>{row.timestamp}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </CardContent>
                 </Collapse>
             </Card>

@@ -1,14 +1,13 @@
 const { con } = require('./database')
 const Wallet = require('./Wallet')
 
-byName = (walletName) => {
-    return new Promise((reject, resolve) => {
-
-        con.query(`SELECT * FROM Wallet WHERE name = '${walletName}'`, (err, res) => {
-            if (err) reject({ success: false, err, message: `Something went wrong retrieving wallet with name ${walletName}` })
-            else resolve({ success: true, message: res })
-        })
-    })
+byName = async (walletName) => {
+    try {
+        const wallet = await con.query(`SELECT * FROM Wallet WHERE name = '${walletName}'`)
+        return { success: true, message: wallet[0] }
+    } catch (error) {
+        return { sucess: false, error, message: "Error retrieving wallet" }
+    }
 }
 byUser = async (owner) => {
     try {
@@ -19,16 +18,30 @@ byUser = async (owner) => {
         return { success: false, message: error.message }
     }
 }
-create = (walletName, balance, owner) => {
-    return new Promise((resolve, reject) => {
+create = async (walletName, balance, owner) => {
+    try {
+        const created = await con.query(`INSERT INTO Wallet(name, balance, owner) VALUES('${walletName}',${balance},'${owner}') `);
+        const createdWallet = await byName(walletName);
+        return { success: true, message: createdWallet.message }
+    } catch (error) {
+        throw { success: false, message: error.message }
+    }
+}
 
-        con.query(`INSERT INTO Wallet(name, balance, owner) VALUES('${walletName}',${balance},'${owner}') `, (err, res) => {
-            if (err) reject({ success: false, err, message: `Something went wrong creating the wallet` })
-            else byName(walletName).then(res => resolve(res)).catch(err => reject(err))
-        })
-    })
+/**
+ * Deletes the provided wallet
+ * @param {string} walletName name of wallet
+ * @param {string} owner owner as username
+ */
+const deleteWallet = async (walletName, owner) => {
+    try {
+        con.query(`DELETE FROM Wallet WHERE name='${walletName}' AND owner='${owner}'`);
+        return { success: true, message: "deleted wallet" }
+    } catch (error) {
+        throw error;
+    }
 }
 
 module.exports = {
-    byName, create, byUser
+    byName, create, byUser, deleteWallet
 }

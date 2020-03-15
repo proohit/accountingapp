@@ -110,7 +110,8 @@ const update = async (id, description, value, wallet, timestamp, owner) => {
         let sql = `UPDATE Record SET id=${id}`;
         if (description) sql += `, description='${description}'`;
         if (value) sql += `, value=${value}`;
-        if (wallet) sql += `, walletName='${wallet}'`;
+        if (wallet === null) sql += `, walletName=${wallet}`;
+        else if (wallet) sql += `, walletName='${wallet}'`;
         if (owner) sql += `, owner='${owner}'`;
         if (timestamp) sql += `, timestamp='${timestamp}'`;
 

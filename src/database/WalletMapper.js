@@ -1,9 +1,9 @@
 const { con } = require('./database')
 const Wallet = require('./Wallet')
 
-byName = async (walletName) => {
+const byName = async (walletName, owner) => {
     try {
-        const wallet = await con.query(`SELECT * FROM Wallet WHERE name = '${walletName}'`)
+        const wallet = await con.query(`SELECT * FROM Wallet WHERE name = '${walletName}' AND owner='${owner}'`)
         return { success: true, message: wallet[0] }
     } catch (error) {
         return { sucess: false, error, message: "Error retrieving wallet" }
@@ -21,7 +21,7 @@ byUser = async (owner) => {
 create = async (walletName, balance, owner) => {
     try {
         const created = await con.query(`INSERT INTO Wallet(name, balance, owner) VALUES('${walletName}',${balance},'${owner}') `);
-        const createdWallet = await byName(walletName);
+        const createdWallet = await byName(walletName, owner);
         return { success: true, message: createdWallet.message }
     } catch (error) {
         throw { success: false, message: error.message }
@@ -42,6 +42,19 @@ const deleteWallet = async (walletName, owner) => {
     }
 }
 
+const update = async (oldWalletName, newWalletName, newBalance, owner) => {
+    try {
+        const oldWallet = await byName(oldWalletName, owner);
+        const balance = newBalance || oldWallet.message[0].balance;
+        await con.query(
+            `UPDATE Wallet SET name='${newWalletName}', balance=${balance} WHERE name='${oldWalletName}' AND owner='${owner}'`
+        );
+        const updatedWallet = await byName(newWalletName, owner);
+        return { success: true, message: updatedWallet.message }
+    } catch (error) {
+        throw error
+    }
+}
 module.exports = {
-    byName, create, byUser, deleteWallet
+    byName, create, byUser, deleteWallet, update
 }

@@ -12,24 +12,24 @@ const all = () => {
     })
 }
 
-const allByUser = (username) => {
-    return new Promise((resolve, reject) => {
-        con.query(`SELECT * FROM Record WHERE owner='${username}';`, (err, data) => {
-            if (err) reject(err);
-            resolve({
-                success: true, message: data.map(record => {
-                    const record1 = new Record()
-                    record1.setDescription(record.description)
-                    record1.setId(record.id)
-                    record1.setValue(record.value)
-                    record1.setOwner(record.owner)
-                    record1.setWallet(record.walletName)
-                    record1.setTimestamp(record.timestamp)
-                    return record1;
-                })
-            });
-        });
-    })
+const allByUser = async (username) => {
+    try {
+        const recordsOfUser = await con.query(`SELECT * FROM Record WHERE owner='${username}';`);
+        return {
+            success: true, message: recordsOfUser[0].map(record => {
+                const record1 = new Record()
+                record1.setDescription(record.description)
+                record1.setId(record.id)
+                record1.setValue(record.value)
+                record1.setOwner(record.owner)
+                record1.setWallet(record.walletName)
+                record1.setTimestamp(record.timestamp)
+                return record1;
+            })
+        }
+    } catch (error) {
+        throw error;
+    }
 }
 
 const byWallet = async (username, wallet) => {
@@ -51,24 +51,16 @@ const byWallet = async (username, wallet) => {
     }
 }
 
-const byId = (id) => {
-    return new Promise((resolve, reject) => {
-        if (!id) reject({ success: false, message: `no id provided` })
-        con.query(`SELECT * FROM Record WHERE id=${id}`, (err, res) => {
-            if (err) reject(err)
-            if (res.length <= 0) reject({ success: false, message: `no record found for id ${id}` })
-            else {
-                let createdRecord = new Record();
-                createdRecord.setId(res[0].id);
-                createdRecord.setDescription(res[0].description);
-                createdRecord.setValue(res[0].value);
-                createdRecord.setWallet(res[0].walletName);
-                createdRecord.setOwner(res[0].owner);
-                createdRecord.setTimestamp(res[0].timestamp)
-                resolve({ success: true, message: createdRecord })
-            }
-        })
-    })
+const byId = async (id) => {
+    try {
+        if (!id) {
+            throw new Error('no id provided!')
+        }
+        const createdRecord = await con.query(`SELECT * FROM Record WHERE id=${id}`)
+        return { success: true, message: createRecord[0] }
+    } catch (error) {
+        throw error;
+    }
 }
 
 /**
@@ -92,14 +84,16 @@ const createRecord = async (description, value, wallet, timestamp, owner) => {
 /**
  * expects an id as parameter. This id will be deleted from the database
  */
-const deleteRecord = (id) => {
-    return new Promise((resolve, reject) => {
-        if (!id) reject({ success: false, message: `no id provided to delete` });
-        con.query(`DELETE FROM Record WHERE id=${id}`, (err, res) => {
-            if (err) reject({ err, success: false, message: `Something went wrong deleting record with id ${id}` });
-            else resolve({ success: true, message: `Record with id ${id} deleted` });
-        })
-    })
+const deleteRecord = async (id) => {
+    try {
+        if (!id) {
+            throw new Error('no id provided!')
+        }
+        const response = con.query(`DELETE FROM Record WHERE id=${id}`);
+        return { success: true, message: `Deleted record with id ${id}` }
+    } catch (error) {
+        throw error
+    }
 }
 
 /**

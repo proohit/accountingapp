@@ -57,7 +57,7 @@ const byId = async (id) => {
             throw new Error('no id provided!')
         }
         const createdRecord = await con.query(`SELECT * FROM Record WHERE id=${id}`)
-        return { success: true, message: createRecord[0] }
+        return { success: true, message: createdRecord[0] }
     } catch (error) {
         throw error;
     }

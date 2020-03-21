@@ -1,8 +1,10 @@
-const recordmapper = require('../src/database/RecordMapper')
-const database = require('../src/database/database')
+// const recordmapper = require('../src/database/RecordMapper')
+// import { login } from '../src/database/database';
+import mysql from 'mysql2'
+import Koa from 'koa'
 const AES = require('crypto-js/aes')
 const crypto = require('crypto-js')
-const Record = require('../src/database/Record')
+// const Record = require('../src/database/Record')
 /*
 recordmapper.all().then(data => console.log(data))
 close(); */
@@ -23,3 +25,9 @@ console.log(decrypted); */
 //     decrypted = crypto.enc.Utf8.stringify(decrypted)
 //     console.log(decrypted);
 // })
+
+/* const date = new Date().toISOString();
+
+recordmapper.createRecord('abc noch ein test', 12, 'Konto', date, 'direnc').then(res => console.log(res));
+
+ */

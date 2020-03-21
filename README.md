@@ -1,7 +1,17 @@
 # AccountingAppBackend
 
 ## run
-To run the backend, type `npm start`. You can also use nodemon with `nodemon index.js`
+To run you need to have ts-node installed.
+
+```
+npm i -D ts-node
+```
+
+To run the backend, type `npm start`.
+
+## build
+to build, run `npm run build`. It outputs into the `dist/` folder
+
 
 ## API documentation
 

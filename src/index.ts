@@ -1,16 +1,16 @@
-const Koa = require('koa');
-const Router = require('koa-router');
-const cors = require('koa-cors');
-const config = require('./config.json');
-const parser = require('koa-bodyparser');
+import Koa from 'koa';
+import Router from 'koa-router';
+import cors from 'koa-cors'
+import parser from 'koa-bodyparser'
+import config from '../config';
 
-const database = require('./src/database/database');
+import database = require('./database/database');
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
 // const combinedRouter = require('./src/routes/router')
-const recordRouter = require('./src/routes/recordRouter')
-const walletRouter = require('./src/routes/walletRouter')
+import recordRouter from './routes/records/recordRouter';
+import walletRouter from './routes/wallets/walletRouter';
 
 app.use(parser());
 app.use(cors());
@@ -20,23 +20,27 @@ router.use('/wallets', walletRouter)
 
 
 router.post('/register', async ctx => {
-    await database.register(ctx.request.body.username, ctx.request.body.password).then(res => {
+    try {
+        ctx.req
+        const res = await database.register(ctx.request.body.username, ctx.request.body.password)
         ctx.response.status = 201;
         ctx.response.body = JSON.stringify(res);
-    }).catch(err => {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
         ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(err);
-    });
+        ctx.response.body = JSON.stringify(error);
+    }
 })
+
 router.post('/login', async ctx => {
-    await database.login(ctx.request).then(res => {
+    try {
+        const res = await database.login(ctx.request)
         ctx.response.status = 201;
         ctx.response.body = JSON.stringify(res);
-    }).catch(err => {
+    } catch (error) {
         ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(err);
-    })
+        ctx.response.body = JSON.stringify(error.message);
+    }
 })
 
 

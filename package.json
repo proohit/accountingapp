@@ -7,7 +7,8 @@
     "start": "npx ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "openapi": "npx openapi-generator generate -i ./api/accountingapp.json -o ./generated_files  -g nodejs-express-server"
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +32,7 @@
     "mysql2": "^2.1.0"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^1.0.12-4.3.0",
     "nodemon": "^2.0.2",
     "ts-node": "^8.7.0",
     "typescript": "^3.8.3"

@@ -106,3 +106,6 @@ dist
 #config
 config.ts
 config.json
+
+#generated files
+generated_files

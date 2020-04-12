@@ -8,5 +8,6 @@
     "watch": [
         "src"
     ],
-    "exec": "npm start"
+    "exec": "npm start",
+    "ext": "ts,js,json"
 }

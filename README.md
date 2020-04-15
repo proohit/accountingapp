@@ -1,5 +1,5 @@
 # AccountingAppBackend
-See documentation [on documentation page](https://htmlpreview.github.io/?https://github.com/proohit/AccountingAppBackend/blob/master/docs/index.html)
+See documentation [on documentation page](https://rawcdn.githack.com/proohit/AccountingAppBackend/1d845c8a060e93ef5567cdba5e0b5ab7271ac302/docs/index.html)
 ## run
 
 To run the backend, type `npm start`.

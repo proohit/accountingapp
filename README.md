@@ -1,5 +1,5 @@
 # AccountingAppBackend
-
+See documentation [on documentation page](https://rawcdn.githack.com/proohit/AccountingAppBackend/1d845c8a060e93ef5567cdba5e0b5ab7271ac302/docs/index.html)
 ## run
 
 To run the backend, type `npm start`.
@@ -12,36 +12,8 @@ To run nodemon for dev, type `npm run dev`
 
 to build, run `npm run build`. It outputs into the `dist/` folder
 
-## API documentation
-
-### Records
-
-URL for the backend will be url/api. It is necessary  that the header for each requests includes "Content-Type":"application/json".
-Format for the timestamp is "YYYY-MM-DD HH:MM:SS"
-
-POST /records, body: description, value, timestamp, wallet
-
-PUT /records, body: id, description, value, timestamp, wallet
-
-DELETE /records/:id
-
-GET /records
-
-GET /records/:id
-
-Record Schema: id: number, description: string, value: number, timestamp: date, wallet: string
-
-### Verification
-
-POST /register, body: username, password
-
-POST /login, body: username, password
-
-### Wallet
-
-GET /wallets/:name
-
-POST /wallets, body: name, balance
+## docs
+you can generate doc with `npm run doc:dev` which outputs into docs/index.html or `npm run doc:prod` which outputs into dist/docs/index.html
 
 ## sidenotes
 

@@ -62,6 +62,44 @@
           }
         }
       }
+    },
+    "/records/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "number" }
+          }
+        ],
+        "description": "Get the record with the specified id",
+        "tags": ["records"],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Record"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "number" }
+          }
+        ],
+        "description": "Deletes the record with the specified id",
+        "tags": ["records"],
+        "responses": {}
+      }
     }
   }
 }

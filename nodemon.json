@@ -1,12 +1,6 @@
 {
-    "ignore": [
-        "**/*.test.ts",
-        "**/*.spec.ts",
-        ".git",
-        "node_modules"
-    ],
-    "watch": [
-        "src"
-    ],
-    "exec": "npm start"
+  "ignore": ["**/*.test.ts", "**/*.spec.ts", ".git", "node_modules"],
+  "watch": ["src/**/*.ts", "api/**/*.json"],
+  "ext": "ts,json",
+  "exec": "npm start"
 }

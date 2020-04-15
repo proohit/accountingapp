@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Accounting App Backend Api",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3002/api"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "$ref": "models/User.json#/User"
+      },
+      "Wallet": {
+        "$ref": "models/Wallet.json#/Wallet"
+      },
+      "Record": {
+        "type": "object",
+        "description": "asdf",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/records": {
+      "get": {
+        "operationId": "Get all records",
+        "description": "Gets all records of the requesting user",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Record"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,89 +1,74 @@
-import { Snackbar } from '@material-ui/core';
-import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import NavBar from './navigation/components/NavBar';
-import RecordView from './records/components/RecordView';
-import { Alert } from './shared/alert/AlertModel';
-import { DataComponentProps } from './shared/BaseProps';
-import WalletView from './wallets/components/WalletView';
-import { TypedAlert } from './shared/alert/TypedAlert';
-import AuthenticationProvider from './shared/context/AuthenticationProvider'
-import Login from './authentication/components/Login';
+import { Snackbar, makeStyles, Theme } from "@material-ui/core";
+import React, { useState } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import NavBar from "./navigation/components/NavBar";
+import RecordView from "./records/components/RecordView";
+import { Alert } from "./shared/alert/AlertModel";
+import { DataComponentProps } from "./shared/BaseProps";
+import WalletView from "./wallets/components/WalletView";
+import { TypedAlert } from "./shared/alert/TypedAlert";
+import AuthenticationProvider from "./shared/context/AuthenticationProvider";
+import Login from "./authentication/components/Login";
 
-type IState = {
-  token: string | null;
-  alert: Alert | null;
-  openAlert: boolean,
-  header: string,
-  isLoading: boolean
-}
+const useAppStyles = makeStyles((theme: Theme) => ({
+  content: {
+    padding: theme.spacing(4),
+  },
+}));
 
-class App extends React.Component<{}, IState> {
-  functionSet: DataComponentProps["functionSet"]
+const App: React.FunctionComponent<{}> = (props) => {
+  const [alert, setAlert] = useState<Alert | null>();
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const [header, setHeader] = useState<string>("Dashboard");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const classes = useAppStyles();
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      token: localStorage.getItem('token'),
-      alert: null,
-      openAlert: false,
-      header: 'Dashboard',
-      isLoading: false
-    }
+  const functionSet: DataComponentProps["functionSet"] = {
+    changeHeader: (header: string) => setHeader(header),
+    openAlert: (alert: Alert) => {
+      setAlert(alert);
+      setOpenAlert(true);
+    },
+    toggleLoading: (loading: boolean) => setIsLoading(loading),
+  };
 
-    this.functionSet = {
-      changeHeader: (header: string) => {
-        this.setState({ header: header })
-      },
-      openAlert: (alert: Alert) => {
-        this.setState({ alert: alert, openAlert: true })
-      },
-      toggleLoading: (loading: boolean) => {
-        this.setState({ isLoading: loading })
-      }
-    }
-  }
+  const closeAlert = () => {
+    setOpenAlert(false);
+  };
 
-  closeAlert = () => {
-    this.setState({ openAlert: false })
-  }
-
-  render() {
-    console.log('renders App');
-    return (
-      <AuthenticationProvider>
-        <BrowserRouter>
-          <nav>
-            <div data-testid="navbar">
-              <NavBar title={this.state.header} functionSet={this.functionSet}></NavBar>
-            </div>
-          </nav>
-
+  return (
+    <AuthenticationProvider>
+      <BrowserRouter>
+        <nav>
+          <div data-testid="navbar">
+            <NavBar title={header} functionSet={functionSet}></NavBar>
+          </div>
+        </nav>
+        <div className={classes.content}>
           <Switch>
             <Route path="/login">
-              <Login functionSet={this.functionSet} />
+              <Login functionSet={functionSet} />
             </Route>
             <Route path="/records">
-              <RecordView functionSet={this.functionSet} />
+              <RecordView functionSet={functionSet} />
             </Route>
             <Route path="/wallets">
-              <WalletView functionSet={this.functionSet} />
+              <WalletView functionSet={functionSet} />
             </Route>
-
           </Switch>
-        </BrowserRouter>
-        <Snackbar
-          data-testid="snackbar"
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          autoHideDuration={4000}
-          onClose={this.closeAlert}
-          open={this.state.openAlert}>
-          {this.state.alert ? <TypedAlert alert={this.state.alert} /> : null}
-        </Snackbar>
-      </AuthenticationProvider>
-
-    );
-  }
-}
+        </div>
+      </BrowserRouter>
+      <Snackbar
+        data-testid="snackbar"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={4000}
+        onClose={closeAlert}
+        open={openAlert}
+      >
+        {alert ? <TypedAlert alert={alert} /> : null}
+      </Snackbar>
+    </AuthenticationProvider>
+  );
+};
 
 export default App;

@@ -37,7 +37,7 @@ jobs:
         ftp-username: ${{ secrets.username }}
         # FTP account password
         ftp-password: ${{ secrets.password }}
-        known-hosts: hostname ${{ secrets.sshsecret }}
+        git-ftp-args: --insecure
     - name: SSH Commands
       uses: appleboy/ssh-action@v0.0.2
       with:

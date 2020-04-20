@@ -1,69 +1,88 @@
-import { Divider, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer } from "@material-ui/core";
-import { AccountBalance, Assignment } from "@material-ui/icons";
-import React from 'react';
-import { Link, RouteComponentProps, withRouter, Router } from 'react-router-dom';
+import {
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  SwipeableDrawer,
+} from '@material-ui/core';
+import { AccountBalance, Assignment, Menu } from '@material-ui/icons';
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
-interface INavDrawerProps {
-    toggleDrawer(open: boolean): void;
-    open: boolean
-}
-
-interface INavDrawerState {
-
-}
+interface INavDrawerProps {}
 
 const routes = {
-    records: '/records',
-    wallets: '/wallets'
-}
+  records: '/records',
+  wallets: '/wallets',
+};
 
-const styles = {
-    list: {
-        width: 200
+const NavigationDrawerStyles = makeStyles((theme) => {
+  return {
+    drawer: {
+      width: '25%',
     },
-    link: {
-        textDecoration: 'none',
-    }
-}
+    list: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    },
+  };
+});
 
-class NavigationDrawer extends React.Component<INavDrawerProps & RouteComponentProps, INavDrawerState> {
-    reloadRoute = (route: string) => {
-        this.props.history.push({ pathname: '/empty' })
-        this.props.history.replace({ pathname: route })
-        this.props.toggleDrawer(false)
-    }
+const NavigationDrawer: React.FunctionComponent<INavDrawerProps> = (props) => {
+  const history = useHistory();
+  const classes = NavigationDrawerStyles();
+  const [open, setOpen] = useState<boolean>(false);
 
-    render() {
-        return (
-            <SwipeableDrawer
-                disableBackdropTransition={true}
-                open={this.props.open}
-                onClose={() => this.props.toggleDrawer(false)}
-                onOpen={() => this.props.toggleDrawer(true)}
-                anchor="left">
-                <List style={styles.list}>
-                    <ListItem>
-                        <ListItemText primary="AccountingApp"></ListItemText>
-                    </ListItem>
-                    <Divider></Divider>
-                    <Link to={routes.records} onClick={() => this.reloadRoute(routes.records)} style={styles.link}>
-                        <ListItem button>
-                            <ListItemIcon><Assignment /></ListItemIcon>
-                            <ListItemText primary="Records"></ListItemText>
-                        </ListItem>
-                    </Link>
+  const reloadRoute = (route: string) => {
+    history.push({ pathname: '/empty' });
+    history.replace({ pathname: route });
+    setOpen(false);
+  };
 
-                    <Link to={routes.wallets} onClick={() => this.reloadRoute(routes.wallets)} style={styles.link}>
-                        <ListItem button >
-                            <ListItemIcon><AccountBalance /></ListItemIcon>
-                            <ListItemText primary="Wallets"></ListItemText>
-                        </ListItem>
-                    </Link>
+  return (
+    <div>
+      <IconButton onClick={() => setOpen(!open)} data-testid='menubutton'>
+        <Menu />
+      </IconButton>
+      <SwipeableDrawer
+        disableBackdropTransition={true}
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        anchor='left'
+        classes={{ paper: classes.drawer }}
+      >
+        <List classes={{ root: classes.list }}>
+          <ListItemText primary='AccountingApp'></ListItemText>
 
-                </List>
-            </SwipeableDrawer>
-        )
-    }
-}
+          <Divider />
 
-export default withRouter(NavigationDrawer);
+          <Link to={routes.records} onClick={() => reloadRoute(routes.records)}>
+            <ListItem button>
+              <ListItemIcon>
+                <Assignment />
+              </ListItemIcon>
+              <ListItemText primary='Records'></ListItemText>
+            </ListItem>
+          </Link>
+
+          <Link to={routes.wallets} onClick={() => reloadRoute(routes.wallets)}>
+            <ListItem button>
+              <ListItemIcon>
+                <AccountBalance />
+              </ListItemIcon>
+              <ListItemText primary='Wallets'></ListItemText>
+            </ListItem>
+          </Link>
+        </List>
+      </SwipeableDrawer>
+    </div>
+  );
+};
+
+export default NavigationDrawer;

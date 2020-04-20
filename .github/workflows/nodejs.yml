@@ -39,9 +39,9 @@ jobs:
         ftp-password: ${{ secrets.password }}
         git-ftp-args: --insecure
     - name: SSH Commands
-      uses: appleboy/ssh-action@v0.0.2
+      uses: appleboy/ssh-action@v0.0.7
       with:
-        host: ${{ secrets.sshhost }}
+        host: ${{ secrets.host }}
         port: ${{ secrets.sshport }}
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}

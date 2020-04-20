@@ -41,7 +41,7 @@ jobs:
     - name: SSH Commands
       uses: appleboy/ssh-action@v0.0.2
       with:
-        host: ${{ secrets.host }}
+        host: ${{ secrets.sshhost }}
         port: ${{ secrets.sshport }}
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}

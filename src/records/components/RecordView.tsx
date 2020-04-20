@@ -14,17 +14,24 @@ import {
   SaveAlt,
   Search,
   ViewColumn,
-} from "@material-ui/icons";
-import MaterialTable, { Icons } from "material-table";
-import React, { forwardRef, FunctionComponent } from "react";
-import { Severity } from "../../shared/alert/AlertModel";
-import { DataComponentProps } from "../../shared/BaseProps";
-import AddButton from "../../shared/buttons/AddButton";
-import AuthenticationContext from "../../shared/context/AuthenticationContext";
-import Record from "../models/Record";
-import { getAllRecordsByUser } from "../service/RecordService";
-import AddRecordDialog from "./AddRecordDialog";
-import { postRecord as postRecordService } from "../service/RecordService";
+} from '@material-ui/icons';
+import MaterialTable, { Icons } from 'material-table';
+import React, {
+  forwardRef,
+  FunctionComponent,
+  useCallback,
+  useEffect,
+} from 'react';
+import { Severity } from '../../shared/alert/AlertModel';
+import { DataComponentProps } from '../../shared/BaseProps';
+import AddButton from '../../shared/buttons/AddButton';
+import AuthenticationContext from '../../shared/context/AuthenticationContext';
+import Record from '../models/Record';
+import {
+  getAllRecordsByUser,
+  postRecord as postRecordService,
+} from '../service/RecordService';
+import AddRecordDialog from './AddRecordDialog';
 
 const tableIcons: Icons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -55,35 +62,37 @@ const RecordView: FunctionComponent<DataComponentProps> = (props) => {
   const [records, setRecords] = React.useState<Array<Record>>([]);
   const [addDialog, setAddDialog] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    fetchRecords();
-  }, []);
-
   const toggleAddDialog = () => {
     setAddDialog(!addDialog);
   };
-  const fetchRecords = async () => {
+  const fetchRecords = useCallback(async () => {
     try {
       const records = await getAllRecordsByUser(context!.token);
       setRecords(records);
+      return records;
     } catch (e) {
       props.functionSet.openAlert({
         message: e.message,
         severity: Severity.error,
       });
     }
-  };
+  }, [context, props.functionSet]);
+
+  useEffect(() => {
+    fetchRecords();
+  }, [fetchRecords]);
+
   const postRecord = async (item: Record) => {
     try {
       await postRecordService(context!.token, item);
       toggleAddDialog();
       fetchRecords();
       props.functionSet.openAlert({
-        message: "Record created!",
+        message: 'Record created!',
         severity: Severity.success,
       });
     } catch (e) {
-      console.log("RecordView catched error: " + e.message);
+      console.log('RecordView catched error: ' + e.message);
     }
   };
   return (
@@ -98,24 +107,24 @@ const RecordView: FunctionComponent<DataComponentProps> = (props) => {
         icons={tableIcons}
         options={{ showTitle: false }}
         columns={[
-          { title: "Description", field: "description" },
-          { title: "Value", field: "value", type: "numeric" },
+          { title: 'Description', field: 'description' },
+          { title: 'Value', field: 'value', type: 'numeric' },
           {
-            title: "Timestamp",
-            field: "timestamp",
-            type: "datetime",
-            defaultSort: "desc",
+            title: 'Timestamp',
+            field: 'timestamp',
+            type: 'datetime',
+            defaultSort: 'desc',
           },
-          { title: "Wallet", field: "walletName" },
+          { title: 'Wallet', field: 'walletName' },
         ]}
         data={records}
       ></MaterialTable>
       <AddButton
         onClick={toggleAddDialog}
-        horizontalAlignment="flex-end"
-        verticalAlignment="flex-end"
-        type="add"
-        style={{ position: "fixed", right: "5%", bottom: "5%" }}
+        horizontalAlignment='flex-end'
+        verticalAlignment='flex-end'
+        type='add'
+        style={{ position: 'fixed', right: '5%', bottom: '5%' }}
       />
     </div>
   );

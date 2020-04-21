@@ -9,6 +9,7 @@ import WalletView from './wallets/components/WalletView';
 import { TypedAlert } from './shared/alert/TypedAlert';
 import AuthenticationProvider from './shared/context/AuthenticationProvider';
 import Login from './authentication/components/Login';
+import Dashboard from './dashboard/components/Dashboard';
 
 const useAppStyles = makeStyles((theme: Theme) => ({
   content: {
@@ -54,6 +55,9 @@ const App: React.FunctionComponent<{}> = (props) => {
             </Route>
             <Route path='/wallets'>
               <WalletView functionSet={functionSet} />
+            </Route>
+            <Route path='/dashboard'>
+              <Dashboard />
             </Route>
           </Switch>
         </div>

@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -37,8 +37,9 @@ jobs:
         ftp-username: ${{ secrets.username }}
         # FTP account password
         ftp-password: ${{ secrets.password }}
+        git-ftp-args: --insecure
     - name: SSH Commands
-      uses: appleboy/ssh-action@v0.0.2
+      uses: appleboy/ssh-action@v0.0.7
       with:
         host: ${{ secrets.host }}
         port: ${{ secrets.sshport }}

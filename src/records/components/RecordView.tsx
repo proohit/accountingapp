@@ -14,24 +14,24 @@ import {
   SaveAlt,
   Search,
   ViewColumn,
-} from '@material-ui/icons';
-import MaterialTable, { Icons } from 'material-table';
+} from "@material-ui/icons";
+import MaterialTable, { Icons } from "material-table";
 import React, {
   forwardRef,
   FunctionComponent,
   useCallback,
   useEffect,
-} from 'react';
-import { Severity } from '../../shared/alert/AlertModel';
-import { DataComponentProps } from '../../shared/BaseProps';
-import AddButton from '../../shared/buttons/AddButton';
-import AuthenticationContext from '../../shared/context/AuthenticationContext';
-import Record from '../models/Record';
+} from "react";
+import { Severity } from "../../shared/alert/AlertModel";
+import { DataComponentProps } from "../../shared/BaseProps";
+import AddButton from "../../shared/buttons/AddButton";
+import AuthenticationContext from "../../shared/context/AuthenticationContext";
+import Record from "../models/Record";
 import {
   getAllRecordsByUser,
   postRecord as postRecordService,
-} from '../service/RecordService';
-import AddRecordDialog from './AddRecordDialog';
+} from "../service/RecordService";
+import AddRecordDialog from "./AddRecordDialog";
 
 const tableIcons: Icons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -88,11 +88,11 @@ const RecordView: FunctionComponent<DataComponentProps> = (props) => {
       toggleAddDialog();
       fetchRecords();
       props.functionSet.openAlert({
-        message: 'Record created!',
+        message: "Record created!",
         severity: Severity.success,
       });
     } catch (e) {
-      console.log('RecordView catched error: ' + e.message);
+      console.log("RecordView catched error: " + e.message);
     }
   };
   return (
@@ -107,24 +107,24 @@ const RecordView: FunctionComponent<DataComponentProps> = (props) => {
         icons={tableIcons}
         options={{ showTitle: false }}
         columns={[
-          { title: 'Description', field: 'description' },
-          { title: 'Value', field: 'value', type: 'numeric' },
+          { title: "Description", field: "description" },
+          { title: "Value", field: "value", type: "numeric" },
           {
-            title: 'Timestamp',
-            field: 'timestamp',
-            type: 'datetime',
-            defaultSort: 'desc',
+            title: "Timestamp",
+            field: "timestamp",
+            type: "datetime",
+            defaultSort: "desc",
           },
-          { title: 'Wallet', field: 'walletName' },
+          { title: "Wallet", field: "walletName" },
         ]}
         data={records}
       ></MaterialTable>
       <AddButton
         onClick={toggleAddDialog}
-        horizontalAlignment='flex-end'
-        verticalAlignment='flex-end'
-        type='add'
-        style={{ position: 'fixed', right: '5%', bottom: '5%' }}
+        horizontalAlignment="flex-end"
+        verticalAlignment="flex-end"
+        type="add"
+        style={{ position: "fixed", right: "5%", bottom: "5%" }}
       />
     </div>
   );

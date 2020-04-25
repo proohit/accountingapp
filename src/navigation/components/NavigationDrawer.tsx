@@ -7,46 +7,43 @@ import {
   ListItemText,
   makeStyles,
   SwipeableDrawer,
-} from '@material-ui/core';
-import { AccountBalance, Assignment, Menu } from '@material-ui/icons';
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+} from "@material-ui/core";
+import { AccountBalance, Assignment, Menu } from "@material-ui/icons";
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { useRouter } from "../../shared/routes/router";
 
 interface INavDrawerProps {}
-
-const routes = {
-  records: '/records',
-  wallets: '/wallets',
-};
 
 const NavigationDrawerStyles = makeStyles((theme) => {
   return {
     drawer: {
-      width: '25%',
+      width: "25%",
     },
     list: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "center",
     },
   };
 });
 
 const NavigationDrawer: React.FunctionComponent<INavDrawerProps> = (props) => {
-  const history = useHistory();
   const classes = NavigationDrawerStyles();
   const [open, setOpen] = useState<boolean>(false);
+  const router = useRouter();
+  const recordsRoute = router.getRouteFrom("Records");
+  const walletsRoute = router.getRouteFrom("Wallets");
+  const dashboardRoute = router.getRouteFrom("Dashboard");
 
-  const reloadRoute = (route: string) => {
-    history.push({ pathname: '/empty' });
-    history.replace({ pathname: route });
-    setOpen(false);
+  const toggleOpen = () => {
+    setOpen(!open);
   };
 
   return (
     <div>
-      <IconButton onClick={() => setOpen(!open)} data-testid='menubutton'>
+      <IconButton onClick={() => setOpen(!open)} data-testid="menubutton">
         <Menu />
       </IconButton>
       <SwipeableDrawer
@@ -54,29 +51,38 @@ const NavigationDrawer: React.FunctionComponent<INavDrawerProps> = (props) => {
         open={open}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
-        anchor='left'
+        anchor="left"
         classes={{ paper: classes.drawer }}
       >
         <List classes={{ root: classes.list }}>
-          <ListItemText primary='AccountingApp'></ListItemText>
+          <ListItemText primary="AccountingApp"></ListItemText>
 
           <Divider />
-
-          <Link to={routes.records} onClick={() => reloadRoute(routes.records)}>
+          <NavLink
+            onClick={toggleOpen}
+            to={router.getLinkTo("Dashboard", { id: 2 })}
+          >
             <ListItem button>
               <ListItemIcon>
                 <Assignment />
               </ListItemIcon>
-              <ListItemText primary='Records'></ListItemText>
+              <ListItemText primary={dashboardRoute!.name}></ListItemText>
             </ListItem>
-          </Link>
-
-          <Link to={routes.wallets} onClick={() => reloadRoute(routes.wallets)}>
+          </NavLink>
+          <Link onClick={toggleOpen} to={recordsRoute!.path}>
             <ListItem button>
               <ListItemIcon>
-                <AccountBalance />
+                <Assignment />
               </ListItemIcon>
-              <ListItemText primary='Wallets'></ListItemText>
+              <ListItemText primary={recordsRoute!.name}></ListItemText>
+            </ListItem>
+          </Link>
+          <Link onClick={toggleOpen} to={walletsRoute!.path}>
+            <ListItem button>
+              <ListItemIcon>
+                <Assignment />
+              </ListItemIcon>
+              <ListItemText primary={walletsRoute!.name}></ListItemText>
             </ListItem>
           </Link>
         </List>

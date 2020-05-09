@@ -1,11 +1,14 @@
 {
+  "User": {
     "type": "object",
+    "description": "",
     "properties": {
-        "username": {
-            "type": "string"
-        },
-        "password": {
-            "type": "string"
-        }
+      "username": {
+        "type": "string"
+      },
+      "password": {
+        "type": "string"
+      }
     }
+  }
 }

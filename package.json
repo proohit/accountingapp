@@ -17,30 +17,27 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/crypto-js": "^3.1.43",
-    "@types/jsonwebtoken": "^8.3.8",
-    "@types/koa": "^2.11.2",
+    "@types/crypto-js": "^3.1.47",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-cors": "0.0.0",
-    "@types/koa-router": "^7.4.0",
-    "@types/mysql": "github:types/mysql",
+    "@types/koa-router": "^7.4.1",
     "@types/mysql2": "github:types/mysql2",
     "crypto-js": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.2.1",
+    "koa": "^2.12.0",
+    "koa-bodyparser": "^4.3.0",
     "koa-combine-routers": "^4.0.2",
     "koa-cors": "0.0.16",
-    "koa-router": "^8.0.6",
-    "mysql": "^2.18.1",
+    "koa-router": "^8.0.8",
     "mysql2": "^2.1.0"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^1.0.12-4.3.0",
-    "nodemon": "^2.0.2",
+    "nodemon": "^2.0.4",
     "pre-commit": "^1.2.2",
-    "redoc-cli": "^0.9.7",
-    "ts-node": "^8.7.0",
-    "typescript": "^3.8.3"
+    "redoc-cli": "^0.9.8",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   }
 }

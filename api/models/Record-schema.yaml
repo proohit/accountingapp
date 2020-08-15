@@ -14,3 +14,17 @@ Record:
             $ref: ./Wallet-schema.yaml#/Wallet
         owner:
             $ref: ./User-schema.yaml#/User
+NewRecord:
+    type: object
+    properties:
+        description:
+            type: string
+        value:
+            type: number
+        timestamp:
+            type: string
+            format: date-time
+        wallet:
+            $ref: ./Wallet-schema.yaml#/Wallet
+        owner:
+            $ref: ./User-schema.yaml#/User

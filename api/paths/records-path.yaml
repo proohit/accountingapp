@@ -50,6 +50,42 @@ records/{id}:
             200:
                 description: OK
                 content:
-                    contentType:
+                    application/json:
                         schema:
                             type: string
+    post:
+        tags:
+            - records
+        description: Creates a new record
+        requestBody:
+            description: Record object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../models/Record-schema.yaml#/NewRecord
+        responses:
+            201:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../models/Record-schema.yaml#/Record
+    put:
+        tags:
+            - records
+        description: Updates a record
+        requestBody:
+            description: Updated record object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../models/Record-schema.yaml#/NewRecord
+        responses:
+            201:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../models/Record-schema.yaml#/Record

@@ -1,15 +1,17 @@
-import { createTable as createRecordTable } from '../../record/repositories/RecordMapper';
-import { createIndices as createRecordIndices } from '../../record/repositories/RecordMapper';
-import { createAutoIncrement as createRecordAutoIncrement } from '../../record/repositories/RecordMapper';
-import { createConstraints as createRecordConstraints } from '../../record/repositories/RecordMapper';
-import { createTable as createUserTable, byName } from '../../user/repositories/UserMapper';
-import { createIndices as createUserIndices } from '../../user/repositories/UserMapper';
-import { createTable as createWalletTable } from '../../wallet/repositories/WalletMapper';
-import { createIndices as createWalletIndices } from '../../wallet/repositories/WalletMapper';
-import { createConstraints as createWalletConstraints } from '../../wallet/repositories/WalletMapper';
-import mysql, { RowDataPacket } from 'mysql2';
-import FullUser from '../../user/models/User';
+import mysql from 'mysql2';
 import config from '../../../config';
+import {
+    createAutoIncrement as createRecordAutoIncrement,
+    createConstraints as createRecordConstraints,
+    createIndices as createRecordIndices,
+    createTable as createRecordTable,
+} from '../../record/repositories/RecordMapper';
+import { createIndices as createUserIndices, createTable as createUserTable } from '../../user/repositories/UserMapper';
+import {
+    createConstraints as createWalletConstraints,
+    createIndices as createWalletIndices,
+    createTable as createWalletTable,
+} from '../../wallet/repositories/WalletMapper';
 
 export const con = mysql
     .createConnection({
@@ -21,7 +23,7 @@ export const con = mysql
     })
     .promise();
 
-export const initiateDatabase = async () => {
+export const initiateDatabase = async (): Promise<void> => {
     await createRecordTable();
     await createUserTable();
     await createWalletTable();
@@ -33,12 +35,12 @@ export const initiateDatabase = async () => {
     await createWalletConstraints();
 };
 
-export const useDatabase = async (databaseName: string) => {
+export const useDatabase = async (databaseName: string): Promise<void> => {
     try {
-        const res = await con.query(`USE DATABASE ${databaseName};`);
+        await con.query(`USE DATABASE ${databaseName};`);
     } catch (error) {}
 };
 
-export const close = () => {
+export const close = (): void => {
     con.end();
 };

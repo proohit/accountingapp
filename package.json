@@ -26,7 +26,7 @@
     "@types/mysql2": "github:types/mysql2",
     "crypto-js": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.12.0",
+    "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-combine-routers": "^4.0.2",
     "koa-cors": "0.0.16",
@@ -44,6 +44,6 @@
     "prettier": "^2.0.5",
     "redoc-cli": "^0.9.10",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.7"
   }
 }

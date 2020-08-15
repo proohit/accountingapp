@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 
-import { verify } from '../../shared/repositories/database';
+import { verify } from '../../shared/repositories/authenticationMapper';
 import { allByUser, createRecord, byId, byWallet, deleteRecord, update } from '../repositories/RecordMapper';
 
 const router = new Router();

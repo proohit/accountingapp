@@ -12,9 +12,9 @@ export const all = async () => {
 
 export const allByUser = async (username: string): Promise<Record[]> => {
     try {
-        const recordsOfUser = await con.query<Record[]>(`SELECT * FROM Record WHERE owner='${username}';`);
+        const [recordsOfUser] = await con.query<Record[]>(`SELECT * FROM Record WHERE owner='${username}';`);
 
-        return recordsOfUser[0];
+        return recordsOfUser;
     } catch (error) {
         throw error;
     }

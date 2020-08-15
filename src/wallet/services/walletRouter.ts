@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 
-import { verify } from '../../shared/repositories/database';
+import { verify } from '../../shared/repositories/authenticationMapper';
 import { byName, byUser, create, deleteWallet, update } from '../repositories/WalletMapper';
 import { deleteRecord, allByUser, byWallet, update as updateRecord } from '../../record/repositories/RecordMapper';
 

@@ -1,9 +1,9 @@
 // const recordmapper = require('../src/database/RecordMapper')
 // import { login } from '../src/database/database';
-import mysql from 'mysql2'
-import Koa from 'koa'
-const AES = require('crypto-js/aes')
-const crypto = require('crypto-js')
+import mysql from 'mysql2';
+import Koa from 'koa';
+const AES = require('crypto-js/aes');
+const crypto = require('crypto-js');
 // const Record = require('../src/database/Record')
 /*
 recordmapper.all().then(data => console.log(data))

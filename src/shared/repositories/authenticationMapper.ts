@@ -1,29 +1,26 @@
-import { createNewUser, fullByName } from '../../user/repositories/UserMapper';
 import crypto from 'crypto-js';
 import AES from 'crypto-js/aes';
 import jwt from 'jsonwebtoken';
-import Koa from 'koa';
-import { User } from '../../user/models/User';
+import { Request } from 'koa';
 import config from '../../../config';
+import { User } from '../../user/models/User';
+import { createNewUser, fullByName } from '../../user/repositories/UserMapper';
+import { DecodedToken, LoginToken } from '../models/Login';
 
-export const register = async (username: string, password: string) => {
-    try {
-        let private_key = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < 32; i++) {
-            private_key += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        const hashedPassword = crypto.enc.Utf8.parse(password);
-        const passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
-        const newUser: User = await createNewUser(username, passwordEncrypted, private_key);
-        return newUser;
-    } catch (error) {
-        throw new Error(error);
+export const register = async (username: string, password: string): Promise<User> => {
+    let private_key = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 32; i++) {
+        private_key += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
+    const hashedPassword = crypto.enc.Utf8.parse(password);
+    const passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
+    const newUser: User = await createNewUser(username, passwordEncrypted, private_key);
+    return newUser;
 };
 
-export const login = async (req: Koa.Request) => {
+export const login = async (req: Request): Promise<LoginToken> => {
     const requestedUsername = req.body.username;
     const requestedPassword = req.body.password;
     if (!requestedUsername || !requestedPassword) {
@@ -47,36 +44,29 @@ export const login = async (req: Koa.Request) => {
         const token = jwt.sign({ username: requestedUsername }, config.secret, {
             expiresIn: '7 days',
         });
-        // return the JWT token for the future API calls
-        return {
-            token: token,
-        };
+
+        return { token };
     } catch (error) {
         throw error;
     }
 };
 
-export const verify = async (req: Koa.Request) => {
+export const verify = (req: Request): DecodedToken => {
+    let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
+    if (!token) {
+        throw new Error('Token not provided');
+    }
+    if (token.startsWith('Bearer ')) {
+        // Remove Bearer from string
+        token = token.slice(7, token.length);
+    }
+
+    if (!token) throw new Error('Token not provided');
+
     try {
-        let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
-        if (!token) {
-            throw new Error('Token not provided');
-        }
-        if (token.startsWith('Bearer ')) {
-            // Remove Bearer from string
-            token = token.slice(7, token.length);
-        }
-        if (token) {
-            try {
-                const decoded = await jwt.verify(token, config.secret);
-                return decoded;
-            } catch (error) {
-                throw new Error('Token is not valid');
-            }
-        } else {
-            throw new Error('Token not provided');
-        }
+        const decoded = jwt.verify(token, config.secret) as DecodedToken;
+        return decoded;
     } catch (error) {
-        throw error;
+        throw new Error('Token is not valid');
     }
 };

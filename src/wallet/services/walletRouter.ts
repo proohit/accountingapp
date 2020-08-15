@@ -8,7 +8,7 @@ const router = new Router();
 
 router.use('/', async (ctx, next) => {
     try {
-        const decoded = await verify(ctx.request);
+        const decoded = verify(ctx.request);
         ctx.state.token = decoded;
         ctx.response.type = 'application/json';
         await next();

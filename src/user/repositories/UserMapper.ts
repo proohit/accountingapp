@@ -1,4 +1,4 @@
-import { con } from '../../database/database';
+import { con } from '../../shared/repositories/database';
 
 export const byName = async (username: string) => {
   try {

@@ -1,5 +1,5 @@
-import { con } from '../../database/database';
-import Wallet from './Wallet';
+import { con } from '../../shared/repositories/database';
+import Wallet from '../models/Wallet';
 
 export const byName = async (name: string, owner: string): Promise<Wallet> => {
   try {

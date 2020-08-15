@@ -5,13 +5,12 @@ import parser from 'koa-bodyparser';
 import { createReadStream } from 'fs';
 import config from '../config';
 
-import database = require('./database/database');
+import * as database from './shared/repositories/database';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
-// const combinedRouter = require('./src/routes/router')
-import recordRouter from './routes/records/recordRouter';
-import walletRouter from './routes/wallets/walletRouter';
+import recordRouter from './record/services/recordRouter';
+import walletRouter from './wallet/services/walletRouter';
 
 app.use(parser());
 app.use(cors());

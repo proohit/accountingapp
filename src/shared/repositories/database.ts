@@ -1,19 +1,19 @@
-import { createTable as createRecordTable } from './../routes/records/RecordMapper';
-import { createIndices as createRecordIndices } from './../routes/records/RecordMapper';
-import { createAutoIncrement as createRecordAutoIncrement } from './../routes/records/RecordMapper';
-import { createConstraints as createRecordConstraints } from './../routes/records/RecordMapper';
-import { createTable as createUserTable } from './../routes/users/UserMapper';
-import { createIndices as createUserIndices } from './../routes/users/UserMapper';
-import { createTable as createWalletTable } from './../routes/wallets/WalletMapper';
-import { createIndices as createWalletIndices } from './../routes/wallets/WalletMapper';
-import { createConstraints as createWalletConstraints } from './../routes/wallets/WalletMapper';
+import { createTable as createRecordTable } from '../../record/repositories/RecordMapper';
+import { createIndices as createRecordIndices } from '../../record/repositories/RecordMapper';
+import { createAutoIncrement as createRecordAutoIncrement } from '../../record/repositories/RecordMapper';
+import { createConstraints as createRecordConstraints } from '../../record/repositories/RecordMapper';
+import { createTable as createUserTable } from '../../user/repositories/UserMapper';
+import { createIndices as createUserIndices } from '../../user/repositories/UserMapper';
+import { createTable as createWalletTable } from '../../wallet/repositories/WalletMapper';
+import { createIndices as createWalletIndices } from '../../wallet/repositories/WalletMapper';
+import { createConstraints as createWalletConstraints } from '../../wallet/repositories/WalletMapper';
 import crypto from 'crypto-js';
 import AES from 'crypto-js/aes';
 import jwt from 'jsonwebtoken';
 import Koa from 'koa';
 import mysql, { RowDataPacket } from 'mysql2';
-import User from '../routes/users/User';
-import config from '../../config';
+import User from '../../user/models/User';
+import config from '../../../config';
 
 export const con = mysql
   .createConnection({

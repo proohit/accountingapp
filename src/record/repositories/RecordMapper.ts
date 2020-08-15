@@ -1,5 +1,5 @@
-import { con } from '../../database/database';
-import Record from './Record';
+import { con } from '../../shared/repositories/database';
+import Record from '../models/Record';
 
 export const all = async () => {
   try {

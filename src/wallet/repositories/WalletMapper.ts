@@ -3,8 +3,10 @@ import Wallet from '../models/Wallet';
 
 export const byName = async (name: string, owner: string): Promise<Wallet> => {
     try {
-        const wallet = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`);
-        return wallet[0][0];
+        const [wallets] = await pool.query<Wallet[]>(
+            `SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`,
+        );
+        return wallets[0];
     } catch (error) {
         throw new Error('Error retrieving wallet');
     }
@@ -23,7 +25,7 @@ export const create = async (name: string, balance: number, owner: string): Prom
         const createdWallet = await byName(name, owner);
         return createdWallet;
     } catch (error) {
-        throw error;
+        throw new Error('Error creating wallet');
     }
 };
 
@@ -32,9 +34,9 @@ export const create = async (name: string, balance: number, owner: string): Prom
  * @param {string} name name of wallet
  * @param {string} owner owner as username
  */
-export const deleteWallet = async (name: string, owner: string) => {
+export const deleteWallet = async (name: string, owner: string): Promise<string> => {
     try {
-        pool.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
+        await pool.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
         return 'deleted wallet';
     } catch (error) {
         throw error;
@@ -60,30 +62,28 @@ export const update = async (
     }
 };
 
-export const createTable = async () => {
-    try {
-        const sql = `CREATE TABLE \`Wallet\` (
+export const createTable = async (): Promise<void> => {
+    const sql = `CREATE TABLE \`Wallet\` (
             \`name\` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
             \`owner\` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
             \`balance\` double NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`;
-        const res = await pool.query(sql);
-    } catch (error) {}
+    await pool.query(sql);
 };
 
-export const createIndices = async () => {
+export const createIndices = async (): Promise<void> => {
     try {
         const sql = `ALTER TABLE \`Wallet\`
         ADD PRIMARY KEY (\`name\`,\`owner\`),
         ADD KEY \`FK_Wallet_User\` (\`owner\`);`;
-        const res = await pool.query(sql);
+        await pool.query(sql);
     } catch (error) {}
 };
 
-export const createConstraints = async () => {
+export const createConstraints = async (): Promise<void> => {
     try {
         const sql = `ALTER TABLE \`Wallet\`
       ADD CONSTRAINT \`FK_Wallet_User\` FOREIGN KEY (\`owner\`) REFERENCES \`User\` (\`username\`);`;
-        const res = await pool.query(sql);
+        await pool.query(sql);
     } catch (error) {}
 };

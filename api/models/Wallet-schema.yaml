@@ -1,0 +1,10 @@
+Wallet:
+    type: object
+    description: ''
+    properties:
+        name:
+            type: string
+        balance:
+            type: number
+        owner:
+            $ref: ../accountingapp.yaml#/components/schemas/User

@@ -1,0 +1,6 @@
+User:
+    type: object
+    description: ''
+    properties:
+        username:
+            type: string

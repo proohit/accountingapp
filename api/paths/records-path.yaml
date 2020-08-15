@@ -1,0 +1,55 @@
+records:
+    get:
+        tags:
+            - records
+        description: Returns records by current user
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../models/Record-schema.yaml#/Record
+records/{id}:
+    get:
+        tags:
+            - records
+        description: Returns the record with the id
+        parameters:
+            - in: path
+              name: id
+              required: true
+              description: id of the record
+              example:
+              schema:
+                  $ref: ../models/Record-schema.yaml#/Record/properties/id
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../models/Record-schema.yaml#/Record
+    delete:
+        tags:
+            - records
+        description: Deletes the record with the id
+        parameters:
+            - in: path
+              name: id
+              required: true
+              description: id of the record
+              example:
+              schema:
+                  $ref: ../models/Record-schema.yaml#/Record/properties/id
+        responses:
+            200:
+                description: OK
+                content:
+                    contentType:
+                        schema:
+                            type: string

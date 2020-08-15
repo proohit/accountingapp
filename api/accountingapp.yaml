@@ -1,0 +1,19 @@
+openapi: 3.0.2
+info:
+    title: Accounting App Backend Api
+    version: '1.0'
+servers:
+    - url: http://localhost:3002/api
+components:
+    schemas:
+        User:
+            $ref: './models/User-schema.yaml#/User'
+        Wallet:
+            $ref: './models/Wallet-schema.yaml#/Wallet'
+        Record:
+            $ref: './models/Record-schema.yaml#/Record'
+paths:
+    /records:
+        $ref: ./paths/records-path.yaml#/records
+    /records/{id}:
+        $ref: ./paths/records-path.yaml#/records~1{id}

@@ -1,0 +1,16 @@
+Record:
+    type: object
+    properties:
+        id:
+            type: number
+        description:
+            type: string
+        value:
+            type: number
+        timestamp:
+            type: string
+            format: date-time
+        wallet:
+            $ref: ./Wallet-schema.yaml#/Wallet
+        owner:
+            $ref: ./User-schema.yaml#/User

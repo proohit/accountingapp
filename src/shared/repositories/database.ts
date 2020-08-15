@@ -45,14 +45,14 @@ export const useDatabase = async (databaseName: string) => {
 
 export const register = async (username: string, password: string) => {
     try {
-        var private_key = '';
-        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for (var i = 0; i < 32; i++) {
+        let private_key = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 32; i++) {
             private_key += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         const hashedPassword = crypto.enc.Utf8.parse(password);
-        let passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
+        const passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
         await con.query(
             `INSERT INTO User(username, password, private_key) VALUES('${username}','${passwordEncrypted}','${private_key}')`,
         );
@@ -64,8 +64,8 @@ export const register = async (username: string, password: string) => {
 };
 
 export const login = async (req: Koa.Request) => {
-    let username = req.body.username;
-    let password = req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
     try {
         if (!username || !password) {
             throw new Error('Incorrect username or password');
@@ -81,7 +81,7 @@ export const login = async (req: Koa.Request) => {
         passwordDecrypted = crypto.enc.Utf8.stringify(passwordDecrypted);
 
         if (username === users[0].username && password === passwordDecrypted) {
-            let token = jwt.sign({ username: username }, config.secret, {
+            const token = jwt.sign({ username: username }, config.secret, {
                 expiresIn: '7 days', // expires in 24 hours
             });
             // return the JWT token for the future API calls

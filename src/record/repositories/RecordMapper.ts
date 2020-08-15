@@ -22,7 +22,7 @@ export const allByUser = async (username: string): Promise<Record[]> => {
 
 export const byWallet = async (username: string, wallet: string) => {
     try {
-        let records = await con.query<Record[]>(
+        const records = await con.query<Record[]>(
             `SELECT * FROM Record WHERE owner='${username}' AND walletName='${wallet}'`,
         );
         return records[0];
@@ -115,7 +115,7 @@ export const update = async (
 
 export const createTable = async () => {
     try {
-        let sql = `CREATE TABLE \`Record\` (
+        const sql = `CREATE TABLE \`Record\` (
             \`id\` int(11) NOT NULL,
             \`description\` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
             \`value\` double NOT NULL,

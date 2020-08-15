@@ -1,9 +1,9 @@
-import { con } from '../../shared/repositories/database';
+import { pool } from '../../shared/repositories/database';
 import Wallet from '../models/Wallet';
 
 export const byName = async (name: string, owner: string): Promise<Wallet> => {
     try {
-        const wallet = await con.query<Wallet[]>(`SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`);
+        const wallet = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`);
         return wallet[0][0];
     } catch (error) {
         throw new Error('Error retrieving wallet');
@@ -11,7 +11,7 @@ export const byName = async (name: string, owner: string): Promise<Wallet> => {
 };
 export const byUser = async (owner: string): Promise<Wallet[]> => {
     try {
-        const wallets = await con.query<Wallet[]>(`SELECT * FROM Wallet WHERE owner='${owner}'`);
+        const wallets = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE owner='${owner}'`);
         return wallets[0];
     } catch (error) {
         throw error;
@@ -19,7 +19,7 @@ export const byUser = async (owner: string): Promise<Wallet[]> => {
 };
 export const create = async (name: string, balance: number, owner: string): Promise<Wallet> => {
     try {
-        await con.query<Wallet[]>(`INSERT INTO Wallet(name, balance, owner) VALUES('${name}',${balance},'${owner}') `);
+        await pool.query<Wallet[]>(`INSERT INTO Wallet(name, balance, owner) VALUES('${name}',${balance},'${owner}') `);
         const createdWallet = await byName(name, owner);
         return createdWallet;
     } catch (error) {
@@ -34,7 +34,7 @@ export const create = async (name: string, balance: number, owner: string): Prom
  */
 export const deleteWallet = async (name: string, owner: string) => {
     try {
-        con.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
+        pool.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
         return 'deleted wallet';
     } catch (error) {
         throw error;
@@ -50,7 +50,7 @@ export const update = async (
     try {
         const oldWallet = await byName(oldWalletName, owner);
         const balance = newBalance || oldWallet.balance;
-        await con.query(
+        await pool.query(
             `UPDATE Wallet SET name='${newWalletName}', balance=${balance} WHERE name='${oldWalletName}' AND owner='${owner}'`,
         );
         const updatedWallet = await byName(newWalletName, owner);
@@ -67,7 +67,7 @@ export const createTable = async () => {
             \`owner\` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
             \`balance\` double NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`;
-        const res = await con.query(sql);
+        const res = await pool.query(sql);
     } catch (error) {}
 };
 
@@ -76,7 +76,7 @@ export const createIndices = async () => {
         const sql = `ALTER TABLE \`Wallet\`
         ADD PRIMARY KEY (\`name\`,\`owner\`),
         ADD KEY \`FK_Wallet_User\` (\`owner\`);`;
-        const res = await con.query(sql);
+        const res = await pool.query(sql);
     } catch (error) {}
 };
 
@@ -84,6 +84,6 @@ export const createConstraints = async () => {
     try {
         const sql = `ALTER TABLE \`Wallet\`
       ADD CONSTRAINT \`FK_Wallet_User\` FOREIGN KEY (\`owner\`) REFERENCES \`User\` (\`username\`);`;
-        const res = await con.query(sql);
+        const res = await pool.query(sql);
     } catch (error) {}
 };

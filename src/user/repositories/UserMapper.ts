@@ -1,9 +1,9 @@
-import { con } from '../../shared/repositories/database';
+import { pool } from '../../shared/repositories/database';
 import FullUser, { User } from '../models/User';
 
 export const byName = async (username: string): Promise<User> => {
     try {
-        const [user] = await con.query<User[]>(`SELECT * FROM User WHERE username='${username}';`);
+        const [user] = await pool.query<User[]>(`SELECT * FROM User WHERE username='${username}';`);
         if (user.length <= 0) {
             throw new Error('No user found by username');
         }
@@ -16,7 +16,7 @@ export const byName = async (username: string): Promise<User> => {
 
 export const fullByName = async (username: string): Promise<FullUser> => {
     try {
-        const [user] = await con.query<FullUser[]>(`SELECT * FROM User WHERE username='${username}';`);
+        const [user] = await pool.query<FullUser[]>(`SELECT * FROM User WHERE username='${username}';`);
         if (user.length <= 0) {
             throw new Error('No user found by username');
         }
@@ -28,7 +28,7 @@ export const fullByName = async (username: string): Promise<FullUser> => {
 };
 export const createNewUser = async (username: string, password: string, private_key: string): Promise<User> => {
     try {
-        await con.query(
+        await pool.query(
             `INSERT INTO User(username, password, private_key) VALUES('${username}','${password}','${private_key}')`,
         );
         const newUser = await byName(username);
@@ -43,7 +43,7 @@ export const createTable = async (): Promise<void> => {
             \`password\` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
             \`private_key\` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`;
-        await con.query(sql);
+        await pool.query(sql);
     } catch (error) {}
 };
 
@@ -51,6 +51,6 @@ export const createIndices = async (): Promise<void> => {
     try {
         const sql = `ALTER TABLE \`User\`
       ADD PRIMARY KEY (\`username\`);`;
-        await con.query(sql);
+        await pool.query(sql);
     } catch (error) {}
 };

@@ -13,8 +13,8 @@ import {
     createTable as createWalletTable,
 } from '../../wallet/repositories/WalletMapper';
 
-export const con = mysql
-    .createConnection({
+export const pool = mysql
+    .createPool({
         host: config.host,
         port: 3306,
         user: config.user,
@@ -37,10 +37,10 @@ export const initiateDatabase = async (): Promise<void> => {
 
 export const useDatabase = async (databaseName: string): Promise<void> => {
     try {
-        await con.query(`USE DATABASE ${databaseName};`);
+        await pool.query(`USE DATABASE ${databaseName};`);
     } catch (error) {}
 };
 
 export const close = (): void => {
-    con.end();
+    pool.end();
 };

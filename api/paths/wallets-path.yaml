@@ -1,0 +1,88 @@
+wallets:
+    get:
+        tags:
+            - wallets
+        description: Returns all wallets of the current user
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../models/Wallet-schema.yaml#/Wallet
+    post:
+        tags:
+            - wallets
+        description: Creates a new wallet
+        requestBody:
+            description: New wallet object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../models/Wallet-schema.yaml#/Wallet
+        responses:
+            201:
+                description: OK
+                content:
+                    contentType:
+                        schema:
+                            $ref: ../models/Wallet-schema.yaml#/Wallet
+wallets/{walletName}:
+    get:
+        tags:
+            - wallets
+        description: Returns the wallet with the specified name
+        parameters:
+            - in: path
+              name: walletName
+              required: true
+              schema:
+                  type: string
+        responses:
+            200:
+                description: OK
+                content:
+                    contentType:
+                        schema:
+                            $ref: ../models/Wallet-schema.yaml#/Wallet
+    delete:
+        tags:
+            - wallets
+        description: Deletes the wallet with the given name
+        parameters:
+            - in: path
+              name: walletName
+              required: true
+              schema:
+                  type: string
+        responses:
+            200:
+                description: OK
+    put:
+        tags:
+            - wallets
+        description: Updates the wallet with the given name and the given properties
+        parameters:
+            - in: path
+              name: walletName
+              required: true
+              description: Name of wallet to update
+              schema:
+                  type: string
+        requestBody:
+            description: Updated wallet object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../models/Wallet-schema.yaml#/UpdateWallet
+        responses:
+            200:
+                description: OK
+                content:
+                    contentType:
+                        schema:
+                            $ref: ../models/Wallet-schema.yaml#/Wallet

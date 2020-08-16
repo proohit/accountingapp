@@ -19,3 +19,7 @@ paths:
         $ref: ./paths/records-path.yaml#/records~1{id}
     /records/wallet/{walletName}:
         $ref: ./paths/records-path.yaml#/records~1wallet~1{walletName}
+    /wallets:
+        $ref: ./paths/wallets-path.yaml#/wallets
+    /wallets/{walletName}:
+        $ref: ./paths/wallets-path.yaml#/wallets~1{walletName}

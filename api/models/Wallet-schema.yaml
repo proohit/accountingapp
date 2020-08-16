@@ -8,3 +8,10 @@ Wallet:
             type: number
         owner:
             $ref: ../accountingapp.yaml#/components/schemas/User
+UpdateWallet:
+    type: object
+    properties:
+        name:
+            type: string
+        balance:
+            type: number

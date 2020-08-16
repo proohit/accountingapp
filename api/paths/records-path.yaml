@@ -3,6 +3,7 @@ records:
         tags:
             - records
         description: Returns records by current user
+        operationId: Records by user
         parameters:
             - in: query
               required: false
@@ -24,12 +25,13 @@ records:
                         schema:
                             type: array
                             items:
-                                $ref: ../models/Record-schema.yaml#/PaginatedRecords
+                                $ref: ../accountingapp.yaml#/components/schemas/PaginatedRecords
 records/{id}:
     get:
         tags:
             - records
         description: Returns the record with the id
+        operationId: Record by id
         parameters:
             - in: path
               name: id
@@ -37,7 +39,7 @@ records/{id}:
               description: id of the record
               example:
               schema:
-                  $ref: ../models/Record-schema.yaml#/Record/properties/id
+                  $ref: ../accountingapp.yaml#/components/schemas/RecordId
         responses:
             200:
                 description: OK
@@ -46,11 +48,12 @@ records/{id}:
                         schema:
                             type: array
                             items:
-                                $ref: ../models/Record-schema.yaml#/Record
+                                $ref: ../accountingapp.yaml#/components/schemas/Record
     delete:
         tags:
             - records
         description: Deletes the record with the id
+        operationId: Delete record
         parameters:
             - in: path
               name: id
@@ -58,7 +61,7 @@ records/{id}:
               description: id of the record
               example:
               schema:
-                  $ref: ../models/Record-schema.yaml#/Record/properties/id
+                  $ref: ../accountingapp.yaml#/components/schemas/RecordId
         responses:
             200:
                 description: OK
@@ -67,24 +70,26 @@ records/{id}:
         tags:
             - records
         description: Creates a new record
+        operationId: New record
         requestBody:
             description: Record object
             required: true
             content:
                 application/json:
                     schema:
-                        $ref: ../models/Record-schema.yaml#/NewRecord
+                        $ref: ../accountingapp.yaml#/components/schemas/NewRecord
         responses:
             201:
                 description: OK
                 content:
                     application/json:
                         schema:
-                            $ref: ../models/Record-schema.yaml#/Record
+                            $ref: ../accountingapp.yaml#/components/schemas/Record
     put:
         tags:
             - records
         description: Updates a record. Not given properties will not get updated.
+        operationId: Update record
         parameters:
             - in: path
               required: true
@@ -97,26 +102,28 @@ records/{id}:
             content:
                 application/json:
                     schema:
-                        $ref: ../models/Record-schema.yaml#/UpdateRecord
+                        $ref: ../accountingapp.yaml#/components/schemas/UpdateRecord
         responses:
             201:
                 description: OK
                 content:
                     application/json:
                         schema:
-                            $ref: ../models/Record-schema.yaml#/Record
+                            $ref: ../accountingapp.yaml#/components/schemas/Record
 records/wallet/{walletName}:
     get:
         tags:
             - records
         description: Returns records of the given wallet
+        operationId: Records by wallet
         parameters:
             - in: path
               name: walletName
               required: true
               description: Name of wallet to get records of
               schema:
-                  type: string
+                  $ref: '../accountingapp.yaml#/components/schemas/WalletName'
+
         responses:
             200:
                 description: OK
@@ -125,4 +132,4 @@ records/wallet/{walletName}:
                         schema:
                             type: array
                             items:
-                                $ref: ../models/Record-schema.yaml#/Record
+                                $ref: ../accountingapp.yaml#/components/schemas/Record

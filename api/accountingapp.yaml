@@ -10,8 +10,20 @@ components:
             $ref: './models/User-schema.yaml#/User'
         Wallet:
             $ref: './models/Wallet-schema.yaml#/Wallet'
+        UpdateWallet:
+            $ref: './models/Wallet-schema.yaml#/UpdateWallet'
+        WalletName:
+            $ref: './models/Wallet-schema.yaml#/WalletName'
         Record:
             $ref: './models/Record-schema.yaml#/Record'
+        RecordId:
+            $ref: './models/Record-schema.yaml#/RecordId'
+        NewRecord:
+            $ref: './models/Record-schema.yaml#/NewRecord'
+        UpdateRecord:
+            $ref: './models/Record-schema.yaml#/UpdateRecord'
+        PaginatedRecords:
+            $ref: './models/Record-schema.yaml#/PaginatedRecords'
 paths:
     /records:
         $ref: ./paths/records-path.yaml#/records

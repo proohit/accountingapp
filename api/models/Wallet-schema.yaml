@@ -3,7 +3,7 @@ Wallet:
     description: ''
     properties:
         name:
-            type: string
+            $ref: '#/WalletName'
         balance:
             type: number
         owner:
@@ -15,3 +15,5 @@ UpdateWallet:
             type: string
         balance:
             type: number
+WalletName:
+    type: string

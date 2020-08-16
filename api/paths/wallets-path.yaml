@@ -3,6 +3,7 @@ wallets:
         tags:
             - wallets
         description: Returns all wallets of the current user
+        operationId: Wallet by user
         responses:
             200:
                 description: OK
@@ -11,53 +12,56 @@ wallets:
                         schema:
                             type: array
                             items:
-                                $ref: ../models/Wallet-schema.yaml#/Wallet
+                                $ref: ../accountingapp.yaml#/components/schemas/Wallet
     post:
         tags:
             - wallets
         description: Creates a new wallet
+        operationId: New wallet
         requestBody:
             description: New wallet object
             required: true
             content:
                 application/json:
                     schema:
-                        $ref: ../models/Wallet-schema.yaml#/Wallet
+                        $ref: ../accountingapp.yaml#/components/schemas/Wallet
         responses:
             201:
                 description: OK
                 content:
                     contentType:
                         schema:
-                            $ref: ../models/Wallet-schema.yaml#/Wallet
+                            $ref: ../accountingapp.yaml#/components/schemas/Wallet
 wallets/{walletName}:
     get:
         tags:
             - wallets
         description: Returns the wallet with the specified name
+        operationId: Wallet by name
         parameters:
             - in: path
               name: walletName
               required: true
               schema:
-                  type: string
+                  $ref: '../accountingapp.yaml#/components/schemas/WalletName'
         responses:
             200:
                 description: OK
                 content:
                     contentType:
                         schema:
-                            $ref: ../models/Wallet-schema.yaml#/Wallet
+                            $ref: ../accountingapp.yaml#/components/schemas/Wallet
     delete:
         tags:
             - wallets
         description: Deletes the wallet with the given name
+        operationId: Delete wallet
         parameters:
             - in: path
               name: walletName
               required: true
               schema:
-                  type: string
+                  $ref: '../accountingapp.yaml#/components/schemas/WalletName'
         responses:
             200:
                 description: OK
@@ -65,24 +69,25 @@ wallets/{walletName}:
         tags:
             - wallets
         description: Updates the wallet with the given name and the given properties
+        operationId: Update wallet
         parameters:
             - in: path
               name: walletName
               required: true
               description: Name of wallet to update
               schema:
-                  type: string
+                  $ref: '../accountingapp.yaml#/components/schemas/WalletName'
         requestBody:
             description: Updated wallet object
             required: true
             content:
                 application/json:
                     schema:
-                        $ref: ../models/Wallet-schema.yaml#/UpdateWallet
+                        $ref: ../accountingapp.yaml#/components/schemas/UpdateWallet
         responses:
             200:
                 description: OK
                 content:
                     contentType:
                         schema:
-                            $ref: ../models/Wallet-schema.yaml#/Wallet
+                            $ref: ../accountingapp.yaml#/components/schemas/Wallet

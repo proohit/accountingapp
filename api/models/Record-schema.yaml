@@ -56,3 +56,5 @@ PaginatedRecords:
             type: number
         count:
             type: number
+RecordId:
+    type: number

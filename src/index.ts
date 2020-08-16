@@ -3,11 +3,11 @@ import parser from 'koa-bodyparser';
 import cors from 'koa-cors';
 import Router from 'koa-router';
 import config from '../config';
+import recordRouter from './record/services/recordRouter';
 import { RouteResult } from './shared/models/RouteResult';
 import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
 import securedContextRouter from './shared/services/securedContextRouter';
-import recordRouter from './record/services/recordRouter';
 import walletRouter from './wallet/services/walletRouter';
 
 const app = new Koa();

@@ -5,8 +5,9 @@ import { Request } from 'koa';
 import config from '../../../config';
 import { User } from '../../user/models/User';
 import { createNewUser, fullByName } from '../../user/repositories/UserMapper';
+import { InvalidCredentials, TokenInvalid, TokenNotProvided } from '../models/Errors';
 import { DecodedToken, LoginToken } from '../models/Login';
-import { TokenNotProvided, TokenInvalid, InvalidCredentials } from '../models/Errors';
+
 export const register = async (username: string, password: string): Promise<User> => {
     let private_key = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

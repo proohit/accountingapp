@@ -1,28 +1,17 @@
 import { pool } from '../../shared/repositories/database';
+import { UserNotFound } from '../models/Errors';
 import FullUser, { User } from '../models/User';
 
 export const byName = async (username: string): Promise<User> => {
-    try {
-        const [users] = await pool.query<User[]>(`SELECT * FROM User WHERE username='${username}';`);
-        if (users.length <= 0) {
-            throw new Error('No user found by username');
-        }
-        return users[0];
-    } catch (error) {
-        throw new Error('Error retrieving user');
-    }
+    const [users] = await pool.query<User[]>(`SELECT * FROM User WHERE username='${username}';`);
+    if (users.length <= 0) throw new UserNotFound();
+    return users[0];
 };
 
 export const fullByName = async (username: string): Promise<FullUser> => {
-    try {
-        const [users] = await pool.query<FullUser[]>(`SELECT * FROM User WHERE username='${username}';`);
-        if (users.length <= 0) {
-            throw new Error('No user found by username');
-        }
-        return users[0];
-    } catch (error) {
-        throw new Error('Error retrieving user');
-    }
+    const [users] = await pool.query<FullUser[]>(`SELECT * FROM User WHERE username='${username}';`);
+    if (users.length <= 0) throw new UserNotFound();
+    return users[0];
 };
 export const createNewUser = async (username: string, password: string, private_key: string): Promise<User> => {
     await pool.query(

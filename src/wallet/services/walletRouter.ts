@@ -1,125 +1,100 @@
 import Router from 'koa-router';
-
+import { byWallet, deleteRecord, update as updateRecord } from '../../record/repositories/RecordMapper';
+import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { verify } from '../../shared/repositories/authenticationMapper';
+import { DuplicateWallet } from '../models/Errors';
 import { byName, byUser, create, deleteWallet, update } from '../repositories/WalletMapper';
-import { deleteRecord, allByUser, byWallet, update as updateRecord } from '../../record/repositories/RecordMapper';
 
 const router = new Router();
 
 router.use('/', async (ctx, next) => {
-    try {
-        const decoded = verify(ctx.request);
-        ctx.state.token = decoded;
-        ctx.response.type = 'application/json';
-        await next();
-        return;
-    } catch (error) {
-        ctx.response.status = 403;
-        ctx.response.body = JSON.stringify(error.message);
-        return;
-    }
+    const decoded = verify(ctx.request);
+    ctx.state.token = decoded;
+    await next();
 });
 
 router.post('/', async (ctx) => {
-    const decoded = ctx.state.token;
-    try {
-        const res = await create(ctx.request.body.name, ctx.request.body.balance, decoded.username);
-        ctx.response.status = 201;
-        ctx.response.body = JSON.stringify(res);
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error);
-        return;
-    }
+    const { username } = ctx.state.token;
+    const { name, balance } = ctx.request.body;
+
+    const missingProperties = [];
+    if (!name) missingProperties.push('name');
+    if (!balance) missingProperties.push('balance');
+    if (missingProperties.length) throw new MissingProperty(missingProperties);
+
+    const walletsByUser = byUser(username);
+    if ((await walletsByUser).find((wallet) => wallet.name === name)) throw new DuplicateWallet();
+
+    const res = await create(name, balance, username);
+    ctx.status = 201;
+    ctx.body = JSON.stringify(res);
 });
 
 router.get('/', async (ctx) => {
     const decoded = ctx.state.token;
-    try {
-        const result = await byUser(decoded.username);
+    const result = await byUser(decoded.username);
 
-        ctx.response.status = 200;
-        ctx.response.body = JSON.stringify(result);
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error.message);
-        return;
-    }
+    ctx.status = 200;
+    ctx.body = JSON.stringify(result);
 });
 
 router.get('/:name', async (ctx) => {
-    try {
-        const wallet = await byName(ctx.params.name, ctx.state.token.username);
-        ctx.response.status = 200;
-        ctx.response.body = JSON.stringify(wallet);
-        return;
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error);
-        return;
-    }
+    const username = ctx.state.token.username;
+    const wallet = await byName(ctx.params.name, username);
+    if (wallet.owner !== username) throw new ResourceNotAllowed();
+    ctx.status = 200;
+    ctx.body = JSON.stringify(wallet);
 });
 
 router.delete('/:name', async (ctx) => {
-    try {
-        const recordsByUser = await allByUser(ctx.state.token.username);
-        recordsByUser
-            .filter((record) => record.walletName === ctx.params.name)
-            .forEach(async (record) => {
-                await deleteRecord(record.id);
-            });
+    const username = ctx.state.token.username;
+    const { name } = ctx.params;
+    const walletToDelete = await byName(name, username);
+    const recordsByWallet = await byWallet(username, walletToDelete.name);
+    recordsByWallet.forEach(async (record) => {
+        await deleteRecord(record.id);
+    });
 
-        const res = await deleteWallet(ctx.params.name, ctx.state.token.username);
+    await deleteWallet(name, username);
 
-        ctx.response.status = 200;
-        ctx.response.body = JSON.stringify(res);
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error);
-        return;
-    }
+    ctx.status = 200;
 });
 
 router.put('/:name', async (ctx) => {
-    try {
-        const walletsByUser = await byUser(ctx.state.token.username);
-        const recordsByWallet = await byWallet(ctx.state.token.username, ctx.params.name);
-        if (walletsByUser.filter((wallet) => wallet.name === ctx.request.body.name).length >= 1) {
-            ctx.response.status = 400;
-            ctx.response.body = JSON.stringify({
-                success: false,
-                message: 'There is already a wallet with that name!',
-            });
-        } else {
-            for (const record of recordsByWallet) {
-                await updateRecord(record.id, record.description, record.value, null, record.timestamp, record.owner);
-            }
-            const editedWallet = await update(
-                ctx.params.name,
-                ctx.request.body.name,
-                ctx.request.body.balance,
-                ctx.state.token.username,
-            );
+    const username = ctx.state.token.username;
+    const { name } = ctx.params;
+    const { name: newName, balance } = ctx.request.body;
 
-            for (const record of recordsByWallet) {
-                await updateRecord(
-                    record.id,
-                    record.description,
-                    record.value,
-                    editedWallet.name,
-                    record.timestamp,
-                    record.owner,
-                );
-            }
-
-            ctx.response.status = 200;
-            ctx.response.body = JSON.stringify(editedWallet);
-        }
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error);
-        return;
+    const walletToUpdate = await byName(name, username);
+    if (walletToUpdate.name === newName) {
+        ctx.status = 200;
+        ctx.body = JSON.stringify(walletToUpdate);
     }
+
+    const walletsByUser = await byUser(username);
+    const recordsByWallet = await byWallet(username, name);
+    if (walletsByUser.some((wallet) => wallet.name === newName)) throw new DuplicateWallet();
+
+    recordsByWallet.forEach(
+        async (record) =>
+            await updateRecord(record.id, record.description, record.value, null, record.timestamp, record.owner),
+    );
+
+    const editedWallet = await update(name, newName, balance, username);
+
+    recordsByWallet.forEach(async (record) => {
+        await updateRecord(
+            record.id,
+            record.description,
+            record.value,
+            editedWallet.name,
+            record.timestamp,
+            record.owner,
+        );
+    });
+
+    ctx.status = 200;
+    ctx.body = JSON.stringify(editedWallet);
 });
 
 export default router.routes();

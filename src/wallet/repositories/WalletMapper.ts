@@ -7,22 +7,16 @@ export const byName = async (name: string, owner: string): Promise<Wallet> => {
     if (wallets.length <= 0) throw new WalletNotFound();
     return wallets[0];
 };
+
 export const byUser = async (owner: string): Promise<Wallet[]> => {
-    try {
-        const wallets = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE owner='${owner}'`);
-        return wallets[0];
-    } catch (error) {
-        throw error;
-    }
+    const [wallets] = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE owner='${owner}'`);
+    return wallets;
 };
+
 export const create = async (name: string, balance: number, owner: string): Promise<Wallet> => {
-    try {
-        await pool.query<Wallet[]>(`INSERT INTO Wallet(name, balance, owner) VALUES('${name}',${balance},'${owner}') `);
-        const createdWallet = await byName(name, owner);
-        return createdWallet;
-    } catch (error) {
-        throw new Error('Error creating wallet');
-    }
+    await pool.query<Wallet[]>(`INSERT INTO Wallet(name, balance, owner) VALUES('${name}',${balance},'${owner}') `);
+    const createdWallet = await byName(name, owner);
+    return createdWallet;
 };
 
 /**
@@ -30,13 +24,8 @@ export const create = async (name: string, balance: number, owner: string): Prom
  * @param {string} name name of wallet
  * @param {string} owner owner as username
  */
-export const deleteWallet = async (name: string, owner: string): Promise<string> => {
-    try {
-        await pool.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
-        return 'deleted wallet';
-    } catch (error) {
-        throw error;
-    }
+export const deleteWallet = async (name: string, owner: string): Promise<void> => {
+    await pool.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
 };
 
 export const update = async (
@@ -45,17 +34,15 @@ export const update = async (
     newBalance: number,
     owner: string,
 ): Promise<Wallet> => {
-    try {
-        const oldWallet = await byName(oldWalletName, owner);
-        const balance = newBalance || oldWallet.balance;
-        await pool.query(
-            `UPDATE Wallet SET name='${newWalletName}', balance=${balance} WHERE name='${oldWalletName}' AND owner='${owner}'`,
-        );
-        const updatedWallet = await byName(newWalletName, owner);
-        return updatedWallet;
-    } catch (error) {
-        throw error;
-    }
+    const oldWallet = await byName(oldWalletName, owner);
+    const balance = newBalance || oldWallet.balance;
+    const name = newWalletName || oldWallet.name;
+
+    await pool.query(
+        `UPDATE Wallet SET name='${name}', balance=${balance} WHERE name='${oldWalletName}' AND owner='${owner}'`,
+    );
+    const updatedWallet = await byName(name, owner);
+    return updatedWallet;
 };
 
 export const createTable = async (): Promise<void> => {
@@ -68,18 +55,14 @@ export const createTable = async (): Promise<void> => {
 };
 
 export const createIndices = async (): Promise<void> => {
-    try {
-        const sql = `ALTER TABLE \`Wallet\`
+    const sql = `ALTER TABLE \`Wallet\`
         ADD PRIMARY KEY (\`name\`,\`owner\`),
         ADD KEY \`FK_Wallet_User\` (\`owner\`);`;
-        await pool.query(sql);
-    } catch (error) {}
+    await pool.query(sql);
 };
 
 export const createConstraints = async (): Promise<void> => {
-    try {
-        const sql = `ALTER TABLE \`Wallet\`
+    const sql = `ALTER TABLE \`Wallet\`
       ADD CONSTRAINT \`FK_Wallet_User\` FOREIGN KEY (\`owner\`) REFERENCES \`User\` (\`username\`);`;
-        await pool.query(sql);
-    } catch (error) {}
+    await pool.query(sql);
 };

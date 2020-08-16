@@ -1,6 +1,7 @@
 import { pool } from '../../shared/repositories/database';
 import { RecordNotFound } from '../models/Errors';
 import Record from '../models/Record';
+import { convertJSDateToMySQLDate } from '../../shared/utils/dateUtils';
 
 export const all = async (): Promise<Record[]> => {
     const [records] = await pool.query<Record[]>('SELECT * FROM Record;');
@@ -17,7 +18,7 @@ export const byWallet = async (username: string, wallet: string): Promise<Record
     const [records] = await pool.query<Record[]>(
         `SELECT * FROM Record WHERE owner='${username}' AND walletName='${wallet}'`,
     );
-    return records;
+    return records.map((record) => ({ ...record, timestamp: convertJSDateToMySQLDate(new Date(record.timestamp)) }));
 };
 
 export const byId = async (id: number): Promise<Record> => {
@@ -44,7 +45,7 @@ export const createRecord = async (
     const result = (await pool.query(
         `INSERT INTO Record(description, value, walletName,timestamp, owner) VALUES ('${description}',${value},'${wallet}','${timestamp}','${owner}')`,
     )) as any;
-    const insertedRecord = await byId(result.insertId);
+    const insertedRecord = await byId(result[0].insertId);
     return insertedRecord;
 };
 

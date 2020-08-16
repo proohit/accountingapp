@@ -6,6 +6,8 @@ import config from '../config';
 import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
 import securedContextRouter from './shared/services/securedContextRouter';
+import recordRouter from './record/services/recordRouter';
+import walletRouter from './wallet/services/walletRouter';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -24,11 +26,13 @@ router.use(async (ctx, next) => {
         };
     }
 });
-router.use(securedContextRouter);
 router.use('/auth', authenticationRouter);
 router.use('/docs', documentationRouter);
+router.use(securedContextRouter);
+router.use('/records', recordRouter);
+router.use('/wallets', walletRouter);
 
-app.use(router.allowedMethods({ throw: false }));
+app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes());
 
 try {

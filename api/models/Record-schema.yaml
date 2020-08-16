@@ -44,3 +44,15 @@ UpdateRecord:
             format: date-time
         wallet:
             $ref: ./Wallet-schema.yaml#/Wallet
+
+PaginatedRecords:
+    type: object
+    properties:
+        data:
+            type: array
+            items:
+                $ref: '#/Record'
+        page:
+            type: number
+        count:
+            type: number

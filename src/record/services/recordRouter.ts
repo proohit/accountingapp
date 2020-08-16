@@ -11,8 +11,8 @@ router.delete('/:id', RecordControllerImpl.deleteById);
 
 router.get('/:id', RecordControllerImpl.getById);
 
-router.get('/wallet/:wallet', RecordControllerImpl.getByWallet);
+router.put('/:id', RecordControllerImpl.updateById);
 
-router.put('/', RecordControllerImpl.updateById);
+router.get('/wallet/:wallet', RecordControllerImpl.getByWallet);
 
 export default router.routes();

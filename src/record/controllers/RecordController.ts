@@ -54,8 +54,8 @@ const RecordControllerImpl: RecordController = {
 
     updateById: async (ctx) => {
         const decoded = ctx.state.token;
-        const { id, description, value, walletName, timestamp } = ctx.request.body;
-        if (!id) throw new MissingProperty(['id']);
+        const id = ctx.params.id;
+        const { description, value, walletName, timestamp } = ctx.request.body;
         const record = await byId(id);
         if (decoded.username !== record.owner) throw new ResourceNotAllowed();
         const updatedRecord = await update(id, description, value, walletName, timestamp, decoded.username);

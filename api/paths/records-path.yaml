@@ -3,6 +3,19 @@ records:
         tags:
             - records
         description: Returns records by current user
+        parameters:
+            - in: query
+              required: false
+              name: page
+              description: Page of records to return. Default is 1 if not specified.
+              schema:
+                  type: number
+            - in: query
+              required: false
+              name: itemsPerPage
+              description: Items per page to return. Default is 20 if not specified.
+              schema:
+                  type: number
         responses:
             200:
                 description: OK
@@ -11,7 +24,7 @@ records:
                         schema:
                             type: array
                             items:
-                                $ref: ../models/Record-schema.yaml#/Record
+                                $ref: ../models/Record-schema.yaml#/PaginatedRecords
 records/{id}:
     get:
         tags:
@@ -72,6 +85,12 @@ records/{id}:
         tags:
             - records
         description: Updates a record. Not given properties will not get updated.
+        parameters:
+            - in: path
+              required: true
+              name: id
+              schema:
+                  type: string
         requestBody:
             description: Updated properties in record object
             required: true

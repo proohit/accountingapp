@@ -2,6 +2,7 @@ import { pool } from '../../shared/repositories/database';
 import { RecordNotFound } from '../models/Errors';
 import Record from '../models/Record';
 import { convertJSDateToMySQLDate } from '../../shared/utils/dateUtils';
+import { MessageResult } from '../../shared/models/RouteResult';
 
 export const all = async (): Promise<Record[]> => {
     const [records] = await pool.query<Record[]>('SELECT * FROM Record;');
@@ -52,8 +53,9 @@ export const createRecord = async (
 /**
  * expects an id as parameter. This id will be deleted from the database
  */
-export const deleteRecord = async (id: number): Promise<void> => {
+export const deleteRecord = async (id: number): Promise<MessageResult> => {
     await pool.query(`DELETE FROM Record WHERE id=${id}`);
+    return { message: `Deleted Record with id '${id}'` };
 };
 
 /**

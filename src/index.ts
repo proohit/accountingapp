@@ -3,6 +3,7 @@ import parser from 'koa-bodyparser';
 import cors from 'koa-cors';
 import Router from 'koa-router';
 import config from '../config';
+import { RouteResult } from './shared/models/RouteResult';
 import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
 import securedContextRouter from './shared/services/securedContextRouter';
@@ -18,7 +19,9 @@ app.use(cors());
 router.use(async (ctx, next) => {
     try {
         ctx.type = 'application/json';
-        await next();
+        const result: RouteResult = await next();
+        ctx.status = result.status;
+        ctx.body = JSON.stringify(result.data);
     } catch (error) {
         ctx.status = error.statusCode || error.status || 500;
         ctx.body = {

@@ -1,6 +1,7 @@
 import { pool } from '../../shared/repositories/database';
 import { WalletNotFound } from '../models/Errors';
 import Wallet from '../models/Wallet';
+import { MessageResult } from '../../shared/models/RouteResult';
 
 export const byName = async (name: string, owner: string): Promise<Wallet> => {
     const [wallets] = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`);
@@ -24,8 +25,9 @@ export const create = async (name: string, balance: number, owner: string): Prom
  * @param {string} name name of wallet
  * @param {string} owner owner as username
  */
-export const deleteWallet = async (name: string, owner: string): Promise<void> => {
+export const deleteWallet = async (name: string, owner: string): Promise<MessageResult> => {
     await pool.query(`DELETE FROM Wallet WHERE name='${name}' AND owner='${owner}'`);
+    return { message: `Deleted wallet with name '${name}'` };
 };
 
 export const update = async (

@@ -9,8 +9,10 @@ export const all = async (): Promise<Record[]> => {
     return records;
 };
 
-export const allByUser = async (username: string): Promise<Record[]> => {
-    const [recordsOfUser] = await pool.query<Record[]>(`SELECT * FROM Record WHERE owner='${username}';`);
+export const byUser = async (username: string, from: number, count: number): Promise<Record[]> => {
+    const [recordsOfUser] = await pool.query<Record[]>(
+        `SELECT * FROM Record WHERE owner='${username}' ORDER BY timestamp DESC LIMIT ${from},${count};`,
+    );
 
     return recordsOfUser;
 };

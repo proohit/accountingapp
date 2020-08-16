@@ -1,7 +1,8 @@
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { byName } from '../../wallet/repositories/WalletMapper';
 import { RecordController } from '../models/RecordController';
-import { allByUser, byId, byWallet, createRecord, deleteRecord, update } from '../repositories/RecordMapper';
+import { byUser, byId, byWallet, createRecord, deleteRecord, update } from '../repositories/RecordMapper';
+import { calculateOffset } from '../../shared/utils/paginationUtils';
 
 const RecordControllerImpl: RecordController = {
     createNewRecord: async (ctx) => {
@@ -22,8 +23,12 @@ const RecordControllerImpl: RecordController = {
 
     getByUser: async (ctx) => {
         const decoded = ctx.state.token;
-        const records = await allByUser(decoded.username);
-        return { status: 200, data: records };
+        const page: number = ctx.query.page || 1;
+        const itemsPerPage: number = ctx.query.itemsPerPage || 20;
+
+        const from = calculateOffset(page, itemsPerPage);
+        const records = await byUser(decoded.username, from, itemsPerPage);
+        return { status: 200, data: { data: records, page, total: records.length } };
     },
 
     deleteById: async (ctx) => {

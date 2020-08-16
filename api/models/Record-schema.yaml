@@ -16,6 +16,11 @@ Record:
             $ref: ./User-schema.yaml#/User
 NewRecord:
     type: object
+    required:
+        - description
+        - value
+        - timestamp
+        - wallet
     properties:
         description:
             type: string
@@ -26,5 +31,16 @@ NewRecord:
             format: date-time
         wallet:
             $ref: ./Wallet-schema.yaml#/Wallet
-        owner:
-            $ref: ./User-schema.yaml#/User
+
+UpdateRecord:
+    type: object
+    properties:
+        description:
+            type: string
+        value:
+            type: number
+        timestamp:
+            type: string
+            format: date-time
+        wallet:
+            $ref: ./Wallet-schema.yaml#/Wallet

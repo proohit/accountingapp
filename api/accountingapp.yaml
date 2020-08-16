@@ -17,3 +17,5 @@ paths:
         $ref: ./paths/records-path.yaml#/records
     /records/{id}:
         $ref: ./paths/records-path.yaml#/records~1{id}
+    /records/wallet/{walletName}:
+        $ref: ./paths/records-path.yaml#/records~1wallet~1{walletName}

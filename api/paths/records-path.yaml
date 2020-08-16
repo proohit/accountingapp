@@ -49,10 +49,7 @@ records/{id}:
         responses:
             200:
                 description: OK
-                content:
-                    application/json:
-                        schema:
-                            type: string
+
     post:
         tags:
             - records
@@ -74,14 +71,14 @@ records/{id}:
     put:
         tags:
             - records
-        description: Updates a record
+        description: Updates a record. Not given properties will not get updated.
         requestBody:
-            description: Updated record object
+            description: Updated properties in record object
             required: true
             content:
                 application/json:
                     schema:
-                        $ref: ../models/Record-schema.yaml#/NewRecord
+                        $ref: ../models/Record-schema.yaml#/UpdateRecord
         responses:
             201:
                 description: OK
@@ -89,3 +86,24 @@ records/{id}:
                     application/json:
                         schema:
                             $ref: ../models/Record-schema.yaml#/Record
+records/wallet/{walletName}:
+    get:
+        tags:
+            - records
+        description: Returns records of the given wallet
+        parameters:
+            - in: path
+              name: walletName
+              required: true
+              description: Name of wallet to get records of
+              schema:
+                  type: string
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../models/Record-schema.yaml#/Record

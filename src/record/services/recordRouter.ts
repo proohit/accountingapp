@@ -1,81 +1,18 @@
 import Router from 'koa-router';
-import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { byName } from '../../wallet/repositories/WalletMapper';
-import { allByUser, byId, byWallet, createRecord, deleteRecord, update } from '../repositories/RecordMapper';
-import { RouteResult } from '../../shared/models/RouteResult';
+import RecordControllerImpl from '../controllers/RecordController';
 
 const router = new Router();
 
-router.post(
-    '/',
-    async (ctx): Promise<RouteResult> => {
-        const username = ctx.state.token.username;
-        const { description, value, walletName, timestamp } = ctx.request.body;
-        const missingProperties = [];
-        if (!description) missingProperties.push('description');
-        if (!value) missingProperties.push('value');
-        if (!walletName) missingProperties.push('walletName');
-        if (!timestamp) missingProperties.push('timestamp');
-        if (missingProperties.length) throw new MissingProperty(missingProperties);
+router.post('/', RecordControllerImpl.createNewRecord);
 
-        await byName(walletName, username);
-        const createdRecord = await createRecord(description, value, walletName, timestamp, username);
+router.get('/', RecordControllerImpl.getByUser);
 
-        return { status: 201, data: createdRecord };
-    },
-);
+router.delete('/:id', RecordControllerImpl.deleteById);
 
-router.get(
-    '/',
-    async (ctx): Promise<RouteResult> => {
-        const decoded = ctx.state.token;
-        const records = await allByUser(decoded.username);
-        return { status: 200, data: records };
-    },
-);
+router.get('/:id', RecordControllerImpl.getById);
 
-router.delete(
-    '/:id',
-    async (ctx): Promise<RouteResult> => {
-        const requestedId = ctx.params.id;
-        const recordToDelete = await byId(requestedId);
-        if (recordToDelete.owner !== ctx.state.token.username) throw new ResourceNotAllowed();
-        const message = await deleteRecord(requestedId);
-        return { status: 200, data: message };
-    },
-);
+router.get('/wallet/:wallet', RecordControllerImpl.getByWallet);
 
-router.get(
-    '/:id',
-    async (ctx): Promise<RouteResult> => {
-        const username = ctx.state.token.username;
-        const record = await byId(ctx.params.id);
-        if (record.owner !== username) throw new ResourceNotAllowed();
-        return { status: 200, data: record };
-    },
-);
-
-router.get(
-    '/wallet/:wallet',
-    async (ctx): Promise<RouteResult> => {
-        const decoded = ctx.state.token;
-        const result = await byWallet(decoded.username, ctx.params.wallet);
-        return { status: 200, data: result };
-    },
-);
-
-router.put(
-    '/',
-    async (ctx): Promise<RouteResult> => {
-        const decoded = ctx.state.token;
-        const { id, description, value, walletName, timestamp } = ctx.request.body;
-        if (!id) throw new MissingProperty(['id']);
-        const record = await byId(id);
-        if (decoded.username !== record.owner) throw new ResourceNotAllowed();
-        const updatedRecord = await update(id, description, value, walletName, timestamp, decoded.username);
-
-        return { status: 200, data: updatedRecord };
-    },
-);
+router.put('/', RecordControllerImpl.updateById);
 
 export default router.routes();

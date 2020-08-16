@@ -19,7 +19,7 @@ app.use(cors());
 router.use(async (ctx, next) => {
     try {
         ctx.type = 'application/json';
-        const result: RouteResult = await next();
+        const result: RouteResult<unknown> = await next();
         ctx.status = result.status;
         ctx.body = JSON.stringify(result.data);
     } catch (error) {

@@ -2,19 +2,14 @@ import Router from 'koa-router';
 
 import { verify } from '../../shared/repositories/authenticationMapper';
 import { allByUser, createRecord, byId, byWallet, deleteRecord, update } from '../repositories/RecordMapper';
+import { ResourceNotAllowed } from '../../shared/models/Errors';
 
 const router = new Router();
 
 router.use('/', async (ctx, next) => {
-    try {
-        const decoded = await verify(ctx.request);
-        ctx.state.token = decoded;
-        ctx.response.type = 'application/json';
-        await next();
-    } catch (error) {
-        ctx.response.status = 403;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    const decoded = verify(ctx.request);
+    ctx.state.token = decoded;
+    await next();
 });
 
 router.post('/', async (ctx) => {
@@ -37,15 +32,10 @@ router.post('/', async (ctx) => {
 });
 
 router.get('/', async (ctx) => {
-    try {
-        const decoded = ctx.state.token;
-        const records = await allByUser(decoded.username);
-        ctx.response.status = 200;
-        ctx.response.body = JSON.stringify(records);
-    } catch (error) {
-        ctx.response.status = 403;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    const decoded = ctx.state.token;
+    const records = await allByUser(decoded.username);
+    ctx.response.status = 200;
+    ctx.response.body = JSON.stringify(records);
 });
 
 router.delete('/:id', async (ctx) => {
@@ -69,22 +59,11 @@ router.delete('/:id', async (ctx) => {
 });
 
 router.get('/:id', async (ctx) => {
-    try {
-        const record = await byId(ctx.params.id);
-        if (record.owner !== ctx.state.token.username) {
-            ctx.response.status = 403;
-            ctx.response.body = JSON.stringify({
-                success: false,
-                message: `not permitted`,
-            });
-        } else {
-            ctx.response.status = 200;
-            ctx.response.body = JSON.stringify(record);
-        }
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    const username = ctx.state.token.username;
+    const record = await byId(ctx.params.id);
+    if (record.owner !== username) throw new ResourceNotAllowed();
+    ctx.status = 200;
+    ctx.body = JSON.stringify(record);
 });
 
 router.get('/wallet/:wallet', async (ctx) => {

@@ -1,5 +1,6 @@
 import { pool } from '../../shared/repositories/database';
 import Record from '../models/Record';
+import { RecordNotFound } from '../models/Errors';
 
 export const all = async (): Promise<Record[]> => {
     try {
@@ -32,15 +33,9 @@ export const byWallet = async (username: string, wallet: string): Promise<Record
 };
 
 export const byId = async (id: number): Promise<Record> => {
-    try {
-        const [records] = await pool.query<Record[]>(`SELECT * FROM Record WHERE id=${id}`);
-        if (records.length <= 0) {
-            throw new Error('No record with this id');
-        }
-        return records[0];
-    } catch (error) {
-        throw error;
-    }
+    const [records] = await pool.query<Record[]>(`SELECT * FROM Record WHERE id=${id}`);
+    if (records.length <= 0) throw new RecordNotFound();
+    return records[0];
 };
 
 /**

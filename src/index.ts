@@ -16,6 +16,7 @@ const router = new Router({ prefix: '/api' });
 app.use(parser());
 app.use(cors());
 
+router.use('/docs', documentationRouter);
 router.use(async (ctx, next) => {
     try {
         ctx.type = 'application/json';
@@ -30,7 +31,6 @@ router.use(async (ctx, next) => {
     }
 });
 router.use('/auth', authenticationRouter);
-router.use('/docs', documentationRouter);
 router.use(securedContextRouter);
 router.use('/records', recordRouter);
 router.use('/wallets', walletRouter);

@@ -1,17 +1,16 @@
 import Router from 'koa-router';
-import WalletController from '../controllers/WalletController';
+import WalletControllerImpl from '../controllers/WalletController';
 
-const walletController = new WalletController();
 const router = new Router();
 
-router.post('/', walletController.createNewWallet);
+router.post('/', WalletControllerImpl.createNewWallet);
 
-router.get('/', walletController.getByUser);
+router.get('/', WalletControllerImpl.getByUser);
 
-router.get('/:name', walletController.getByUserByName);
+router.get('/:name', WalletControllerImpl.getByUserByName);
 
-router.delete('/:name', walletController.deleteByName);
+router.delete('/:name', WalletControllerImpl.deleteByName);
 
-router.put('/:name', walletController.updateByName);
+router.put('/:name', WalletControllerImpl.updateByName);
 
 export default router.routes();

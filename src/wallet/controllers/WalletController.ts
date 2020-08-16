@@ -1,12 +1,11 @@
-import { RouteResult } from '../../shared/models/RouteResult';
-import { SecuredContext } from '../../shared/models/SecuredContext';
 import { byWallet, deleteRecord, update as updateRecord } from '../../record/repositories/RecordMapper';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { DuplicateWallet } from '../models/Errors';
+import { WalletController } from '../models/WalletController';
 import { byName, byUser, create, deleteWallet, update } from '../repositories/WalletMapper';
 
-export default class WalletController {
-    createNewWallet = async (ctx: SecuredContext): Promise<RouteResult> => {
+const WalletControllerImpl: WalletController = {
+    createNewWallet: async (ctx) => {
         const { username } = ctx.state.token;
         const { name, balance } = ctx.request.body;
 
@@ -20,23 +19,23 @@ export default class WalletController {
 
         const createdWallet = await create(name, balance, username);
         return { status: 201, data: createdWallet };
-    };
+    },
 
-    getByUser = async (ctx: SecuredContext): Promise<RouteResult> => {
+    getByUser: async (ctx) => {
         const decoded = ctx.state.token;
         const walletsOfUser = await byUser(decoded.username);
 
         return { status: 200, data: walletsOfUser };
-    };
+    },
 
-    getByUserByName = async (ctx: SecuredContext): Promise<RouteResult> => {
+    getByUserByName: async (ctx) => {
         const username = ctx.state.token.username;
         const wallet = await byName(ctx.params.name, username);
         if (wallet.owner !== username) throw new ResourceNotAllowed();
         return { status: 200, data: wallet };
-    };
+    },
 
-    deleteByName = async (ctx: SecuredContext): Promise<RouteResult> => {
+    deleteByName: async (ctx) => {
         const username = ctx.state.token.username;
         const { name } = ctx.params;
         const walletToDelete = await byName(name, username);
@@ -48,9 +47,9 @@ export default class WalletController {
         const message = await deleteWallet(name, username);
 
         return { status: 200, data: message };
-    };
+    },
 
-    updateByName = async (ctx: SecuredContext): Promise<RouteResult> => {
+    updateByName: async (ctx) => {
         const username = ctx.state.token.username;
         const { name } = ctx.params;
         const { name: newName, balance } = ctx.request.body;
@@ -85,5 +84,7 @@ export default class WalletController {
         });
 
         return { status: 200, data: editedWallet };
-    };
-}
+    },
+};
+
+export default WalletControllerImpl;

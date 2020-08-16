@@ -1,8 +1,8 @@
 import Router from 'koa-router';
-
+import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { verify } from '../../shared/repositories/authenticationMapper';
-import { allByUser, createRecord, byId, byWallet, deleteRecord, update } from '../repositories/RecordMapper';
-import { ResourceNotAllowed } from '../../shared/models/Errors';
+import { byName } from '../../wallet/repositories/WalletMapper';
+import { allByUser, byId, byWallet, createRecord, deleteRecord, update } from '../repositories/RecordMapper';
 
 const router = new Router();
 
@@ -13,22 +13,20 @@ router.use('/', async (ctx, next) => {
 });
 
 router.post('/', async (ctx) => {
-    try {
-        const decoded = ctx.state.token;
-        const res = await createRecord(
-            ctx.request.body.description,
-            ctx.request.body.value,
-            ctx.request.body.wallet,
-            ctx.request.body.timestamp,
-            decoded.username,
-        );
+    const username = ctx.state.token.username;
+    const { description, value, walletName, timestamp } = ctx.request.body;
+    const missingProperties = [];
+    if (!description) missingProperties.push('description');
+    if (!value) missingProperties.push('value');
+    if (!walletName) missingProperties.push('walletName');
+    if (!timestamp) missingProperties.push('timestamp');
+    if (missingProperties.length) throw new MissingProperty(missingProperties);
 
-        ctx.response.status = 201;
-        ctx.response.body = JSON.stringify(res);
-    } catch (error) {
-        ctx.response.status = 403;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    await byName(walletName, username);
+    const res = await createRecord(description, value, walletName, timestamp, username);
+
+    ctx.status = 201;
+    ctx.body = JSON.stringify(res);
 });
 
 router.get('/', async (ctx) => {
@@ -39,23 +37,11 @@ router.get('/', async (ctx) => {
 });
 
 router.delete('/:id', async (ctx) => {
-    try {
-        const res = await byId(ctx.params.id);
-        if (res.owner !== ctx.state.token.username) {
-            ctx.response.status = 403;
-            ctx.response.body = JSON.stringify({
-                success: false,
-                message: `not permitted`,
-            });
-        } else {
-            const result = await deleteRecord(ctx.params.id);
-            ctx.response.status = 200;
-            ctx.response.body = JSON.stringify(result);
-        }
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    const requestedId = ctx.params.id;
+    const recordToDelete = await byId(requestedId);
+    if (recordToDelete.owner !== ctx.state.token.username) throw new ResourceNotAllowed();
+    await deleteRecord(requestedId);
+    ctx.status = 200;
 });
 
 router.get('/:id', async (ctx) => {
@@ -67,45 +53,22 @@ router.get('/:id', async (ctx) => {
 });
 
 router.get('/wallet/:wallet', async (ctx) => {
-    try {
-        const decoded = ctx.state.token;
-        const result = await byWallet(decoded.username, ctx.params.wallet);
-
-        ctx.response.status = 200;
-        ctx.response.body = JSON.stringify(result);
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    const decoded = ctx.state.token;
+    const result = await byWallet(decoded.username, ctx.params.wallet);
+    ctx.status = 200;
+    ctx.body = JSON.stringify(result);
 });
 
 router.put('/', async (ctx) => {
-    try {
-        const decoded = ctx.state.token;
-        const record = await byId(ctx.request.body.id);
-        if (decoded.username !== record.owner) {
-            ctx.response.status = 403;
-            ctx.response.body = JSON.stringify({
-                success: false,
-                message: `not permitted`,
-            });
-        } else {
-            const updatedRecord = await update(
-                ctx.request.body.id,
-                ctx.request.body.description,
-                ctx.request.body.value,
-                ctx.request.body.walletName,
-                ctx.request.body.timestamp,
-                decoded.username,
-            );
+    const decoded = ctx.state.token;
+    const { id, description, value, walletName, timestamp } = ctx.request.body;
+    if (!id) throw new MissingProperty(['id']);
+    const record = await byId(id);
+    if (decoded.username !== record.owner) throw new ResourceNotAllowed();
+    const updatedRecord = await update(id, description, value, walletName, timestamp, decoded.username);
 
-            ctx.response.status = 200;
-            ctx.response.body = JSON.stringify(updatedRecord);
-        }
-    } catch (error) {
-        ctx.response.status = 400;
-        ctx.response.body = JSON.stringify(error.message);
-    }
+    ctx.status = 200;
+    ctx.body = JSON.stringify(updatedRecord);
 });
 
 export default router.routes();

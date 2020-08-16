@@ -11,6 +11,17 @@ export class ResourceNotFound extends HttpError {
         super(message || 'Resource not found', 404);
     }
 }
+export class BadRequest extends HttpError {
+    constructor(message?: string) {
+        super(message || 'Bad Request', 400);
+    }
+}
+
+export class MissingProperty extends BadRequest {
+    constructor(properties: string[]) {
+        super(`Missing properties in request: ${properties.join(',')}`);
+    }
+}
 
 export class ResourceNotAllowed extends HttpError {
     constructor() {

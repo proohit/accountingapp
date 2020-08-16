@@ -1,13 +1,12 @@
 import Koa from 'koa';
-import Router from 'koa-router';
-import cors from 'koa-cors';
 import parser from 'koa-bodyparser';
+import cors from 'koa-cors';
+import Router from 'koa-router';
 import config from '../config';
-
 import recordRouter from './record/services/recordRouter';
-import walletRouter from './wallet/services/walletRouter';
 import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
+import walletRouter from './wallet/services/walletRouter';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -22,7 +21,7 @@ router.use(async (ctx, next) => {
     } catch (error) {
         ctx.status = error.statusCode || error.status || 500;
         ctx.body = {
-            message: error.message,
+            message: ctx.status === 500 ? 'Oops, something went wrong...' : error.message,
         };
     }
 });

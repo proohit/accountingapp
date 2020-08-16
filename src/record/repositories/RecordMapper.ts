@@ -1,35 +1,23 @@
 import { pool } from '../../shared/repositories/database';
-import Record from '../models/Record';
 import { RecordNotFound } from '../models/Errors';
+import Record from '../models/Record';
 
 export const all = async (): Promise<Record[]> => {
-    try {
-        const [records] = await pool.query<Record[]>('SELECT * FROM Record;');
-        return records;
-    } catch (error) {
-        throw error;
-    }
+    const [records] = await pool.query<Record[]>('SELECT * FROM Record;');
+    return records;
 };
 
 export const allByUser = async (username: string): Promise<Record[]> => {
-    try {
-        const [recordsOfUser] = await pool.query<Record[]>(`SELECT * FROM Record WHERE owner='${username}';`);
+    const [recordsOfUser] = await pool.query<Record[]>(`SELECT * FROM Record WHERE owner='${username}';`);
 
-        return recordsOfUser;
-    } catch (error) {
-        throw error;
-    }
+    return recordsOfUser;
 };
 
 export const byWallet = async (username: string, wallet: string): Promise<Record[]> => {
-    try {
-        const [records] = await pool.query<Record[]>(
-            `SELECT * FROM Record WHERE owner='${username}' AND walletName='${wallet}'`,
-        );
-        return records;
-    } catch (err) {
-        throw err;
-    }
+    const [records] = await pool.query<Record[]>(
+        `SELECT * FROM Record WHERE owner='${username}' AND walletName='${wallet}'`,
+    );
+    return records;
 };
 
 export const byId = async (id: number): Promise<Record> => {
@@ -63,16 +51,8 @@ export const createRecord = async (
 /**
  * expects an id as parameter. This id will be deleted from the database
  */
-export const deleteRecord = async (id: number): Promise<string> => {
-    try {
-        if (!id) {
-            throw new Error('no id provided!');
-        }
-        await pool.query(`DELETE FROM Record WHERE id=${id}`);
-        return `deleted record with id ${id}`;
-    } catch (error) {
-        throw error;
-    }
+export const deleteRecord = async (id: number): Promise<void> => {
+    await pool.query(`DELETE FROM Record WHERE id=${id}`);
 };
 
 /**
@@ -86,22 +66,18 @@ export const update = async (
     timestamp: string,
     owner: string,
 ): Promise<Record> => {
-    try {
-        let sql = `UPDATE Record SET id=${id}`;
-        if (description) sql += `, description='${description}'`;
-        if (value) sql += `, value=${value}`;
-        if (walletName === null) sql += `, walletName=${walletName}`;
-        else if (walletName) sql += `, walletName='${walletName}'`;
-        if (owner) sql += `, owner='${owner}'`;
-        if (timestamp) sql += `, timestamp='${timestamp}'`;
+    let sql = `UPDATE Record SET id=${id}`;
+    if (description) sql += `, description='${description}'`;
+    if (value) sql += `, value=${value}`;
+    if (walletName === null) sql += `, walletName=${walletName}`;
+    else if (walletName) sql += `, walletName='${walletName}'`;
+    if (owner) sql += `, owner='${owner}'`;
+    if (timestamp) sql += `, timestamp='${timestamp}'`;
 
-        sql += ` WHERE id = ${id}`;
-        await pool.query(sql);
-        const updatedRecord = await byId(id);
-        return updatedRecord;
-    } catch (error) {
-        throw error;
-    }
+    sql += ` WHERE id = ${id}`;
+    await pool.query(sql);
+    const updatedRecord = await byId(id);
+    return updatedRecord;
 };
 
 export const createTable = async (): Promise<void> => {

@@ -1,15 +1,11 @@
 import { pool } from '../../shared/repositories/database';
+import { WalletNotFound } from '../models/Errors';
 import Wallet from '../models/Wallet';
 
 export const byName = async (name: string, owner: string): Promise<Wallet> => {
-    try {
-        const [wallets] = await pool.query<Wallet[]>(
-            `SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`,
-        );
-        return wallets[0];
-    } catch (error) {
-        throw new Error('Error retrieving wallet');
-    }
+    const [wallets] = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`);
+    if (wallets.length <= 0) throw new WalletNotFound();
+    return wallets[0];
 };
 export const byUser = async (owner: string): Promise<Wallet[]> => {
     try {

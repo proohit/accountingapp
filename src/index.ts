@@ -15,6 +15,17 @@ const router = new Router({ prefix: '/api' });
 app.use(parser());
 app.use(cors());
 
+router.use(async (ctx, next) => {
+    try {
+        ctx.type = 'application/json';
+        await next();
+    } catch (error) {
+        ctx.status = error.statusCode || error.status || 500;
+        ctx.body = {
+            message: error.message,
+        };
+    }
+});
 router.use('/records', recordRouter);
 router.use('/wallets', walletRouter);
 router.use('/auth', authenticationRouter);

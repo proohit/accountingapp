@@ -3,10 +3,9 @@ import parser from 'koa-bodyparser';
 import cors from 'koa-cors';
 import Router from 'koa-router';
 import config from '../config';
-import recordRouter from './record/services/recordRouter';
 import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
-import walletRouter from './wallet/services/walletRouter';
+import securedContextRouter from './shared/services/securedContextRouter';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -25,12 +24,11 @@ router.use(async (ctx, next) => {
         };
     }
 });
-router.use('/records', recordRouter);
-router.use('/wallets', walletRouter);
+router.use(securedContextRouter);
 router.use('/auth', authenticationRouter);
 router.use('/docs', documentationRouter);
 
-app.use(router.allowedMethods({ throw: true }));
+app.use(router.allowedMethods({ throw: false }));
 app.use(router.routes());
 
 try {

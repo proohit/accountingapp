@@ -1,16 +1,9 @@
 import Router from 'koa-router';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { verify } from '../../shared/repositories/authenticationMapper';
 import { byName } from '../../wallet/repositories/WalletMapper';
 import { allByUser, byId, byWallet, createRecord, deleteRecord, update } from '../repositories/RecordMapper';
 
 const router = new Router();
-
-router.use('/', async (ctx, next) => {
-    const decoded = verify(ctx.request);
-    ctx.state.token = decoded;
-    await next();
-});
 
 router.post('/', async (ctx) => {
     const username = ctx.state.token.username;

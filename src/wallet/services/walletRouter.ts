@@ -1,17 +1,10 @@
 import Router from 'koa-router';
 import { byWallet, deleteRecord, update as updateRecord } from '../../record/repositories/RecordMapper';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { verify } from '../../shared/repositories/authenticationMapper';
 import { DuplicateWallet } from '../models/Errors';
 import { byName, byUser, create, deleteWallet, update } from '../repositories/WalletMapper';
 
 const router = new Router();
-
-router.use('/', async (ctx, next) => {
-    const decoded = verify(ctx.request);
-    ctx.state.token = decoded;
-    await next();
-});
 
 router.post('/', async (ctx) => {
     const { username } = ctx.state.token;
@@ -69,6 +62,7 @@ router.put('/:name', async (ctx) => {
     if (walletToUpdate.name === newName) {
         ctx.status = 200;
         ctx.body = JSON.stringify(walletToUpdate);
+        return;
     }
 
     const walletsByUser = await byUser(username);

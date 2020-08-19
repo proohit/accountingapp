@@ -2,12 +2,7 @@ import mysql, { RowDataPacket } from 'mysql2';
 import config from '../../../config';
 import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 import { createTable as createUserTable, resetTable as resetUserTable } from '../../user/repositories/UserMapper';
-import {
-    createConstraints as createWalletConstraints,
-    createIndices as createWalletIndices,
-    createTable as createWalletTable,
-    resetTable as resetWalletTable,
-} from '../../wallet/repositories/WalletMapper';
+import WALLET_MAPPER from '../../wallet/repositories/WalletMapper';
 import logger from '../services/loggingService';
 
 export const pool = mysql
@@ -23,16 +18,16 @@ export const pool = mysql
 export const setupTables = async (): Promise<void> => {
     await RECORD_MAPPER.createTable();
     await createUserTable();
-    await createWalletTable();
+    await WALLET_MAPPER.createTable();
     await RECORD_MAPPER.createIndices();
-    await createWalletIndices();
+    await WALLET_MAPPER.createIndices();
     await RECORD_MAPPER.createAutoIncrement();
     await RECORD_MAPPER.createConstraints();
-    await createWalletConstraints();
+    await WALLET_MAPPER.createConstraints();
 };
 
 export const resetTables = async () => {
-    await resetWalletTable();
+    await WALLET_MAPPER.resetTable();
     await resetUserTable();
     await RECORD_MAPPER.resetTable();
 };

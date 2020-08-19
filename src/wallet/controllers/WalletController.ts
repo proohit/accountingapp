@@ -2,7 +2,7 @@ import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { DuplicateWallet } from '../models/Errors';
 import { WalletController } from '../models/WalletController';
-import { byName, byUser, create, deleteWallet, update } from '../repositories/WalletMapper';
+import WALLET_MAPPER from '../repositories/WalletMapper';
 
 const WalletControllerImpl: WalletController = {
     createNewWallet: async (ctx) => {
@@ -14,23 +14,23 @@ const WalletControllerImpl: WalletController = {
         if (!balance) missingProperties.push('balance');
         if (missingProperties.length) throw new MissingProperty(missingProperties);
 
-        const walletsByUser = byUser(username);
+        const walletsByUser = WALLET_MAPPER.byUser(username);
         if ((await walletsByUser).find((wallet) => wallet.name === name)) throw new DuplicateWallet();
 
-        const createdWallet = await create(name, balance, username);
+        const createdWallet = await WALLET_MAPPER.create(name, balance, username);
         return { status: 201, data: createdWallet };
     },
 
     getByUser: async (ctx) => {
         const decoded = ctx.state.token;
-        const walletsOfUser = await byUser(decoded.username);
+        const walletsOfUser = await WALLET_MAPPER.byUser(decoded.username);
 
         return { status: 200, data: walletsOfUser };
     },
 
     getByUserByName: async (ctx) => {
         const username = ctx.state.token.username;
-        const wallet = await byName(ctx.params.name, username);
+        const wallet = await WALLET_MAPPER.byName(ctx.params.name, username);
         if (wallet.owner !== username) throw new ResourceNotAllowed();
         return { status: 200, data: wallet };
     },
@@ -38,13 +38,13 @@ const WalletControllerImpl: WalletController = {
     deleteByName: async (ctx) => {
         const username = ctx.state.token.username;
         const { name } = ctx.params;
-        const walletToDelete = await byName(name, username);
+        const walletToDelete = await WALLET_MAPPER.byName(name, username);
         const recordsByWallet = await RECORD_MAPPER.getByWallet(username, walletToDelete.name);
         recordsByWallet.forEach(async (record) => {
             await RECORD_MAPPER.deleteRecord(record.id);
         });
 
-        const message = await deleteWallet(name, username);
+        const message = await WALLET_MAPPER.deleteWallet(name, username);
 
         return { status: 200, data: message };
     },
@@ -54,14 +54,14 @@ const WalletControllerImpl: WalletController = {
         const { name } = ctx.params;
         const { name: newName, balance } = ctx.request.body;
 
-        const walletToUpdate = await byName(name, username);
+        const walletToUpdate = await WALLET_MAPPER.byName(name, username);
         if (walletToUpdate.name === newName) {
             ctx.status = 200;
             ctx.body = JSON.stringify(walletToUpdate);
             return;
         }
 
-        const walletsByUser = await byUser(username);
+        const walletsByUser = await WALLET_MAPPER.byUser(username);
         const recordsByWallet = await RECORD_MAPPER.getByWallet(username, name);
         if (walletsByUser.some((wallet) => wallet.name === newName)) throw new DuplicateWallet();
 
@@ -77,7 +77,7 @@ const WalletControllerImpl: WalletController = {
                 ),
         );
 
-        const editedWallet = await update(name, newName, balance, username);
+        const editedWallet = await WALLET_MAPPER.update(name, newName, balance, username);
 
         recordsByWallet.forEach(async (record) => {
             await RECORD_MAPPER.updateRecord(

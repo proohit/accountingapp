@@ -1,6 +1,6 @@
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { calculateOffset } from '../../shared/utils/paginationUtils';
-import { byName } from '../../wallet/repositories/WalletMapper';
+import WALLET_MAPPER from '../../wallet/repositories/WalletMapper';
 import { RecordController } from '../models/RecordController';
 import RECORD_MAPPER from '../repositories/RecordMapper';
 
@@ -15,7 +15,7 @@ const RecordControllerImpl: RecordController = {
         if (!timestamp) missingProperties.push('timestamp');
         if (missingProperties.length) throw new MissingProperty(missingProperties);
 
-        await byName(walletName, username);
+        await WALLET_MAPPER.byName(walletName, username);
         const createdRecord = await RECORD_MAPPER.createRecord(description, value, walletName, timestamp, username);
 
         return { status: 201, data: createdRecord };

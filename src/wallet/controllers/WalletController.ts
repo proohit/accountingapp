@@ -1,4 +1,4 @@
-import { byWallet, deleteRecord, update as updateRecord } from '../../record/repositories/RecordMapper';
+import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { DuplicateWallet } from '../models/Errors';
 import { WalletController } from '../models/WalletController';
@@ -39,9 +39,9 @@ const WalletControllerImpl: WalletController = {
         const username = ctx.state.token.username;
         const { name } = ctx.params;
         const walletToDelete = await byName(name, username);
-        const recordsByWallet = await byWallet(username, walletToDelete.name);
+        const recordsByWallet = await RECORD_MAPPER.getByWallet(username, walletToDelete.name);
         recordsByWallet.forEach(async (record) => {
-            await deleteRecord(record.id);
+            await RECORD_MAPPER.deleteRecord(record.id);
         });
 
         const message = await deleteWallet(name, username);
@@ -62,18 +62,25 @@ const WalletControllerImpl: WalletController = {
         }
 
         const walletsByUser = await byUser(username);
-        const recordsByWallet = await byWallet(username, name);
+        const recordsByWallet = await RECORD_MAPPER.getByWallet(username, name);
         if (walletsByUser.some((wallet) => wallet.name === newName)) throw new DuplicateWallet();
 
         recordsByWallet.forEach(
             async (record) =>
-                await updateRecord(record.id, record.description, record.value, null, record.timestamp, record.owner),
+                await RECORD_MAPPER.updateRecord(
+                    record.id,
+                    record.description,
+                    record.value,
+                    null,
+                    record.timestamp,
+                    record.owner,
+                ),
         );
 
         const editedWallet = await update(name, newName, balance, username);
 
         recordsByWallet.forEach(async (record) => {
-            await updateRecord(
+            await RECORD_MAPPER.updateRecord(
                 record.id,
                 record.description,
                 record.value,

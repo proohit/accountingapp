@@ -1,12 +1,6 @@
 import mysql, { RowDataPacket } from 'mysql2';
 import config from '../../../config';
-import {
-    createAutoIncrement as createRecordAutoIncrement,
-    createConstraints as createRecordConstraints,
-    createIndices as createRecordIndices,
-    createTable as createRecordTable,
-    resetTable as resetRecordTable,
-} from '../../record/repositories/RecordMapper';
+import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 import { createTable as createUserTable, resetTable as resetUserTable } from '../../user/repositories/UserMapper';
 import {
     createConstraints as createWalletConstraints,
@@ -27,20 +21,20 @@ export const pool = mysql
     .promise();
 
 export const setupTables = async (): Promise<void> => {
-    await createRecordTable();
+    await RECORD_MAPPER.createTable();
     await createUserTable();
     await createWalletTable();
-    await createRecordIndices();
+    await RECORD_MAPPER.createIndices();
     await createWalletIndices();
-    await createRecordAutoIncrement();
-    await createRecordConstraints();
+    await RECORD_MAPPER.createAutoIncrement();
+    await RECORD_MAPPER.createConstraints();
     await createWalletConstraints();
 };
 
 export const resetTables = async () => {
     await resetWalletTable();
     await resetUserTable();
-    await resetRecordTable();
+    await RECORD_MAPPER.resetTable();
 };
 
 export const setupDatabase = async () => {

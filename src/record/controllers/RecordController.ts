@@ -1,8 +1,8 @@
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
+import { calculateOffset } from '../../shared/utils/paginationUtils';
 import { byName } from '../../wallet/repositories/WalletMapper';
 import { RecordController } from '../models/RecordController';
-import { byUser, byId, byWallet, createRecord, deleteRecord, update } from '../repositories/RecordMapper';
-import { calculateOffset } from '../../shared/utils/paginationUtils';
+import RECORD_MAPPER from '../repositories/RecordMapper';
 
 const RecordControllerImpl: RecordController = {
     createNewRecord: async (ctx) => {
@@ -16,7 +16,7 @@ const RecordControllerImpl: RecordController = {
         if (missingProperties.length) throw new MissingProperty(missingProperties);
 
         await byName(walletName, username);
-        const createdRecord = await createRecord(description, value, walletName, timestamp, username);
+        const createdRecord = await RECORD_MAPPER.createRecord(description, value, walletName, timestamp, username);
 
         return { status: 201, data: createdRecord };
     },
@@ -27,28 +27,28 @@ const RecordControllerImpl: RecordController = {
         const itemsPerPage: number = ctx.query.itemsPerPage || 20;
 
         const from = calculateOffset(page, itemsPerPage);
-        const records = await byUser(decoded.username, from, itemsPerPage);
+        const records = await RECORD_MAPPER.getByUser(decoded.username, from, itemsPerPage);
         return { status: 200, data: { data: records, page, total: records.length } };
     },
 
     deleteById: async (ctx) => {
         const requestedId = ctx.params.id;
-        const recordToDelete = await byId(requestedId);
+        const recordToDelete = await RECORD_MAPPER.getById(requestedId);
         if (recordToDelete.owner !== ctx.state.token.username) throw new ResourceNotAllowed();
-        const message = await deleteRecord(requestedId);
+        const message = await RECORD_MAPPER.deleteRecord(requestedId);
         return { status: 200, data: message };
     },
 
     getById: async (ctx) => {
         const username = ctx.state.token.username;
-        const record = await byId(ctx.params.id);
+        const record = await RECORD_MAPPER.getById(ctx.params.id);
         if (record.owner !== username) throw new ResourceNotAllowed();
         return { status: 200, data: record };
     },
 
     getByWallet: async (ctx) => {
         const decoded = ctx.state.token;
-        const result = await byWallet(decoded.username, ctx.params.wallet);
+        const result = await RECORD_MAPPER.getByWallet(decoded.username, ctx.params.wallet);
         return { status: 200, data: result };
     },
 
@@ -56,9 +56,16 @@ const RecordControllerImpl: RecordController = {
         const decoded = ctx.state.token;
         const id = ctx.params.id;
         const { description, value, walletName, timestamp } = ctx.request.body;
-        const record = await byId(id);
+        const record = await RECORD_MAPPER.getById(id);
         if (decoded.username !== record.owner) throw new ResourceNotAllowed();
-        const updatedRecord = await update(id, description, value, walletName, timestamp, decoded.username);
+        const updatedRecord = await RECORD_MAPPER.updateRecord(
+            id,
+            description,
+            value,
+            walletName,
+            timestamp,
+            decoded.username,
+        );
 
         return { status: 200, data: updatedRecord };
     },

@@ -42,17 +42,21 @@ export const resetTables = async () => {
     await resetRecordTable();
 };
 
+export const setupDatabase = async () => {
+    console.log('Resetting tables...');
+    await resetTables();
+    console.log('Setting up tables...');
+    await setupTables();
+    console.log('Successfully setup tables!');
+};
+
 export const checkAndSetupDatabase = async (): Promise<void> => {
     const needsSetup = await checkIfNeedsSetup();
     if (!needsSetup) {
         console.log('Database correctly setup');
         return;
     }
-    console.log('Resetting tables...');
-    resetTables();
-    console.log('Setting up tables...');
-    setupTables();
-    console.log('Successfully setup tables!');
+    await setupDatabase();
 };
 
 export const checkIfNeedsSetup = async (): Promise<boolean> => {

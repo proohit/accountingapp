@@ -14,6 +14,7 @@ import {
     createTable as createWalletTable,
     resetTable as resetWalletTable,
 } from '../../wallet/repositories/WalletMapper';
+import logger from '../services/loggingService';
 
 export const pool = mysql
     .createPool({
@@ -43,17 +44,17 @@ export const resetTables = async () => {
 };
 
 export const setupDatabase = async () => {
-    console.log('Resetting tables...');
+    logger.log('info', 'Resetting tables...');
     await resetTables();
-    console.log('Setting up tables...');
+    logger.log('info', 'Settigng up tables...');
     await setupTables();
-    console.log('Successfully setup tables!');
+    logger.log('info', 'Successfully setup tables!');
 };
 
 export const checkAndSetupDatabase = async (): Promise<void> => {
     const needsSetup = await checkIfNeedsSetup();
     if (!needsSetup) {
-        console.log('Database correctly setup');
+        logger.log('info', `Database correctly setup`);
         return;
     }
     await setupDatabase();
@@ -66,7 +67,7 @@ export const checkIfNeedsSetup = async (): Promise<boolean> => {
     if (tables.length <= 0) return true;
     const needsSetup = shouldTables.some((shouldTable) => {
         const isMissing = !extractedTableNames.includes(shouldTable);
-        console.log(`Is Table ${shouldTable} available?: ${!isMissing}`);
+        logger.log('debug', `Table ${shouldTable} setup?: ${!isMissing}`);
         return isMissing;
     });
     return needsSetup;

@@ -10,6 +10,7 @@ import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
 import securedContextRouter from './shared/services/securedContextRouter';
 import walletRouter from './wallet/services/walletRouter';
+import logger from './shared/services/loggingService';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -25,6 +26,7 @@ router.use(async (ctx, next) => {
         ctx.status = result.status;
         ctx.body = JSON.stringify(result.data);
     } catch (error) {
+        logger.error({ message: error.message, trace: error.stack });
         ctx.status = error.statusCode || error.status || 500;
         ctx.body = {
             message: ctx.status === 500 ? 'Oops, something went wrong...' : error.message,

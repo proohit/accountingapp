@@ -7,11 +7,12 @@
         "sourceMap": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "noUnusedParameters": true,
-        "noUnusedLocals": true,
+        "moduleResolution": "Node",
+        "importHelpers": true,
         "allowUnreachableCode": false,
         "pretty": true,
         "typeRoots": ["./src"]
     },
-    "include": ["./src/*", "./test/*"]
+    "include": ["src/**/*"],
+    "exclude": ["test/**/*"]
 }

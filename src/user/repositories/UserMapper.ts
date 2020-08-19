@@ -35,3 +35,8 @@ export const createIndices = async (): Promise<void> => {
       ADD PRIMARY KEY (\`username\`);`;
     await pool.query(sql);
 };
+
+export const resetTable = async (): Promise<void> => {
+    const sql = `DROP TABLE IF EXISTS  \`User\``;
+    await pool.query(sql);
+};

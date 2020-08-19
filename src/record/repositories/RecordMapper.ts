@@ -1,8 +1,8 @@
+import { MessageResult } from '../../shared/models/RouteResult';
 import { pool } from '../../shared/repositories/database';
+import { convertJSDateToMySQLDate } from '../../shared/utils/dateUtils';
 import { RecordNotFound } from '../models/Errors';
 import Record from '../models/Record';
-import { convertJSDateToMySQLDate } from '../../shared/utils/dateUtils';
-import { MessageResult } from '../../shared/models/RouteResult';
 
 export const all = async (): Promise<Record[]> => {
     const [records] = await pool.query<Record[]>('SELECT * FROM Record;');
@@ -115,5 +115,10 @@ export const createConstraints = async (): Promise<void> => {
     const sql = `ALTER TABLE \`Record\`
     ADD CONSTRAINT \`FK_Record_User\` FOREIGN KEY (\`owner\`) REFERENCES \`User\` (\`username\`),
     ADD CONSTRAINT \`FK_Record_Wallet\` FOREIGN KEY (\`walletName\`,\`owner\`) REFERENCES \`Wallet\` (\`name\`, \`owner\`);`;
+    await pool.query(sql);
+};
+
+export const resetTable = async (): Promise<void> => {
+    const sql = `DROP TABLE IF EXISTS  \`Record\``;
     await pool.query(sql);
 };

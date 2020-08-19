@@ -1,16 +1,18 @@
-import mysql from 'mysql2';
+import mysql, { RowDataPacket } from 'mysql2';
 import config from '../../../config';
 import {
     createAutoIncrement as createRecordAutoIncrement,
     createConstraints as createRecordConstraints,
     createIndices as createRecordIndices,
     createTable as createRecordTable,
+    resetTable as resetRecordTable,
 } from '../../record/repositories/RecordMapper';
-import { createIndices as createUserIndices, createTable as createUserTable } from '../../user/repositories/UserMapper';
+import { createTable as createUserTable, resetTable as resetUserTable } from '../../user/repositories/UserMapper';
 import {
     createConstraints as createWalletConstraints,
     createIndices as createWalletIndices,
     createTable as createWalletTable,
+    resetTable as resetWalletTable,
 } from '../../wallet/repositories/WalletMapper';
 
 export const pool = mysql
@@ -23,11 +25,10 @@ export const pool = mysql
     })
     .promise();
 
-export const initiateDatabase = async (): Promise<void> => {
+export const setupTables = async (): Promise<void> => {
     await createRecordTable();
     await createUserTable();
     await createWalletTable();
-    await createUserIndices();
     await createRecordIndices();
     await createWalletIndices();
     await createRecordAutoIncrement();
@@ -35,12 +36,34 @@ export const initiateDatabase = async (): Promise<void> => {
     await createWalletConstraints();
 };
 
-export const useDatabase = async (databaseName: string): Promise<void> => {
-    try {
-        await pool.query(`USE DATABASE ${databaseName};`);
-    } catch (error) {}
+export const resetTables = async () => {
+    await resetWalletTable();
+    await resetUserTable();
+    await resetRecordTable();
 };
 
-export const close = (): void => {
-    pool.end();
+export const checkAndSetupDatabase = async (): Promise<void> => {
+    const needsSetup = await checkIfNeedsSetup();
+    if (!needsSetup) {
+        console.log('Database correctly setup');
+        return;
+    }
+    console.log('Resetting tables...');
+    resetTables();
+    console.log('Setting up tables...');
+    setupTables();
+    console.log('Successfully setup tables!');
+};
+
+export const checkIfNeedsSetup = async (): Promise<boolean> => {
+    const [tables] = await pool.query<RowDataPacket[]>('SHOW TABLES;');
+    const extractedTableNames = tables.map((table) => table[`Tables_in_${config.database}`]);
+    const shouldTables = Object.values(config.tables);
+    if (tables.length <= 0) return true;
+    const needsSetup = shouldTables.some((shouldTable) => {
+        const isMissing = !extractedTableNames.includes(shouldTable);
+        console.log(`Is Table ${shouldTable} available?: ${!isMissing}`);
+        return isMissing;
+    });
+    return needsSetup;
 };

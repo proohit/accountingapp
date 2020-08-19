@@ -5,6 +5,7 @@ import Router from 'koa-router';
 import config from '../config';
 import recordRouter from './record/services/recordRouter';
 import { RouteResult } from './shared/models/RouteResult';
+import { checkAndSetupDatabase } from './shared/repositories/database';
 import authenticationRouter from './shared/services/authenticationRouter';
 import documentationRouter from './shared/services/documentationRouter';
 import securedContextRouter from './shared/services/securedContextRouter';
@@ -37,6 +38,8 @@ router.use('/wallets', walletRouter);
 
 app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes());
+
+checkAndSetupDatabase();
 
 try {
     app.listen(config.backendPort);

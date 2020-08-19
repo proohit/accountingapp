@@ -1,7 +1,7 @@
+import { MessageResult } from '../../shared/models/RouteResult';
 import { pool } from '../../shared/repositories/database';
 import { WalletNotFound } from '../models/Errors';
 import Wallet from '../models/Wallet';
-import { MessageResult } from '../../shared/models/RouteResult';
 
 export const byName = async (name: string, owner: string): Promise<Wallet> => {
     const [wallets] = await pool.query<Wallet[]>(`SELECT * FROM Wallet WHERE name = '${name}' AND owner='${owner}'`);
@@ -53,6 +53,11 @@ export const createTable = async (): Promise<void> => {
             \`owner\` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
             \`balance\` double NOT NULL
           ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`;
+    await pool.query(sql);
+};
+
+export const resetTable = async (): Promise<void> => {
+    const sql = `DROP TABLE IF EXISTS \`Wallet\``;
     await pool.query(sql);
 };
 

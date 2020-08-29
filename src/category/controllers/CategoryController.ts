@@ -30,6 +30,8 @@ const CategoryControllerImpl: CategoryController = {
         const { username } = ctx.state.token;
         const categoryToDelete = await CATEGORY_MAPPER.getByName(username, categoryNameToDelete);
         if (username !== categoryToDelete.owner) throw new ResourceNotAllowed();
+        const recordsByUserByCategory = await RECORD_MAPPER.getByCategory(username, categoryNameToDelete);
+        recordsByUserByCategory.forEach(async (record) => await RECORD_MAPPER.deleteRecord(record.id));
         const messageResult = await CATEGORY_MAPPER.delete(username, categoryToDelete.name);
         return { data: messageResult, status: 200 };
     },

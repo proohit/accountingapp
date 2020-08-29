@@ -1,0 +1,19 @@
+Wallet:
+    type: object
+    description: ''
+    properties:
+        name:
+            $ref: '#/WalletName'
+        balance:
+            type: number
+        owner:
+            $ref: ../accountingapp.yaml#/components/schemas/User
+UpdateWallet:
+    type: object
+    properties:
+        name:
+            type: string
+        balance:
+            type: number
+WalletName:
+    type: string

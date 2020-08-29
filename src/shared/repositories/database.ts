@@ -1,17 +1,10 @@
-import mysql from 'mysql2';
+import mysql, { RowDataPacket } from 'mysql2';
 import config from '../../../config';
-import {
-    createAutoIncrement as createRecordAutoIncrement,
-    createConstraints as createRecordConstraints,
-    createIndices as createRecordIndices,
-    createTable as createRecordTable,
-} from '../../record/repositories/RecordMapper';
-import { createIndices as createUserIndices, createTable as createUserTable } from '../../user/repositories/UserMapper';
-import {
-    createConstraints as createWalletConstraints,
-    createIndices as createWalletIndices,
-    createTable as createWalletTable,
-} from '../../wallet/repositories/WalletMapper';
+import RECORD_MAPPER from '../../record/repositories/RecordMapper';
+import { createTable as createUserTable, resetTable as resetUserTable } from '../../user/repositories/UserMapper';
+import WALLET_MAPPER from '../../wallet/repositories/WalletMapper';
+import logger from '../services/loggingService';
+import CATEGORY_MAPPER from '../../category/repositories/CategoryMapper';
 
 export const pool = mysql
     .createPool({
@@ -23,24 +16,53 @@ export const pool = mysql
     })
     .promise();
 
-export const initiateDatabase = async (): Promise<void> => {
-    await createRecordTable();
+export const setupTables = async (): Promise<void> => {
+    await RECORD_MAPPER.createTable();
     await createUserTable();
-    await createWalletTable();
-    await createUserIndices();
-    await createRecordIndices();
-    await createWalletIndices();
-    await createRecordAutoIncrement();
-    await createRecordConstraints();
-    await createWalletConstraints();
+    await WALLET_MAPPER.createTable();
+    await CATEGORY_MAPPER.createTable();
+    await CATEGORY_MAPPER.createIndices();
+    await RECORD_MAPPER.createIndices();
+    await WALLET_MAPPER.createIndices();
+    await RECORD_MAPPER.createAutoIncrement();
+    await CATEGORY_MAPPER.createConstraints();
+    await RECORD_MAPPER.createConstraints();
+    await WALLET_MAPPER.createConstraints();
 };
 
-export const useDatabase = async (databaseName: string): Promise<void> => {
-    try {
-        await pool.query(`USE DATABASE ${databaseName};`);
-    } catch (error) {}
+export const resetTables = async () => {
+    await RECORD_MAPPER.resetTable();
+    await CATEGORY_MAPPER.resetTable();
+    await WALLET_MAPPER.resetTable();
+    await resetUserTable();
 };
 
-export const close = (): void => {
-    pool.end();
+export const setupDatabase = async () => {
+    logger.log('info', 'Resetting tables...');
+    await resetTables();
+    logger.log('info', 'Settigng up tables...');
+    await setupTables();
+    logger.log('info', 'Successfully setup tables!');
+};
+
+export const checkAndSetupDatabase = async (): Promise<void> => {
+    const needsSetup = await checkIfNeedsSetup();
+    if (!needsSetup) {
+        logger.log('info', `Database correctly setup`);
+        return;
+    }
+    await setupDatabase();
+};
+
+export const checkIfNeedsSetup = async (): Promise<boolean> => {
+    const [tables] = await pool.query<RowDataPacket[]>('SHOW TABLES;');
+    const extractedTableNames = tables.map((table) => table[`Tables_in_${config.database}`]);
+    const shouldTables = Object.values(config.tables);
+    if (tables.length <= 0) return true;
+    const needsSetup = shouldTables.some((shouldTable) => {
+        const isMissing = !extractedTableNames.includes(shouldTable);
+        logger.log('debug', `Table ${shouldTable} setup?: ${!isMissing}`);
+        return isMissing;
+    });
+    return needsSetup;
 };

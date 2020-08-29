@@ -1,0 +1,53 @@
+openapi: 3.0.2
+info:
+    title: Accounting App Backend Api
+    version: '1.0'
+servers:
+    - url: http://localhost:3002/api
+components:
+    schemas:
+        User:
+            $ref: './models/User-schema.yaml#/User'
+        Wallet:
+            $ref: './models/Wallet-schema.yaml#/Wallet'
+        UpdateWallet:
+            $ref: './models/Wallet-schema.yaml#/UpdateWallet'
+        WalletName:
+            $ref: './models/Wallet-schema.yaml#/WalletName'
+        Record:
+            $ref: './models/Record-schema.yaml#/Record'
+        RecordId:
+            $ref: './models/Record-schema.yaml#/RecordId'
+        NewRecord:
+            $ref: './models/Record-schema.yaml#/NewRecord'
+        UpdateRecord:
+            $ref: './models/Record-schema.yaml#/UpdateRecord'
+        PaginatedRecords:
+            $ref: './models/Record-schema.yaml#/PaginatedRecords'
+        Category:
+            $ref: './models/Category-schema.yaml#/Category'
+        NewCategory:
+            $ref: './models/Category-schema.yaml#/NewCategory'
+        UpdateCategory:
+            $ref: './models/Category-schema.yaml#/UpdateCategory'
+        CategoryName:
+            $ref: './models/Category-schema.yaml#/CategoryName'
+        MessageResult:
+            $ref: ./models/MessageResult-schema.yaml#/MessageResult
+paths:
+    /records:
+        $ref: ./paths/records-path.yaml#/records
+    /records/{id}:
+        $ref: ./paths/records-path.yaml#/records~1{id}
+    /records/wallet/{walletName}:
+        $ref: ./paths/records-path.yaml#/records~1wallet~1{walletName}
+    /records/category/{categoryName}:
+        $ref: ./paths/records-path.yaml#/records~1category~1{categoryName}
+    /wallets:
+        $ref: ./paths/wallets-path.yaml#/wallets
+    /wallets/{walletName}:
+        $ref: ./paths/wallets-path.yaml#/wallets~1{walletName}
+    /categories:
+        $ref: ./paths/categories-path.yaml#/categories
+    /categories/{categoryName}:
+        $ref: ./paths/categories-path.yaml#/categories~1{categoryName}

@@ -1,0 +1,161 @@
+records:
+    get:
+        tags:
+            - records
+        description: Returns records by current user
+        operationId: Records by user
+        parameters:
+            - in: query
+              required: false
+              name: page
+              description: Page of records to return. Default is 1 if not specified.
+              schema:
+                  type: number
+            - in: query
+              required: false
+              name: itemsPerPage
+              description: Items per page to return. Default is 20 if not specified.
+              schema:
+                  type: number
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../accountingapp.yaml#/components/schemas/PaginatedRecords
+records/{id}:
+    get:
+        tags:
+            - records
+        description: Returns the record with the id
+        operationId: Record by id
+        parameters:
+            - in: path
+              name: id
+              required: true
+              description: id of the record
+              example:
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/RecordId
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../accountingapp.yaml#/components/schemas/Record
+    delete:
+        tags:
+            - records
+        description: Deletes the record with the id
+        operationId: Delete record
+        parameters:
+            - in: path
+              name: id
+              required: true
+              description: id of the record
+              example:
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/RecordId
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/MessageResult
+
+    post:
+        tags:
+            - records
+        description: Creates a new record
+        operationId: New record
+        requestBody:
+            description: Record object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../accountingapp.yaml#/components/schemas/NewRecord
+        responses:
+            201:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/Record
+    put:
+        tags:
+            - records
+        description: Updates a record. Not given properties will not get updated.
+        operationId: Update record
+        parameters:
+            - in: path
+              required: true
+              name: id
+              schema:
+                  type: string
+        requestBody:
+            description: Updated properties in record object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../accountingapp.yaml#/components/schemas/UpdateRecord
+        responses:
+            201:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/Record
+records/wallet/{walletName}:
+    get:
+        tags:
+            - records
+        description: Returns records of the given wallet
+        operationId: Records by wallet
+        parameters:
+            - in: path
+              name: walletName
+              required: true
+              description: Name of wallet to get records of
+              schema:
+                  $ref: '../accountingapp.yaml#/components/schemas/WalletName'
+
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../accountingapp.yaml#/components/schemas/Record
+records/category/{categoryName}:
+    get:
+        tags:
+            - records
+        description: Record by category
+        parameters:
+            - in: path
+              name: categoryName
+              required: true
+              description: name of category to get records of
+              example:
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryName
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../accountingapp.yaml#/components/schemas/Record

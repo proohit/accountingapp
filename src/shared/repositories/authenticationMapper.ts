@@ -5,6 +5,7 @@ import { Request } from 'koa';
 import config from '../../../config';
 import { User } from '../../user/models/User';
 import { createNewUser, fullByName } from '../../user/repositories/UserMapper';
+import { InvalidCredentials, TokenInvalid, TokenNotProvided } from '../models/Errors';
 import { DecodedToken, LoginToken } from '../models/Login';
 
 export const register = async (username: string, password: string): Promise<User> => {
@@ -23,50 +24,41 @@ export const register = async (username: string, password: string): Promise<User
 export const login = async (req: Request): Promise<LoginToken> => {
     const requestedUsername = req.body.username;
     const requestedPassword = req.body.password;
-    if (!requestedUsername || !requestedPassword) {
-        throw new Error('Incorrect username or password');
-    }
-    try {
-        const userToLogin = await fullByName(requestedUsername);
-        if (!userToLogin) {
-            throw new Error('Incorrect username or password');
-        }
-        const username = userToLogin.username;
-        const privateKey = userToLogin.private_key;
-        const password = userToLogin.password;
+    if (!requestedUsername || !requestedPassword) throw new InvalidCredentials();
 
-        let passwordDecrypted = AES.decrypt(password, privateKey);
-        passwordDecrypted = crypto.enc.Utf8.stringify(passwordDecrypted);
+    const userToLogin = await fullByName(requestedUsername);
+    if (!userToLogin) throw new InvalidCredentials();
+    const username = userToLogin.username;
+    const privateKey = userToLogin.private_key;
+    const password = userToLogin.password;
 
-        if (!(requestedUsername === username && requestedPassword === passwordDecrypted)) {
-            throw new Error('Incorrect username or password');
-        }
-        const token = jwt.sign({ username: requestedUsername }, config.secret, {
-            expiresIn: '7 days',
-        });
+    let passwordDecrypted = AES.decrypt(password, privateKey);
+    passwordDecrypted = crypto.enc.Utf8.stringify(passwordDecrypted);
 
-        return { token };
-    } catch (error) {
-        throw error;
-    }
+    if (!(requestedUsername === username && requestedPassword === passwordDecrypted)) throw new InvalidCredentials();
+
+    const token = jwt.sign({ username: requestedUsername }, config.secret, {
+        expiresIn: '7 days',
+    });
+
+    return { token };
 };
 
 export const verify = (req: Request): DecodedToken => {
     let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
-    if (!token) {
-        throw new Error('Token not provided');
-    }
+    if (!token) throw new TokenNotProvided();
+
     if (token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);
     }
 
-    if (!token) throw new Error('Token not provided');
+    if (!token) throw new TokenNotProvided();
 
     try {
         const decoded = jwt.verify(token, config.secret) as DecodedToken;
         return decoded;
     } catch (error) {
-        throw new Error('Token is not valid');
+        throw new TokenInvalid();
     }
 };

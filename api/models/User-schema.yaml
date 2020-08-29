@@ -1,0 +1,10 @@
+User:
+    type: object
+    description: ''
+    properties:
+        username:
+            $ref: '#/Username'
+
+Username:
+    title: unique name of a user
+    type: string

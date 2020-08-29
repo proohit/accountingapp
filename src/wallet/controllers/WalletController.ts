@@ -14,8 +14,8 @@ const WalletControllerImpl: WalletController = {
         if (!balance) missingProperties.push('balance');
         if (missingProperties.length) throw new MissingProperty(missingProperties);
 
-        const walletsByUser = WALLET_MAPPER.byUser(username);
-        if ((await walletsByUser).find((wallet) => wallet.name === name)) throw new DuplicateWallet();
+        const walletsByUser = await WALLET_MAPPER.byUser(username);
+        if (walletsByUser.find((wallet) => wallet.name === name)) throw new DuplicateWallet();
 
         const createdWallet = await WALLET_MAPPER.create(name, balance, username);
         return { status: 201, data: createdWallet };

@@ -4,6 +4,7 @@ import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 import { createTable as createUserTable, resetTable as resetUserTable } from '../../user/repositories/UserMapper';
 import WALLET_MAPPER from '../../wallet/repositories/WalletMapper';
 import logger from '../services/loggingService';
+import CATEGORY_MAPPER from '../../category/repositories/CategoryMapper';
 
 export const pool = mysql
     .createPool({
@@ -19,17 +20,21 @@ export const setupTables = async (): Promise<void> => {
     await RECORD_MAPPER.createTable();
     await createUserTable();
     await WALLET_MAPPER.createTable();
+    await CATEGORY_MAPPER.createTable();
+    await CATEGORY_MAPPER.createIndices();
     await RECORD_MAPPER.createIndices();
     await WALLET_MAPPER.createIndices();
     await RECORD_MAPPER.createAutoIncrement();
+    await CATEGORY_MAPPER.createConstraints();
     await RECORD_MAPPER.createConstraints();
     await WALLET_MAPPER.createConstraints();
 };
 
 export const resetTables = async () => {
+    await RECORD_MAPPER.resetTable();
+    await CATEGORY_MAPPER.resetTable();
     await WALLET_MAPPER.resetTable();
     await resetUserTable();
-    await RECORD_MAPPER.resetTable();
 };
 
 export const setupDatabase = async () => {

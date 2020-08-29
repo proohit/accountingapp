@@ -7,16 +7,25 @@ import RECORD_MAPPER from '../repositories/RecordMapper';
 const RecordControllerImpl: RecordController = {
     createNewRecord: async (ctx) => {
         const username = ctx.state.token.username;
-        const { description, value, walletName, timestamp } = ctx.request.body;
+        const { description, value, walletName, timestamp, category } = ctx.request.body;
         const missingProperties = [];
         if (!description) missingProperties.push('description');
         if (!value) missingProperties.push('value');
         if (!walletName) missingProperties.push('walletName');
+        if (!category) missingProperties.push('category');
         if (!timestamp) missingProperties.push('timestamp');
         if (missingProperties.length) throw new MissingProperty(missingProperties);
 
         await WALLET_MAPPER.byName(walletName, username);
-        const createdRecord = await RECORD_MAPPER.createRecord(description, value, walletName, timestamp, username);
+        await CATEGORY_MAPPER.getByName(username, category);
+        const createdRecord = await RECORD_MAPPER.createRecord(
+            description,
+            value,
+            walletName,
+            timestamp,
+            username,
+            category,
+        );
 
         return { status: 201, data: createdRecord };
     },
@@ -55,7 +64,7 @@ const RecordControllerImpl: RecordController = {
     updateById: async (ctx) => {
         const decoded = ctx.state.token;
         const id = ctx.params.id;
-        const { description, value, walletName, timestamp } = ctx.request.body;
+        const { description, value, walletName, timestamp, category } = ctx.request.body;
         const record = await RECORD_MAPPER.getById(id);
         if (decoded.username !== record.owner) throw new ResourceNotAllowed();
         const updatedRecord = await RECORD_MAPPER.updateRecord(
@@ -65,6 +74,7 @@ const RecordControllerImpl: RecordController = {
             walletName,
             timestamp,
             decoded.username,
+            category,
         );
 
         return { status: 200, data: updatedRecord };

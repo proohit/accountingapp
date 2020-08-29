@@ -12,6 +12,7 @@ export interface RecordRepository extends Repository {
         wallet: string,
         timestamp: string,
         owner: string,
+        category: string,
     ) => Promise<Record>;
     deleteRecord: (id: number) => Promise<MessageResult>;
     updateRecord: (
@@ -21,6 +22,7 @@ export interface RecordRepository extends Repository {
         walletName: string,
         timestamp: string,
         owner: string,
+        category: string,
     ) => Promise<Record>;
     createIndices: () => Promise<void>;
     createAutoIncrement: () => Promise<void>;

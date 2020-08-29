@@ -7,6 +7,7 @@ interface Record extends RowDataPacket {
     walletName: string;
     timestamp: string;
     owner: string;
+    category: string;
 }
 
 export default Record;

@@ -74,6 +74,7 @@ const WalletControllerImpl: WalletController = {
                     null,
                     record.timestamp,
                     record.owner,
+                    record.category,
                 ),
         );
 
@@ -87,6 +88,7 @@ const WalletControllerImpl: WalletController = {
                 editedWallet.name,
                 record.timestamp,
                 record.owner,
+                record.category,
             );
         });
 

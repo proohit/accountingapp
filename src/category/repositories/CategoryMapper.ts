@@ -27,7 +27,7 @@ class CategoryMapper implements CategoryRepository {
         return { message: `Deleted category '${name}'` };
     }
     async update(username: string, oldName: string, newName: string): Promise<Category> {
-        const oldCategory = await this.getByName(oldName, username);
+        const oldCategory = await this.getByName(username, oldName);
         const name = newName || oldCategory.name;
 
         await pool.query(`UPDATE Category SET name='${name}' WHERE name='${oldName}' AND owner='${username}'`);

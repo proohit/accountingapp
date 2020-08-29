@@ -16,7 +16,10 @@ class RecordMapper implements RecordRepository {
             `SELECT * FROM Record WHERE owner='${username}' ORDER BY timestamp DESC LIMIT ${from},${count};`,
         );
 
-        return recordsOfUser;
+        return recordsOfUser.map((record) => ({
+            ...record,
+            timestamp: convertJSDateToMySQLDate(new Date(record.timestamp)),
+        }));
     }
     async getByWallet(username: string, wallet: string): Promise<Record[]> {
         const [records] = await pool.query<Record[]>(
@@ -39,9 +42,10 @@ class RecordMapper implements RecordRepository {
         wallet: string,
         timestamp: string,
         owner: string,
+        category: string,
     ): Promise<Record> {
         const result = (await pool.query(
-            `INSERT INTO Record(description, value, walletName,timestamp, owner) VALUES ('${description}',${value},'${wallet}','${timestamp}','${owner}')`,
+            `INSERT INTO Record(description, value, walletName,timestamp, owner, category) VALUES ('${description}',${value},'${wallet}','${timestamp}','${owner}', '${category}')`,
         )) as any;
         const insertedRecord = await this.getById(result[0].insertId);
         return insertedRecord;
@@ -58,6 +62,7 @@ class RecordMapper implements RecordRepository {
         walletName: string,
         timestamp: string,
         owner: string,
+        category: string,
     ): Promise<Record> {
         let sql = `UPDATE Record SET id=${id}`;
         if (description) sql += `, description='${description}'`;
@@ -66,6 +71,8 @@ class RecordMapper implements RecordRepository {
         else if (walletName) sql += `, walletName='${walletName}'`;
         if (owner) sql += `, owner='${owner}'`;
         if (timestamp) sql += `, timestamp='${timestamp}'`;
+        if (category === null) sql += `, category=${category}`;
+        else if (category) sql += `, category='${category}'`;
 
         sql += ` WHERE id = ${id}`;
         await pool.query(sql);
@@ -80,7 +87,8 @@ class RecordMapper implements RecordRepository {
                 \`value\` double NOT NULL,
                 \`timestamp\` datetime NOT NULL,
                 \`walletName\` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-                \`owner\` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL
+                \`owner\` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
+                \`category\` varchar(125) COLLATE utf8mb4_unicode_ci DEFAULT NULL
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;`;
         await pool.query(sql);
     }
@@ -89,6 +97,7 @@ class RecordMapper implements RecordRepository {
         const sql = `ALTER TABLE \`Record\`
       ADD PRIMARY KEY (\`id\`),
       ADD KEY \`FK_Record_User\` (\`owner\`),
+      ADD KEY \`FK_Record_Category\` (\`category\`),
       ADD KEY \`FK_Record_Wallet\` (\`walletName\`,\`owner\`);`;
         await pool.query(sql);
     }
@@ -101,6 +110,7 @@ class RecordMapper implements RecordRepository {
 
     async createConstraints(): Promise<void> {
         const sql = `ALTER TABLE \`Record\`
+    ADD CONSTRAINT \`FK_Record_Category\` FOREIGN KEY (\`category\`) REFERENCES \`Category\` (\`name\`),
     ADD CONSTRAINT \`FK_Record_User\` FOREIGN KEY (\`owner\`) REFERENCES \`User\` (\`username\`),
     ADD CONSTRAINT \`FK_Record_Wallet\` FOREIGN KEY (\`walletName\`,\`owner\`) REFERENCES \`Wallet\` (\`name\`, \`owner\`);`;
         await pool.query(sql);

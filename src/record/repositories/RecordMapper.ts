@@ -11,6 +11,16 @@ export const all = async (): Promise<Record[]> => {
 };
 
 class RecordMapper implements RecordRepository {
+    async getByCategory(username: string, category: string): Promise<Record[]> {
+        const [recordsOfUserByCategory] = await pool.query<Record[]>(
+            `SELECT * FROM Record WHERE owner='${username}' AND category='${category}' ORDER BY timestamp DESC;`,
+        );
+
+        return recordsOfUserByCategory.map((record) => ({
+            ...record,
+            timestamp: convertJSDateToMySQLDate(new Date(record.timestamp)),
+        }));
+    }
     async getByUser(username: string, from: number, count: number): Promise<Record[]> {
         const [recordsOfUser] = await pool.query<Record[]>(
             `SELECT * FROM Record WHERE owner='${username}' ORDER BY timestamp DESC LIMIT ${from},${count};`,

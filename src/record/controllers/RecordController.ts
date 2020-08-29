@@ -3,8 +3,15 @@ import { calculateOffset } from '../../shared/utils/paginationUtils';
 import WALLET_MAPPER from '../../wallet/repositories/WalletMapper';
 import { RecordController } from '../models/RecordController';
 import RECORD_MAPPER from '../repositories/RecordMapper';
+import CATEGORY_MAPPER from '../../category/repositories/CategoryMapper';
 
 const RecordControllerImpl: RecordController = {
+    getByCategory: async (ctx) => {
+        const { username } = ctx.state.token;
+        const categoryName = ctx.params.category;
+        const recordsByUserByCategory = await RECORD_MAPPER.getByCategory(username, categoryName);
+        return { data: recordsByUserByCategory, status: 200 };
+    },
     createNewRecord: async (ctx) => {
         const username = ctx.state.token.username;
         const { description, value, walletName, timestamp, category } = ctx.request.body;

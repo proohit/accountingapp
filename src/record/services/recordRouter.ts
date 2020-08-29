@@ -13,6 +13,8 @@ router.get('/:id', RecordControllerImpl.getById);
 
 router.put('/:id', RecordControllerImpl.updateById);
 
+router.get('/category/:category', RecordControllerImpl.getByCategory);
+
 router.get('/wallet/:wallet', RecordControllerImpl.getByWallet);
 
 export default router.routes();

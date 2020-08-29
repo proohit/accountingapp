@@ -65,6 +65,10 @@ records/{id}:
         responses:
             200:
                 description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/MessageResult
 
     post:
         tags:
@@ -124,6 +128,28 @@ records/wallet/{walletName}:
               schema:
                   $ref: '../accountingapp.yaml#/components/schemas/WalletName'
 
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../accountingapp.yaml#/components/schemas/Record
+records/category/{categoryName}:
+    get:
+        tags:
+            - records
+        description: Record by category
+        parameters:
+            - in: path
+              name: categoryName
+              required: true
+              description: name of category to get records of
+              example:
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryName
         responses:
             200:
                 description: OK

@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "ts-node src/index.ts",
+        "start": "npm run doc:dev && ts-node src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon",
         "build": "tsc && npm run doc:prod",

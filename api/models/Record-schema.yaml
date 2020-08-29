@@ -2,7 +2,7 @@ Record:
     type: object
     properties:
         id:
-            type: number
+            $ref: '#/RecordId'
         description:
             type: string
         value:
@@ -11,9 +11,11 @@ Record:
             type: string
             format: date-time
         wallet:
-            $ref: ./Wallet-schema.yaml#/Wallet
+            $ref: ./Wallet-schema.yaml#/WalletName
         owner:
-            $ref: ./User-schema.yaml#/User
+            $ref: ./User-schema.yaml#/Username
+        category:
+            $ref: ./Category-schema.yaml#/CategoryName
 NewRecord:
     type: object
     required:
@@ -30,8 +32,9 @@ NewRecord:
             type: string
             format: date-time
         wallet:
-            $ref: ./Wallet-schema.yaml#/Wallet
-
+            $ref: ./Wallet-schema.yaml#/WalletName
+        category:
+            $ref: ./Category-schema.yaml#/CategoryName
 UpdateRecord:
     type: object
     properties:
@@ -43,7 +46,9 @@ UpdateRecord:
             type: string
             format: date-time
         wallet:
-            $ref: ./Wallet-schema.yaml#/Wallet
+            $ref: ./Wallet-schema.yaml#/WalletName
+        category:
+            $ref: ./Category-schema.yaml#/CategoryName
 
 PaginatedRecords:
     type: object

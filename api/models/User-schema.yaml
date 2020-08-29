@@ -3,4 +3,8 @@ User:
     description: ''
     properties:
         username:
-            type: string
+            $ref: '#/Username'
+
+Username:
+    title: unique name of a user
+    type: string

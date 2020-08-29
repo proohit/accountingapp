@@ -1,0 +1,25 @@
+Category:
+    type: object
+    description: Describes the category of a record
+    properties:
+        name:
+            $ref: '#/CategoryName'
+        owner:
+            $ref: ./User-schema.yaml#/Username
+CategoryName:
+    type: string
+    description: name of the category
+UpdateCategory:
+    description: updated category object
+    type: object
+    properties:
+        name:
+            $ref: '#/CategoryName'
+NewCategory:
+    description: new category object
+    type: object
+    required:
+        - name
+    properties:
+        name:
+            $ref: '#/CategoryName'

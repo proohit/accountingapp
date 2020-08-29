@@ -5,6 +5,8 @@ const router = new Router();
 
 router.get('/:name', CategoryControllerImpl.getByName);
 
+router.get('/', CategoryControllerImpl.getByUser);
+
 router.post('/', CategoryControllerImpl.create);
 
 router.delete('/:name', CategoryControllerImpl.delete);

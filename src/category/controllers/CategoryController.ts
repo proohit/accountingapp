@@ -7,6 +7,12 @@ import CATEGORY_MAPPER from '../repositories/CategoryMapper';
 import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 
 const CategoryControllerImpl: CategoryController = {
+    getByUser: async (ctx): Promise<RouteResult<Category[]>> => {
+        const { username } = ctx.state.token;
+
+        const categoriesOfUser = await CATEGORY_MAPPER.getByUser(username);
+        return { data: categoriesOfUser, status: 200 };
+    },
     create: async (ctx): Promise<RouteResult<Category>> => {
         const { username } = ctx.state.token;
         const { name } = ctx.request.body;

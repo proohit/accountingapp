@@ -4,6 +4,7 @@ import { Category } from '../models/Category';
 import { CategoryController } from '../models/CategoryController';
 import { DuplicateCategory } from '../models/Errors';
 import CATEGORY_MAPPER from '../repositories/CategoryMapper';
+import RECORD_MAPPER from '../../record/repositories/RecordMapper';
 
 const CategoryControllerImpl: CategoryController = {
     create: async (ctx): Promise<RouteResult<Category>> => {
@@ -22,6 +23,7 @@ const CategoryControllerImpl: CategoryController = {
         const categoryNameToDelete = ctx.params.name;
         const { username } = ctx.state.token;
         const categoryToDelete = await CATEGORY_MAPPER.getByName(username, categoryNameToDelete);
+        if (username !== categoryToDelete.owner) throw new ResourceNotAllowed();
         const messageResult = await CATEGORY_MAPPER.delete(username, categoryToDelete.name);
         return { data: messageResult, status: 200 };
     },
@@ -37,8 +39,33 @@ const CategoryControllerImpl: CategoryController = {
         const { name: updatedName } = ctx.request.body;
         const categoryToUpdate = await CATEGORY_MAPPER.getByName(username, categoryToUpdateName);
         if (username !== categoryToUpdate.owner) throw new ResourceNotAllowed();
+
+        const recordsByUserByCategory = await RECORD_MAPPER.getByCategory(username, categoryToUpdateName);
+        recordsByUserByCategory.forEach(
+            async (record) =>
+                await RECORD_MAPPER.updateRecord(
+                    record.id,
+                    record.description,
+                    record.value,
+                    record.walletName,
+                    record.timestamp,
+                    record.owner,
+                    null,
+                ),
+        );
         const updatedCategory = await CATEGORY_MAPPER.update(username, categoryToUpdateName, updatedName);
-        // TODO: Add record updates
+        recordsByUserByCategory.forEach(
+            async (record) =>
+                await RECORD_MAPPER.updateRecord(
+                    record.id,
+                    record.description,
+                    record.value,
+                    record.walletName,
+                    record.timestamp,
+                    record.owner,
+                    updatedCategory.name,
+                ),
+        );
         return { status: 200, data: updatedCategory };
     },
 };

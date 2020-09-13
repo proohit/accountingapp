@@ -12,6 +12,7 @@ import securedContextRouter from './shared/services/securedContextRouter';
 import walletRouter from './wallet/services/walletRouter';
 import logger from './shared/services/loggingService';
 import categoryRouter from './category/services/categoryRouter';
+import userRouter from './user/services/userRouter';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -36,6 +37,7 @@ router.use(async (ctx, next) => {
 });
 router.use('/auth', authenticationRouter);
 router.use(securedContextRouter);
+router.use('/users', userRouter);
 router.use('/records', recordRouter);
 router.use('/wallets', walletRouter);
 router.use('/categories', categoryRouter);

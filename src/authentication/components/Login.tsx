@@ -1,45 +1,90 @@
-import { Button, Grid, TextField } from '@material-ui/core'
-import React from 'react'
-import { withRouter } from 'react-router'
-import { RouteComponentProps } from 'react-router-dom'
-import { Severity } from '../../shared/alert/AlertModel'
-import { DataComponentProps } from '../../shared/BaseProps'
-import AuthenticationContext, { AuthenticationContextValue } from '../../shared/context/AuthenticationContext'
-import { login } from '../service/AuthenticationService'
+import {
+  Button,
+  Container,
+  makeStyles,
+  TextField,
+  Typography,
+} from '@material-ui/core';
+import React, { FunctionComponent, useState } from 'react';
+import USER_API_SERVICE from '../../users/services/UserApiService';
+import { useAuthentication } from '../hooks/useAuthentication';
+import { AUTHENTICATION_API } from '../services/AuthenticationApi';
 
-interface ILoginState {
-    usernameValue: string;
-    passwordValue: string;
-}
-class Login extends React.Component<DataComponentProps & RouteComponentProps, ILoginState> {
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
-    state: ILoginState = {
-        usernameValue: "",
-        passwordValue: ""
-    }
-    static contextType = AuthenticationContext
-    contextValue: AuthenticationContextValue = this.context;
+const Login: FunctionComponent = (props) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const classes = useStyles();
 
-    login = async () => {
-        try {
-            const res = await login(this.state.usernameValue, this.state.passwordValue)
-            this.contextValue.setToken(res);
-            console.log(res);
-            this.props.history.push('/records')
-        } catch (error) {
-            this.props.functionSet.openAlert({ message: error.message, severity: Severity.error })
-        }
-    }
-    render() {
-        return (
-            <Grid container contextMenu="test" direction="column" justify="center" alignItems="center">
-                <TextField label="Username" onChange={(e) => this.setState({ usernameValue: e.target.value })} />
-                <TextField label="Password" type="password" onChange={(e) => this.setState({ passwordValue: e.target.value })} />
-                <Button variant="contained" onClick={this.login}>Login</Button>
+  const { login } = useAuthentication();
 
-            </Grid>
-        )
-    }
-}
+  const handleSubmit = async () => {
+    const { token } = await AUTHENTICATION_API.login(username, password);
+    const loggedInUser = await USER_API_SERVICE.getCurrentUser(token);
+    console.log('login', token, loggedInUser);
+    login!(loggedInUser.username, token);
+  };
 
-export default withRouter(Login);
+  return (
+    <Container maxWidth="xs">
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <div className={classes.form}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={(event) => setPassword(event.target.value)}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={handleSubmit}
+          >
+            Sign In
+          </Button>
+        </div>
+      </div>
+    </Container>
+  );
+};
+
+export default Login;

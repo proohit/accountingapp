@@ -3,27 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/moment": "^1.3.13",
-    "@material-ui/core": "^4.9.5",
+    "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.45",
-    "@material-ui/pickers": "^3.2.10",
-    "@testing-library/react": "^9.4.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.29",
-    "@types/react": "^16.9.23",
-    "@types/react-dom": "^16.9.5",
-    "@types/react-router-dom": "^5.1.3",
-    "@types/react-test-renderer": "^16.9.2",
-    "material-table": "^1.57.2",
-    "moment": "^2.24.0",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
-    "react-test-renderer": "^16.13.0",
-    "react-web-component": "^2.0.1",
+    "@types/node": "^12.12.58",
+    "@types/react": "^16.9.49",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-infinite-scroller": "^1.2.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-infinite-scroller": "^1.2.4",
+    "react-scripts": "3.4.3",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -33,7 +27,26 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "extends": [
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier/@typescript-eslint",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {}
   },
   "browserslist": {
     "production": [
@@ -46,8 +59,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^4.2.4"
   }
 }

@@ -5,17 +5,20 @@ import { AuthenticationContext } from '../hooks/useAuthentication';
 export const AuthenticationProvider: FunctionComponent = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
+  const [token, setToken] = useState('');
   const STORAGE_TOKEN = 'token';
 
-  const login = (loggedInUsername: string, token: string) => {
+  const login = (loggedInUsername: string, newToken: string) => {
     setUsername(loggedInUsername);
     setAuthenticated(true);
-    localStorage.setItem(STORAGE_TOKEN, token);
+    setToken(newToken);
+    localStorage.setItem(STORAGE_TOKEN, newToken);
   };
 
   const logout = () => {
     setUsername('');
     setAuthenticated(false);
+    setToken('');
     localStorage.removeItem(STORAGE_TOKEN);
   };
 
@@ -53,7 +56,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
 
   return (
     <AuthenticationContext.Provider
-      value={{ authenticated, login, logout, username }}
+      value={{ authenticated, login, logout, username, token }}
     >
       {props.children}
     </AuthenticationContext.Provider>

@@ -31,16 +31,20 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
       return;
     }
 
-    const requestedUsername = await USER_API_SERVICE.getCurrentUser(
-      tokenFromStorage
-    );
+    let currentUser;
 
-    if (!requestedUsername) {
+    try {
+      currentUser = await USER_API_SERVICE.getCurrentUser(tokenFromStorage);
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (!currentUser) {
       redirectToLoginPage();
       return;
     }
 
-    login(requestedUsername.username, tokenFromStorage);
+    login(currentUser.username, tokenFromStorage);
   };
 
   useEffect(() => {

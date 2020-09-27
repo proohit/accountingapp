@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { Authentication } from '../models/Authentication';
 
-export const AuthenticationContext = React.createContext<
-  Partial<Authentication>
->({});
+export const AuthenticationContext = React.createContext<Authentication>(
+  {} as Authentication
+);
 
 export const useAuthentication = () => {
   const context = useContext(AuthenticationContext);

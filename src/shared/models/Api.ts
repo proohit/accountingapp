@@ -15,10 +15,12 @@ export const BASE_API: HttpService = {
   ): Promise<R> => {
     const headerBuilder = new AccHeaderBuilder(token);
     const httpQuery = query
-      ?.map((singleQuery) => `${singleQuery[0]}=${singleQuery[1]}`)
-      .join('&');
-
-    const res = await fetch(`${url}?${httpQuery}`, {
+      ? query
+          .map((singleQuery) => `?${singleQuery[0]}=${singleQuery[1]}`)
+          .join('&')
+      : '';
+    const finalUrl = `${url}${httpQuery}`;
+    const res = await fetch(finalUrl, {
       method: 'GET',
       headers: headerBuilder.getHeader(),
     });

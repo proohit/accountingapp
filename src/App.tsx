@@ -1,10 +1,9 @@
-import { makeStyles, ThemeProvider } from '@material-ui/core';
+import { CssBaseline, makeStyles } from '@material-ui/core';
 import React from 'react';
 import './App.css';
-import { AuthenticationProvider } from './authentication/components/AuthenticationProvider';
-import { NavigationBar } from './shared/components/NavigationBar';
-import { AccTheme } from './shared/globals/styles/AccTheme';
 import { ApplicationRouter } from './shared/components/ApplicationRouter';
+import { NavigationBar } from './shared/components/NavigationBar';
+import Providers from './shared/components/Providers';
 
 const mainStyles = makeStyles((theme) => ({
   appbarSeperator: {
@@ -16,17 +15,16 @@ function App() {
   const classes = mainStyles();
   return (
     <>
-      <ThemeProvider theme={AccTheme}>
-        <AuthenticationProvider>
-          <header>
-            <NavigationBar />
-          </header>
-          <main>
-            <div className={classes.appbarSeperator} />
-            <ApplicationRouter />
-          </main>
-        </AuthenticationProvider>
-      </ThemeProvider>
+      <Providers>
+        <header>
+          <NavigationBar />
+        </header>
+        <main>
+          <div className={classes.appbarSeperator} />
+          <CssBaseline />
+          <ApplicationRouter />
+        </main>
+      </Providers>
     </>
   );
 }

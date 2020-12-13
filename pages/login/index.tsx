@@ -1,15 +1,16 @@
 import {
   Button,
   Container,
+  Grid,
   makeStyles,
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { FunctionComponent, useState, useEffect } from 'react';
-import USER_API_SERVICE from '../../users/services/UserApiService';
-import { useAuthentication } from '../hooks/useAuthentication';
-import { AUTHENTICATION_API } from '../services/AuthenticationApi';
-import { Redirect } from 'react-router-dom';
+import { useRouter } from 'next/dist/client/router';
+import React, { FunctionComponent, useState } from 'react';
+import { useAuthentication } from '../../src/authentication/hooks/useAuthentication';
+import { AUTHENTICATION_API } from '../../src/authentication/services/AuthenticationApi';
+import USER_API_SERVICE from '../../src/users/services/UserApiService';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,21 +32,20 @@ const LoginForm: FunctionComponent = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const classes = useStyles();
-
-  const { authenticated, login } = useAuthentication();
+  const router = useRouter();
+  const { login } = useAuthentication();
 
   const handleSubmit = async () => {
     const { token } = await AUTHENTICATION_API.login(username, password);
     const loggedInUser = await USER_API_SERVICE.getCurrentUser(token);
     console.log('login', token, loggedInUser);
     login(loggedInUser.username, token);
+    router.back();
   };
 
   return (
-    <Container maxWidth="xs">
-      {authenticated ? (
-        <Redirect to="/" />
-      ) : (
+    <Grid container direction="row" justify="center">
+      <Container maxWidth="xs">
         <div className={classes.paper}>
           <Typography component="h1" variant="h5">
             Sign in
@@ -87,8 +87,8 @@ const LoginForm: FunctionComponent = (props) => {
             </Button>
           </div>
         </div>
-      )}
-    </Container>
+      </Container>
+    </Grid>
   );
 };
 

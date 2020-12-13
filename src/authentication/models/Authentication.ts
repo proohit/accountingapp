@@ -4,4 +4,5 @@ export interface Authentication {
   token: string;
   login: (username: string, token: string) => void;
   logout: () => void;
+  isLoginLoading: boolean;
 }

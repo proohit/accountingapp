@@ -1,21 +1,8 @@
-import React, { useEffect, Fragment } from 'react';
-import { Grid, Typography } from '@material-ui/core';
-import { useRecords } from '../../src/records/hooks/useRecords';
+import React, { FunctionComponent } from 'react';
+import RecordList from '../../src/records/components/RecordList';
 
-interface RecordPageProps {}
-
-const RecordPage: React.FunctionComponent<RecordPageProps> = (props) => {
-  const { records, refreshRecords } = useRecords();
-
-  return records ? (
-    <Grid>
-      {records.map((record) => (
-        <Typography>{record.description}</Typography>
-      ))}
-    </Grid>
-  ) : (
-    <Fragment />
-  );
+const RecordPage: FunctionComponent = (props) => {
+  return <RecordList />;
 };
 
 export default RecordPage;

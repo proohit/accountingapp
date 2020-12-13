@@ -10,14 +10,12 @@ export const RecordsProvider: FunctionComponent = (props) => {
   const recordsApi = new RecordsApiService();
 
   const refreshRecords = async () => {
-    const records = await recordsApi.getRecordsByUser(authentication.token);
-    setRecords(records);
+    const newRecords = await recordsApi.getRecordsByUser(authentication.token);
+    setRecords(newRecords);
   };
 
   useEffect(() => {
-    if (authentication.token) {
-      refreshRecords();
-    }
+    refreshRecords();
   }, [authentication.token]);
 
   return (

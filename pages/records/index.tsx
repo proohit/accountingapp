@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { useRecords } from '../hooks/useRecords';
+import { useRecords } from '../../src/records/hooks/useRecords';
 
 interface RecordPageProps {}
 

@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { useRecords } from '../hooks/useRecords';
 import { RecordCard } from './RecordCard';
 
@@ -11,11 +11,13 @@ const RecordList: FunctionComponent = () => {
   }, []);
 
   return records && records.length ? (
-    <Grid>
-      {records.map((record) => (
-        <RecordCard key={record.id} record={record} />
-      ))}
-    </Grid>
+    <Box height="100%" overflow="visible">
+      <Grid>
+        {records.map((record) => (
+          <RecordCard key={record.id} record={record} />
+        ))}
+      </Grid>
+    </Box>
   ) : (
     <Fragment />
   );

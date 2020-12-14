@@ -24,7 +24,9 @@ import NavigationLinkItem from './NavigationLinkItem';
 
 const styles = makeStyles((theme) => ({
   drawer: {
-    height: '100%',
+    height: '100vh',
+    position: 'sticky',
+    top: 0,
   },
   header: {
     paddingTop: theme.spacing(4),

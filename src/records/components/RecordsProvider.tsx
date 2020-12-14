@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { RecordsContext } from '../hooks/useRecords';
 import { Record } from '../models/Record';
@@ -13,10 +13,6 @@ export const RecordsProvider: FunctionComponent = (props) => {
     const newRecords = await recordsApi.getRecordsByUser(authentication.token);
     setRecords(newRecords);
   };
-
-  useEffect(() => {
-    refreshRecords();
-  }, [authentication.token]);
 
   return (
     <RecordsContext.Provider value={{ records, setRecords, refreshRecords }}>

@@ -1,10 +1,14 @@
-import React, { Fragment, FunctionComponent } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import React, { Fragment, FunctionComponent, useEffect } from 'react';
+import { Grid } from '@material-ui/core';
 import { useRecords } from '../hooks/useRecords';
-import { RecordCard } from './RecordCArd';
+import { RecordCard } from './RecordCard';
 
 const RecordList: FunctionComponent = () => {
-  const { records } = useRecords();
+  const { records, refreshRecords } = useRecords();
+
+  useEffect(() => {
+    refreshRecords();
+  }, []);
 
   return records && records.length ? (
     <Grid>

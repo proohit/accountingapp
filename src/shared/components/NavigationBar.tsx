@@ -16,8 +16,10 @@ import {
   Person,
   Settings,
 } from '@material-ui/icons';
+import { useRouter } from 'next/dist/client/router';
 import React, { FunctionComponent } from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
+import Routes from '../constants/Routes';
 import LoginListItem from './LoginListItem';
 import LogoutListItem from './LogoutListItem';
 import NavigationLinkItem from './NavigationLinkItem';
@@ -26,6 +28,7 @@ const styles = makeStyles((theme) => ({
   drawer: {
     height: '100vh',
     position: 'sticky',
+    overflow: 'auto',
     top: 0,
   },
   header: {
@@ -37,6 +40,18 @@ const styles = makeStyles((theme) => ({
 export const NavigationBar: FunctionComponent = () => {
   const { logout, authenticated, username } = useAuthentication();
   const classes = styles();
+  const router = useRouter();
+
+  const getCurrentRoute = (): Routes => {
+    switch (router.route) {
+      case Routes.DASHBOARD:
+        return Routes.DASHBOARD;
+      case Routes.RECORDS:
+        return Routes.RECORDS;
+      case Routes.WALLETS:
+        return Routes.WALLETS;
+    }
+  };
 
   return (
     <Paper className={classes.drawer}>
@@ -52,18 +67,25 @@ export const NavigationBar: FunctionComponent = () => {
         <Typography variant="h4">{username}</Typography>
       </Grid>
       <Divider />
-      <List>
+      <List disablePadding>
         <NavigationLinkItem
           icon={<Dashboard />}
-          link="/home"
+          link={Routes.DASHBOARD}
           text="Dashboard"
+          active={getCurrentRoute() === Routes.DASHBOARD}
         />
         <NavigationLinkItem
           icon={<MonetizationOn />}
-          link="/records"
+          link={Routes.RECORDS}
           text="Records"
+          active={getCurrentRoute() === Routes.RECORDS}
         />
-        <NavigationLinkItem icon={<Payment />} link="/wallets" text="Wallets" />
+        <NavigationLinkItem
+          icon={<Payment />}
+          link={Routes.WALLETS}
+          text="Wallets"
+          active={getCurrentRoute() === Routes.WALLETS}
+        />
         <Divider />
         <ListItem>
           <ListItemIcon>

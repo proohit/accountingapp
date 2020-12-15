@@ -17,7 +17,10 @@ export class RecordsApiService implements RecordsApi {
     const paginatedRecords = await BASE_API.get<PaginatedRecords>(
       API_ROUTES.RECORDS,
       token,
-      page ? [['page', page.toString()]] : undefined
+      [
+        ['page', page ? page.toString() : '0'],
+        ['itemsPerPage', '10000'],
+      ]
     );
     return paginatedRecords.data;
   }

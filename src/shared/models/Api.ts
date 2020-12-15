@@ -15,9 +15,9 @@ export const BASE_API: HttpService = {
   ): Promise<R> => {
     const headerBuilder = new AccHeaderBuilder(token);
     const httpQuery = query
-      ? query
-          .map((singleQuery) => `?${singleQuery[0]}=${singleQuery[1]}`)
-          .join('&')
+      ? `?${query
+          .map((singleQuery) => `${singleQuery[0]}=${singleQuery[1]}`)
+          .join('&')}`
       : '';
     const finalUrl = `${url}${httpQuery}`;
     const res = await fetch(finalUrl, {

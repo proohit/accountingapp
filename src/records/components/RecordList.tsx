@@ -1,23 +1,31 @@
-import React, { Fragment, FunctionComponent, useEffect } from 'react';
-import { Box, Grid } from '@material-ui/core';
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 import { useRecords } from '../hooks/useRecords';
-import { RecordCard } from './RecordCard';
+import { RecordsTable } from './RecordsTable';
 
 const RecordList: FunctionComponent = () => {
   const { records, refreshRecords } = useRecords();
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     refreshRecords();
   }, []);
 
+  const getRecordsByPage = () => {
+    return records.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  };
+
   return records && records.length ? (
-    <Box height="100%" overflow="visible">
-      <Grid>
-        {records.map((record) => (
-          <RecordCard key={record.id} record={record} />
-        ))}
-      </Grid>
-    </Box>
+    <RecordsTable
+      records={getRecordsByPage()}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onChangePage={(newPage) => setPage(newPage)}
+      onChangeRowsPerPage={(event) =>
+        setRowsPerPage(parseInt(event.target.value, 10))
+      }
+      rowCount={records.length}
+    />
   ) : (
     <Fragment />
   );

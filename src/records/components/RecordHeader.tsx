@@ -4,6 +4,7 @@ import React from 'react';
 const styles = makeStyles((theme) => ({
   header: {
     marginBottom: theme.spacing(2),
+    color: theme.palette.primary.main,
   },
 }));
 

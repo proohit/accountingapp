@@ -10,8 +10,7 @@
         "moduleResolution": "Node",
         "importHelpers": true,
         "allowUnreachableCode": false,
-        "pretty": true,
-        "typeRoots": ["./src"]
+        "pretty": true
     },
     "include": ["src/**/*"],
     "exclude": ["test/**/*"]

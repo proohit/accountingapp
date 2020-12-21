@@ -4,6 +4,7 @@ import { convertJSDateToMySQLDate } from '../../shared/utils/dateUtils';
 import { RecordNotFound } from '../models/Errors';
 import Record from '../models/Record';
 import { RecordRepository } from '../models/RecordRepository';
+import { SearchQuery } from '../models/SearchQuery';
 
 export const all = async (): Promise<Record[]> => {
     const [records] = await pool.query<Record[]>('SELECT * FROM Record;');
@@ -11,6 +12,18 @@ export const all = async (): Promise<Record[]> => {
 };
 
 class RecordMapper implements RecordRepository {
+    async getByQuery(username: string, query: SearchQuery): Promise<Record[]> {
+        const sortQuery = query.sortBy && query.sortDirection ? `ORDER BY ${query.sortBy} ${query.sortDirection}` : '';
+        const limitQuery = query.from && query.to ? `LIMIT ${query.from},${query.to}` : '';
+        const finalQuery = `SELECT * FROM Record WHERE owner='${username}' ${sortQuery} ${limitQuery};`;
+        const [records] = await pool.query<Record[]>(finalQuery);
+
+        return records.map((record) => ({
+            ...record,
+            timestamp: convertJSDateToMySQLDate(new Date(record.timestamp)),
+        }));
+    }
+
     async getByCategory(username: string, category: string): Promise<Record[]> {
         const [recordsOfUserByCategory] = await pool.query<Record[]>(
             `SELECT * FROM Record WHERE owner='${username}' AND category='${category}' ORDER BY timestamp DESC;`,

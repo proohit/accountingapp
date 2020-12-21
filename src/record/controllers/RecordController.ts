@@ -41,9 +41,16 @@ const RecordControllerImpl: RecordController = {
         const decoded = ctx.state.token;
         const page: number = ctx.query.page || 1;
         const itemsPerPage: number = ctx.query.itemsPerPage || 20;
+        const sortBy = ctx.query.sortBy;
+        const sortDirection = ctx.query.sortDirection;
 
         const from = calculateOffset(page, itemsPerPage);
-        const records = await RECORD_MAPPER.getByUser(decoded.username, from, itemsPerPage);
+        const records = await RECORD_MAPPER.getByQuery(decoded.username, {
+            from,
+            to: itemsPerPage,
+            sortBy,
+            sortDirection,
+        });
         return { status: 200, data: { data: records, page, total: records.length } };
     },
 

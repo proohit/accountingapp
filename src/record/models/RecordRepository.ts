@@ -1,11 +1,13 @@
 import { Repository } from '../../shared/models/Repository';
 import { MessageResult } from '../../shared/models/RouteResult';
 import Record from './Record';
+import { SearchQuery } from './SearchQuery';
 
 export interface RecordRepository extends Repository {
     getByUser: (username: string, from: number, count: number) => Promise<Record[]>;
     getByWallet: (username: string, wallet: string) => Promise<Record[]>;
     getByCategory: (username: string, category: string) => Promise<Record[]>;
+    getByQuery(username: string, query: SearchQuery): Promise<Record[]>;
     getById: (id: number) => Promise<Record>;
     createRecord: (
         description: string,

@@ -8,6 +8,7 @@ export interface RecordRepository extends Repository {
     getByWallet: (username: string, wallet: string) => Promise<Record[]>;
     getByCategory: (username: string, category: string) => Promise<Record[]>;
     getByQuery(username: string, query: SearchQuery): Promise<Record[]>;
+    getRecordCountByUser(username: string): Promise<number>;
     getById: (id: number) => Promise<Record>;
     createRecord: (
         description: string,

@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import { MessageResult } from '../../shared/models/RouteResult';
 import { pool } from '../../shared/repositories/database';
 import { convertJSDateToMySQLDate } from '../../shared/utils/dateUtils';
@@ -12,9 +13,16 @@ export const all = async (): Promise<Record[]> => {
 };
 
 class RecordMapper implements RecordRepository {
+    async getRecordCountByUser(username: string): Promise<number> {
+        const rows = await pool.query<{ totalRecords: number } & RowDataPacket[]>(
+            `SELECT count(*) as totalRecords from Record WHERE owner='${username}'`,
+        );
+
+        return rows[0][0].totalRecords;
+    }
     async getByQuery(username: string, query: SearchQuery): Promise<Record[]> {
         const sortQuery = query.sortBy && query.sortDirection ? `ORDER BY ${query.sortBy} ${query.sortDirection}` : '';
-        const limitQuery = query.from && query.to ? `LIMIT ${query.from},${query.to}` : '';
+        const limitQuery = query.from >= 0 && query.to >= 0 ? `LIMIT ${query.from},${query.to}` : '';
         const finalQuery = `SELECT * FROM Record WHERE owner='${username}' ${sortQuery} ${limitQuery};`;
         const [records] = await pool.query<Record[]>(finalQuery);
 

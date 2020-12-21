@@ -51,7 +51,8 @@ const RecordControllerImpl: RecordController = {
             sortBy,
             sortDirection,
         });
-        return { status: 200, data: { data: records, page, total: records.length } };
+        const recordCount = await RECORD_MAPPER.getRecordCountByUser(decoded.username);
+        return { status: 200, data: { data: records, page, dataCount: records.length, totalCount: recordCount } };
     },
 
     deleteById: async (ctx) => {

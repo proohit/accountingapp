@@ -1,27 +1,31 @@
 import { Record } from '../models/Record';
 import { BASE_API } from '../../shared/models/Api';
 import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import { SearchQuery } from '../models/SearchQuery';
+import { PaginatedResult } from '../models/PaginatedResult';
 
 export interface RecordsApi {
-  getRecordsByUser(token: string, page?: number): Promise<Record[]>;
-}
-
-export interface PaginatedRecords {
-  data: Record[];
-  page: number;
-  total: number;
+  getRecordsByUser(
+    token: string,
+    query?: SearchQuery
+  ): Promise<PaginatedResult>;
 }
 
 export class RecordsApiService implements RecordsApi {
-  async getRecordsByUser(token: string, page?: number): Promise<Record[]> {
-    const paginatedRecords = await BASE_API.get<PaginatedRecords>(
+  async getRecordsByUser(
+    token: string,
+    query?: SearchQuery
+  ): Promise<PaginatedResult> {
+    const paginatedRecords = await BASE_API.get<PaginatedResult>(
       API_ROUTES.RECORDS,
       token,
       [
-        ['page', page ? page.toString() : '0'],
-        ['itemsPerPage', '10000'],
+        query.page >= 0 && ['page', query.page.toString()],
+        query.itemsPerPage && ['itemsPerPage', query.itemsPerPage.toString()],
+        query.sortBy && ['sortBy', query.sortBy],
+        query.sortDirection && ['sortDirection', query.sortDirection],
       ]
     );
-    return paginatedRecords.data;
+    return paginatedRecords;
   }
 }

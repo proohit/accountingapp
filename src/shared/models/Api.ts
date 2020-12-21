@@ -16,6 +16,7 @@ export const BASE_API: HttpService = {
     const headerBuilder = new AccHeaderBuilder(token);
     const httpQuery = query
       ? `?${query
+          .filter((singleQuery) => !!singleQuery)
           .map((singleQuery) => `${singleQuery[0]}=${singleQuery[1]}`)
           .join('&')}`
       : '';

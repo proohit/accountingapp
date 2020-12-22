@@ -11,4 +11,5 @@ export class API_ROUTES {
   static readonly USERS = `${API_ROUTES.BASE_ROUTE}/users`;
   static readonly USERS_ME = `${API_ROUTES.USERS}/me`;
   static readonly RECORDS = `${API_ROUTES.BASE_ROUTE}/records`;
+  static readonly WALLETS = `${API_ROUTES.BASE_ROUTE}/wallets`;
 }

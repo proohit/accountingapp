@@ -1,15 +1,20 @@
 import {
+  Grid,
+  IconButton,
   Paper,
   Table,
   TableContainer,
   TablePagination,
+  Toolbar,
+  Tooltip,
 } from '@material-ui/core';
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { SortOrder } from '../../shared/models/SortOrder';
 import { Record } from '../models/Record';
 import { HeadCell } from '../../shared/models/HeadCell';
 import { RecordTableHeader } from './RecordTableHeader';
 import { RecordTableBody } from './RecordTableBody';
+import { Add, AddBox } from '@material-ui/icons';
 
 interface RecordsTableProps {
   records: Record[];
@@ -22,6 +27,7 @@ interface RecordsTableProps {
   rowCount: number;
   sortOrder: SortOrder<Record>;
   sortClicked(newOrderKey: keyof Record): void;
+  addClicked(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>): void;
 }
 export const RecordsTable = (props: RecordsTableProps) => {
   const {
@@ -33,6 +39,7 @@ export const RecordsTable = (props: RecordsTableProps) => {
     rowCount,
     sortOrder,
     sortClicked,
+    addClicked,
   } = props;
 
   const headers: HeadCell<Record>[] = [
@@ -44,6 +51,15 @@ export const RecordsTable = (props: RecordsTableProps) => {
   ];
   return (
     <Paper>
+      <Toolbar>
+        <Grid container justify="flex-end">
+          <Tooltip title="Add">
+            <IconButton onClick={addClicked} color="primary" aria-label="add">
+              <AddBox />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      </Toolbar>
       <TableContainer>
         <Table>
           <RecordTableHeader

@@ -1,15 +1,18 @@
-import * as React from 'react';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import { AccTheme } from '../globals/styles/AccTheme';
+import React, { FunctionComponent } from 'react';
 import { AuthenticationProvider } from '../../authentication/components/AuthenticationProvider';
 import { RecordsProvider } from '../../records/components/RecordsProvider';
+import { AccTheme } from '../globals/styles/AccTheme';
+import { DialogsProvider } from './DialogProvider';
 
-const Providers: React.FunctionComponent = (props) => {
+const Providers: FunctionComponent = (props) => {
   return (
     <ThemeProvider theme={AccTheme}>
       <CssBaseline />
       <AuthenticationProvider>
-        <RecordsProvider>{props.children}</RecordsProvider>
+        <DialogsProvider>
+          <RecordsProvider>{props.children}</RecordsProvider>
+        </DialogsProvider>
       </AuthenticationProvider>
     </ThemeProvider>
   );

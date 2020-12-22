@@ -1,16 +1,15 @@
 import {
   Paper,
   Table,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
   TablePagination,
-  TableRow,
-  TableSortLabel,
 } from '@material-ui/core';
 import React from 'react';
+import { SortOrder } from '../../shared/models/SortOrder';
 import { Record } from '../models/Record';
+import { HeadCell } from '../../shared/models/HeadCell';
+import { RecordTableHeader } from './RecordTableHeader';
+import { RecordTableBody } from './RecordTableBody';
 
 interface RecordsTableProps {
   records: Record[];
@@ -21,6 +20,8 @@ interface RecordsTableProps {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   rowCount: number;
+  sortOrder: SortOrder<Record>;
+  sortClicked(newOrderKey: keyof Record): void;
 }
 export const RecordsTable = (props: RecordsTableProps) => {
   const {
@@ -30,42 +31,28 @@ export const RecordsTable = (props: RecordsTableProps) => {
     page,
     rowsPerPage,
     rowCount,
+    sortOrder,
+    sortClicked,
   } = props;
 
+  const headers: HeadCell<Record>[] = [
+    { key: 'description', label: 'description' },
+    { key: 'category', label: 'category' },
+    { key: 'walletName', label: 'wallet' },
+    { key: 'timestamp', label: 'timestamp' },
+    { key: 'value', label: 'value' },
+  ];
   return (
     <Paper>
       <TableContainer>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <TableSortLabel>description</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>wallet</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>category</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>timestamp</TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel>value</TableSortLabel>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {records.map((record) => (
-              <TableRow hover key={record.id}>
-                <TableCell>{record.description}</TableCell>
-                <TableCell>{record.walletName}</TableCell>
-                <TableCell>{record.category}</TableCell>
-                <TableCell>{record.timestamp}</TableCell>
-                <TableCell>{record.value}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          <RecordTableHeader
+            headers={headers}
+            sortBy={sortOrder.orderBy}
+            direction={sortOrder.order}
+            sortClicked={sortClicked}
+          />
+          <RecordTableBody records={records} />
         </Table>
       </TableContainer>
       <TablePagination

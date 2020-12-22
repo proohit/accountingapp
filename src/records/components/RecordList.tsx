@@ -13,26 +13,27 @@ const RecordList: FunctionComponent = () => {
     order: Order.desc,
     orderBy: 'timestamp',
   });
-
   useEffect(() => {
     getRecords({
       page,
       itemsPerPage: rowsPerPage,
       sortBy: orderBy,
-      sortDirection: order,
+      sortDirection: orderBy && order,
     });
   }, [order, orderBy, page, rowsPerPage]);
 
   return records && records.length ? (
     <RecordsTable
+      sortClicked={handleSortClicked}
       records={records}
       rowsPerPage={rowsPerPage}
-      page={page}
-      onChangePage={(newPage) => setPage(newPage)}
+      page={page - 1}
+      onChangePage={(newPage) => setPage(newPage + 1)}
       onChangeRowsPerPage={(event) =>
         setRowsPerPage(parseInt(event.target.value, 10))
       }
-      rowCount={totalRecords}
+      rowCount={totalRecords || 0}
+      sortOrder={{ order, orderBy }}
     />
   ) : (
     <Fragment />

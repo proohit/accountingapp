@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import { AuthenticationProvider } from '../../authentication/components/AuthenticationProvider';
+import { CategoryProvider } from '../../records/components/CategoryProvider';
 import { RecordsProvider } from '../../records/components/RecordsProvider';
 import { WalletsProvider } from '../../wallets/components/WalletsProvider';
 import { AccTheme } from '../globals/styles/AccTheme';
@@ -13,7 +14,9 @@ const Providers: FunctionComponent = (props) => {
       <AuthenticationProvider>
         <DialogsProvider>
           <RecordsProvider>
-            <WalletsProvider>{props.children}</WalletsProvider>
+            <CategoryProvider>
+              <WalletsProvider>{props.children}</WalletsProvider>
+            </CategoryProvider>
           </RecordsProvider>
         </DialogsProvider>
       </AuthenticationProvider>

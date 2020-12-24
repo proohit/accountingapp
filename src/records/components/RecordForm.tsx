@@ -1,19 +1,23 @@
 import {
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   TextField,
 } from '@material-ui/core';
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useValidation } from '../../shared/hooks/useValidation';
 import { Wallet } from '../../wallets/models/Wallet';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { RecordTimestamp } from '../models/RecordTimestamp';
+import { validateRecordField } from '../services/RecordValidator';
 
 interface RecordFormProps {
   onRecordChange(record: Record): void;
+  onFormValidChanged(isFormValid: boolean): void;
   wallets: Wallet[];
   categories: Category[];
   owner: string;
@@ -34,6 +38,17 @@ export const RecordForm = (props: RecordFormProps) => {
   const [timestampValue, setTimestampValue] = useState(
     defaultTimestamp.toInputString()
   );
+  const [formErrors, validateField] = useValidation<Record>(
+    validateRecordField,
+    {
+      category: '',
+      description: '',
+      timestamp: '',
+      value: '',
+      walletName: '',
+      owner: '',
+    }
+  );
 
   const handleFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name || event.currentTarget.name;
@@ -50,6 +65,8 @@ export const RecordForm = (props: RecordFormProps) => {
 
     let newValue: string | number = value;
 
+    const isNewFormValid = validateField(name as keyof Record, newValue);
+
     switch (name) {
       case 'description':
         setDescriptionValue(newValue);
@@ -58,7 +75,7 @@ export const RecordForm = (props: RecordFormProps) => {
         newValue = (newValue && +parseFloat(newValue)) || 0;
         setValueValue(newValue);
         break;
-      case 'wallet':
+      case 'walletName':
         setWalletValue(newValue);
         break;
       case 'category':
@@ -72,6 +89,7 @@ export const RecordForm = (props: RecordFormProps) => {
 
     newRecord[name] = newValue;
     onRecordChange(newRecord);
+    onFormValidChanged(isNewFormValid);
   };
 
   return (
@@ -79,6 +97,8 @@ export const RecordForm = (props: RecordFormProps) => {
       <Grid container>
         <Grid item xs={6}>
           <TextField
+            error={!!formErrors['description']}
+            helperText={formErrors['description']}
             color="secondary"
             label="description"
             name="description"
@@ -88,6 +108,8 @@ export const RecordForm = (props: RecordFormProps) => {
         </Grid>
         <Grid item xs={6}>
           <TextField
+            error={!!formErrors['value']}
+            helperText={formErrors['value']}
             color="secondary"
             label="value"
             name="value"
@@ -100,9 +122,10 @@ export const RecordForm = (props: RecordFormProps) => {
           <FormControl>
             <InputLabel>Wallet</InputLabel>
             <Select
+              error={!!formErrors['walletName']}
               color="secondary"
               value={walletValue}
-              name="wallet"
+              name="walletName"
               onChange={handleFieldChange}
             >
               {wallets &&
@@ -112,12 +135,16 @@ export const RecordForm = (props: RecordFormProps) => {
                   </MenuItem>
                 ))}
             </Select>
+            {formErrors['walletName'] && (
+              <FormHelperText>{formErrors['walletName']}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <FormControl>
             <InputLabel>Category</InputLabel>
             <Select
+              error={!!formErrors['category']}
               color="secondary"
               value={categoryValue}
               label="category"
@@ -131,10 +158,15 @@ export const RecordForm = (props: RecordFormProps) => {
                   </MenuItem>
                 ))}
             </Select>
+            {formErrors['category'] && (
+              <FormHelperText>{formErrors['category']}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <TextField
+            error={!!formErrors['timestamp']}
+            helperText={formErrors['timestamp']}
             color="secondary"
             label="timestamp"
             name="timestamp"

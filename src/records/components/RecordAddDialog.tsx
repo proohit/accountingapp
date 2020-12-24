@@ -22,13 +22,17 @@ interface RecordAddDialogProps {
 export const RecordAddDialog = (props: RecordAddDialogProps) => {
   const { onDialogClose, wallets, onAddRecord, categories, owner } = props;
   const [recordToAdd, setRecordToAdd] = useState<Record>(null);
-  console.log(recordToAdd);
+  const [isFormValid, setIsFormValid] = useState(false);
+
   return (
     <Dialog open={true} onClose={onDialogClose}>
       <DialogTitle>Add Record</DialogTitle>
       <DialogContent>
         <RecordForm
           onRecordChange={(record) => setRecordToAdd(record)}
+          onFormValidChanged={(isFormStillValid) =>
+            setIsFormValid(isFormStillValid)
+          }
           wallets={wallets}
           categories={categories}
           owner={owner}
@@ -46,6 +50,7 @@ export const RecordAddDialog = (props: RecordAddDialogProps) => {
           color="secondary"
           onClick={() => onAddRecord(recordToAdd)}
           variant="contained"
+          disabled={!isFormValid}
         >
           Submit
         </Button>

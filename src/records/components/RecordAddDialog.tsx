@@ -6,27 +6,49 @@ import {
   DialogActions,
 } from '@material-ui/core';
 import React, { useState } from 'react';
+import { Wallet } from '../../wallets/models/Wallet';
+import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { RecordForm } from './RecordForm';
 
 interface RecordAddDialogProps {
   onDialogClose(): void;
+  onAddRecord(recordToAdd: Record): void;
+  wallets: Wallet[];
+  categories: Category[];
+  owner: string;
 }
 
 export const RecordAddDialog = (props: RecordAddDialogProps) => {
-  const { onDialogClose } = props;
+  const { onDialogClose, wallets, onAddRecord, categories, owner } = props;
   const [recordToAdd, setRecordToAdd] = useState<Record>(null);
-
-  const addRecord = () => {};
+  console.log(recordToAdd);
   return (
     <Dialog open={true} onClose={onDialogClose}>
       <DialogTitle>Add Record</DialogTitle>
       <DialogContent>
-        {<RecordForm onChange={(record) => setRecordToAdd(record)} />}
+        <RecordForm
+          onRecordChange={(record) => setRecordToAdd(record)}
+          wallets={wallets}
+          categories={categories}
+          owner={owner}
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => onDialogClose()}>Cancel</Button>
-        <Button onClick={addRecord}>Submit</Button>
+        <Button
+          color="secondary"
+          onClick={() => onDialogClose()}
+          variant="outlined"
+        >
+          Cancel
+        </Button>
+        <Button
+          color="secondary"
+          onClick={() => onAddRecord(recordToAdd)}
+          variant="contained"
+        >
+          Submit
+        </Button>
       </DialogActions>
     </Dialog>
   );

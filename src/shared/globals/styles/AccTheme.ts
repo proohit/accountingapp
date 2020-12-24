@@ -7,13 +7,11 @@ const palette = createPalette({
     main: '#3b4147',
     dark: '#151b20',
     light: '#656c72',
-    contrastText: '#3b4147',
   },
   secondary: {
     main: '#dedbd2',
     light: '#ffffff',
     dark: '#aca9a1',
-    contrastText: '#dedbd2',
   },
 });
 

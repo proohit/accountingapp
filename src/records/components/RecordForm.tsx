@@ -2,6 +2,7 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  Input,
   InputLabel,
   MenuItem,
   Select,
@@ -26,7 +27,13 @@ interface RecordFormProps {
 const defaultTimestamp = new RecordTimestamp(new Date(), 'date');
 
 export const RecordForm = (props: RecordFormProps) => {
-  const { onRecordChange, wallets, categories, owner } = props;
+  const {
+    onRecordChange,
+    onFormValidChanged,
+    wallets,
+    categories,
+    owner,
+  } = props;
   const [descriptionValue, setDescriptionValue] = useState('');
   const [valueValue, setValueValue] = useState(0);
   const [walletValue, setWalletValue] = useState(
@@ -38,7 +45,7 @@ export const RecordForm = (props: RecordFormProps) => {
   const [timestampValue, setTimestampValue] = useState(
     defaultTimestamp.toInputString()
   );
-  const [formErrors, validateField] = useValidation<Record>(
+  const [formErrors, validateField, , validateRecord] = useValidation<Record>(
     validateRecordField,
     {
       category: '',
@@ -49,7 +56,20 @@ export const RecordForm = (props: RecordFormProps) => {
       owner: '',
     }
   );
-
+  useEffect(() => {
+    const isFormInitiallyValid = validateRecord(
+      {
+        description: descriptionValue,
+        value: valueValue,
+        walletName: walletValue,
+        category: categoryValue,
+        timestamp: timestampValue,
+        owner,
+      },
+      ['category', 'description', 'timestamp', 'value', 'walletName']
+    );
+    onFormValidChanged(isFormInitiallyValid);
+  }, []);
   const handleFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name || event.currentTarget.name;
     const value = event.target.value || event.currentTarget.value;
@@ -93,89 +113,79 @@ export const RecordForm = (props: RecordFormProps) => {
   };
 
   return (
-    <>
-      <Grid container>
-        <Grid item xs={6}>
-          <TextField
-            error={!!formErrors['description']}
-            helperText={formErrors['description']}
-            color="secondary"
-            label="description"
-            name="description"
-            value={descriptionValue}
-            onChange={handleFieldChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            error={!!formErrors['value']}
-            helperText={formErrors['value']}
-            color="secondary"
-            label="value"
-            name="value"
-            value={valueValue}
-            onChange={handleFieldChange}
-            type="number"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl>
-            <InputLabel>Wallet</InputLabel>
-            <Select
-              error={!!formErrors['walletName']}
-              color="secondary"
-              value={walletValue}
-              name="walletName"
-              onChange={handleFieldChange}
-            >
-              {wallets &&
-                wallets.map((wallet) => (
-                  <MenuItem key={wallet.name} value={wallet.name}>
-                    {wallet.name}
-                  </MenuItem>
-                ))}
-            </Select>
-            {formErrors['walletName'] && (
-              <FormHelperText>{formErrors['walletName']}</FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl>
-            <InputLabel>Category</InputLabel>
-            <Select
-              error={!!formErrors['category']}
-              color="secondary"
-              value={categoryValue}
-              label="category"
-              name="category"
-              onChange={handleFieldChange}
-            >
-              {categories &&
-                categories.map((category) => (
-                  <MenuItem key={category.name} value={category.name}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-            </Select>
-            {formErrors['category'] && (
-              <FormHelperText>{formErrors['category']}</FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            error={!!formErrors['timestamp']}
-            helperText={formErrors['timestamp']}
-            color="secondary"
-            label="timestamp"
-            name="timestamp"
-            value={timestampValue}
-            onChange={handleFieldChange}
-            type="datetime-local"
-          />
-        </Grid>
-      </Grid>
-    </>
+    <Grid container direction="column">
+      <TextField
+        error={!!formErrors['description']}
+        helperText={formErrors['description']}
+        color="secondary"
+        label="description"
+        name="description"
+        value={descriptionValue}
+        onChange={handleFieldChange}
+      />
+      <TextField
+        error={!!formErrors['value']}
+        helperText={formErrors['value']}
+        color="secondary"
+        label="value"
+        name="value"
+        value={valueValue}
+        onChange={handleFieldChange}
+        type="number"
+      />
+      <FormControl>
+        <InputLabel>Wallet</InputLabel>
+        <Select
+          error={!!formErrors['walletName']}
+          color="secondary"
+          value={walletValue}
+          name="walletName"
+          onChange={handleFieldChange}
+        >
+          {wallets &&
+            wallets.map((wallet) => (
+              <MenuItem key={wallet.name} value={wallet.name}>
+                {wallet.name}
+              </MenuItem>
+            ))}
+        </Select>
+        {formErrors['walletName'] && (
+          <FormHelperText>{formErrors['walletName']}</FormHelperText>
+        )}
+      </FormControl>
+      <FormControl>
+        <InputLabel>Category</InputLabel>
+        <Select
+          style={{ width: '100%' }}
+          error={!!formErrors['category']}
+          color="secondary"
+          value={categoryValue}
+          label="category"
+          name="category"
+          onChange={handleFieldChange}
+        >
+          {categories &&
+            categories.map((category) => (
+              <MenuItem key={category.name} value={category.name}>
+                {category.name}
+              </MenuItem>
+            ))}
+        </Select>
+        {formErrors['category'] && (
+          <FormHelperText>{formErrors['category']}</FormHelperText>
+        )}
+      </FormControl>
+      <TextField
+        error={!!formErrors['timestamp']}
+        helperText={formErrors['timestamp']}
+        color="secondary"
+        label="timestamp"
+        name="timestamp"
+        value={timestampValue}
+        onChange={handleFieldChange}
+        type="datetime-local"
+        fullWidth
+      />
+    </Grid>
   );
 };

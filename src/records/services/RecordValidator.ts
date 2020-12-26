@@ -12,6 +12,7 @@ export const validateRecordField = (
       if (!value) return 'Missing timestamp';
       break;
     case 'value':
+      if (isNaN(value as number)) return 'Invalid value format';
       if (!value && value !== 0) return 'Missing value';
       break;
     case 'walletName':

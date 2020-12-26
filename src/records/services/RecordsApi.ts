@@ -9,23 +9,23 @@ export interface RecordsApi {
     token: string,
     query?: SearchQuery
   ): Promise<PaginatedResult>;
+  createRecord(token: string, record: Record): Promise<Record>;
 }
 
 export class RecordsApiService implements RecordsApi {
-  async getRecordsByUser(
+  createRecord(token: string, record: Record): Promise<Record> {
+    return BASE_API.post<Record, Record>(API_ROUTES.RECORDS, record, token);
+  }
+
+  getRecordsByUser(
     token: string,
     query?: SearchQuery
   ): Promise<PaginatedResult> {
-    const paginatedRecords = await BASE_API.get<PaginatedResult>(
-      API_ROUTES.RECORDS,
-      token,
-      [
-        query.page >= 0 && ['page', query.page.toString()],
-        query.itemsPerPage && ['itemsPerPage', query.itemsPerPage.toString()],
-        query.sortBy && ['sortBy', query.sortBy],
-        query.sortDirection && ['sortDirection', query.sortDirection],
-      ]
-    );
-    return paginatedRecords;
+    return BASE_API.get<PaginatedResult>(API_ROUTES.RECORDS, token, [
+      query.page >= 0 && ['page', query.page.toString()],
+      query.itemsPerPage && ['itemsPerPage', query.itemsPerPage.toString()],
+      query.sortBy && ['sortBy', query.sortBy],
+      query.sortDirection && ['sortDirection', query.sortDirection],
+    ]);
   }
 }

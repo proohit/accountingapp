@@ -1,12 +1,29 @@
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  Fragment,
+  FunctionComponent,
+  useEffect,
+  useState,
+} from 'react';
 import { useDialogs } from '../../shared/hooks/useDialogs';
 import { useSort } from '../../shared/hooks/useSort';
 import { Dialogs } from '../../shared/models/DialogContextModel';
 import { Order } from '../../shared/models/SortOrder';
-import { useRecords } from '../hooks/useRecords';
+import { RecordsContext, useRecords } from '../hooks/useRecords';
 import { Record } from '../models/Record';
 import { RecordDialogContainer } from './RecordDialogContainer';
 import { RecordsTable } from './RecordsTable';
+
+interface RecordListContextModel {
+  page: number;
+  rowsPerPage: number;
+  order: Order;
+  orderBy: keyof Record;
+}
+
+export const RecordListContext = createContext<RecordListContextModel>(
+  {} as RecordListContextModel
+);
 
 const RecordList: FunctionComponent = () => {
   const { records, getRecords, totalRecords } = useRecords();
@@ -28,7 +45,7 @@ const RecordList: FunctionComponent = () => {
   }, [order, orderBy, page, rowsPerPage]);
 
   return records && records.length ? (
-    <>
+    <RecordListContext.Provider value={{ rowsPerPage, page, order, orderBy }}>
       <RecordDialogContainer />
       <RecordsTable
         addClicked={() => openDialog(Dialogs.addRecord)}
@@ -43,7 +60,7 @@ const RecordList: FunctionComponent = () => {
         rowCount={totalRecords || 0}
         sortOrder={{ order, orderBy }}
       />
-    </>
+    </RecordListContext.Provider>
   ) : (
     <Fragment />
   );

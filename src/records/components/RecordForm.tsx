@@ -22,6 +22,7 @@ interface RecordFormProps {
   wallets: Wallet[];
   categories: Category[];
   owner: string;
+  record?: Record;
 }
 
 export const RecordForm = (props: RecordFormProps) => {
@@ -31,14 +32,8 @@ export const RecordForm = (props: RecordFormProps) => {
     wallets,
     categories,
     owner,
+    record,
   } = props;
-
-  const transformValueForField = (field: string, value: string) => {
-    if (field === 'timestamp') {
-      return new RecordTimestamp(value, 'input').toString();
-    }
-    return value ? value : '';
-  };
 
   const [
     formFields,
@@ -46,18 +41,24 @@ export const RecordForm = (props: RecordFormProps) => {
     [formErrors, , isFormValid],
   ] = useForm(
     {
-      description: '',
-      value: '0.00',
-      walletName: (wallets?.length > 0 && wallets[0].name) || '',
-      category: (categories?.length > 0 && categories[0].name) || '',
-      timestamp: new RecordTimestamp(new Date(), 'date').toInputString(),
+      description: record?.description || '',
+      value: record?.value.toString() || '0.00',
+      walletName:
+        record?.walletName || (wallets?.length > 0 && wallets[0].name) || '',
+      category:
+        record?.category ||
+        (categories?.length > 0 && categories[0].name) ||
+        '',
+      timestamp: new RecordTimestamp(
+        record?.timestamp || new Date(),
+        record?.timestamp ? 'timestamp' : 'date'
+      ).toInputString(),
     },
     {
       validation: {
         validationFunction: validateRecordField,
         initialValidation: true,
       },
-      fieldTransform: transformValueForField,
     }
   );
 

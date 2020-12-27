@@ -6,8 +6,10 @@ export interface DialogContextModel {
 
 export interface DialogStates {
   [Dialogs.addRecord]: boolean;
+  [Dialogs.editRecord]: boolean;
 }
 
 export enum Dialogs {
   addRecord = 'ADD_RECORD',
+  editRecord = 'EDIT_RECORD',
 }

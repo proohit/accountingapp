@@ -10,9 +10,17 @@ export interface RecordsApi {
     query?: SearchQuery
   ): Promise<PaginatedResult>;
   createRecord(token: string, record: Record): Promise<Record>;
+  editRecord(token: string, record: Record): Promise<Record>;
 }
 
 export class RecordsApiService implements RecordsApi {
+  editRecord(token: string, record: Record): Promise<Record> {
+    return BASE_API.put<Record, Record>(
+      `${API_ROUTES.RECORDS}/${record.id}`,
+      record,
+      token
+    );
+  }
   createRecord(token: string, record: Record): Promise<Record> {
     return BASE_API.post<Record, Record>(API_ROUTES.RECORDS, record, token);
   }

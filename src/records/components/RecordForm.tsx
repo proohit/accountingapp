@@ -41,6 +41,7 @@ export const RecordForm = (props: RecordFormProps) => {
     [formErrors, , isFormValid],
   ] = useForm(
     {
+      id: record?.id || null,
       description: record?.description || '',
       value: record?.value.toString() || '0.00',
       walletName:
@@ -64,6 +65,7 @@ export const RecordForm = (props: RecordFormProps) => {
 
   useEffect(() => {
     onRecordChange({
+      id: formFields.id,
       category: formFields.category,
       description: formFields.description,
       timestamp: new RecordTimestamp(formFields.timestamp, 'input').toString(),

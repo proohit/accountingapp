@@ -46,7 +46,16 @@ export const RecordDialogContainer = () => {
     closeDialog(Dialogs.addRecord);
   };
 
-  const editRecord = (editedRecord: Record) => {};
+  const editRecord = async (editedRecord: Record) => {
+    await recordsApi.editRecord(token, editedRecord);
+    getRecords({
+      itemsPerPage: recordListContext.rowsPerPage,
+      page: recordListContext.page,
+      sortBy: recordListContext.orderBy,
+      sortDirection: recordListContext.order,
+    });
+    closeDialog(Dialogs.editRecord);
+  };
 
   if (ADD_RECORD) {
     return (

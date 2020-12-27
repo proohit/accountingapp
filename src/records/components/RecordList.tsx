@@ -19,6 +19,7 @@ interface RecordListContextModel {
   rowsPerPage: number;
   order: Order;
   orderBy: keyof Record;
+  selectedRecord: Record;
 }
 
 export const RecordListContext = createContext<RecordListContextModel>(
@@ -30,6 +31,7 @@ const RecordList: FunctionComponent = () => {
   const { openDialog } = useDialogs();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [selectedRecord, setSelectedRecord] = useState<Record>(null);
   const [{ order, orderBy }, handleSortClicked] = useSort<Record>({
     order: Order.desc,
     orderBy: 'timestamp',
@@ -45,7 +47,9 @@ const RecordList: FunctionComponent = () => {
   }, [order, orderBy, page, rowsPerPage]);
 
   return records && records.length ? (
-    <RecordListContext.Provider value={{ rowsPerPage, page, order, orderBy }}>
+    <RecordListContext.Provider
+      value={{ rowsPerPage, page, order, orderBy, selectedRecord }}
+    >
       <RecordDialogContainer />
       <RecordsTable
         addClicked={() => openDialog(Dialogs.addRecord)}
@@ -53,6 +57,10 @@ const RecordList: FunctionComponent = () => {
         records={records}
         rowsPerPage={rowsPerPage}
         page={page - 1}
+        onRecordClicked={(record) => {
+          setSelectedRecord(record);
+          openDialog(Dialogs.editRecord);
+        }}
         onChangePage={(newPage) => setPage(newPage + 1)}
         onChangeRowsPerPage={(event) =>
           setRowsPerPage(parseInt(event.target.value, 10))

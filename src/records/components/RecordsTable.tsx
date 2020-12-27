@@ -28,6 +28,7 @@ interface RecordsTableProps {
   sortOrder: SortOrder<Record>;
   sortClicked(newOrderKey: keyof Record): void;
   addClicked(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>): void;
+  onRecordClicked(record: Record): void;
 }
 export const RecordsTable = (props: RecordsTableProps) => {
   const {
@@ -40,6 +41,7 @@ export const RecordsTable = (props: RecordsTableProps) => {
     sortOrder,
     sortClicked,
     addClicked,
+    onRecordClicked,
   } = props;
 
   const headers: HeadCell<Record>[] = [
@@ -68,7 +70,10 @@ export const RecordsTable = (props: RecordsTableProps) => {
             direction={sortOrder.order}
             sortClicked={sortClicked}
           />
-          <RecordTableBody records={records} />
+          <RecordTableBody
+            records={records}
+            onRecordClicked={onRecordClicked}
+          />
         </Table>
       </TableContainer>
       <TablePagination

@@ -4,13 +4,14 @@ import { Record } from '../models/Record';
 
 export interface RecordTableBody {
   records: Record[];
+  onRecordClicked(record: Record): void;
 }
 export const RecordTableBody = (props: RecordTableBody) => {
-  const { records } = props;
+  const { records, onRecordClicked } = props;
   return (
     <TableBody>
       {records.map((record) => (
-        <TableRow hover key={record.id}>
+        <TableRow hover key={record.id} onClick={() => onRecordClicked(record)}>
           <TableCell>{record.description}</TableCell>
           <TableCell>{record.walletName}</TableCell>
           <TableCell>{record.category}</TableCell>

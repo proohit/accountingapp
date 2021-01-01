@@ -1,16 +1,15 @@
+import { Category } from '../../entity/Category';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { MessageResult, RouteResult } from '../../shared/models/RouteResult';
-import { Category } from '../models/Category';
+import { repositories } from '../../shared/repositories/database';
 import { CategoryController } from '../models/CategoryController';
-import { DuplicateCategory } from '../models/Errors';
-import CATEGORY_MAPPER from '../repositories/CategoryMapper';
-import RECORD_MAPPER from '../../record/repositories/RecordMapper';
+import { CategoryNotFound, DuplicateCategory } from '../models/Errors';
 
 const CategoryControllerImpl: CategoryController = {
     getByUser: async (ctx): Promise<RouteResult<Category[]>> => {
         const { username } = ctx.state.token;
 
-        const categoriesOfUser = await CATEGORY_MAPPER.getByUser(username);
+        const categoriesOfUser = await repositories.categories().find({ ownerUsername: username });
         return { data: categoriesOfUser, status: 200 };
     },
     create: async (ctx): Promise<RouteResult<Category>> => {
@@ -19,61 +18,85 @@ const CategoryControllerImpl: CategoryController = {
         const missingProperties = [];
         if (!name) missingProperties.push('name');
         if (missingProperties.length) throw new MissingProperty(missingProperties);
-        const categoriesOfUser = await CATEGORY_MAPPER.getByUser(username);
-        if (categoriesOfUser.find((categoryOfUser) => categoryOfUser.name === name)) throw new DuplicateCategory();
-        const createdCategory = await CATEGORY_MAPPER.create(username, name);
+        const categoryRepository = repositories.categories();
+        if (await categoryRepository.findOne({ name, ownerUsername: username })) {
+            throw new DuplicateCategory();
+        }
+        const createdCategory = await categoryRepository.save({ name, ownerUsername: username });
 
         return { status: 201, data: createdCategory };
     },
+
     delete: async (ctx): Promise<RouteResult<MessageResult>> => {
-        const categoryNameToDelete = ctx.params.name;
+        const { id } = ctx.params;
         const { username } = ctx.state.token;
-        const categoryToDelete = await CATEGORY_MAPPER.getByName(username, categoryNameToDelete);
-        if (username !== categoryToDelete.owner) throw new ResourceNotAllowed();
-        const recordsByUserByCategory = await RECORD_MAPPER.getByCategory(username, categoryNameToDelete);
-        recordsByUserByCategory.forEach(async (record) => await RECORD_MAPPER.deleteRecord(record.id));
-        const messageResult = await CATEGORY_MAPPER.delete(username, categoryToDelete.name);
-        return { data: messageResult, status: 200 };
+
+        const categoryRepository = repositories.categories();
+        const recordRepository = repositories.records();
+
+        const categoryToDelete = await categoryRepository.findOne({
+            ownerUsername: username,
+            name: id,
+        });
+
+        if (!categoryToDelete) {
+            throw new CategoryNotFound();
+        }
+
+        if (username !== categoryToDelete.ownerUsername) {
+            throw new ResourceNotAllowed();
+        }
+
+        const recordsByUserByCategory = await recordRepository.find({
+            ownerUsername: username,
+            category: categoryToDelete,
+        });
+
+        recordsByUserByCategory.forEach(async (record) => await recordRepository.remove(record));
+        await categoryRepository.remove(categoryToDelete);
+        return { data: { message: `Deleted category ${id}` }, status: 200 };
     },
-    getByName: async (ctx): Promise<RouteResult<Category>> => {
-        const requestedName = ctx.params.name;
+
+    getById: async (ctx): Promise<RouteResult<Category>> => {
+        const { id } = ctx.params;
         const { username } = ctx.state.token;
-        const foundCategory = await CATEGORY_MAPPER.getByName(username, requestedName);
+        const foundCategory = await repositories.categories().findOne(id);
+
+        if (!foundCategory) {
+            throw new CategoryNotFound();
+        }
+
+        if (foundCategory.ownerUsername !== username) {
+            throw new ResourceNotAllowed();
+        }
+
         return { data: foundCategory, status: 200 };
     },
+
     update: async (ctx): Promise<RouteResult<Category>> => {
         const { username } = ctx.state.token;
-        const categoryToUpdateName = ctx.params.name;
+        const { id } = ctx.params;
         const { name: updatedName } = ctx.request.body;
-        const categoryToUpdate = await CATEGORY_MAPPER.getByName(username, categoryToUpdateName);
-        if (username !== categoryToUpdate.owner) throw new ResourceNotAllowed();
+        const categoryRepo = repositories.categories();
+        const categoryToUpdate = await categoryRepo.findOne({
+            ownerUsername: username,
+            id,
+        });
 
-        const recordsByUserByCategory = await RECORD_MAPPER.getByCategory(username, categoryToUpdateName);
-        recordsByUserByCategory.forEach(
-            async (record) =>
-                await RECORD_MAPPER.updateRecord(
-                    record.id,
-                    record.description,
-                    record.value,
-                    record.walletName,
-                    record.timestamp,
-                    record.owner,
-                    null,
-                ),
-        );
-        const updatedCategory = await CATEGORY_MAPPER.update(username, categoryToUpdateName, updatedName);
-        recordsByUserByCategory.forEach(
-            async (record) =>
-                await RECORD_MAPPER.updateRecord(
-                    record.id,
-                    record.description,
-                    record.value,
-                    record.walletName,
-                    record.timestamp,
-                    record.owner,
-                    updatedCategory.name,
-                ),
-        );
+        if (!categoryToUpdate) {
+            throw new CategoryNotFound();
+        }
+
+        if (username !== categoryToUpdate.ownerUsername) {
+            throw new ResourceNotAllowed();
+        }
+
+        const updatedCategory = await categoryRepo.save({
+            id,
+            name: updatedName,
+            ownerUsername: username,
+        });
+
         return { status: 200, data: updatedCategory };
     },
 };

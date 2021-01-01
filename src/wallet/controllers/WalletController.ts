@@ -1,8 +1,9 @@
-import RECORD_MAPPER from '../../record/repositories/RecordMapper';
+import { getRepository } from 'typeorm';
+import { Wallet } from '../../entity/Wallet';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { DuplicateWallet } from '../models/Errors';
+import { repositories } from '../../shared/repositories/database';
+import { DuplicateWallet, WalletNotFound } from '../models/Errors';
 import { WalletController } from '../models/WalletController';
-import WALLET_MAPPER from '../repositories/WalletMapper';
 
 const WalletControllerImpl: WalletController = {
     createNewWallet: async (ctx) => {
@@ -10,87 +11,89 @@ const WalletControllerImpl: WalletController = {
         const { name, balance } = ctx.request.body;
 
         const missingProperties = [];
-        if (!name) missingProperties.push('name');
-        if (!balance) missingProperties.push('balance');
-        if (missingProperties.length) throw new MissingProperty(missingProperties);
+        if (!name) {
+            missingProperties.push('name');
+        }
+        if (!balance && balance !== 0) {
+            missingProperties.push('balance');
+        }
 
-        const walletsByUser = await WALLET_MAPPER.byUser(username);
-        if (walletsByUser.find((wallet) => wallet.name === name)) throw new DuplicateWallet();
+        if (missingProperties.length) {
+            throw new MissingProperty(missingProperties);
+        }
 
-        const createdWallet = await WALLET_MAPPER.create(name, balance, username);
+        const walletRepo = getRepository(Wallet);
+        const walletByNameByUser = await walletRepo.findOne({ ownerUsername: username, name });
+        if (walletByNameByUser) {
+            throw new DuplicateWallet();
+        }
+
+        const createdWallet = await walletRepo.save({ name, balance, ownerUsername: username });
         return { status: 201, data: createdWallet };
     },
 
     getByUser: async (ctx) => {
-        const decoded = ctx.state.token;
-        const walletsOfUser = await WALLET_MAPPER.byUser(decoded.username);
+        const { username } = ctx.state.token;
+        const walletsOfUser = await repositories.wallets().find({ owner: { username } });
 
         return { status: 200, data: walletsOfUser };
     },
 
-    getByUserByName: async (ctx) => {
+    getById: async (ctx) => {
         const username = ctx.state.token.username;
-        const wallet = await WALLET_MAPPER.byName(ctx.params.name, username);
-        if (wallet.owner !== username) throw new ResourceNotAllowed();
+        const { id } = ctx.params;
+        const wallet = await repositories.wallets().findOne(id);
+
+        if (!wallet) {
+            throw new WalletNotFound();
+        }
+
+        if (wallet.ownerUsername !== username) {
+            throw new ResourceNotAllowed();
+        }
+
         return { status: 200, data: wallet };
     },
 
-    deleteByName: async (ctx) => {
+    deleteById: async (ctx) => {
         const username = ctx.state.token.username;
-        const { name } = ctx.params;
-        const walletToDelete = await WALLET_MAPPER.byName(name, username);
-        const recordsByWallet = await RECORD_MAPPER.getByWallet(username, walletToDelete.name);
-        recordsByWallet.forEach(async (record) => {
-            await RECORD_MAPPER.deleteRecord(record.id);
-        });
+        const { id } = ctx.params;
+        const walletRepo = repositories.wallets();
+        const walletToDelete = await walletRepo.findOne(id);
 
-        const message = await WALLET_MAPPER.deleteWallet(name, username);
-
-        return { status: 200, data: message };
-    },
-
-    updateByName: async (ctx) => {
-        const username = ctx.state.token.username;
-        const { name } = ctx.params;
-        const { name: newName, balance } = ctx.request.body;
-
-        const walletToUpdate = await WALLET_MAPPER.byName(name, username);
-        if (walletToUpdate.name === newName) {
-            ctx.status = 200;
-            ctx.body = JSON.stringify(walletToUpdate);
-            return;
+        if (walletToDelete.ownerUsername !== username) {
+            throw new ResourceNotAllowed();
         }
 
-        const walletsByUser = await WALLET_MAPPER.byUser(username);
-        const recordsByWallet = await RECORD_MAPPER.getByWallet(username, name);
-        if (walletsByUser.some((wallet) => wallet.name === newName)) throw new DuplicateWallet();
+        await walletRepo.remove(walletToDelete);
 
-        recordsByWallet.forEach(
-            async (record) =>
-                await RECORD_MAPPER.updateRecord(
-                    record.id,
-                    record.description,
-                    record.value,
-                    null,
-                    record.timestamp,
-                    record.owner,
-                    record.category,
-                ),
-        );
+        return { status: 200, data: { message: `Deleted wallet with name ${id}` } };
+    },
 
-        const editedWallet = await WALLET_MAPPER.update(name, newName, balance, username);
+    updateById: async (ctx) => {
+        const username = ctx.state.token.username;
+        const { id } = ctx.params;
+        const { name: newName, balance } = ctx.request.body;
 
-        recordsByWallet.forEach(async (record) => {
-            await RECORD_MAPPER.updateRecord(
-                record.id,
-                record.description,
-                record.value,
-                editedWallet.name,
-                record.timestamp,
-                record.owner,
-                record.category,
-            );
-        });
+        const walletRepo = repositories.wallets();
+
+        const walletToUpdate = await walletRepo.findOne(id);
+
+        if (!walletToUpdate) {
+            throw new WalletNotFound();
+        }
+
+        if (walletToUpdate.ownerUsername !== username) {
+            throw new ResourceNotAllowed();
+        }
+
+        const walletWithNewName = await walletRepo.findOne({ name: newName, ownerUsername: username });
+
+        if (walletWithNewName) {
+            throw new DuplicateWallet();
+        }
+
+        const editedWallet = await walletRepo.save({ ...walletToUpdate, balance, name: newName });
 
         return { status: 200, data: editedWallet };
     },

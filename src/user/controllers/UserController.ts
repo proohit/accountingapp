@@ -1,18 +1,14 @@
+import { getRepository } from 'typeorm';
+import { User } from '../../entity/User';
+import { repositories } from '../../shared/repositories/database';
 import { UserController } from '../models/UserController';
-import { byName } from '../repositories/UserMapper';
 
 const USER_CONTROLLER: UserController = {
     getCurrentUser: async (ctx) => {
-        const {
-            state: {
-                token: { username },
-            },
-        } = ctx;
+        const { username } = ctx.state.token;
 
-        const user = await byName(username);
-        delete user['password'];
-        delete user['private_key'];
-        return { data: user, status: 200 };
+        const user = await repositories.users().findOne(username);
+        return { data: { username: user.username }, status: 200 };
     },
 };
 

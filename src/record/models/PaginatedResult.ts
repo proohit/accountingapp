@@ -1,4 +1,4 @@
-import Record from './Record';
+import { Record } from '../../entity/Record';
 
 export interface PaginatedResult {
     data: Record[];

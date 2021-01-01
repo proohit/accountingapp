@@ -34,18 +34,7 @@ const CategoryControllerImpl: CategoryController = {
         const categoryRepository = repositories.categories();
         const recordRepository = repositories.records();
 
-        const categoryToDelete = await categoryRepository.findOne({
-            ownerUsername: username,
-            name: id,
-        });
-
-        if (!categoryToDelete) {
-            throw new CategoryNotFound();
-        }
-
-        if (username !== categoryToDelete.ownerUsername) {
-            throw new ResourceNotAllowed();
-        }
+        const categoryToDelete = await categoryRepository.getByIdIfAllowed(id, username);
 
         const recordsByUserByCategory = await recordRepository.find({
             ownerUsername: username,
@@ -78,18 +67,7 @@ const CategoryControllerImpl: CategoryController = {
         const { id } = ctx.params;
         const { name: updatedName } = ctx.request.body;
         const categoryRepo = repositories.categories();
-        const categoryToUpdate = await categoryRepo.findOne({
-            ownerUsername: username,
-            id,
-        });
-
-        if (!categoryToUpdate) {
-            throw new CategoryNotFound();
-        }
-
-        if (username !== categoryToUpdate.ownerUsername) {
-            throw new ResourceNotAllowed();
-        }
+        await categoryRepo.getByIdIfAllowed(id, username);
 
         const updatedCategory = await categoryRepo.save({
             id,

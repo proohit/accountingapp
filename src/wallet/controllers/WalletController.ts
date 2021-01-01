@@ -22,7 +22,7 @@ const WalletControllerImpl: WalletController = {
             throw new MissingProperty(missingProperties);
         }
 
-        const walletRepo = getRepository(Wallet);
+        const walletRepo = repositories.wallets();
         const walletByNameByUser = await walletRepo.findOne({ ownerUsername: username, name });
         if (walletByNameByUser) {
             throw new DuplicateWallet();
@@ -59,11 +59,7 @@ const WalletControllerImpl: WalletController = {
         const username = ctx.state.token.username;
         const { id } = ctx.params;
         const walletRepo = repositories.wallets();
-        const walletToDelete = await walletRepo.findOne(id);
-
-        if (walletToDelete.ownerUsername !== username) {
-            throw new ResourceNotAllowed();
-        }
+        const walletToDelete = await walletRepo.getByIdIfAllowed(id, username);
 
         await walletRepo.remove(walletToDelete);
 
@@ -77,15 +73,7 @@ const WalletControllerImpl: WalletController = {
 
         const walletRepo = repositories.wallets();
 
-        const walletToUpdate = await walletRepo.findOne(id);
-
-        if (!walletToUpdate) {
-            throw new WalletNotFound();
-        }
-
-        if (walletToUpdate.ownerUsername !== username) {
-            throw new ResourceNotAllowed();
-        }
+        await walletRepo.getByIdIfAllowed(id, username);
 
         const walletWithNewName = await walletRepo.findOne({ name: newName, ownerUsername: username });
 
@@ -93,7 +81,7 @@ const WalletControllerImpl: WalletController = {
             throw new DuplicateWallet();
         }
 
-        const editedWallet = await walletRepo.save({ ...walletToUpdate, balance, name: newName });
+        const editedWallet = await walletRepo.save({ id, balance, name: newName, ownerUsername: username });
 
         return { status: 200, data: editedWallet };
     },

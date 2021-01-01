@@ -1,10 +1,8 @@
 import { CategoryNotFound } from '../../category/models/Errors';
-import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
+import { MissingProperty } from '../../shared/models/Errors';
 import { repositories } from '../../shared/repositories/database';
 import { calculateOffset } from '../../shared/utils/paginationUtils';
 import { UserNotFound } from '../../user/models/Errors';
-import { WalletNotFound } from '../../wallet/models/Errors';
-import { RecordNotFound } from '../models/Errors';
 import { RecordController } from '../models/RecordController';
 
 const RecordControllerImpl: RecordController = {
@@ -34,10 +32,8 @@ const RecordControllerImpl: RecordController = {
         const recordRepo = repositories.records();
         const userRepo = repositories.users();
 
-        const requestedWallet = await walletRepo.findOne({ id: walletId, ownerUsername: username });
-        if (!requestedWallet) throw new WalletNotFound();
-        const requestedCategory = await categoryRepo.findOne({ id: categoryId, ownerUsername: username });
-        if (!requestedCategory) throw new CategoryNotFound();
+        const requestedWallet = await walletRepo.getByIdIfAllowed(walletId, username);
+        const requestedCategory = await categoryRepo.getByIdIfAllowed(categoryId, username);
         const requestedOwner = await userRepo.findOne({ username });
         if (!requestedOwner) throw new UserNotFound();
 
@@ -78,11 +74,7 @@ const RecordControllerImpl: RecordController = {
         const { username } = ctx.state.token;
         const requestedId = ctx.params.id;
         const recordRepo = repositories.records();
-        const recordToDelete = await recordRepo.findOne(requestedId);
-
-        if (recordToDelete.ownerUsername !== username) {
-            throw new ResourceNotAllowed();
-        }
+        const recordToDelete = await recordRepo.getByIdIfAllowed(requestedId, username);
 
         const deletedRecord = await recordRepo.remove(recordToDelete);
         return { status: 200, data: { message: `Deleted record with id ${deletedRecord.id}` } };
@@ -91,11 +83,7 @@ const RecordControllerImpl: RecordController = {
     getById: async (ctx) => {
         const { username } = ctx.state.token;
         const { id } = ctx.params;
-        const record = await repositories.records().findOne(id);
-
-        if (record.ownerUsername !== username) {
-            throw new ResourceNotAllowed();
-        }
+        const record = await repositories.records().getByIdIfAllowed(id, username);
 
         return { status: 200, data: record };
     },
@@ -120,25 +108,14 @@ const RecordControllerImpl: RecordController = {
         const walletRepo = repositories.wallets();
         const categoriesRepo = repositories.categories();
 
-        const record = await recordRepo.findOne(id);
-
-        if (!record) {
-            throw new RecordNotFound();
-        }
-
-        if (username !== record.ownerUsername) {
-            throw new ResourceNotAllowed();
-        }
+        await recordRepo.getByIdIfAllowed(id, username);
 
         const categoryOfRecord = await categoriesRepo.findOne({ ownerUsername: username, id: categoryId });
         if (!categoryOfRecord) {
             throw new CategoryNotFound();
         }
 
-        const walletOfRecord = await walletRepo.findOne({ ownerUsername: username, id: walletId });
-        if (!walletOfRecord) {
-            throw new WalletNotFound();
-        }
+        const walletOfRecord = await walletRepo.getByIdIfAllowed(walletId, username);
 
         const updatedRecord = await recordRepo.save({
             id,

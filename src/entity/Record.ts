@@ -19,13 +19,13 @@ export class Record {
     ownerUsername: string;
     @Column()
     categoryId: string;
-    @ManyToOne(() => Wallet)
+    @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'walletId' })
     wallet: Wallet;
     @ManyToOne(() => User)
     @JoinColumn({ name: 'ownerUsername' })
     owner: User;
-    @ManyToOne(() => Category)
+    @ManyToOne(() => Category, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'categoryId' })
     category: Category;
 }

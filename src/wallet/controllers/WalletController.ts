@@ -1,8 +1,6 @@
-import { getRepository } from 'typeorm';
-import { Wallet } from '../../entity/Wallet';
-import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
+import { MissingProperty } from '../../shared/models/Errors';
 import { repositories } from '../../shared/repositories/database';
-import { DuplicateWallet, WalletNotFound } from '../models/Errors';
+import { DuplicateWallet } from '../models/Errors';
 import { WalletController } from '../models/WalletController';
 
 const WalletControllerImpl: WalletController = {
@@ -34,23 +32,15 @@ const WalletControllerImpl: WalletController = {
 
     getByUser: async (ctx) => {
         const { username } = ctx.state.token;
-        const walletsOfUser = await repositories.wallets().find({ owner: { username } });
+        const walletsOfUser = await repositories.wallets().find({ ownerUsername: username });
 
         return { status: 200, data: walletsOfUser };
     },
 
     getById: async (ctx) => {
-        const username = ctx.state.token.username;
+        const { username } = ctx.state.token;
         const { id } = ctx.params;
-        const wallet = await repositories.wallets().findOne(id);
-
-        if (!wallet) {
-            throw new WalletNotFound();
-        }
-
-        if (wallet.ownerUsername !== username) {
-            throw new ResourceNotAllowed();
-        }
+        const wallet = await repositories.wallets().getByIdIfAllowed(id, username);
 
         return { status: 200, data: wallet };
     },

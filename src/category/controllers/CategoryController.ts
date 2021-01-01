@@ -32,16 +32,9 @@ const CategoryControllerImpl: CategoryController = {
         const { username } = ctx.state.token;
 
         const categoryRepository = repositories.categories();
-        const recordRepository = repositories.records();
 
         const categoryToDelete = await categoryRepository.getByIdIfAllowed(id, username);
 
-        const recordsByUserByCategory = await recordRepository.find({
-            ownerUsername: username,
-            category: categoryToDelete,
-        });
-
-        recordsByUserByCategory.forEach(async (record) => await recordRepository.remove(record));
         await categoryRepository.remove(categoryToDelete);
         return { data: { message: `Deleted category ${id}` }, status: 200 };
     },

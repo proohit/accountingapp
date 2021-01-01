@@ -2,10 +2,15 @@ Category:
     type: object
     description: Describes the category of a record
     properties:
+        id:
+            $ref: '#/CategoryId'
         name:
             $ref: '#/CategoryName'
-        owner:
+        ownerUsername:
             $ref: ./User-schema.yaml#/Username
+CategoryId:
+    type: string
+    description: id of the category
 CategoryName:
     type: string
     description: name of the category
@@ -15,6 +20,7 @@ UpdateCategory:
     properties:
         name:
             $ref: '#/CategoryName'
+
 NewCategory:
     description: new category object
     type: object

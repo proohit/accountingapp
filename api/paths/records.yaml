@@ -131,7 +131,7 @@ records/{id}:
                     application/json:
                         schema:
                             $ref: ../accountingapp.yaml#/components/schemas/Record
-records/wallet/{walletName}:
+records/wallet/{walletId}:
     get:
         tags:
             - records
@@ -139,11 +139,11 @@ records/wallet/{walletName}:
         operationId: Records by wallet
         parameters:
             - in: path
-              name: walletName
+              name: walletId
               required: true
-              description: Name of wallet to get records of
+              description: Id of wallet to get records of
               schema:
-                  $ref: '../accountingapp.yaml#/components/schemas/WalletName'
+                  $ref: '../accountingapp.yaml#/components/schemas/WalletId'
 
         responses:
             200:
@@ -154,19 +154,19 @@ records/wallet/{walletName}:
                             type: array
                             items:
                                 $ref: ../accountingapp.yaml#/components/schemas/Record
-records/category/{categoryName}:
+records/category/{categoryId}:
     get:
         tags:
             - records
         description: Record by category
         parameters:
             - in: path
-              name: categoryName
+              name: categoryId
               required: true
-              description: name of category to get records of
+              description: Id of category to get records of
               example:
               schema:
-                  $ref: ../accountingapp.yaml#/components/schemas/CategoryName
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
         responses:
             200:
                 description: OK

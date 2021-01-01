@@ -32,19 +32,19 @@ categories:
                     application/json:
                         schema:
                             $ref: ../accountingapp.yaml#/components/schemas/Category
-categories/{categoryName}:
+categories/{categoryId}:
     delete:
         tags:
             - categories
         operationId: Delete category
-        description: Deletes a category of the current user
+        description: Deletes a category of the current user and all referenced records
         parameters:
             - in: path
-              name: categoryName
+              name: categoryId
               required: true
-              description: name of a category to delete
+              description: id of a category to delete
               schema:
-                  $ref: ../accountingapp.yaml#/components/schemas/CategoryName
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
         responses:
             200:
                 description: OK
@@ -55,14 +55,14 @@ categories/{categoryName}:
     get:
         tags:
             - categories
-        operationId: Category by name
+        operationId: Category by id
         description: Returns a category with the requested name of the current user
         parameters:
             - in: path
-              name: categoryName
+              name: categoryId
               required: true
               schema:
-                  $ref: ../accountingapp.yaml#/components/schemas/CategoryName
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
         responses:
             200:
                 description: OK
@@ -77,12 +77,12 @@ categories/{categoryName}:
         operationId: Update category
         parameters:
             - in: path
-              name: categoryName
+              name: categoryId
               required: true
               description: category to update
               example:
               schema:
-                  $ref: ../accountingapp.yaml#/components/schemas/CategoryName
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
         requestBody:
             description: updated category object
             required: true

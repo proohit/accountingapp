@@ -2,12 +2,14 @@ Wallet:
     type: object
     description: ''
     properties:
+        id:
+            $ref: '#/WalletId'
         name:
             $ref: '#/WalletName'
         balance:
             type: number
-        owner:
-            $ref: ../accountingapp.yaml#/components/schemas/User
+        ownerUsername:
+            $ref: ../accountingapp.yaml#/components/schemas/Username
 UpdateWallet:
     type: object
     properties:
@@ -15,5 +17,16 @@ UpdateWallet:
             type: string
         balance:
             type: number
+NewWallet:
+    title: NewWallet
+    type: object
+    description: New wallet schema
+    properties:
+        name:
+            type: string
+        balance:
+            type: number
 WalletName:
+    type: string
+WalletId:
     type: string

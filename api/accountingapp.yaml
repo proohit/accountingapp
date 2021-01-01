@@ -36,18 +36,18 @@ components:
             $ref: ./models/MessageResult-schema.yaml#/MessageResult
 paths:
     /records:
-        $ref: ./paths/records-path.yaml#/records
+        $ref: ./paths/records.yaml#/records
     /records/{id}:
-        $ref: ./paths/records-path.yaml#/records~1{id}
+        $ref: ./paths/records.yaml#/records~1{id}
     /records/wallet/{walletName}:
-        $ref: ./paths/records-path.yaml#/records~1wallet~1{walletName}
+        $ref: ./paths/records.yaml#/records~1wallet~1{walletName}
     /records/category/{categoryName}:
-        $ref: ./paths/records-path.yaml#/records~1category~1{categoryName}
+        $ref: ./paths/records.yaml#/records~1category~1{categoryName}
     /wallets:
-        $ref: ./paths/wallets-path.yaml#/wallets
+        $ref: ./paths/wallets.yaml#/wallets
     /wallets/{walletName}:
-        $ref: ./paths/wallets-path.yaml#/wallets~1{walletName}
+        $ref: ./paths/wallets.yaml#/wallets~1{walletName}
     /categories:
-        $ref: ./paths/categories-path.yaml#/categories
+        $ref: ./paths/categories.yaml#/categories
     /categories/{categoryName}:
-        $ref: ./paths/categories-path.yaml#/categories~1{categoryName}
+        $ref: ./paths/categories.yaml#/categories~1{categoryName}

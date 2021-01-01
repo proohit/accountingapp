@@ -50,8 +50,8 @@ export class RecordTimestamp {
   }
 
   private fromTimestamp(timestamp: string) {
-    const date = timestamp.split(' ')[0];
-    const time = timestamp.split(' ')[1];
+    const date = timestamp.split('T')[0];
+    const time = timestamp.split('T')[1];
 
     this.year = parseInt(date.split('-')[0], 10);
     this.month = parseInt(date.split('-')[1], 10);

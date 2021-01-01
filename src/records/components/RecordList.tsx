@@ -9,6 +9,8 @@ import { useDialogs } from '../../shared/hooks/useDialogs';
 import { useSort } from '../../shared/hooks/useSort';
 import { Dialogs } from '../../shared/models/DialogContextModel';
 import { Order } from '../../shared/models/SortOrder';
+import { useWallets } from '../../wallets/hooks/useWallets';
+import { useCategories } from '../hooks/useCategories';
 import { RecordsContext, useRecords } from '../hooks/useRecords';
 import { Record } from '../models/Record';
 import { RecordDialogContainer } from './RecordDialogContainer';
@@ -28,6 +30,8 @@ export const RecordListContext = createContext<RecordListContextModel>(
 
 const RecordList: FunctionComponent = () => {
   const { records, getRecords, totalRecords } = useRecords();
+  const { categories, getCategories } = useCategories();
+  const { wallets, getWallets } = useWallets();
   const { openDialog } = useDialogs();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
@@ -46,7 +50,19 @@ const RecordList: FunctionComponent = () => {
     });
   }, [order, orderBy, page, rowsPerPage]);
 
-  return records && records.length ? (
+  useEffect(() => {
+    if (!categories) {
+      getCategories();
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (!wallets) {
+      getWallets();
+    }
+  }, [wallets]);
+
+  return records?.length && wallets?.length && categories?.length ? (
     <RecordListContext.Provider
       value={{ rowsPerPage, page, order, orderBy, selectedRecord }}
     >
@@ -55,6 +71,8 @@ const RecordList: FunctionComponent = () => {
         addClicked={() => openDialog(Dialogs.addRecord)}
         sortClicked={handleSortClicked}
         records={records}
+        categories={categories}
+        wallets={wallets}
         rowsPerPage={rowsPerPage}
         page={page - 1}
         onRecordClicked={(record) => {

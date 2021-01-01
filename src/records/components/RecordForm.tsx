@@ -45,9 +45,16 @@ export const RecordForm = (props: RecordFormProps) => {
       description: record?.description || '',
       value: record?.value.toString() || '0.00',
       walletName:
-        record?.walletName || (wallets?.length > 0 && wallets[0].name) || '',
+        (record?.walletId &&
+          wallets?.length &&
+          wallets.find((wallet) => wallet.id === record.walletId)?.name) ||
+        (wallets?.length && wallets[0].name) ||
+        '',
       category:
-        record?.category ||
+        (record?.categoryId &&
+          categories?.length &&
+          categories?.find((category) => category.id === record.categoryId)
+            ?.name) ||
         (categories?.length > 0 && categories[0].name) ||
         '',
       timestamp: new RecordTimestamp(
@@ -66,12 +73,15 @@ export const RecordForm = (props: RecordFormProps) => {
   useEffect(() => {
     onRecordChange({
       id: formFields.id,
-      category: formFields.category,
       description: formFields.description,
       timestamp: new RecordTimestamp(formFields.timestamp, 'input').toString(),
       value: formFields.value,
-      walletName: formFields.walletName,
-      owner,
+      walletId: wallets?.find((wallet) => wallet.name === formFields.walletName)
+        ?.id,
+      categoryId: categories?.find(
+        (category) => formFields.category === category.name
+      )?.id,
+      ownerUsername: owner,
     });
   }, [formFields]);
 

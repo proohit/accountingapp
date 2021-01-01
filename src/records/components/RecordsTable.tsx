@@ -15,9 +15,13 @@ import { HeadCell } from '../../shared/models/HeadCell';
 import { RecordTableHeader } from './RecordTableHeader';
 import { RecordTableBody } from './RecordTableBody';
 import { Add, AddBox } from '@material-ui/icons';
+import { Wallet } from '../../wallets/models/Wallet';
+import { Category } from '../models/Category';
 
 interface RecordsTableProps {
   records: Record[];
+  categories: Category[];
+  wallets: Wallet[];
   rowsPerPage: number;
   page: number;
   onChangePage: (page: number) => void;
@@ -33,6 +37,8 @@ interface RecordsTableProps {
 export const RecordsTable = (props: RecordsTableProps) => {
   const {
     records,
+    categories,
+    wallets,
     onChangePage,
     onChangeRowsPerPage,
     page,
@@ -46,8 +52,8 @@ export const RecordsTable = (props: RecordsTableProps) => {
 
   const headers: HeadCell<Record>[] = [
     { key: 'description', label: 'description' },
-    { key: 'category', label: 'category' },
-    { key: 'walletName', label: 'wallet' },
+    { key: 'categoryId', label: 'category' },
+    { key: 'walletId', label: 'wallet' },
     { key: 'timestamp', label: 'timestamp' },
     { key: 'value', label: 'value' },
   ];
@@ -71,6 +77,8 @@ export const RecordsTable = (props: RecordsTableProps) => {
             sortClicked={sortClicked}
           />
           <RecordTableBody
+            wallets={wallets}
+            categories={categories}
             records={records}
             onRecordClicked={onRecordClicked}
           />

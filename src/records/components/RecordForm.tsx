@@ -7,8 +7,8 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useValidation } from '../../shared/hooks/useValidation';
+import dayjs from 'dayjs';
+import React, { useEffect } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
@@ -58,10 +58,7 @@ export const RecordForm = (props: RecordFormProps) => {
           getCategoryById(categories, record.categoryId)?.name) ||
         (categories?.length > 0 && categories[0].name) ||
         '',
-      timestamp: new RecordTimestamp(
-        record?.timestamp || new Date(),
-        record?.timestamp ? 'timestamp' : 'date'
-      ).toInputString(),
+      timestamp: dayjs(record?.timestamp).format('YYYY-MM-DDTHH:mm:ss'),
     },
     {
       validation: {
@@ -75,7 +72,7 @@ export const RecordForm = (props: RecordFormProps) => {
     onRecordChange({
       id: formFields.id,
       description: formFields.description,
-      timestamp: new RecordTimestamp(formFields.timestamp, 'input').toString(),
+      timestamp: dayjs(formFields.timestamp).toISOString(),
       value: formFields.value,
       walletId: getWalletByName(wallets, formFields.walletName)?.id,
       categoryId: getCategoryByName(categories, formFields.categoryName)?.id,

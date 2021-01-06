@@ -3,6 +3,7 @@ import React from 'react';
 import { Record } from '../models/Record';
 import { Category } from '../models/Category';
 import { Wallet } from '../../wallets/models/Wallet';
+import dayjs from 'dayjs';
 
 export interface RecordTableBody {
   records: Record[];
@@ -10,6 +11,7 @@ export interface RecordTableBody {
   wallets: Wallet[];
   onRecordClicked(record: Record): void;
 }
+
 export const RecordTableBody = (props: RecordTableBody) => {
   const { records, wallets, categories, onRecordClicked } = props;
   return (
@@ -26,7 +28,9 @@ export const RecordTableBody = (props: RecordTableBody) => {
           <TableCell>
             {wallets.find((wallet) => wallet.id === record.walletId)?.name}
           </TableCell>
-          <TableCell>{record.timestamp}</TableCell>
+          <TableCell>
+            {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+          </TableCell>
           <TableCell>{record.value}</TableCell>
         </TableRow>
       ))}

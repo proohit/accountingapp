@@ -4,6 +4,8 @@ import { Record } from '../models/Record';
 import { Category } from '../models/Category';
 import { Wallet } from '../../wallets/models/Wallet';
 import dayjs from 'dayjs';
+import { getCategoryById } from '../utils/categoryUtils';
+import { getWalletById } from '../../wallets/utils/walletUtils';
 
 export interface RecordTableBody {
   records: Record[];
@@ -20,14 +22,9 @@ export const RecordTableBody = (props: RecordTableBody) => {
         <TableRow hover key={record.id} onClick={() => onRecordClicked(record)}>
           <TableCell>{record.description}</TableCell>
           <TableCell>
-            {
-              categories.find((category) => category.id === record.categoryId)
-                ?.name
-            }
+            {getCategoryById(categories, record.categoryId)?.name}
           </TableCell>
-          <TableCell>
-            {wallets.find((wallet) => wallet.id === record.walletId)?.name}
-          </TableCell>
+          <TableCell>{getWalletById(wallets, record.walletId)?.name}</TableCell>
           <TableCell>
             {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
           </TableCell>

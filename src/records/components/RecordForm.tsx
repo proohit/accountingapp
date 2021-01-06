@@ -49,12 +49,11 @@ export const RecordForm = (props: RecordFormProps) => {
       description: record?.description || '',
       value: record?.value.toString() || '0.00',
       walletName:
-        (record?.walletId && getWalletById(wallets, record.walletId)?.name) ||
+        getWalletById(wallets, record?.walletId)?.name ||
         (wallets?.length && wallets[0].name) ||
         '',
       categoryName:
-        (record?.categoryId &&
-          getCategoryById(categories, record.categoryId)?.name) ||
+        getCategoryById(categories, record?.categoryId)?.name ||
         (categories?.length > 0 && categories[0].name) ||
         '',
       timestamp: dayjs(record?.timestamp).format('YYYY-MM-DDTHH:mm:ss'),
@@ -72,7 +71,7 @@ export const RecordForm = (props: RecordFormProps) => {
       id: formFields.id,
       description: formFields.description,
       timestamp: dayjs(formFields.timestamp).toISOString(),
-      value: formFields.value,
+      value: Number(formFields.value),
       walletId: getWalletByName(wallets, formFields.walletName)?.id,
       categoryId: getCategoryByName(categories, formFields.categoryName)?.id,
       ownerUsername: owner,

@@ -1,3 +1,3 @@
-export type ValidationResult<T, R> = {
-  [Key in keyof T]: R;
+export type ValidationResult<T> = {
+  [Key in keyof T]: string;
 };

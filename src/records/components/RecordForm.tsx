@@ -12,7 +12,6 @@ import React, { useEffect } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
-import { RecordTimestamp } from '../models/RecordTimestamp';
 import { validateRecordField } from '../services/RecordValidator';
 import {
   getWalletById,
@@ -44,7 +43,7 @@ export const RecordForm = (props: RecordFormProps) => {
     formFields,
     handleFormFieldChange,
     [formErrors, , isFormValid],
-  ] = useForm(
+  ] = useForm<Partial<Record> & { categoryName: string; walletName: string }>(
     {
       id: record?.id || null,
       description: record?.description || '',

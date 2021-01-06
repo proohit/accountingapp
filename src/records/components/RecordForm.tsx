@@ -14,7 +14,12 @@ import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { RecordTimestamp } from '../models/RecordTimestamp';
 import { validateRecordField } from '../services/RecordValidator';
+import {
+  getWalletById,
+  getWalletByName,
+} from '../../wallets/utils/walletUtils';
 import { useForm } from './useForm';
+import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 
 interface RecordFormProps {
   onRecordChange(record: Record): void;
@@ -45,16 +50,12 @@ export const RecordForm = (props: RecordFormProps) => {
       description: record?.description || '',
       value: record?.value.toString() || '0.00',
       walletName:
-        (record?.walletId &&
-          wallets?.length &&
-          wallets.find((wallet) => wallet.id === record.walletId)?.name) ||
+        (record?.walletId && getWalletById(wallets, record.walletId)?.name) ||
         (wallets?.length && wallets[0].name) ||
         '',
-      category:
+      categoryName:
         (record?.categoryId &&
-          categories?.length &&
-          categories?.find((category) => category.id === record.categoryId)
-            ?.name) ||
+          getCategoryById(categories, record.categoryId)?.name) ||
         (categories?.length > 0 && categories[0].name) ||
         '',
       timestamp: new RecordTimestamp(
@@ -76,11 +77,8 @@ export const RecordForm = (props: RecordFormProps) => {
       description: formFields.description,
       timestamp: new RecordTimestamp(formFields.timestamp, 'input').toString(),
       value: formFields.value,
-      walletId: wallets?.find((wallet) => wallet.name === formFields.walletName)
-        ?.id,
-      categoryId: categories?.find(
-        (category) => formFields.category === category.name
-      )?.id,
+      walletId: getWalletByName(wallets, formFields.walletName)?.id,
+      categoryId: getCategoryByName(categories, formFields.categoryName)?.id,
       ownerUsername: owner,
     });
   }, [formFields]);
@@ -135,7 +133,7 @@ export const RecordForm = (props: RecordFormProps) => {
           style={{ width: '100%' }}
           error={!!formErrors['category']}
           color="secondary"
-          value={formFields.category}
+          value={formFields.categoryName}
           label="category"
           name="category"
           onChange={handleFormFieldChange}

@@ -7,7 +7,7 @@ import { Wallet } from './Wallet';
 export class Record {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-    @Column({ default: 0 })
+    @Column({ default: 0, type: 'float' })
     value: number;
     @Column({ default: '' })
     description?: string;

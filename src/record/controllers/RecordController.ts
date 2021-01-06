@@ -20,8 +20,8 @@ const RecordControllerImpl: RecordController = {
         const username = ctx.state.token.username;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
         const missingProperties = [];
-        if (!description) missingProperties.push('description');
-        if (!value) missingProperties.push('value');
+        if (!description && description !== '') missingProperties.push('description');
+        if (!value && value !== 0) missingProperties.push('value');
         if (!walletId) missingProperties.push('walletId');
         if (!categoryId) missingProperties.push('categoryId');
         if (!timestamp) missingProperties.push('timestamp');
@@ -62,7 +62,7 @@ const RecordControllerImpl: RecordController = {
 
         const records = await recordsRepo.find({
             where: { ownerUsername: username },
-            order: sortBy && sortDirection && { [sortBy]: sortDirection },
+            order: sortBy && sortDirection && { [sortBy]: sortDirection.toUpperCase() },
             skip: from,
             take: itemsPerPage,
         });
@@ -110,10 +110,7 @@ const RecordControllerImpl: RecordController = {
 
         await recordRepo.getByIdIfAllowed(id, username);
 
-        const categoryOfRecord = await categoriesRepo.findOne({ ownerUsername: username, id: categoryId });
-        if (!categoryOfRecord) {
-            throw new CategoryNotFound();
-        }
+        const categoryOfRecord = await categoriesRepo.getByIdIfAllowed(categoryId, username);
 
         const walletOfRecord = await walletRepo.getByIdIfAllowed(walletId, username);
 

@@ -1,35 +1,37 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useValidation } from '../../shared/hooks/useValidation';
 import { UseValidationHook } from '../../shared/models/UseValidationHook';
+import { ValidationResult } from '../../shared/models/ValidationResult';
 
-interface FormFields {
-  [name: string]: any;
-}
-type UseFormHook = [
-  FormFields,
+type FormFields<R> = {
+  [Key in keyof R]: any;
+};
+
+type UseFormHook<R> = [
+  FormFields<R>,
   (event: ChangeEvent<unknown>) => void,
-  UseValidationHook<unknown>?
+  UseValidationHook<R>?
 ];
 
-interface UseFormOptions {
+interface UseFormOptions<R> {
   validation?: {
-    validationFunction: (field: string, value: unknown) => string;
+    validationFunction: (field: keyof R, value: unknown) => string;
     initialValidation?: boolean;
   };
   fieldTransform?: (field: string, value: any) => any;
 }
 
-export const useForm = (
-  fields: FormFields,
-  options?: UseFormOptions
-): UseFormHook => {
+export const useForm = <R = {}>(
+  fields: FormFields<R>,
+  options?: UseFormOptions<R>
+): UseFormHook<R> => {
   const [fieldsState, setFieldsState] = useState(fields);
   const validation = useValidation(
     options?.validation?.validationFunction,
-    fieldsState
+    fieldsState as ValidationResult<R>
   );
   const [, validateField, , validateObject, ,] = validation;
-  const fieldKeys = Object.keys(fieldsState);
+  const fieldKeys = Object.keys(fieldsState).map((field) => field as keyof R);
 
   useEffect(() => {
     if (options?.validation?.initialValidation) {

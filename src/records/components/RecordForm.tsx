@@ -7,14 +7,18 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useValidation } from '../../shared/hooks/useValidation';
+import dayjs from 'dayjs';
+import React, { useEffect } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
-import { RecordTimestamp } from '../models/RecordTimestamp';
 import { validateRecordField } from '../services/RecordValidator';
+import {
+  getWalletById,
+  getWalletByName,
+} from '../../wallets/utils/walletUtils';
 import { useForm } from './useForm';
+import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 
 interface RecordFormProps {
   onRecordChange(record: Record): void;
@@ -22,6 +26,7 @@ interface RecordFormProps {
   wallets: Wallet[];
   categories: Category[];
   owner: string;
+  record?: Record;
 }
 
 export const RecordForm = (props: RecordFormProps) => {
@@ -31,44 +36,45 @@ export const RecordForm = (props: RecordFormProps) => {
     wallets,
     categories,
     owner,
+    record,
   } = props;
-
-  const transformValueForField = (field: string, value: string) => {
-    if (field === 'timestamp') {
-      return new RecordTimestamp(value, 'input').toString();
-    }
-    return value ? value : '';
-  };
 
   const [
     formFields,
     handleFormFieldChange,
     [formErrors, , isFormValid],
-  ] = useForm(
+  ] = useForm<Partial<Record> & { categoryName: string; walletName: string }>(
     {
-      description: '',
-      value: '0.00',
-      walletName: (wallets?.length > 0 && wallets[0].name) || '',
-      category: (categories?.length > 0 && categories[0].name) || '',
-      timestamp: new RecordTimestamp(new Date(), 'date').toInputString(),
+      id: record?.id || null,
+      description: record?.description || '',
+      value: record?.value.toString() || '0.00',
+      walletName:
+        getWalletById(wallets, record?.walletId)?.name ||
+        (wallets?.length && wallets[0].name) ||
+        '',
+      categoryName:
+        getCategoryById(categories, record?.categoryId)?.name ||
+        (categories?.length > 0 && categories[0].name) ||
+        '',
+      timestamp: dayjs(record?.timestamp).format('YYYY-MM-DDTHH:mm:ss'),
     },
     {
       validation: {
         validationFunction: validateRecordField,
         initialValidation: true,
       },
-      fieldTransform: transformValueForField,
     }
   );
 
   useEffect(() => {
     onRecordChange({
-      category: formFields.category,
+      id: formFields.id,
       description: formFields.description,
-      timestamp: new RecordTimestamp(formFields.timestamp, 'input').toString(),
-      value: formFields.value,
-      walletName: formFields.walletName,
-      owner,
+      timestamp: dayjs(formFields.timestamp).toISOString(),
+      value: Number(formFields.value),
+      walletId: getWalletByName(wallets, formFields.walletName)?.id,
+      categoryId: getCategoryByName(categories, formFields.categoryName)?.id,
+      ownerUsername: owner,
     });
   }, [formFields]);
 
@@ -122,7 +128,7 @@ export const RecordForm = (props: RecordFormProps) => {
           style={{ width: '100%' }}
           error={!!formErrors['category']}
           color="secondary"
-          value={formFields.category}
+          value={formFields.categoryName}
           label="category"
           name="category"
           onChange={handleFormFieldChange}

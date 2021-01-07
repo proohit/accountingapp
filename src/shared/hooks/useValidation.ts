@@ -4,9 +4,9 @@ import { ValidationResult } from '../models/ValidationResult';
 
 export const useValidation = <R>(
   validationFunction: (field: keyof R, value: unknown) => string,
-  initialFormError?: ValidationResult<R, string>
+  initialFormError?: ValidationResult<R>
 ): UseValidationHook<R> => {
-  const [formErrors, setFormErrors] = useState<ValidationResult<R, string>>(
+  const [formErrors, setFormErrors] = useState<ValidationResult<R>>(
     initialFormError
   );
   const [isFormValid, setIsFormValid] = useState<boolean>(true);

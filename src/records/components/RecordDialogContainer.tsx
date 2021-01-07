@@ -8,6 +8,7 @@ import { useRecords } from '../hooks/useRecords';
 import { Record } from '../models/Record';
 import { RecordsApiService } from '../services/RecordsApi';
 import { RecordAddDialog } from './RecordAddDialog';
+import { RecordEditDialog } from './RecordEditDialog';
 import { RecordListContext } from './RecordList';
 
 export const RecordDialogContainer = () => {
@@ -18,7 +19,7 @@ export const RecordDialogContainer = () => {
   const recordListContext = useContext(RecordListContext);
   const recordsApi = new RecordsApiService();
   const {
-    dialogs: { ADD_RECORD },
+    dialogs: { ADD_RECORD, EDIT_RECORD },
     closeDialog,
   } = useDialogs();
 
@@ -45,6 +46,17 @@ export const RecordDialogContainer = () => {
     closeDialog(Dialogs.addRecord);
   };
 
+  const editRecord = async (editedRecord: Record) => {
+    await recordsApi.editRecord(token, editedRecord);
+    getRecords({
+      itemsPerPage: recordListContext.rowsPerPage,
+      page: recordListContext.page,
+      sortBy: recordListContext.orderBy,
+      sortDirection: recordListContext.order,
+    });
+    closeDialog(Dialogs.editRecord);
+  };
+
   if (ADD_RECORD) {
     return (
       <RecordAddDialog
@@ -53,6 +65,19 @@ export const RecordDialogContainer = () => {
         onAddRecord={addRecord}
         wallets={wallets}
         categories={categories}
+      />
+    );
+  }
+
+  if (EDIT_RECORD) {
+    return (
+      <RecordEditDialog
+        record={recordListContext.selectedRecord}
+        categories={categories}
+        owner={username}
+        onDialogClose={() => closeDialog(Dialogs.editRecord)}
+        onEditRecord={editRecord}
+        wallets={wallets}
       />
     );
   }

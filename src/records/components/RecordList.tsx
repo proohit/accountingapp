@@ -9,6 +9,8 @@ import { useDialogs } from '../../shared/hooks/useDialogs';
 import { useSort } from '../../shared/hooks/useSort';
 import { Dialogs } from '../../shared/models/DialogContextModel';
 import { Order } from '../../shared/models/SortOrder';
+import { useWallets } from '../../wallets/hooks/useWallets';
+import { useCategories } from '../hooks/useCategories';
 import { RecordsContext, useRecords } from '../hooks/useRecords';
 import { Record } from '../models/Record';
 import { RecordDialogContainer } from './RecordDialogContainer';
@@ -19,6 +21,7 @@ interface RecordListContextModel {
   rowsPerPage: number;
   order: Order;
   orderBy: keyof Record;
+  selectedRecord: Record;
 }
 
 export const RecordListContext = createContext<RecordListContextModel>(
@@ -27,9 +30,12 @@ export const RecordListContext = createContext<RecordListContextModel>(
 
 const RecordList: FunctionComponent = () => {
   const { records, getRecords, totalRecords } = useRecords();
+  const { categories, getCategories } = useCategories();
+  const { wallets, getWallets } = useWallets();
   const { openDialog } = useDialogs();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [selectedRecord, setSelectedRecord] = useState<Record>(null);
   const [{ order, orderBy }, handleSortClicked] = useSort<Record>({
     order: Order.desc,
     orderBy: 'timestamp',
@@ -44,15 +50,35 @@ const RecordList: FunctionComponent = () => {
     });
   }, [order, orderBy, page, rowsPerPage]);
 
-  return records && records.length ? (
-    <RecordListContext.Provider value={{ rowsPerPage, page, order, orderBy }}>
+  useEffect(() => {
+    if (!categories) {
+      getCategories();
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (!wallets) {
+      getWallets();
+    }
+  }, [wallets]);
+
+  return records?.length && wallets?.length && categories?.length ? (
+    <RecordListContext.Provider
+      value={{ rowsPerPage, page, order, orderBy, selectedRecord }}
+    >
       <RecordDialogContainer />
       <RecordsTable
         addClicked={() => openDialog(Dialogs.addRecord)}
         sortClicked={handleSortClicked}
         records={records}
+        categories={categories}
+        wallets={wallets}
         rowsPerPage={rowsPerPage}
         page={page - 1}
+        onRecordClicked={(record) => {
+          setSelectedRecord(record);
+          openDialog(Dialogs.editRecord);
+        }}
         onChangePage={(newPage) => setPage(newPage + 1)}
         onChangeRowsPerPage={(event) =>
           setRowsPerPage(parseInt(event.target.value, 10))

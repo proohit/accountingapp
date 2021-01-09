@@ -2,18 +2,18 @@ import React, {
   createContext,
   Fragment,
   FunctionComponent,
-  useEffect,
   useState,
 } from 'react';
+import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useDialogs } from '../../shared/hooks/useDialogs';
 import { useSort } from '../../shared/hooks/useSort';
 import { Dialogs } from '../../shared/models/DialogContextModel';
 import { Order } from '../../shared/models/SortOrder';
-import { useWallets } from '../../wallets/hooks/useWallets';
-import { useCategories } from '../hooks/useCategories';
-import { RecordsContext, useRecords } from '../hooks/useRecords';
+import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
+import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { Record } from '../models/Record';
 import { RecordDialogContainer } from './RecordDialogContainer';
+import { useRecordsQuery } from '../hooks/recordsQueries';
 import { RecordsTable } from './RecordsTable';
 
 interface RecordListContextModel {
@@ -29,9 +29,7 @@ export const RecordListContext = createContext<RecordListContextModel>(
 );
 
 const RecordList: FunctionComponent = () => {
-  const { records, getRecords, totalRecords } = useRecords();
-  const { categories, getCategories } = useCategories();
-  const { wallets, getWallets } = useWallets();
+  const { token } = useAuthentication();
   const { openDialog } = useDialogs();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
@@ -41,28 +39,18 @@ const RecordList: FunctionComponent = () => {
     orderBy: 'timestamp',
   });
 
-  useEffect(() => {
-    getRecords({
-      page,
-      itemsPerPage: rowsPerPage,
-      sortBy: orderBy,
-      sortDirection: orderBy && order,
-    });
-  }, [order, orderBy, page, rowsPerPage]);
+  const { data: paginatedResult } = useRecordsQuery(
+    page,
+    rowsPerPage,
+    orderBy,
+    order,
+    token
+  );
 
-  useEffect(() => {
-    if (!categories) {
-      getCategories();
-    }
-  }, [categories]);
+  const { data: categories } = useCategoriesQuery(token);
+  const { data: wallets } = useWalletsQuery(token);
 
-  useEffect(() => {
-    if (!wallets) {
-      getWallets();
-    }
-  }, [wallets]);
-
-  return records?.length && wallets?.length && categories?.length ? (
+  return paginatedResult?.data && wallets?.length && categories?.length ? (
     <RecordListContext.Provider
       value={{ rowsPerPage, page, order, orderBy, selectedRecord }}
     >
@@ -70,7 +58,7 @@ const RecordList: FunctionComponent = () => {
       <RecordsTable
         addClicked={() => openDialog(Dialogs.addRecord)}
         sortClicked={handleSortClicked}
-        records={records}
+        records={paginatedResult.data}
         categories={categories}
         wallets={wallets}
         rowsPerPage={rowsPerPage}
@@ -83,7 +71,7 @@ const RecordList: FunctionComponent = () => {
         onChangeRowsPerPage={(event) =>
           setRowsPerPage(parseInt(event.target.value, 10))
         }
-        rowCount={totalRecords || 0}
+        rowCount={paginatedResult.totalCount || 0}
         sortOrder={{ order, orderBy }}
       />
     </RecordListContext.Provider>

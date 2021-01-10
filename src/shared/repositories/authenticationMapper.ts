@@ -50,13 +50,13 @@ export const login = async (req: Request): Promise<LoginToken> => {
 export const verify = (req: Request): DecodedToken => {
     let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
 
+    if (!token) {
+        throw new TokenNotProvided();
+    }
+
     if (token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);
-    }
-
-    if (!token) {
-        throw new TokenNotProvided();
     }
 
     try {

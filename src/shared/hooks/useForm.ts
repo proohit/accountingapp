@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useValidation } from '../../shared/hooks/useValidation';
-import { UseValidationHook } from '../../shared/models/UseValidationHook';
-import { ValidationResult } from '../../shared/models/ValidationResult';
+import { useValidation } from './useValidation';
+import { UseValidationHook } from '../models/UseValidationHook';
+import { ValidationResult } from '../models/ValidationResult';
 
 type FormFields<R> = {
   [Key in keyof R]: any;

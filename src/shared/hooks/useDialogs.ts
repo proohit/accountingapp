@@ -1,16 +1,27 @@
-import { useContext, createContext } from 'react';
-import { DialogContextModel } from '../models/DialogContextModel';
+import { useState } from 'react';
 
-export const DialogsContext = createContext<DialogContextModel>(
-  {} as DialogContextModel
-);
+interface Openable {
+  open: boolean;
+}
 
-export const useDialogs = () => {
-  const context = useContext(DialogsContext);
+type DialogsState<R> = {
+  [key in keyof R]: R[keyof R] & Openable;
+};
 
-  if (!context) {
-    throw new Error('Dialog Context not provided');
-  }
+export interface UseDialogs<R> {
+  dialogs: R;
+  setSingleDialog: (dialog: keyof R, dialogValue: R[keyof R]) => void;
+  setDialogs: (dialogs: R) => void;
+}
 
-  return context;
+export const useDialogs = <R extends DialogsState<R>>(
+  initialDialogs?: R
+): UseDialogs<R> => {
+  const [dialogs, setDialogs] = useState<R>(initialDialogs);
+
+  const setSingleDialog = (dialog: keyof R, dialogValue: R[keyof R]) => {
+    setDialogs({ ...dialogs, [dialog]: dialogValue });
+  };
+
+  return { dialogs, setSingleDialog, setDialogs };
 };

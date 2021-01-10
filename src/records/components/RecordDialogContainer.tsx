@@ -1,7 +1,6 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment } from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
-import { useDialogs } from '../../shared/hooks/useDialogs';
-import { Dialogs } from '../../shared/models/DialogContextModel';
+import { UseDialogs } from '../../shared/hooks/useDialogs';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
@@ -11,15 +10,17 @@ import {
 import { Record } from '../models/Record';
 import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
-import { RecordListContext } from './RecordList';
+import { RecordDialogs } from '../models/RecordDialogs';
 
-export const RecordDialogContainer = () => {
+type RecordDialogContainerProps = {
+  dialogsState: UseDialogs<RecordDialogs>;
+};
+
+export const RecordDialogContainer = (props: RecordDialogContainerProps) => {
   const { username, token } = useAuthentication();
-  const recordListContext = useContext(RecordListContext);
   const {
-    dialogs: { ADD_RECORD, EDIT_RECORD },
-    closeDialog,
-  } = useDialogs();
+    dialogsState: { dialogs, setSingleDialog },
+  } = props;
 
   const { data: categories } = useCategoriesQuery(token);
   const { data: wallets } = useWalletsQuery(token);
@@ -28,19 +29,19 @@ export const RecordDialogContainer = () => {
 
   const addRecord = async (recordToAdd: Record) => {
     await createRecordMutation.mutateAsync(recordToAdd);
-    closeDialog(Dialogs.addRecord);
+    setSingleDialog('ADD_RECORD', { open: false });
   };
 
   const editRecord = async (editedRecord: Record) => {
     await editRecordMutation.mutateAsync(editedRecord);
-    closeDialog(Dialogs.editRecord);
+    setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null });
   };
 
-  if (ADD_RECORD) {
+  if (dialogs.ADD_RECORD.open) {
     return (
       <RecordAddDialog
         owner={username}
-        onDialogClose={() => closeDialog(Dialogs.addRecord)}
+        onDialogClose={() => setSingleDialog('ADD_RECORD', { open: false })}
         onAddRecord={addRecord}
         wallets={wallets}
         categories={categories}
@@ -48,13 +49,15 @@ export const RecordDialogContainer = () => {
     );
   }
 
-  if (EDIT_RECORD) {
+  if (dialogs.EDIT_RECORD.open) {
     return (
       <RecordEditDialog
-        record={recordListContext.selectedRecord}
+        record={dialogs.EDIT_RECORD.recordToEdit}
         categories={categories}
         owner={username}
-        onDialogClose={() => closeDialog(Dialogs.editRecord)}
+        onDialogClose={() =>
+          setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null })
+        }
         onEditRecord={editRecord}
         wallets={wallets}
       />

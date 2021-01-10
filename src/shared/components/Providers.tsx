@@ -6,7 +6,6 @@ import { CategoryProvider } from '../../records/components/CategoryProvider';
 import { RecordsProvider } from '../../records/components/RecordsProvider';
 import { WalletsProvider } from '../../wallets/components/WalletsProvider';
 import { AccTheme } from '../globals/styles/AccTheme';
-import { DialogsProvider } from './DialogProvider';
 const queryClient = new QueryClient();
 
 const Providers: FunctionComponent = (props) => {
@@ -15,13 +14,11 @@ const Providers: FunctionComponent = (props) => {
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <AuthenticationProvider>
-          <DialogsProvider>
-            <RecordsProvider>
-              <CategoryProvider>
-                <WalletsProvider>{props.children}</WalletsProvider>
-              </CategoryProvider>
-            </RecordsProvider>
-          </DialogsProvider>
+          <RecordsProvider>
+            <CategoryProvider>
+              <WalletsProvider>{props.children}</WalletsProvider>
+            </CategoryProvider>
+          </RecordsProvider>
         </AuthenticationProvider>
       </QueryClientProvider>
     </ThemeProvider>

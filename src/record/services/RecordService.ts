@@ -34,13 +34,11 @@ export class RecordService {
         if (!timestamp) missingProperties.push('timestamp');
         if (missingProperties.length) throw new MissingProperty(missingProperties);
 
-        const walletRepo = repositories.wallets();
-        const categoryRepo = repositories.categories();
         const recordRepo = repositories.records();
         const userRepo = repositories.users();
 
-        const requestedWallet = await walletRepo.getByIdIfAllowed(walletId, username);
-        const requestedCategory = await categoryRepo.getByIdIfAllowed(categoryId, username);
+        const requestedWallet = await services.walletService.getById(walletId, username);
+        const requestedCategory = await services.walletService.getById(categoryId, username);
         const requestedOwner = await userRepo.findOne({ username });
         if (!requestedOwner) throw new UserNotFound();
 
@@ -110,13 +108,12 @@ export class RecordService {
         username: User['username'],
     ) {
         const recordRepo = repositories.records();
-        const walletRepo = repositories.wallets();
 
         await this.getById(id, username);
 
         const categoryOfRecord = await services.categoryService.getById(categoryId, username);
 
-        const walletOfRecord = await walletRepo.getByIdIfAllowed(walletId, username);
+        const walletOfRecord = await services.walletService.getById(walletId, username);
 
         return recordRepo.save({
             id,

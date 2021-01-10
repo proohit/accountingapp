@@ -3,20 +3,26 @@ import {
   IconButton,
   Paper,
   Table,
+  TableBody,
+  TableCell,
   TableContainer,
+  TableHead,
   TablePagination,
+  TableRow,
+  TableSortLabel,
   Toolbar,
   Tooltip,
 } from '@material-ui/core';
+import { AddBox } from '@material-ui/icons';
+import dayjs from 'dayjs';
 import React, { MouseEvent } from 'react';
-import { SortOrder } from '../../shared/models/SortOrder';
-import { Record } from '../models/Record';
 import { HeadCell } from '../../shared/models/HeadCell';
-import { RecordTableHeader } from './RecordTableHeader';
-import { RecordTableBody } from './RecordTableBody';
-import { Add, AddBox } from '@material-ui/icons';
+import { SortOrder } from '../../shared/models/SortOrder';
 import { Wallet } from '../../wallets/models/Wallet';
+import { getWalletById } from '../../wallets/utils/walletUtils';
 import { Category } from '../models/Category';
+import { Record } from '../models/Record';
+import { getCategoryById } from '../utils/categoryUtils';
 
 interface RecordsTableProps {
   records: Record[];
@@ -57,6 +63,7 @@ export const RecordsTable = (props: RecordsTableProps) => {
     { key: 'timestamp', label: 'timestamp' },
     { key: 'value', label: 'value' },
   ];
+
   return (
     <Paper>
       <Toolbar>
@@ -70,18 +77,42 @@ export const RecordsTable = (props: RecordsTableProps) => {
       </Toolbar>
       <TableContainer>
         <Table>
-          <RecordTableHeader
-            headers={headers}
-            sortBy={sortOrder.orderBy}
-            direction={sortOrder.order}
-            sortClicked={sortClicked}
-          />
-          <RecordTableBody
-            wallets={wallets}
-            categories={categories}
-            records={records}
-            onRecordClicked={onRecordClicked}
-          />
+          <TableHead>
+            <TableRow>
+              {headers.map((header) => (
+                <TableCell key={header.key}>
+                  <TableSortLabel
+                    active={header.key === sortOrder.orderBy}
+                    direction={sortOrder.order}
+                    onClick={() => sortClicked(header.key)}
+                  >
+                    {header.label}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {records.map((record) => (
+              <TableRow
+                hover
+                key={record.id}
+                onClick={() => onRecordClicked(record)}
+              >
+                <TableCell>{record.description}</TableCell>
+                <TableCell>
+                  {getCategoryById(categories, record.categoryId)?.name}
+                </TableCell>
+                <TableCell>
+                  {getWalletById(wallets, record.walletId)?.name}
+                </TableCell>
+                <TableCell>
+                  {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+                </TableCell>
+                <TableCell>{record.value}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </TableContainer>
       <TablePagination

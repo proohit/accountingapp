@@ -1,8 +1,13 @@
-import Record from './Record';
+import { Record } from '../../entity/Record';
 
 export interface SearchQuery {
     sortBy?: keyof Record;
     sortDirection?: 'asc' | 'desc';
-    page: number;
-    itemsPerPage: number;
+    filterBy?: {
+        description?: Record['description'];
+        walletId?: Record['walletId'];
+        categoryId?: Record['categoryId'];
+    };
+    page?: number;
+    itemsPerPage?: number;
 }

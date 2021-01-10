@@ -29,16 +29,17 @@ const RecordControllerImpl: RecordController = {
 
     getByUser: async (ctx) => {
         const { username } = ctx.state.token;
-        const page: number = ctx.query.page;
-        const itemsPerPage: number = ctx.query.itemsPerPage;
-        const sortBy = ctx.query.sortBy;
-        const sortDirection = ctx.query.sortDirection;
+        const { page, itemsPerPage, sortBy, sortDirection, categoryId, walletId, description } = ctx.query;
 
         const records = await services.recordService.getByQuery(
-            { itemsPerPage, page, sortBy, sortDirection },
+            { itemsPerPage, page, sortBy, sortDirection, filterBy: { categoryId, walletId, description } },
             username,
         );
-        const recordCount = await services.recordService.getAllRecordsCount(username);
+
+        const recordCount = await services.recordService.getRecordsCountByQuery(
+            { filterBy: { categoryId, description, walletId } },
+            username,
+        );
 
         return { status: 200, data: { data: records, page, dataCount: records.length, totalCount: recordCount } };
     },

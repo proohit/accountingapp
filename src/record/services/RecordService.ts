@@ -9,6 +9,7 @@ import { SearchQuery } from '../models/SearchQuery';
 import { calculateOffset } from '../../shared/utils/paginationUtils';
 import { RecordNotFound } from '../models/Errors';
 import { services } from '../../shared/services/services';
+import { FindConditions, Like } from 'typeorm';
 
 export class RecordService {
     getByCategory(categoryId: Category['id'], username: User['username']) {
@@ -53,12 +54,20 @@ export class RecordService {
     }
 
     async getByQuery(searchQuery: SearchQuery, username: User['username']) {
-        const { page, itemsPerPage, sortBy, sortDirection } = searchQuery;
+        const {
+            page,
+            itemsPerPage,
+            sortBy,
+            sortDirection,
+            filterBy: { categoryId, description, walletId },
+        } = searchQuery;
         const from = calculateOffset(page || 1, itemsPerPage || 20);
         const recordsRepo = repositories.records();
 
+        const filterObject: FindConditions<Record> = this.buildFilterQuery(username, description, walletId, categoryId);
+
         const records = await recordsRepo.find({
-            where: { ownerUsername: username },
+            where: filterObject,
             order: sortBy && sortDirection && { [sortBy]: sortDirection.toUpperCase() },
             skip: from,
             take: itemsPerPage || 20,
@@ -66,9 +75,35 @@ export class RecordService {
         return records;
     }
 
+    private buildFilterQuery(username: string, description: string, walletId: string, categoryId: string) {
+        const filterObject: FindConditions<Record> = {
+            ownerUsername: username,
+        };
+
+        if (description) {
+            filterObject.description = Like(`%${description.replace(/\"|\'/g, '')}%`);
+        }
+        if (walletId) {
+            filterObject.walletId = walletId;
+        }
+        if (categoryId) {
+            filterObject.categoryId = categoryId;
+        }
+        return filterObject;
+    }
+
     getAllRecordsCount(username: User['username']) {
         const recordsRepo = repositories.records();
         return recordsRepo.count({ ownerUsername: username });
+    }
+
+    getRecordsCountByQuery(searchQuery: SearchQuery, username: User['username']) {
+        const {
+            filterBy: { categoryId, description, walletId },
+        } = searchQuery;
+        const recordsRepo = repositories.records();
+        const filterObject: FindConditions<Record> = this.buildFilterQuery(username, description, walletId, categoryId);
+        return recordsRepo.count({ where: filterObject });
     }
 
     async deleteById(id: Record['id'], username: User['username']) {

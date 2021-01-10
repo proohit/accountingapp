@@ -1,67 +1,47 @@
-import React, { Fragment, useContext, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
-import { useDialogs } from '../../shared/hooks/useDialogs';
-import { Dialogs } from '../../shared/models/DialogContextModel';
-import { useWallets } from '../../wallets/hooks/useWallets';
-import { useCategories } from '../hooks/useCategories';
-import { useRecords } from '../hooks/useRecords';
+import { UseDialogs } from '../../shared/hooks/useDialogs';
+import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
+import { useCategoriesQuery } from '../hooks/categoriesQueries';
+import {
+  useCreateRecordMutation,
+  useEditRecordMutation,
+} from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
-import { RecordsApiService } from '../services/RecordsApi';
 import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
-import { RecordListContext } from './RecordList';
+import { RecordDialogs } from '../models/RecordDialogs';
 
-export const RecordDialogContainer = () => {
+type RecordDialogContainerProps = {
+  dialogsState: UseDialogs<RecordDialogs>;
+};
+
+export const RecordDialogContainer = (props: RecordDialogContainerProps) => {
   const { username, token } = useAuthentication();
-  const { wallets, getWallets } = useWallets();
-  const { categories, getCategories } = useCategories();
-  const { getRecords } = useRecords();
-  const recordListContext = useContext(RecordListContext);
-  const recordsApi = new RecordsApiService();
   const {
-    dialogs: { ADD_RECORD, EDIT_RECORD },
-    closeDialog,
-  } = useDialogs();
+    dialogsState: { dialogs, setSingleDialog },
+  } = props;
 
-  useEffect(() => {
-    if (!wallets) {
-      getWallets();
-    }
-  }, [wallets]);
-
-  useEffect(() => {
-    if (!categories) {
-      getCategories();
-    }
-  }, [categories]);
+  const { data: categories } = useCategoriesQuery(token);
+  const { data: wallets } = useWalletsQuery(token);
+  const createRecordMutation = useCreateRecordMutation(token);
+  const editRecordMutation = useEditRecordMutation(token);
 
   const addRecord = async (recordToAdd: Record) => {
-    await recordsApi.createRecord(token, recordToAdd);
-    getRecords({
-      itemsPerPage: recordListContext.rowsPerPage,
-      page: recordListContext.page,
-      sortBy: recordListContext.orderBy,
-      sortDirection: recordListContext.order,
-    });
-    closeDialog(Dialogs.addRecord);
+    await createRecordMutation.mutateAsync(recordToAdd);
+    setSingleDialog('ADD_RECORD', { open: false });
   };
 
   const editRecord = async (editedRecord: Record) => {
-    await recordsApi.editRecord(token, editedRecord);
-    getRecords({
-      itemsPerPage: recordListContext.rowsPerPage,
-      page: recordListContext.page,
-      sortBy: recordListContext.orderBy,
-      sortDirection: recordListContext.order,
-    });
-    closeDialog(Dialogs.editRecord);
+    await editRecordMutation.mutateAsync(editedRecord);
+    setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null });
   };
 
-  if (ADD_RECORD) {
+  if (dialogs.ADD_RECORD.open) {
     return (
       <RecordAddDialog
         owner={username}
-        onDialogClose={() => closeDialog(Dialogs.addRecord)}
+        onDialogClose={() => setSingleDialog('ADD_RECORD', { open: false })}
         onAddRecord={addRecord}
         wallets={wallets}
         categories={categories}
@@ -69,13 +49,15 @@ export const RecordDialogContainer = () => {
     );
   }
 
-  if (EDIT_RECORD) {
+  if (dialogs.EDIT_RECORD.open) {
     return (
       <RecordEditDialog
-        record={recordListContext.selectedRecord}
+        record={dialogs.EDIT_RECORD.recordToEdit}
         categories={categories}
         owner={username}
-        onDialogClose={() => closeDialog(Dialogs.editRecord)}
+        onDialogClose={() =>
+          setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null })
+        }
         onEditRecord={editRecord}
         wallets={wallets}
       />

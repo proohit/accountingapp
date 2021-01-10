@@ -1,92 +1,67 @@
-import React, {
-  createContext,
-  Fragment,
-  FunctionComponent,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Fragment, FunctionComponent, useState } from 'react';
+import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useDialogs } from '../../shared/hooks/useDialogs';
 import { useSort } from '../../shared/hooks/useSort';
-import { Dialogs } from '../../shared/models/DialogContextModel';
 import { Order } from '../../shared/models/SortOrder';
-import { useWallets } from '../../wallets/hooks/useWallets';
-import { useCategories } from '../hooks/useCategories';
-import { RecordsContext, useRecords } from '../hooks/useRecords';
+import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
+import { useCategoriesQuery } from '../hooks/categoriesQueries';
+import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
 import { RecordDialogContainer } from './RecordDialogContainer';
+import { RecordDialogs } from '../models/RecordDialogs';
 import { RecordsTable } from './RecordsTable';
 
-interface RecordListContextModel {
-  page: number;
-  rowsPerPage: number;
-  order: Order;
-  orderBy: keyof Record;
-  selectedRecord: Record;
-}
-
-export const RecordListContext = createContext<RecordListContextModel>(
-  {} as RecordListContextModel
-);
-
 const RecordList: FunctionComponent = () => {
-  const { records, getRecords, totalRecords } = useRecords();
-  const { categories, getCategories } = useCategories();
-  const { wallets, getWallets } = useWallets();
-  const { openDialog } = useDialogs();
+  const { token } = useAuthentication();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
-  const [selectedRecord, setSelectedRecord] = useState<Record>(null);
   const [{ order, orderBy }, handleSortClicked] = useSort<Record>({
     order: Order.desc,
     orderBy: 'timestamp',
   });
+  const dialogsState = useDialogs<RecordDialogs>({
+    ADD_RECORD: { open: false },
+    EDIT_RECORD: { open: false, recordToEdit: null },
+  });
 
-  useEffect(() => {
-    getRecords({
-      page,
-      itemsPerPage: rowsPerPage,
-      sortBy: orderBy,
-      sortDirection: orderBy && order,
-    });
-  }, [order, orderBy, page, rowsPerPage]);
+  const { data: paginatedResult } = useRecordsQuery(
+    page,
+    rowsPerPage,
+    orderBy,
+    order,
+    token
+  );
 
-  useEffect(() => {
-    if (!categories) {
-      getCategories();
-    }
-  }, [categories]);
+  const { data: categories } = useCategoriesQuery(token);
+  const { data: wallets } = useWalletsQuery(token);
 
-  useEffect(() => {
-    if (!wallets) {
-      getWallets();
-    }
-  }, [wallets]);
-
-  return records?.length && wallets?.length && categories?.length ? (
-    <RecordListContext.Provider
-      value={{ rowsPerPage, page, order, orderBy, selectedRecord }}
-    >
-      <RecordDialogContainer />
+  return paginatedResult?.data && wallets?.length && categories?.length ? (
+    <>
+      <RecordDialogContainer dialogsState={dialogsState} />
       <RecordsTable
-        addClicked={() => openDialog(Dialogs.addRecord)}
+        addClicked={() =>
+          dialogsState.setSingleDialog('ADD_RECORD', { open: true })
+        }
         sortClicked={handleSortClicked}
-        records={records}
+        records={paginatedResult.data}
         categories={categories}
         wallets={wallets}
         rowsPerPage={rowsPerPage}
         page={page - 1}
-        onRecordClicked={(record) => {
-          setSelectedRecord(record);
-          openDialog(Dialogs.editRecord);
-        }}
+        onRecordClicked={(record) =>
+          dialogsState.setSingleDialog('EDIT_RECORD', {
+            open: true,
+            recordToEdit: record,
+          })
+        }
         onChangePage={(newPage) => setPage(newPage + 1)}
         onChangeRowsPerPage={(event) =>
           setRowsPerPage(parseInt(event.target.value, 10))
         }
-        rowCount={totalRecords || 0}
+        rowCount={paginatedResult.totalCount || 0}
         sortOrder={{ order, orderBy }}
       />
-    </RecordListContext.Provider>
+    </>
   ) : (
     <Fragment />
   );

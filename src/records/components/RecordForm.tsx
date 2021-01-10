@@ -17,7 +17,7 @@ import {
   getWalletById,
   getWalletByName,
 } from '../../wallets/utils/walletUtils';
-import { useForm } from './useForm';
+import { useForm } from '../../shared/hooks/useForm';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 
 interface RecordFormProps {

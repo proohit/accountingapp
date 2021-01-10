@@ -1,13 +1,11 @@
-import { getRepository } from 'typeorm';
-import { User } from '../../entity/User';
-import { repositories } from '../../shared/repositories/database';
+import { services } from '../../shared/services/services';
 import { UserController } from '../models/UserController';
 
 const USER_CONTROLLER: UserController = {
     getCurrentUser: async (ctx) => {
         const { username } = ctx.state.token;
 
-        const user = await repositories.users().findOne(username);
+        const user = await services.userService.getByUsername(username);
         return { data: { username: user.username }, status: 200 };
     },
 };

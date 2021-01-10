@@ -38,7 +38,7 @@ export class RecordService {
         const userRepo = repositories.users();
 
         const requestedWallet = await services.walletService.getById(walletId, username);
-        const requestedCategory = await services.walletService.getById(categoryId, username);
+        const requestedCategory = await services.categoryService.getById(categoryId, username);
         const requestedOwner = await userRepo.findOne({ username });
         if (!requestedOwner) throw new UserNotFound();
 
@@ -61,7 +61,7 @@ export class RecordService {
             where: { ownerUsername: username },
             order: sortBy && sortDirection && { [sortBy]: sortDirection.toUpperCase() },
             skip: from,
-            take: itemsPerPage,
+            take: itemsPerPage || 20,
         });
         return records;
     }

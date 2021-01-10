@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Category } from './Category';
 import { User } from './User';
 import { Wallet } from './Wallet';
@@ -12,7 +12,7 @@ export class Record {
     @Column({ default: '' })
     description?: string;
     @Column('timestamp')
-    timestamp: Timestamp;
+    timestamp: Date;
     @Column()
     walletId: string;
     @Column()

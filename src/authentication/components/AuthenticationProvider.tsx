@@ -30,7 +30,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     setIsLoading(true);
     const tokenFromStorage = localStorage.getItem(STORAGE_TOKEN);
     if (!tokenFromStorage) {
-      setIsLoading(false);
+      logout();
       return;
     }
 
@@ -39,11 +39,12 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     try {
       currentUser = await USER_API_SERVICE.getCurrentUser(tokenFromStorage);
     } catch (e) {
-      console.log(e);
+      logout();
+      return;
     }
 
     if (!currentUser) {
-      setIsLoading(false);
+      logout();
       return;
     }
 

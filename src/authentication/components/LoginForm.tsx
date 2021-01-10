@@ -40,7 +40,7 @@ export function LoginForm() {
     const loggedInUser = await USER_API_SERVICE.getCurrentUser(token);
     console.log('login', token, loggedInUser);
     login(loggedInUser.username, token);
-    router.back();
+    router.push('/home');
   };
 
   return (

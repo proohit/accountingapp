@@ -25,7 +25,12 @@ export const BASE_API: HttpService = {
       method: 'GET',
       headers: headerBuilder.getHeader(),
     });
-    return await res.json();
+    const json = await res.json();
+    if (!res.ok) {
+      throw json;
+    } else {
+      return json;
+    }
   },
   post: async <C, R>(url: string, body: C, token: string): Promise<R> => {
     const headerBuilder = new AccHeaderBuilder(token);
@@ -37,7 +42,12 @@ export const BASE_API: HttpService = {
     };
 
     const res = await fetch(`${url}`, fetchConfig);
-    return await res.json();
+    const json = await res.json();
+    if (!res.ok) {
+      throw json;
+    } else {
+      return json;
+    }
   },
   put: async <C, R>(url: string, body: C, token: string): Promise<R> => {
     const headerBuilder = new AccHeaderBuilder(token);
@@ -47,7 +57,12 @@ export const BASE_API: HttpService = {
       headers: headerBuilder.getHeader(),
       body: JSON.stringify(body),
     });
-    return await res.json();
+    const json = await res.json();
+    if (!res.ok) {
+      throw json;
+    } else {
+      return json;
+    }
   },
   delete: async <R>(url: string, token: string): Promise<R> => {
     const headerBuilder = new AccHeaderBuilder(token);
@@ -56,6 +71,11 @@ export const BASE_API: HttpService = {
       method: 'DELETE',
       headers: headerBuilder.getHeader(),
     });
-    return await res.json();
+    const json = await res.json();
+    if (!res.ok) {
+      throw json;
+    } else {
+      return json;
+    }
   },
 };

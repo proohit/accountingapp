@@ -4,7 +4,12 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
+  IconButton,
+  Toolbar,
+  Typography,
+  Grid,
 } from '@material-ui/core';
+import { Close, Delete } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { Category } from '../models/Category';
@@ -14,6 +19,7 @@ import { RecordForm } from './RecordForm';
 interface RecordEditDialogProps {
   onDialogClose(): void;
   onEditRecord(editedRecord: Record): void;
+  onDeleteRecord(recordToDelete: Record): void;
   wallets: Wallet[];
   categories: Category[];
   owner: string;
@@ -25,6 +31,7 @@ export const RecordEditDialog = (props: RecordEditDialogProps) => {
     onDialogClose,
     wallets,
     onEditRecord,
+    onDeleteRecord,
     categories,
     owner,
     record,
@@ -34,7 +41,23 @@ export const RecordEditDialog = (props: RecordEditDialogProps) => {
 
   return (
     <Dialog open={true} onClose={onDialogClose}>
-      <DialogTitle>Edit Record</DialogTitle>
+      <DialogTitle>
+        <Grid container alignItems="center">
+          <Grid item xs={8}>
+            Edit Record
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton color="primary" onClick={() => onDeleteRecord(record)}>
+              <Delete />
+            </IconButton>
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton color="primary" onClick={onDialogClose}>
+              <Close />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </DialogTitle>
       <DialogContent>
         <RecordForm
           onRecordChange={(newEditedRecord) => setEditedRecord(newEditedRecord)}
@@ -48,15 +71,11 @@ export const RecordEditDialog = (props: RecordEditDialogProps) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button
-          color="secondary"
-          onClick={() => onDialogClose()}
-          variant="outlined"
-        >
+        <Button color="primary" onClick={onDialogClose} variant="outlined">
           Cancel
         </Button>
         <Button
-          color="secondary"
+          color="primary"
           onClick={() => onEditRecord(editedRecord)}
           variant="contained"
           disabled={!isFormValid}

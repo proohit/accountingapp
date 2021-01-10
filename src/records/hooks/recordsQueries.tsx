@@ -48,3 +48,16 @@ export const useEditRecordMutation = (token: string) => {
     }
   );
 };
+
+export const useDeleteRecordMutation = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (recordToDelete: Record) =>
+      recordsApi.deleteRecord(token, recordToDelete.id),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('getRecord');
+      },
+    }
+  );
+};

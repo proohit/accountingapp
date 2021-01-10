@@ -11,9 +11,13 @@ export interface RecordsApi {
   ): Promise<PaginatedResult>;
   createRecord(token: string, record: Record): Promise<Record>;
   editRecord(token: string, record: Record): Promise<Record>;
+  deleteRecord(token: string, recordId: Record['id']): Promise<string>;
 }
 
 export class RecordsApiService implements RecordsApi {
+  deleteRecord(token: string, recordId: number): Promise<string> {
+    return BASE_API.delete(`${API_ROUTES.RECORDS}/${recordId}`, token);
+  }
   editRecord(token: string, record: Record): Promise<Record> {
     return BASE_API.put<Record, Record>(
       `${API_ROUTES.RECORDS}/${record.id}`,

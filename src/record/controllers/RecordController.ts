@@ -1,89 +1,61 @@
-import { CategoryNotFound } from '../../category/models/Errors';
-import { MissingProperty } from '../../shared/models/Errors';
-import { repositories } from '../../shared/repositories/database';
-import { calculateOffset } from '../../shared/utils/paginationUtils';
-import { UserNotFound } from '../../user/models/Errors';
+import { services } from '../../shared/services/services';
 import { RecordController } from '../models/RecordController';
 
 const RecordControllerImpl: RecordController = {
     getByCategory: async (ctx) => {
         const { username } = ctx.state.token;
-        const categoryid = ctx.params.category;
-        const recordsByUserByCategory = await repositories.records().find({
-            ownerUsername: username,
-            categoryId: categoryid,
-        });
+        const categoryId = ctx.params.category;
+
+        const recordsByUserByCategory = await services.recordService.getByCategory(categoryId, username);
+
         return { data: recordsByUserByCategory, status: 200 };
     },
 
     createNewRecord: async (ctx) => {
         const username = ctx.state.token.username;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
-        const missingProperties = [];
-        if (!description && description !== '') missingProperties.push('description');
-        if (!value && value !== 0) missingProperties.push('value');
-        if (!walletId) missingProperties.push('walletId');
-        if (!categoryId) missingProperties.push('categoryId');
-        if (!timestamp) missingProperties.push('timestamp');
-        if (missingProperties.length) throw new MissingProperty(missingProperties);
 
-        const walletRepo = repositories.wallets();
-        const categoryRepo = repositories.categories();
-        const recordRepo = repositories.records();
-        const userRepo = repositories.users();
-
-        const requestedWallet = await walletRepo.getByIdIfAllowed(walletId, username);
-        const requestedCategory = await categoryRepo.getByIdIfAllowed(categoryId, username);
-        const requestedOwner = await userRepo.findOne({ username });
-        if (!requestedOwner) throw new UserNotFound();
-
-        const createdRecord = await recordRepo.save({
+        const createdRecord = await services.recordService.createRecord(
             description,
-            timestamp,
             value,
-            ownerUsername: requestedOwner.username,
-            categoryId: requestedCategory.id,
-            walletId: requestedWallet.id,
-        });
+            timestamp,
+            walletId,
+            categoryId,
+            username,
+        );
 
         return { status: 201, data: createdRecord };
     },
 
     getByUser: async (ctx) => {
         const { username } = ctx.state.token;
-        const page: number = ctx.query.page || 1;
-        const itemsPerPage: number = ctx.query.itemsPerPage || 20;
+        const page: number = ctx.query.page;
+        const itemsPerPage: number = ctx.query.itemsPerPage;
         const sortBy = ctx.query.sortBy;
         const sortDirection = ctx.query.sortDirection;
 
-        const from = calculateOffset(page, itemsPerPage);
-        const recordsRepo = repositories.records();
-        const recordCount = await recordsRepo.count({ ownerUsername: username });
-
-        const records = await recordsRepo.find({
-            where: { ownerUsername: username },
-            order: sortBy && sortDirection && { [sortBy]: sortDirection.toUpperCase() },
-            skip: from,
-            take: itemsPerPage,
-        });
+        const records = await services.recordService.getByQuery(
+            { itemsPerPage, page, sortBy, sortDirection },
+            username,
+        );
+        const recordCount = await services.recordService.getAllRecordsCount(username);
 
         return { status: 200, data: { data: records, page, dataCount: records.length, totalCount: recordCount } };
     },
 
     deleteById: async (ctx) => {
         const { username } = ctx.state.token;
-        const requestedId = ctx.params.id;
-        const recordRepo = repositories.records();
-        const recordToDelete = await recordRepo.getByIdIfAllowed(requestedId, username);
+        const id = ctx.params.id;
 
-        const deletedRecord = await recordRepo.remove(recordToDelete);
+        const deletedRecord = await services.recordService.deleteById(id, username);
         return { status: 200, data: { message: `Deleted record with id ${deletedRecord.id}` } };
     },
 
     getById: async (ctx) => {
         const { username } = ctx.state.token;
         const { id } = ctx.params;
-        const record = await repositories.records().getByIdIfAllowed(id, username);
+
+        const record = await services.recordService.getById(id, username);
 
         return { status: 200, data: record };
     },
@@ -92,37 +64,25 @@ const RecordControllerImpl: RecordController = {
         const { username } = ctx.state.token;
         const { walletId } = ctx.params;
 
-        const result = await repositories.records().find({
-            walletId: walletId,
-            ownerUsername: username,
-        });
+        const recordsByWallet = await services.recordService.getByWallet(walletId, username);
 
-        return { status: 200, data: result };
+        return { status: 200, data: recordsByWallet };
     },
 
     updateById: async (ctx) => {
         const { username } = ctx.state.token;
         const { id } = ctx.params;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
-        const recordRepo = repositories.records();
-        const walletRepo = repositories.wallets();
-        const categoriesRepo = repositories.categories();
 
-        await recordRepo.getByIdIfAllowed(id, username);
-
-        const categoryOfRecord = await categoriesRepo.getByIdIfAllowed(categoryId, username);
-
-        const walletOfRecord = await walletRepo.getByIdIfAllowed(walletId, username);
-
-        const updatedRecord = await recordRepo.save({
+        const updatedRecord = await services.recordService.updateById(
             id,
             description,
             value,
             timestamp,
-            ownerUsername: username,
-            walletId: walletOfRecord.id,
-            categoryId: categoryOfRecord.id,
-        });
+            walletId,
+            categoryId,
+            username,
+        );
 
         return { status: 200, data: updatedRecord };
     },

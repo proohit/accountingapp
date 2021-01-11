@@ -9,7 +9,7 @@ import { SearchQuery } from '../models/SearchQuery';
 import { calculateOffset } from '../../shared/utils/paginationUtils';
 import { RecordNotFound } from '../models/Errors';
 import { services } from '../../shared/services/services';
-import { FindConditions, Like } from 'typeorm';
+import { Between, FindConditions, LessThanOrEqual, Like, MoreThanOrEqual } from 'typeorm';
 
 export class RecordService {
     getByCategory(categoryId: Category['id'], username: User['username']) {
@@ -59,12 +59,19 @@ export class RecordService {
             itemsPerPage,
             sortBy,
             sortDirection,
-            filterBy: { categoryId, description, walletId },
+            filterBy: { categoryId, description, walletId, timestampFrom, timestampTo },
         } = searchQuery;
         const from = calculateOffset(page || 1, itemsPerPage || 20);
         const recordsRepo = repositories.records();
 
-        const filterObject: FindConditions<Record> = this.buildFilterQuery(username, description, walletId, categoryId);
+        const filterObject: FindConditions<Record> = this.buildFilterQuery(
+            username,
+            description,
+            walletId,
+            categoryId,
+            timestampFrom,
+            timestampTo,
+        );
 
         const records = await recordsRepo.find({
             where: filterObject,
@@ -75,8 +82,15 @@ export class RecordService {
         return records;
     }
 
-    private buildFilterQuery(username: string, description: string, walletId: string, categoryId: string) {
-        const filterObject: FindConditions<Record> = {
+    private buildFilterQuery(
+        username: string,
+        description: string,
+        walletId: string,
+        categoryId: string,
+        timestampFrom: string,
+        timestampTo: string,
+    ) {
+        const filterObject: FindConditions<Record & { timestampFrom: string; timestampTo: string }> = {
             ownerUsername: username,
         };
 
@@ -89,6 +103,15 @@ export class RecordService {
         if (categoryId) {
             filterObject.categoryId = categoryId;
         }
+
+        if (timestampFrom && timestampTo) {
+            filterObject.timestamp = Between(timestampFrom, timestampTo);
+        } else if (timestampFrom) {
+            filterObject.timestamp = MoreThanOrEqual(timestampFrom);
+        } else if (timestampTo) {
+            filterObject.timestamp = LessThanOrEqual(timestampTo);
+        }
+
         return filterObject;
     }
 
@@ -99,10 +122,17 @@ export class RecordService {
 
     getRecordsCountByQuery(searchQuery: SearchQuery, username: User['username']) {
         const {
-            filterBy: { categoryId, description, walletId },
+            filterBy: { categoryId, description, walletId, timestampFrom, timestampTo },
         } = searchQuery;
         const recordsRepo = repositories.records();
-        const filterObject: FindConditions<Record> = this.buildFilterQuery(username, description, walletId, categoryId);
+        const filterObject: FindConditions<Record> = this.buildFilterQuery(
+            username,
+            description,
+            walletId,
+            categoryId,
+            timestampFrom,
+            timestampTo,
+        );
         return recordsRepo.count({ where: filterObject });
     }
 

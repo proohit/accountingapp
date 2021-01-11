@@ -29,10 +29,26 @@ const RecordControllerImpl: RecordController = {
 
     getByUser: async (ctx) => {
         const { username } = ctx.state.token;
-        const { page, itemsPerPage, sortBy, sortDirection, categoryId, walletId, description } = ctx.query;
+        const {
+            page,
+            itemsPerPage,
+            sortBy,
+            sortDirection,
+            categoryId,
+            walletId,
+            description,
+            timestampFrom,
+            timestampTo,
+        } = ctx.query;
 
         const records = await services.recordService.getByQuery(
-            { itemsPerPage, page, sortBy, sortDirection, filterBy: { categoryId, walletId, description } },
+            {
+                itemsPerPage,
+                page,
+                sortBy,
+                sortDirection,
+                filterBy: { categoryId, walletId, description, timestampFrom, timestampTo },
+            },
             username,
         );
 

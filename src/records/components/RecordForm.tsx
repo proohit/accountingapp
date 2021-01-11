@@ -13,6 +13,7 @@ import { validateRecordField } from '../services/RecordValidator';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
+import { timestampFormat } from './timestampFormat';
 import { WalletField } from './WalletField';
 
 interface RecordFormProps {
@@ -51,7 +52,7 @@ export const RecordForm = (props: RecordFormProps) => {
         getCategoryById(categories, record?.categoryId)?.name ||
         (categories?.length > 0 && categories[0].name) ||
         '',
-      timestamp: dayjs(record?.timestamp).format('YYYY-MM-DDTHH:mm:ss'),
+      timestamp: dayjs(record?.timestamp).format(timestampFormat),
     },
     {
       validation: {
@@ -78,13 +79,14 @@ export const RecordForm = (props: RecordFormProps) => {
   }, [isFormValid]);
 
   return (
-    <Grid container direction="column">
+    <Grid container direction="column" style={{ gap: 16 }}>
       <DescriptionField
         description={formFields.description}
         onDescriptionChange={handleFormFieldChange}
         errorText={formErrors.description}
       />
       <TextField
+        variant="outlined"
         error={!!formErrors.value}
         helperText={formErrors.value}
         color="secondary"
@@ -106,6 +108,7 @@ export const RecordForm = (props: RecordFormProps) => {
         errorText={formErrors.categoryName}
       />
       <TextField
+        variant="outlined"
         error={!!formErrors.timestamp}
         helperText={formErrors.timestamp}
         color="secondary"

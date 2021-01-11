@@ -29,7 +29,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
     errorText,
   } = props;
   return (
-    <FormControl>
+    <FormControl variant="outlined">
       <InputLabel>Category</InputLabel>
       <Select
         error={!!errorText}

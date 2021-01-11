@@ -9,5 +9,7 @@ export interface SearchQuery {
     walletId?: string;
     categoryId?: string;
     description?: string;
+    timestampFrom?: string;
+    timestampTo?: string;
   };
 }

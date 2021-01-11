@@ -21,6 +21,9 @@ const styles = makeStyles((theme) => ({
   list: {
     marginTop: theme.spacing(10),
   },
+  filterBar: {
+    paddingLeft: theme.spacing(2),
+  },
 }));
 
 const RecordPage: FunctionComponent = (props) => {
@@ -107,8 +110,7 @@ const RecordPage: FunctionComponent = (props) => {
           />
         </RecordsTable>
       </Grid>
-      <Grid item xs={1} />
-      <Grid item xs={2}>
+      <Grid item xs={3} className={classes.filterBar}>
         <RecordFilterBar setFilter={updateFilters} />
       </Grid>
     </>

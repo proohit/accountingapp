@@ -20,10 +20,11 @@ type WalletFieldProps = {
   withAll?: boolean;
   errorText?: string;
 };
+
 export const WalletField: FunctionComponent<WalletFieldProps> = (props) => {
   const { onWalletChange, walletName, wallets, withAll, errorText } = props;
   return (
-    <FormControl>
+    <FormControl variant="outlined">
       <InputLabel>Wallet</InputLabel>
       <Select
         error={!!errorText}
@@ -32,6 +33,7 @@ export const WalletField: FunctionComponent<WalletFieldProps> = (props) => {
         name="walletName"
         fullWidth
         onChange={onWalletChange}
+        label="Wallet"
       >
         {withAll && (
           <MenuItem key="all" value="all">

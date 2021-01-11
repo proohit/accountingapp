@@ -1,24 +1,19 @@
-import {
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
+import { useForm } from '../../shared/hooks/useForm';
 import { Wallet } from '../../wallets/models/Wallet';
-import { Category } from '../models/Category';
-import { Record } from '../models/Record';
-import { validateRecordField } from '../services/RecordValidator';
 import {
   getWalletById,
   getWalletByName,
 } from '../../wallets/utils/walletUtils';
-import { useForm } from '../../shared/hooks/useForm';
+import { Category } from '../models/Category';
+import { Record } from '../models/Record';
+import { validateRecordField } from '../services/RecordValidator';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
+import { CategoryField } from './CategoryField';
+import { DescriptionField } from './DescriptionField';
+import { WalletField } from './WalletField';
 
 interface RecordFormProps {
   onRecordChange(record: Record): void;
@@ -84,69 +79,35 @@ export const RecordForm = (props: RecordFormProps) => {
 
   return (
     <Grid container direction="column">
-      <TextField
-        error={!!formErrors['description']}
-        helperText={formErrors['description']}
-        color="secondary"
-        label="description"
-        name="description"
-        value={formFields.description}
-        onChange={handleFormFieldChange}
+      <DescriptionField
+        description={formFields.description}
+        onDescriptionChange={handleFormFieldChange}
+        errorText={formErrors.description}
       />
       <TextField
-        error={!!formErrors['value']}
-        helperText={formErrors['value']}
+        error={!!formErrors.value}
+        helperText={formErrors.value}
         color="secondary"
         label="value"
         name="value"
         value={formFields.value}
         onChange={handleFormFieldChange}
       />
-      <FormControl>
-        <InputLabel>Wallet</InputLabel>
-        <Select
-          error={!!formErrors['walletName']}
-          color="secondary"
-          value={formFields.walletName}
-          name="walletName"
-          onChange={handleFormFieldChange}
-        >
-          {wallets &&
-            wallets.map((wallet) => (
-              <MenuItem key={wallet.name} value={wallet.name}>
-                {wallet.name}
-              </MenuItem>
-            ))}
-        </Select>
-        {formErrors['walletName'] && (
-          <FormHelperText>{formErrors['walletName']}</FormHelperText>
-        )}
-      </FormControl>
-      <FormControl>
-        <InputLabel>Category</InputLabel>
-        <Select
-          style={{ width: '100%' }}
-          error={!!formErrors['category']}
-          color="secondary"
-          value={formFields.categoryName}
-          label="category"
-          name="category"
-          onChange={handleFormFieldChange}
-        >
-          {categories &&
-            categories.map((category) => (
-              <MenuItem key={category.name} value={category.name}>
-                {category.name}
-              </MenuItem>
-            ))}
-        </Select>
-        {formErrors['category'] && (
-          <FormHelperText>{formErrors['category']}</FormHelperText>
-        )}
-      </FormControl>
+      <WalletField
+        onWalletChange={handleFormFieldChange}
+        walletName={formFields.walletName}
+        wallets={wallets}
+        errorText={formErrors.walletName}
+      />
+      <CategoryField
+        onCategoryChange={handleFormFieldChange}
+        categoryName={formFields.categoryName}
+        categories={categories}
+        errorText={formErrors.categoryName}
+      />
       <TextField
-        error={!!formErrors['timestamp']}
-        helperText={formErrors['timestamp']}
+        error={!!formErrors.timestamp}
+        helperText={formErrors.timestamp}
         color="secondary"
         label="timestamp"
         name="timestamp"

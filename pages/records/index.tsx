@@ -109,7 +109,7 @@ const RecordPage: FunctionComponent = (props) => {
       </Grid>
       <Grid item xs={1} />
       <Grid item xs={2}>
-        <RecordFilterBar filter={currentQuery} setFilter={updateFilters} />
+        <RecordFilterBar setFilter={updateFilters} />
       </Grid>
     </>
   ) : (

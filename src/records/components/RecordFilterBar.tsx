@@ -1,14 +1,9 @@
 import {
   Button,
   Divider,
-  FormControl,
   Grid,
-  InputLabel,
   makeStyles,
-  MenuItem,
   Paper,
-  Select,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import React, { FunctionComponent, useState } from 'react';
@@ -18,9 +13,11 @@ import { getWalletByName } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { SearchQuery } from '../models/SearchQuery';
 import { getCategoryByName } from '../utils/categoryUtils';
+import { CategoryField } from './CategoryField';
+import { DescriptionField } from './DescriptionField';
+import { WalletField } from './WalletField';
 
 type RecordFilterBarProps = {
-  filter: SearchQuery;
   setFilter: (newFilter: SearchQuery['filterBy']) => void;
 };
 
@@ -33,7 +30,7 @@ const styles = makeStyles((theme) => ({
 export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
   props
 ) => {
-  const { filter, setFilter } = props;
+  const { setFilter } = props;
   const { token } = useAuthentication();
   const [description, setDescription] = useState('');
   const [categoryName, setCategoryName] = useState('all');
@@ -51,55 +48,35 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
           Filters
         </Typography>
         <Divider />
-        <TextField
-          value={description}
-          label={'description'}
-          variant="outlined"
-          onChange={(event) =>
+        <DescriptionField
+          description={description}
+          onDescriptionChange={(event) =>
             setDescription(event.target.value || event.currentTarget.value)
           }
         />
-        <FormControl>
-          <InputLabel>Wallet</InputLabel>
-          <Select
-            color="secondary"
-            value={walletName}
-            fullWidth
-            name="walletName"
-            onChange={(event) => setWalletName(event.target.value as string)}
-          >
-            <MenuItem key="all" value="all">
-              All Wallets
-            </MenuItem>
-            {wallets &&
-              wallets.map((wallet) => (
-                <MenuItem key={wallet.name} value={wallet.name}>
-                  {wallet.name}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <FormControl>
-          <InputLabel>Category</InputLabel>
-          <Select
-            color="secondary"
-            fullWidth
-            value={categoryName}
-            label="category"
-            name="category"
-            onChange={(event) => setCategoryName(event.target.value as string)}
-          >
-            <MenuItem key="all" value="all">
-              All categories
-            </MenuItem>
-            {categories &&
-              categories.map((category) => (
-                <MenuItem key={category.name} value={category.name}>
-                  {category.name}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
+
+        <WalletField
+          withAll
+          walletName={walletName}
+          onWalletChange={(event) =>
+            setWalletName(
+              (event.target.value || event.currentTarget.value) as string
+            )
+          }
+          wallets={wallets}
+        />
+
+        <CategoryField
+          withAll
+          categoryName={categoryName}
+          onCategoryChange={(event) =>
+            setCategoryName(
+              (event.target.value || event.currentTarget.value) as string
+            )
+          }
+          categories={categories}
+        />
+
         <Button
           onClick={() =>
             setFilter({

@@ -38,6 +38,12 @@ export class RecordsApiService implements RecordsApi {
       query.itemsPerPage && ['itemsPerPage', query.itemsPerPage.toString()],
       query.sortBy && ['sortBy', query.sortBy],
       query.sortDirection && ['sortDirection', query.sortDirection],
+      query.filterBy?.categoryId && ['categoryId', query.filterBy.categoryId],
+      query.filterBy?.walletId && ['walletId', query.filterBy.walletId],
+      query.filterBy?.description && [
+        'description',
+        query.filterBy.description,
+      ],
     ]);
   }
 }

@@ -43,8 +43,6 @@ const RecordPage: FunctionComponent = (props) => {
   const [currentQuery, setCurrentQuery] = useState<SearchQuery>({
     itemsPerPage: 5,
     page: 1,
-    sortBy: sortOrder.orderBy,
-    sortDirection: sortOrder.order,
     filterBy: {
       categoryId: undefined,
       description: undefined,
@@ -52,7 +50,14 @@ const RecordPage: FunctionComponent = (props) => {
     },
   });
 
-  const { data: paginatedResult } = useRecordsQuery({ ...currentQuery }, token);
+  const { data: paginatedResult } = useRecordsQuery(
+    {
+      ...currentQuery,
+      sortBy: sortOrder.orderBy,
+      sortDirection: sortOrder.order,
+    },
+    token
+  );
 
   const { data: categories } = useCategoriesQuery(token);
   const { data: wallets } = useWalletsQuery(token);

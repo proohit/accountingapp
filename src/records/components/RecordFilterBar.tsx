@@ -2,11 +2,13 @@ import {
   Button,
   Divider,
   Grid,
+  IconButton,
   makeStyles,
   Paper,
-  TextField,
   Typography,
 } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
+import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
@@ -17,7 +19,6 @@ import { SearchQuery } from '../models/SearchQuery';
 import { getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
-import { timestampFormat } from './timestampFormat';
 import { WalletField } from './WalletField';
 
 type RecordFilterBarProps = {
@@ -33,6 +34,7 @@ const styles = makeStyles((theme) => ({
     top: theme.spacing(12),
   },
 }));
+
 export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
   props
 ) => {
@@ -41,13 +43,9 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
   const [description, setDescription] = useState('');
   const [categoryName, setCategoryName] = useState('all');
   const [walletName, setWalletName] = useState('all');
-  const [timestampFrom, setTimestampFrom] = useState(
-    dayjs(new Date()).subtract(1, 'month').format(timestampFormat)
-  );
-  const [timestampTo, setTimestampTo] = useState(
-    dayjs(new Date()).format(timestampFormat)
-  );
 
+  const [timestampFrom, setTimestampFrom] = useState(null);
+  const [timestampTo, setTimestampTo] = useState(null);
   const { data: categories } = useCategoriesQuery(token);
   const { data: wallets } = useWalletsQuery(token);
 
@@ -58,17 +56,37 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
       description,
       categoryId: getCategoryByName(categories, categoryName)?.id,
       walletId: getWalletByName(wallets, walletName)?.id,
-      timestampFrom,
-      timestampTo,
+      timestampFrom:
+        timestampFrom && dayjs(timestampFrom).format('YYYY-MM-DDTHH:mm:ss'),
+      timestampTo:
+        timestampTo && dayjs(timestampTo).format('YYYY-MM-DDTHH:mm:ss'),
     });
+
+  const resetFilter = () => {
+    setDescription('');
+    setWalletName('all');
+    setCategoryName('all');
+    setTimestampFrom(null);
+    setTimestampTo(null);
+    setFilter({
+      description: undefined,
+      categoryId: undefined,
+      timestampFrom: undefined,
+      timestampTo: undefined,
+      walletId: undefined,
+    });
+  };
 
   return (
     <Paper className={classes.filterBar}>
       <Grid container direction="column" className={classes.filterBar}>
-        <Typography align="center" variant="h6">
-          Filters
-        </Typography>
-        <Divider />
+        <Grid container item direction="row" alignItems="center">
+          <IconButton onClick={resetFilter}>
+            <Close />
+          </IconButton>
+          <Typography variant="h6">Filters</Typography>
+          <Divider />
+        </Grid>
         <DescriptionField
           description={description}
           onDescriptionChange={(event) =>
@@ -97,29 +115,29 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
           }
           categories={categories}
         />
-        <TextField
-          variant="outlined"
-          color="secondary"
-          label="timestampFrom"
-          name="timestampFrom"
+        <DateTimePicker
+          inputVariant="outlined"
           value={timestampFrom}
-          onChange={(event) => {
-            setTimestampFrom(dayjs(event.target.value).format(timestampFormat));
-          }}
-          type="datetime-local"
-          fullWidth
-        />
-        <TextField
-          variant="outlined"
+          onChange={setTimestampFrom}
+          label="From Timestamp"
           color="secondary"
-          label="timestampTo"
-          name="timestampTo"
-          value={timestampTo}
-          onChange={(event) => {
-            setTimestampTo(dayjs(event.target.value).format(timestampFormat));
-          }}
-          type="datetime-local"
+          name="timestampFrom"
           fullWidth
+          showTodayButton
+          maxDate={dayjs(timestampTo)}
+          maxDateMessage="From Timestamp should not be after To Timestamp"
+        />
+        <DateTimePicker
+          inputVariant="outlined"
+          value={timestampTo}
+          onChange={setTimestampTo}
+          minDate={dayjs(timestampFrom)}
+          label="To Timestamp"
+          color="secondary"
+          name="timestampTo"
+          fullWidth
+          showTodayButton
+          maxDateMessage="To Timestamp should not be before From Timestamp"
         />
         <Button variant="contained" color="secondary" onClick={triggerFilter}>
           Filter

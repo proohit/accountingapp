@@ -1,1 +1,1 @@
-export const timestampFormat = 'YYYY-MM-DDTHH:mm:ss';
+export const timestampFormat = 'YYYY-MM-DDTHH:mm';

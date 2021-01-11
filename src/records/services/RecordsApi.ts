@@ -44,6 +44,14 @@ export class RecordsApiService implements RecordsApi {
         'description',
         query.filterBy.description,
       ],
+      query.filterBy?.timestampFrom && [
+        'timestampFrom',
+        query.filterBy.timestampFrom,
+      ],
+      query.filterBy?.timestampTo && [
+        'timestampTo',
+        query.filterBy.timestampTo,
+      ],
     ]);
   }
 }

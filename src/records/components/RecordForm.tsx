@@ -1,4 +1,5 @@
 import { Grid, TextField } from '@material-ui/core';
+import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
 import { useForm } from '../../shared/hooks/useForm';
@@ -13,7 +14,6 @@ import { validateRecordField } from '../services/RecordValidator';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
-import { timestampFormat } from './timestampFormat';
 import { WalletField } from './WalletField';
 
 interface RecordFormProps {
@@ -35,11 +35,16 @@ export const RecordForm = (props: RecordFormProps) => {
     record,
   } = props;
 
+  type RecordFormFields = Partial<Record> & {
+    categoryName: string;
+    walletName: string;
+  };
+
   const [
     formFields,
     handleFormFieldChange,
     [formErrors, , isFormValid],
-  ] = useForm<Partial<Record> & { categoryName: string; walletName: string }>(
+  ] = useForm<RecordFormFields>(
     {
       id: record?.id || null,
       description: record?.description || '',
@@ -52,7 +57,7 @@ export const RecordForm = (props: RecordFormProps) => {
         getCategoryById(categories, record?.categoryId)?.name ||
         (categories?.length > 0 && categories[0].name) ||
         '',
-      timestamp: dayjs(record?.timestamp).format(timestampFormat),
+      timestamp: dayjs(record?.timestamp).format(),
     },
     {
       validation: {
@@ -107,17 +112,17 @@ export const RecordForm = (props: RecordFormProps) => {
         categories={categories}
         errorText={formErrors.categoryName}
       />
-      <TextField
-        variant="outlined"
-        error={!!formErrors.timestamp}
-        helperText={formErrors.timestamp}
-        color="secondary"
+      <DateTimePicker
+        value={formFields.timestamp}
         label="timestamp"
         name="timestamp"
-        value={formFields.timestamp}
-        onChange={handleFormFieldChange}
-        type="datetime-local"
+        color="secondary"
+        onChange={(date) => {
+          handleFormFieldChange(null, 'timestamp', date.format());
+        }}
         fullWidth
+        inputVariant="outlined"
+        showTodayButton
       />
     </Grid>
   );

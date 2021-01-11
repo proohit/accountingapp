@@ -37,7 +37,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
         fullWidth
         value={categoryName}
         label="category"
-        name="category"
+        name="categoryName"
         onChange={onCategoryChange}
       >
         {withAll && (

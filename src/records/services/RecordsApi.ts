@@ -11,9 +11,13 @@ export interface RecordsApi {
   ): Promise<PaginatedResult>;
   createRecord(token: string, record: Record): Promise<Record>;
   editRecord(token: string, record: Record): Promise<Record>;
+  deleteRecord(token: string, recordId: Record['id']): Promise<string>;
 }
 
 export class RecordsApiService implements RecordsApi {
+  deleteRecord(token: string, recordId: number): Promise<string> {
+    return BASE_API.delete(`${API_ROUTES.RECORDS}/${recordId}`, token);
+  }
   editRecord(token: string, record: Record): Promise<Record> {
     return BASE_API.put<Record, Record>(
       `${API_ROUTES.RECORDS}/${record.id}`,
@@ -34,6 +38,20 @@ export class RecordsApiService implements RecordsApi {
       query.itemsPerPage && ['itemsPerPage', query.itemsPerPage.toString()],
       query.sortBy && ['sortBy', query.sortBy],
       query.sortDirection && ['sortDirection', query.sortDirection],
+      query.filterBy?.categoryId && ['categoryId', query.filterBy.categoryId],
+      query.filterBy?.walletId && ['walletId', query.filterBy.walletId],
+      query.filterBy?.description && [
+        'description',
+        query.filterBy.description,
+      ],
+      query.filterBy?.timestampFrom && [
+        'timestampFrom',
+        query.filterBy.timestampFrom,
+      ],
+      query.filterBy?.timestampTo && [
+        'timestampTo',
+        query.filterBy.timestampTo,
+      ],
     ]);
   }
 }

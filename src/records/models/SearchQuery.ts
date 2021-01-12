@@ -5,4 +5,11 @@ export interface SearchQuery {
   sortDirection?: 'asc' | 'desc';
   page: number;
   itemsPerPage: number;
+  filterBy?: {
+    walletId?: string;
+    categoryId?: string;
+    description?: string;
+    timestampFrom?: string;
+    timestampTo?: string;
+  };
 }

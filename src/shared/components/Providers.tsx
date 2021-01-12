@@ -1,4 +1,6 @@
+import DayjsUtils from '@date-io/dayjs';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { FunctionComponent } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthenticationProvider } from '../../authentication/components/AuthenticationProvider';
@@ -9,9 +11,11 @@ const Providers: FunctionComponent = (props) => {
   return (
     <ThemeProvider theme={AccTheme}>
       <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <AuthenticationProvider>{props.children}</AuthenticationProvider>
-      </QueryClientProvider>
+      <MuiPickersUtilsProvider utils={DayjsUtils}>
+        <QueryClientProvider client={queryClient}>
+          <AuthenticationProvider>{props.children}</AuthenticationProvider>
+        </QueryClientProvider>
+      </MuiPickersUtilsProvider>
     </ThemeProvider>
   );
 };

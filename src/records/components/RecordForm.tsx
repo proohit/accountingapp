@@ -1,24 +1,20 @@
-import {
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
+import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
+import { useForm } from '../../shared/hooks/useForm';
 import { Wallet } from '../../wallets/models/Wallet';
-import { Category } from '../models/Category';
-import { Record } from '../models/Record';
-import { validateRecordField } from '../services/RecordValidator';
 import {
   getWalletById,
   getWalletByName,
 } from '../../wallets/utils/walletUtils';
-import { useForm } from '../../shared/hooks/useForm';
+import { Category } from '../models/Category';
+import { Record } from '../models/Record';
+import { validateRecordField } from '../services/RecordValidator';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
+import { CategoryField } from './CategoryField';
+import { DescriptionField } from './DescriptionField';
+import { WalletField } from './WalletField';
 
 interface RecordFormProps {
   onRecordChange(record: Record): void;
@@ -39,11 +35,16 @@ export const RecordForm = (props: RecordFormProps) => {
     record,
   } = props;
 
+  type RecordFormFields = Partial<Record> & {
+    categoryName: string;
+    walletName: string;
+  };
+
   const [
     formFields,
     handleFormFieldChange,
     [formErrors, , isFormValid],
-  ] = useForm<Partial<Record> & { categoryName: string; walletName: string }>(
+  ] = useForm<RecordFormFields>(
     {
       id: record?.id || null,
       description: record?.description || '',
@@ -56,7 +57,7 @@ export const RecordForm = (props: RecordFormProps) => {
         getCategoryById(categories, record?.categoryId)?.name ||
         (categories?.length > 0 && categories[0].name) ||
         '',
-      timestamp: dayjs(record?.timestamp).format('YYYY-MM-DDTHH:mm:ss'),
+      timestamp: dayjs(record?.timestamp).format(),
     },
     {
       validation: {
@@ -83,77 +84,45 @@ export const RecordForm = (props: RecordFormProps) => {
   }, [isFormValid]);
 
   return (
-    <Grid container direction="column">
-      <TextField
-        error={!!formErrors['description']}
-        helperText={formErrors['description']}
-        color="secondary"
-        label="description"
-        name="description"
-        value={formFields.description}
-        onChange={handleFormFieldChange}
+    <Grid container direction="column" style={{ gap: 16 }}>
+      <DescriptionField
+        description={formFields.description}
+        onDescriptionChange={handleFormFieldChange}
+        errorText={formErrors.description}
       />
       <TextField
-        error={!!formErrors['value']}
-        helperText={formErrors['value']}
+        variant="outlined"
+        error={!!formErrors.value}
+        helperText={formErrors.value}
         color="secondary"
         label="value"
         name="value"
         value={formFields.value}
         onChange={handleFormFieldChange}
       />
-      <FormControl>
-        <InputLabel>Wallet</InputLabel>
-        <Select
-          error={!!formErrors['walletName']}
-          color="secondary"
-          value={formFields.walletName}
-          name="walletName"
-          onChange={handleFormFieldChange}
-        >
-          {wallets &&
-            wallets.map((wallet) => (
-              <MenuItem key={wallet.name} value={wallet.name}>
-                {wallet.name}
-              </MenuItem>
-            ))}
-        </Select>
-        {formErrors['walletName'] && (
-          <FormHelperText>{formErrors['walletName']}</FormHelperText>
-        )}
-      </FormControl>
-      <FormControl>
-        <InputLabel>Category</InputLabel>
-        <Select
-          style={{ width: '100%' }}
-          error={!!formErrors['category']}
-          color="secondary"
-          value={formFields.categoryName}
-          label="category"
-          name="category"
-          onChange={handleFormFieldChange}
-        >
-          {categories &&
-            categories.map((category) => (
-              <MenuItem key={category.name} value={category.name}>
-                {category.name}
-              </MenuItem>
-            ))}
-        </Select>
-        {formErrors['category'] && (
-          <FormHelperText>{formErrors['category']}</FormHelperText>
-        )}
-      </FormControl>
-      <TextField
-        error={!!formErrors['timestamp']}
-        helperText={formErrors['timestamp']}
-        color="secondary"
+      <WalletField
+        onWalletChange={handleFormFieldChange}
+        walletName={formFields.walletName}
+        wallets={wallets}
+        errorText={formErrors.walletName}
+      />
+      <CategoryField
+        onCategoryChange={handleFormFieldChange}
+        categoryName={formFields.categoryName}
+        categories={categories}
+        errorText={formErrors.categoryName}
+      />
+      <DateTimePicker
+        value={formFields.timestamp}
         label="timestamp"
         name="timestamp"
-        value={formFields.timestamp}
-        onChange={handleFormFieldChange}
-        type="datetime-local"
+        color="secondary"
+        onChange={(date) => {
+          handleFormFieldChange(null, 'timestamp', date.format());
+        }}
         fullWidth
+        inputVariant="outlined"
+        showTodayButton
       />
     </Grid>
   );

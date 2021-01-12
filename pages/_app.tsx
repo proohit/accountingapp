@@ -12,11 +12,10 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
     <Providers>
       <Authenticated>
         <Grid container className={styles.pageContainer}>
-          <Grid item xs={2}>
+          <Grid item xs={2} className={styles.navigationBar}>
             <NavigationBar />
           </Grid>
-          <Grid item xs={1} />
-          <Grid container item xs={9}>
+          <Grid container item xs={10}>
             <Component {...pageProps} />
           </Grid>
         </Grid>

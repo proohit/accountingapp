@@ -5,6 +5,7 @@ import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
   useCreateRecordMutation,
+  useDeleteRecordMutation,
   useEditRecordMutation,
 } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
@@ -24,8 +25,10 @@ export const RecordDialogContainer = (props: RecordDialogContainerProps) => {
 
   const { data: categories } = useCategoriesQuery(token);
   const { data: wallets } = useWalletsQuery(token);
+
   const createRecordMutation = useCreateRecordMutation(token);
   const editRecordMutation = useEditRecordMutation(token);
+  const deleteRecordMutation = useDeleteRecordMutation(token);
 
   const addRecord = async (recordToAdd: Record) => {
     await createRecordMutation.mutateAsync(recordToAdd);
@@ -34,6 +37,11 @@ export const RecordDialogContainer = (props: RecordDialogContainerProps) => {
 
   const editRecord = async (editedRecord: Record) => {
     await editRecordMutation.mutateAsync(editedRecord);
+    setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null });
+  };
+
+  const deleteRecord = async (recordToDelete: Record) => {
+    await deleteRecordMutation.mutateAsync(recordToDelete);
     setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null });
   };
 
@@ -59,6 +67,7 @@ export const RecordDialogContainer = (props: RecordDialogContainerProps) => {
           setSingleDialog('EDIT_RECORD', { open: false, recordToEdit: null })
         }
         onEditRecord={editRecord}
+        onDeleteRecord={deleteRecord}
         wallets={wallets}
       />
     );

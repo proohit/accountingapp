@@ -9,7 +9,11 @@ type FormFields<R> = {
 
 type UseFormHook<R> = [
   FormFields<R>,
-  (event: ChangeEvent<unknown>) => void,
+  (
+    event?: ChangeEvent<HTMLInputElement>,
+    field?: keyof R,
+    value?: R[keyof R]
+  ) => void,
   UseValidationHook<R>?
 ];
 
@@ -39,16 +43,22 @@ export const useForm = <R = {}>(
     }
   }, []);
 
-  const handleFieldChange = (event: ChangeEvent<any>) => {
-    const name = event.target.name || event.currentTarget.name;
-    const value = event.target.value || event.currentTarget.value;
-    let newValue = value;
+  const handleFieldChange = (
+    event?: ChangeEvent<any>,
+    field?: keyof R,
+    value?: R[keyof R]
+  ) => {
+    const name = event?.target?.name || event?.currentTarget?.name || field;
+    const currentValue =
+      event?.target?.value || event?.currentTarget?.value || value;
+    let newValue = currentValue;
     if (options.fieldTransform) {
-      newValue = options.fieldTransform(name, value);
+      newValue = options.fieldTransform(name, currentValue);
     }
     const newFieldsState = { ...fieldsState };
     newFieldsState[name] = newValue;
-    options?.validation?.validationFunction && validateField(name, newValue);
+    options?.validation?.validationFunction &&
+      validateField(name as keyof R, newValue);
     setFieldsState(newFieldsState);
   };
 

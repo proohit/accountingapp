@@ -1,25 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Order } from '../../shared/models/SortOrder';
 import { Record } from '../models/Record';
+import { SearchQuery } from '../models/SearchQuery';
 import { RecordsApiService } from '../services/RecordsApi';
 
 const recordsApi = new RecordsApiService();
 
-export const useRecordsQuery = (
-  page: number,
-  rowsPerPage: number,
-  orderBy: keyof Record,
-  order: Order,
-  token: string
-) => {
+export const useRecordsQuery = (query: SearchQuery, token: string) => {
   return useQuery(
-    ['getRecord', page, rowsPerPage, orderBy, order],
+    ['getRecord', query],
     () =>
       recordsApi.getRecordsByUser(token, {
-        page,
-        itemsPerPage: rowsPerPage,
-        sortBy: orderBy,
-        sortDirection: orderBy && order,
+        page: query.page,
+        itemsPerPage: query.itemsPerPage,
+        sortBy: query.sortBy,
+        sortDirection: query.sortBy ? query.sortDirection : undefined,
+        filterBy: query.filterBy,
       }),
     { keepPreviousData: true }
   );
@@ -41,6 +36,19 @@ export const useEditRecordMutation = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation(
     (editedRecord: Record) => recordsApi.editRecord(token, editedRecord),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('getRecord');
+      },
+    }
+  );
+};
+
+export const useDeleteRecordMutation = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (recordToDelete: Record) =>
+      recordsApi.deleteRecord(token, recordToDelete.id),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getRecord');

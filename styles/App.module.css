@@ -1,3 +1,7 @@
 .pageContainer {
   height: 100%;
 }
+
+.navigationBar {
+  padding-right: 16px;
+}

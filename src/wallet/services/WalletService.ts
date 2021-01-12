@@ -64,7 +64,7 @@ export default class WalletService {
 
         const walletWithNewName = await walletRepo.findOne({ name: updatedName, ownerUsername: username });
 
-        if (walletWithNewName) {
+        if (walletWithNewName && walletWithNewName.id !== id) {
             throw new DuplicateWallet();
         }
 

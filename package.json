@@ -6,10 +6,10 @@
     "scripts": {
         "start": "npm run doc:dev && ts-node src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "setup": "ts-node test/createExampleUser.ts && ts-node test/fillData.ts",
+        "setup": "ts-node test/fillData.ts",
         "dev": "nodemon",
         "build": "tsc && npm run doc:prod",
-        "doc:dev": "npx redoc-cli bundle api/accountingapp.yaml --output ./docs/index.html",
+        "doc:dev": "redoc-cli bundle api/accountingapp.yaml --output ./docs/index.html",
         "doc:prod": "npx redoc-cli bundle api/accountingapp.yaml --output dist/docs/index.html"
     },
     "pre-commit": [

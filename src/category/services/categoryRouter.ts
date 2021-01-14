@@ -3,14 +3,14 @@ import CategoryControllerImpl from '../controllers/CategoryController';
 
 const router = new Router();
 
-router.get('/:name', CategoryControllerImpl.getByName);
+router.get('/:id', CategoryControllerImpl.getById);
 
 router.get('/', CategoryControllerImpl.getByUser);
 
 router.post('/', CategoryControllerImpl.create);
 
-router.delete('/:name', CategoryControllerImpl.delete);
+router.delete('/:id', CategoryControllerImpl.delete);
 
-router.put('/:name', CategoryControllerImpl.update);
+router.put('/:id', CategoryControllerImpl.update);
 
 export default router.routes();

@@ -1,7 +1,8 @@
-import Record from './Record';
+import { Record } from '../../entity/Record';
 
 export interface PaginatedResult {
     data: Record[];
     page: number;
-    total: number;
+    dataCount: number;
+    totalCount: number;
 }

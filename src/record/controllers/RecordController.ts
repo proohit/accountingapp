@@ -1,87 +1,104 @@
-import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { calculateOffset } from '../../shared/utils/paginationUtils';
-import WALLET_MAPPER from '../../wallet/repositories/WalletMapper';
+import { services } from '../../shared/services/services';
 import { RecordController } from '../models/RecordController';
-import RECORD_MAPPER from '../repositories/RecordMapper';
-import CATEGORY_MAPPER from '../../category/repositories/CategoryMapper';
 
 const RecordControllerImpl: RecordController = {
     getByCategory: async (ctx) => {
         const { username } = ctx.state.token;
-        const categoryName = ctx.params.category;
-        const recordsByUserByCategory = await RECORD_MAPPER.getByCategory(username, categoryName);
+        const categoryId = ctx.params.category;
+
+        const recordsByUserByCategory = await services.recordService.getByCategory(categoryId, username);
+
         return { data: recordsByUserByCategory, status: 200 };
     },
+
     createNewRecord: async (ctx) => {
         const username = ctx.state.token.username;
-        const { description, value, walletName, timestamp, category } = ctx.request.body;
-        const missingProperties = [];
-        if (!description) missingProperties.push('description');
-        if (!value) missingProperties.push('value');
-        if (!walletName) missingProperties.push('walletName');
-        if (!category) missingProperties.push('category');
-        if (!timestamp) missingProperties.push('timestamp');
-        if (missingProperties.length) throw new MissingProperty(missingProperties);
+        const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
 
-        await WALLET_MAPPER.byName(walletName, username);
-        await CATEGORY_MAPPER.getByName(username, category);
-        const createdRecord = await RECORD_MAPPER.createRecord(
+        const createdRecord = await services.recordService.createRecord(
             description,
             value,
-            walletName,
             timestamp,
+            walletId,
+            categoryId,
             username,
-            category,
         );
 
         return { status: 201, data: createdRecord };
     },
 
     getByUser: async (ctx) => {
-        const decoded = ctx.state.token;
-        const page: number = ctx.query.page || 1;
-        const itemsPerPage: number = ctx.query.itemsPerPage || 20;
+        const { username } = ctx.state.token;
+        const {
+            page,
+            itemsPerPage,
+            sortBy,
+            sortDirection,
+            categoryId,
+            walletId,
+            description,
+            timestampFrom,
+            timestampTo,
+        } = ctx.query;
 
-        const from = calculateOffset(page, itemsPerPage);
-        const records = await RECORD_MAPPER.getByUser(decoded.username, from, itemsPerPage);
-        return { status: 200, data: { data: records, page, total: records.length } };
+        const records = await services.recordService.getByQuery(
+            {
+                itemsPerPage,
+                page,
+                sortBy,
+                sortDirection,
+                filterBy: { categoryId, walletId, description, timestampFrom, timestampTo },
+            },
+            username,
+        );
+
+        const recordCount = await services.recordService.getRecordsCountByQuery(
+            { filterBy: { categoryId, description, walletId } },
+            username,
+        );
+
+        return { status: 200, data: { data: records, page, dataCount: records.length, totalCount: recordCount } };
     },
 
     deleteById: async (ctx) => {
-        const requestedId = ctx.params.id;
-        const recordToDelete = await RECORD_MAPPER.getById(requestedId);
-        if (recordToDelete.owner !== ctx.state.token.username) throw new ResourceNotAllowed();
-        const message = await RECORD_MAPPER.deleteRecord(requestedId);
-        return { status: 200, data: message };
+        const { username } = ctx.state.token;
+        const id = ctx.params.id;
+
+        const deletedRecord = await services.recordService.deleteById(id, username);
+        return { status: 200, data: { message: `Deleted record with id ${deletedRecord.id}` } };
     },
 
     getById: async (ctx) => {
-        const username = ctx.state.token.username;
-        const record = await RECORD_MAPPER.getById(ctx.params.id);
-        if (record.owner !== username) throw new ResourceNotAllowed();
+        const { username } = ctx.state.token;
+        const { id } = ctx.params;
+
+        const record = await services.recordService.getById(id, username);
+
         return { status: 200, data: record };
     },
 
     getByWallet: async (ctx) => {
-        const decoded = ctx.state.token;
-        const result = await RECORD_MAPPER.getByWallet(decoded.username, ctx.params.wallet);
-        return { status: 200, data: result };
+        const { username } = ctx.state.token;
+        const { walletId } = ctx.params;
+
+        const recordsByWallet = await services.recordService.getByWallet(walletId, username);
+
+        return { status: 200, data: recordsByWallet };
     },
 
     updateById: async (ctx) => {
-        const decoded = ctx.state.token;
-        const id = ctx.params.id;
-        const { description, value, walletName, timestamp, category } = ctx.request.body;
-        const record = await RECORD_MAPPER.getById(id);
-        if (decoded.username !== record.owner) throw new ResourceNotAllowed();
-        const updatedRecord = await RECORD_MAPPER.updateRecord(
+        const { username } = ctx.state.token;
+        const { id } = ctx.params;
+        const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
+
+        const updatedRecord = await services.recordService.updateById(
             id,
             description,
             value,
-            walletName,
             timestamp,
-            decoded.username,
-            category,
+            walletId,
+            categoryId,
+            username,
         );
 
         return { status: 200, data: updatedRecord };

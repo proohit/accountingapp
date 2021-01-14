@@ -7,10 +7,10 @@ router.post('/', WalletControllerImpl.createNewWallet);
 
 router.get('/', WalletControllerImpl.getByUser);
 
-router.get('/:name', WalletControllerImpl.getByUserByName);
+router.get('/:id', WalletControllerImpl.getById);
 
-router.delete('/:name', WalletControllerImpl.deleteByName);
+router.delete('/:id', WalletControllerImpl.deleteById);
 
-router.put('/:name', WalletControllerImpl.updateByName);
+router.put('/:id', WalletControllerImpl.updateById);
 
 export default router.routes();

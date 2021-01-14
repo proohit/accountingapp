@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
         "module": "commonjs",
         "target": "ES2017",
         "noImplicitAny": true,
@@ -10,8 +12,7 @@
         "moduleResolution": "Node",
         "importHelpers": true,
         "allowUnreachableCode": false,
-        "pretty": true,
-        "typeRoots": ["./src"]
+        "pretty": true
     },
     "include": ["src/**/*"],
     "exclude": ["test/**/*"]

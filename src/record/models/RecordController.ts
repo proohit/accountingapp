@@ -1,8 +1,7 @@
 import { ControllerFunction } from '../../shared/models/BaseController';
-import Record from './Record';
 import { MessageResult } from '../../shared/models/RouteResult';
 import { PaginatedResult } from '../models/PaginatedResult';
-
+import { Record } from '../../entity/Record';
 export interface RecordController {
     getByCategory: ControllerFunction<Record[]>;
     createNewRecord: ControllerFunction<Record>;

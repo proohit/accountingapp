@@ -106,6 +106,7 @@ dist
 #config
 config.ts
 config.json
+ormconfig.json
 
 #generated files
 generated_files

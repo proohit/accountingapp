@@ -8,12 +8,18 @@ components:
     schemas:
         User:
             $ref: './models/User-schema.yaml#/User'
+        Username:
+            $ref: './models/User-schema.yaml#/Username'
         Wallet:
             $ref: './models/Wallet-schema.yaml#/Wallet'
         UpdateWallet:
             $ref: './models/Wallet-schema.yaml#/UpdateWallet'
+        NewWallet:
+            $ref: './models/Wallet-schema.yaml#/NewWallet'
         WalletName:
             $ref: './models/Wallet-schema.yaml#/WalletName'
+        WalletId:
+            $ref: ./models/Wallet-schema.yaml#/WalletId
         Record:
             $ref: './models/Record-schema.yaml#/Record'
         RecordId:
@@ -32,22 +38,24 @@ components:
             $ref: './models/Category-schema.yaml#/UpdateCategory'
         CategoryName:
             $ref: './models/Category-schema.yaml#/CategoryName'
+        CategoryId:
+            $ref: './models/Category-schema.yaml#/CategoryId'
         MessageResult:
             $ref: ./models/MessageResult-schema.yaml#/MessageResult
 paths:
     /records:
-        $ref: ./paths/records-path.yaml#/records
+        $ref: ./paths/records.yaml#/records
     /records/{id}:
-        $ref: ./paths/records-path.yaml#/records~1{id}
-    /records/wallet/{walletName}:
-        $ref: ./paths/records-path.yaml#/records~1wallet~1{walletName}
-    /records/category/{categoryName}:
-        $ref: ./paths/records-path.yaml#/records~1category~1{categoryName}
+        $ref: ./paths/records.yaml#/records~1{id}
+    /records/wallet/{walletId}:
+        $ref: ./paths/records.yaml#/records~1wallet~1{walletId}
+    /records/category/{categoryId}:
+        $ref: ./paths/records.yaml#/records~1category~1{categoryId}
     /wallets:
-        $ref: ./paths/wallets-path.yaml#/wallets
-    /wallets/{walletName}:
-        $ref: ./paths/wallets-path.yaml#/wallets~1{walletName}
+        $ref: ./paths/wallets.yaml#/wallets
+    /wallets/{walletId}:
+        $ref: ./paths/wallets.yaml#/wallets~1{walletId}
     /categories:
-        $ref: ./paths/categories-path.yaml#/categories
-    /categories/{categoryName}:
-        $ref: ./paths/categories-path.yaml#/categories~1{categoryName}
+        $ref: ./paths/categories.yaml#/categories
+    /categories/{categoryId}:
+        $ref: ./paths/categories.yaml#/categories~1{categoryId}

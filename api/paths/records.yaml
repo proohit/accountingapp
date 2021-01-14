@@ -34,15 +34,47 @@ records:
                   enum:
                       - asc
                       - desc
+            - in: query
+              required: false
+              name: walletId
+              description: WalletId to filter the records by
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/WalletId
+            - in: query
+              required: false
+              name: categoryId
+              description: CategoryId to filter the records by
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
+            - in: query
+              required: false
+              name: description
+              description: description to filter by. Filters by INCLUDES/CONTAINS logic
+              schema:
+                  type: string
+            - in: query
+              required: false
+              name: timestampFrom
+              description: Timestamp from when the records should be filtered. Takes UTC format.
+              schema:
+                  type: string
+                  format: date-time
+                  example: 2019-08-24T14:15:22Z
+            - in: query
+              required: false
+              name: timestampTo
+              description: Timestamp to  when the records should be filtered. Takes UTC format.
+              schema:
+                  type: string
+                  format: date-time
+                  example: 2019-08-24T14:15:22Z
         responses:
             200:
                 description: OK
                 content:
                     application/json:
                         schema:
-                            type: array
-                            items:
-                                $ref: ../accountingapp.yaml#/components/schemas/PaginatedRecords
+                            $ref: ../accountingapp.yaml#/components/schemas/PaginatedRecords
 records/{id}:
     get:
         tags:
@@ -63,9 +95,7 @@ records/{id}:
                 content:
                     application/json:
                         schema:
-                            type: array
-                            items:
-                                $ref: ../accountingapp.yaml#/components/schemas/Record
+                            $ref: ../accountingapp.yaml#/components/schemas/Record
     delete:
         tags:
             - records

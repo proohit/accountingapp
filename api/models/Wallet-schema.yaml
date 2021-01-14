@@ -21,6 +21,9 @@ NewWallet:
     title: NewWallet
     type: object
     description: New wallet schema
+    required:
+        - name
+        - balance
     properties:
         name:
             type: string

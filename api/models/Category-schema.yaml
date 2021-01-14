@@ -20,7 +20,6 @@ UpdateCategory:
     properties:
         name:
             $ref: '#/CategoryName'
-
 NewCategory:
     description: new category object
     type: object

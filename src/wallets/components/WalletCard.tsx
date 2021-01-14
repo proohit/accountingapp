@@ -5,7 +5,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
-import { Wallet } from '../../src/wallets/models/Wallet';
+import { Wallet } from '../models/Wallet';
 
 type WalletCardProps = {
   wallet: Wallet;
@@ -14,7 +14,7 @@ type WalletCardProps = {
 export const WalletCard: FunctionComponent<WalletCardProps> = (props) => {
   const { wallet, onWalletClicked } = props;
   return (
-    <Card key={wallet.id}>
+    <Card key={wallet.id} elevation={4}>
       <CardActionArea onClick={() => onWalletClicked(wallet)}>
         <CardContent>
           <Typography variant="h5">{wallet.name}</Typography>

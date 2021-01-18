@@ -6,17 +6,17 @@ import {
 } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import { HeadCell } from '../../shared/models/HeadCell';
-import { SortOrder } from '../../shared/models/SortOrder';
 import { Record } from '../models/Record';
 
 type RecordTableHeaderProps = {
-  sortOrder: SortOrder<Record>;
+  sortDirection: 'asc' | 'desc';
+  sortBy: keyof Record;
   sortClicked: (newOrderKey: keyof Record) => void;
 };
 export const RecordTableHeader: FunctionComponent<RecordTableHeaderProps> = (
   props
 ) => {
-  const { sortClicked, sortOrder } = props;
+  const { sortClicked, sortBy, sortDirection } = props;
 
   const headers: HeadCell<Record>[] = [
     { key: 'description', label: 'description' },
@@ -31,8 +31,8 @@ export const RecordTableHeader: FunctionComponent<RecordTableHeaderProps> = (
         {headers.map((header) => (
           <TableCell key={header.key}>
             <TableSortLabel
-              active={header.key === sortOrder.orderBy}
-              direction={sortOrder.order}
+              active={header.key === sortBy}
+              direction={sortDirection}
               onClick={() => sortClicked(header.key)}
             >
               {header.label}

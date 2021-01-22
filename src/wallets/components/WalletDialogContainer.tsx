@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react';
-import { WalletDialogs } from '../../../pages/wallets';
+import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
-import { UseDialogs } from '../../shared/hooks/useDialogs';
+import {
+  addWalletDialogState,
+  editWalletDialogState,
+} from '../hooks/walletDialogsState';
 import {
   useCreateWalletMutation,
   useDeleteWalletMutation,
@@ -11,15 +14,15 @@ import { Wallet } from '../models/Wallet';
 import { WalletAddDialog } from './WalletAddDialog';
 import { WalletEditDialog } from './WalletEditDialog';
 
-type WalletDialogContainerProps = {
-  dialogsState: UseDialogs<WalletDialogs>;
-};
-
-export const WalletDialogContainer = (props: WalletDialogContainerProps) => {
+export const WalletDialogContainer = () => {
   const { username, token } = useAuthentication();
-  const {
-    dialogsState: { dialogs, setSingleDialog },
-  } = props;
+
+  const [addWalletDialog, setAddWalletDialog] = useRecoilState(
+    addWalletDialogState
+  );
+  const [editWalletDialog, setEditWalletDialog] = useRecoilState(
+    editWalletDialogState
+  );
 
   const editWallletMutation = useEditWalletMutation(token);
   const createWalletMutation = useCreateWalletMutation(token);
@@ -27,38 +30,38 @@ export const WalletDialogContainer = (props: WalletDialogContainerProps) => {
 
   const addWallet = async (walletToAdd: Wallet) => {
     await createWalletMutation.mutateAsync(walletToAdd);
-    setSingleDialog('addWallet', { open: false });
+    setAddWalletDialog({ open: false });
   };
 
   const editWallet = async (walletToEdit: Wallet) => {
     await editWallletMutation.mutateAsync(walletToEdit);
-    setSingleDialog('editWallet', { open: false, walletToEdit: null });
+    setEditWalletDialog({ open: false, walletToEdit: null });
   };
 
   const deleteWallet = async (walletToDelete: Wallet) => {
     await deleteWalletMutation.mutateAsync(walletToDelete);
-    setSingleDialog('editWallet', { open: false, walletToEdit: null });
+    setEditWalletDialog({ open: false, walletToEdit: null });
   };
 
-  if (dialogs.editWallet.open) {
+  if (editWalletDialog.open) {
     return (
       <WalletEditDialog
         owner={username}
         onDialogClose={() =>
-          setSingleDialog('editWallet', { open: false, walletToEdit: null })
+          setEditWalletDialog({ open: false, walletToEdit: null })
         }
         onEditWallet={editWallet}
         onDeleteWallet={deleteWallet}
-        wallet={dialogs.editWallet.walletToEdit}
+        wallet={editWalletDialog.walletToEdit}
       />
     );
   }
 
-  if (dialogs.addWallet.open) {
+  if (addWalletDialog.open) {
     return (
       <WalletAddDialog
         owner={username}
-        onDialogClose={() => setSingleDialog('addWallet', { open: false })}
+        onDialogClose={() => setAddWalletDialog({ open: false })}
         onAddWallet={addWallet}
       />
     );

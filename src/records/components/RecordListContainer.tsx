@@ -1,24 +1,22 @@
 import React, { Fragment, FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
-import { useAuthentication } from '../../src/authentication/hooks/useAuthentication';
-import { RecordsTable } from '../../src/records/components/RecordsTable';
-import { RecordTableBody } from '../../src/records/components/RecordTableBody';
-import { RecordTableHeader } from '../../src/records/components/RecordTableHeader';
-import { useCategoriesQuery } from '../../src/records/hooks/categoriesQueries';
-import { useRecordsQuery } from '../../src/records/hooks/recordsQueries';
-import { Record } from '../../src/records/models/Record';
-import { useSort } from '../../src/shared/hooks/useSort';
-import { Order } from '../../src/shared/models/SortOrder';
-import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
+import { useAuthentication } from '../../authentication/hooks/useAuthentication';
+import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
+import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
   currentFilterState,
   currentPageState,
   currentSortState,
-} from '../../src/records/hooks/currentQueryState';
+} from '../hooks/currentQueryState';
 import {
   addRecordDialogState,
   editRecordDialogState,
-} from '../../src/records/hooks/recordsDialogsState';
+} from '../hooks/recordsDialogsState';
+import { useRecordsQuery } from '../hooks/recordsQueries';
+import { Record } from '../models/Record';
+import { RecordsTable } from './RecordsTable';
+import { RecordTableBody } from './RecordTableBody';
+import { RecordTableHeader } from './RecordTableHeader';
 
 export const RecordListContainer: FunctionComponent = () => {
   const { token } = useAuthentication();

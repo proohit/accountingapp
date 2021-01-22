@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import { RecordDialogContainer } from '../../src/records/components/RecordDialogContainer';
 import { RecordFilterBarContainer } from '../../src/records/components/RecordFilterBarContainer';
 import { RecordHeader } from '../../src/records/components/RecordHeader';
-import { RecordListContainer } from './RecordListContainer';
+import { RecordListContainer } from '../../src/records/components/RecordListContainer';
 
 const styles = makeStyles((theme) => ({
   list: {

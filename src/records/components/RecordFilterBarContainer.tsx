@@ -15,7 +15,7 @@ import { useRecoilState } from 'recoil';
 import { currentFilterState } from '../hooks/currentQueryState';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
-import { getWalletByName } from '../../wallets/utils/walletUtils';
+import { WalletUtils } from '../../wallets/utils/WalletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
@@ -52,7 +52,7 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
     setCurrentFilters({
       description,
       categoryId: getCategoryByName(categories, categoryName)?.id,
-      walletId: getWalletByName(wallets, walletName)?.id,
+      walletId: WalletUtils.getWalletByName(wallets, walletName)?.id,
       timestampFrom:
         timestampFrom && dayjs(timestampFrom).format('YYYY-MM-DDTHH:mm:ss'),
       timestampTo:

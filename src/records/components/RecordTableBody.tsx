@@ -2,7 +2,7 @@ import { TableBody, TableCell, TableRow } from '@material-ui/core';
 import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
-import { getWalletById } from '../../wallets/utils/walletUtils';
+import { WalletUtils } from '../../wallets/utils/WalletUtils';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';
@@ -25,7 +25,9 @@ export const RecordTableBody: FunctionComponent<RecordTableBodyProps> = (
           <TableCell>
             {getCategoryById(categories, record.categoryId)?.name}
           </TableCell>
-          <TableCell>{getWalletById(wallets, record.walletId)?.name}</TableCell>
+          <TableCell>
+            {WalletUtils.getWalletById(wallets, record.walletId)?.name}
+          </TableCell>
           <TableCell>
             {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
           </TableCell>

@@ -4,10 +4,7 @@ import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
 import { useForm } from '../../shared/hooks/useForm';
 import { Wallet } from '../../wallets/models/Wallet';
-import {
-  getWalletById,
-  getWalletByName,
-} from '../../wallets/utils/walletUtils';
+import { WalletUtils } from '../../wallets/utils/WalletUtils';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { validateRecordField } from '../services/RecordValidator';
@@ -50,7 +47,7 @@ export const RecordForm = (props: RecordFormProps) => {
       description: record?.description || '',
       value: record?.value.toString() || '0.00',
       walletName:
-        getWalletById(wallets, record?.walletId)?.name ||
+        WalletUtils.getWalletById(wallets, record?.walletId)?.name ||
         (wallets?.length && wallets[0].name) ||
         '',
       categoryName:
@@ -73,7 +70,7 @@ export const RecordForm = (props: RecordFormProps) => {
       description: formFields.description,
       timestamp: dayjs(formFields.timestamp).toISOString(),
       value: Number(formFields.value),
-      walletId: getWalletByName(wallets, formFields.walletName)?.id,
+      walletId: WalletUtils.getWalletByName(wallets, formFields.walletName)?.id,
       categoryId: getCategoryByName(categories, formFields.categoryName)?.id,
       ownerUsername: owner,
     });

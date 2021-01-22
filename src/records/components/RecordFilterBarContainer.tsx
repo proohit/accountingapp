@@ -11,19 +11,16 @@ import { Close } from '@material-ui/icons';
 import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentFilterState } from '../hooks/currentQueryState';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { getWalletByName } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
-import { SearchQuery } from '../models/SearchQuery';
 import { getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
 import { WalletField } from './WalletField';
-
-type RecordFilterBarProps = {
-  setFilter: (newFilter: SearchQuery['filterBy']) => void;
-};
 
 const styles = makeStyles((theme) => ({
   filterBar: {
@@ -35,11 +32,11 @@ const styles = makeStyles((theme) => ({
   },
 }));
 
-export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
-  props
-) => {
-  const { setFilter } = props;
+export const RecordFilterBarContainer: FunctionComponent = (props) => {
   const { token } = useAuthentication();
+
+  const [, setCurrentFilters] = useRecoilState(currentFilterState);
+
   const [description, setDescription] = useState('');
   const [categoryName, setCategoryName] = useState('all');
   const [walletName, setWalletName] = useState('all');
@@ -51,8 +48,8 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
 
   const classes = styles();
 
-  const triggerFilter = () =>
-    setFilter({
+  const applyFilter = () =>
+    setCurrentFilters({
       description,
       categoryId: getCategoryByName(categories, categoryName)?.id,
       walletId: getWalletByName(wallets, walletName)?.id,
@@ -68,7 +65,7 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
     setCategoryName('all');
     setTimestampFrom(null);
     setTimestampTo(null);
-    setFilter({
+    setCurrentFilters({
       description: undefined,
       categoryId: undefined,
       timestampFrom: undefined,
@@ -139,7 +136,7 @@ export const RecordFilterBar: FunctionComponent<RecordFilterBarProps> = (
           showTodayButton
           maxDateMessage="To Timestamp should not be before From Timestamp"
         />
-        <Button variant="contained" color="secondary" onClick={triggerFilter}>
+        <Button variant="contained" color="secondary" onClick={applyFilter}>
           Filter
         </Button>
       </Grid>

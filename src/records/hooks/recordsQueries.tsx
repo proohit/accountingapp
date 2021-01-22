@@ -8,14 +8,7 @@ const recordsApi = new RecordsApiService();
 export const useRecordsQuery = (query: SearchQuery, token: string) => {
   return useQuery(
     ['getRecord', query],
-    () =>
-      recordsApi.getRecordsByUser(token, {
-        page: query.page,
-        itemsPerPage: query.itemsPerPage,
-        sortBy: query.sortBy,
-        sortDirection: query.sortBy ? query.sortDirection : undefined,
-        filterBy: query.filterBy,
-      }),
+    () => recordsApi.getRecordsByUser(token, query),
     { keepPreviousData: true }
   );
 };

@@ -16,7 +16,8 @@
     "next": "10.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-query": "^3.5.11"
+    "react-query": "^3.5.11",
+    "recoil": "^0.1.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.13",

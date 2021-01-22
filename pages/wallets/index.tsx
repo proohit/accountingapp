@@ -1,53 +1,37 @@
 import { Grid, IconButton, Paper, Typography } from '@material-ui/core';
 import { AddBox } from '@material-ui/icons';
 import React, { Fragment } from 'react';
+import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../src/authentication/hooks/useAuthentication';
-import { useDialogs } from '../../src/shared/hooks/useDialogs';
+import { WalletCard } from '../../src/wallets/components/WalletCard';
 import { WalletDialogContainer } from '../../src/wallets/components/WalletDialogContainer';
+import {
+  addWalletDialogState,
+  editWalletDialogState,
+} from '../../src/wallets/hooks/walletDialogsState';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 import { Wallet } from '../../src/wallets/models/Wallet';
-import { WalletCard } from '../../src/wallets/components/WalletCard';
-export type WalletDialogs = {
-  editWallet: {
-    open: boolean;
-    walletToEdit: Wallet;
-  };
-  addWallet: {
-    open: boolean;
-  };
-};
+
 const WalletPage: React.FunctionComponent = (props) => {
   const { token } = useAuthentication();
   const { data: wallets } = useWalletsQuery(token);
 
-  const dialogsState = useDialogs<WalletDialogs>({
-    editWallet: {
-      open: false,
-      walletToEdit: null,
-    },
-    addWallet: {
-      open: false,
-    },
-  });
+  const [, setAddWalletDialog] = useRecoilState(addWalletDialogState);
+  const [, setEditWalletDialog] = useRecoilState(editWalletDialogState);
 
   const openEditDialog = (wallet: Wallet) => {
-    dialogsState.setSingleDialog('editWallet', {
-      open: true,
-      walletToEdit: wallet,
-    });
+    setEditWalletDialog({ open: true, walletToEdit: wallet });
   };
 
   const openAddDialog = () => {
-    dialogsState.setSingleDialog('addWallet', {
-      open: true,
-    });
+    setAddWalletDialog({ open: true });
   };
 
   return wallets ? (
     <Paper style={{ padding: 16 }}>
       <Grid container style={{ gap: 16 }}>
         <Grid item container>
-          <WalletDialogContainer dialogsState={dialogsState} />
+          <WalletDialogContainer />
           <Typography variant="h3">Wallets</Typography>
           <IconButton color="primary" onClick={openAddDialog}>
             <AddBox />
@@ -64,5 +48,4 @@ const WalletPage: React.FunctionComponent = (props) => {
     <Fragment />
   );
 };
-
 export default WalletPage;

@@ -13,7 +13,7 @@ export const AppToolbar: FunctionComponent = () => {
         <Grid container alignItems="center" justify="space-between">
           <Grid item>
             {authenticated && (
-              <Hidden mdUp>
+              <Hidden lgUp>
                 <MobileMenuButton />
               </Hidden>
             )}

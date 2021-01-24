@@ -50,9 +50,9 @@ export const NavigationBar: FunctionComponent = () => {
 
   const drawer = (
     <List>
-      <ListItem>
-        <Person color="primary" />
-        <Typography color="primary" display="inline" variant="h6">
+      <ListItem alignItems="center" style={{ justifyContent: 'center' }}>
+        <Person color="primary" fontSize="large" />
+        <Typography color="primary" display="inline" variant="h4">
           {username}
         </Typography>
       </ListItem>
@@ -85,7 +85,7 @@ export const NavigationBar: FunctionComponent = () => {
   );
   return username ? (
     <>
-      <Hidden mdUp>
+      <Hidden lgUp>
         <SwipeableDrawer
           disableBackdropTransition={!iOS}
           variant="temporary"
@@ -98,7 +98,7 @@ export const NavigationBar: FunctionComponent = () => {
           {drawer}
         </SwipeableDrawer>
       </Hidden>
-      <Hidden smDown>
+      <Hidden mdDown>
         <Grid item>{drawer}</Grid>
       </Hidden>
     </>

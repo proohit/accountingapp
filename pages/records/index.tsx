@@ -6,6 +6,7 @@ import { RecordListContainer } from '../../src/records/components/RecordListCont
 
 const styles = makeStyles((theme) => ({
   list: {
+    paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
 }));

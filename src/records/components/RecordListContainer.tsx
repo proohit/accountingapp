@@ -11,10 +11,12 @@ import {
 import {
   addRecordDialogState,
   editRecordDialogState,
+  filterRecordDialogState,
 } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
 import { RecordsTable } from './RecordsTable';
+import { RecordsTableToolbar } from './RecordsTableToolbar';
 import { RecordTableBody } from './RecordTableBody';
 import { RecordTableHeader } from './RecordTableHeader';
 
@@ -23,6 +25,7 @@ export const RecordListContainer: FunctionComponent = () => {
 
   const [, setEditRecordsDialog] = useRecoilState(editRecordDialogState);
   const [, setAddRecordsDialog] = useRecoilState(addRecordDialogState);
+  const [, setFilterRecordsDialog] = useRecoilState(filterRecordDialogState);
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [currentFilter] = useRecoilState(currentFilterState);
@@ -78,14 +81,23 @@ export const RecordListContainer: FunctionComponent = () => {
     setEditRecordsDialog({ open: true, recordToEdit: record });
   };
 
+  const openFilterRecordsDialog = () => {
+    setFilterRecordsDialog({ open: true });
+  };
+
   return paginatedResult?.data && wallets?.length && categories?.length ? (
     <RecordsTable
-      addClicked={openAddRecordsDialog}
       rowsPerPage={currentPage.itemsPerPage}
       page={currentPage.page - 1}
       onChangePage={updatePage}
       onChangeRowsPerPage={updateRowsPerPage}
       rowCount={paginatedResult.totalCount || 0}
+      toolbar={
+        <RecordsTableToolbar
+          onAddClicked={openAddRecordsDialog}
+          onFilterClicked={openFilterRecordsDialog}
+        />
+      }
     >
       <RecordTableHeader
         sortBy={currentSort.sortBy}

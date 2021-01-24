@@ -3,6 +3,7 @@ import { useRecoilState } from 'recoil';
 import {
   addRecordDialogState,
   editRecordDialogState,
+  filterRecordDialogState,
 } from '../hooks/recordsDialogsState';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
@@ -15,6 +16,8 @@ import {
 import { Record } from '../models/Record';
 import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
+import { Dialog, DialogContent, DialogTitle, Grid } from '@material-ui/core';
+import { RecordFilterBarContainer } from './RecordFilterBarContainer';
 
 export const RecordDialogContainer: FunctionComponent = (props) => {
   const { username, token } = useAuthentication();
@@ -24,7 +27,9 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
   const [addRecordsDialog, setAddRecordsDialog] = useRecoilState(
     addRecordDialogState
   );
-
+  const [filterRecordsDialog, setFilterRecordsDialog] = useRecoilState(
+    filterRecordDialogState
+  );
   const { data: categories } = useCategoriesQuery(token);
   const { data: wallets } = useWalletsQuery(token);
 
@@ -72,6 +77,20 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
         onDeleteRecord={deleteRecord}
         wallets={wallets}
       />
+    );
+  }
+
+  if (filterRecordsDialog.open) {
+    return (
+      <Dialog
+        open={true}
+        onClose={() => setFilterRecordsDialog({ open: false })}
+      >
+        <DialogTitle>Filter Records</DialogTitle>
+        <DialogContent>
+          <RecordFilterBarContainer />
+        </DialogContent>
+      </Dialog>
     );
   }
 

@@ -21,8 +21,8 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
       <Authenticated>
         <AppToolbar />
         <div className={classes.appBar} />
-        <Grid container className={styles.pageContainer}>
-          <Grid item lg={2} className={styles.navigationBar}>
+        <Grid container>
+          <Grid item lg={2}>
             <NavigationBar />
           </Grid>
           <Grid container item xs>

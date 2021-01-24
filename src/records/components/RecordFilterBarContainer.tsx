@@ -4,7 +4,6 @@ import {
   Grid,
   IconButton,
   makeStyles,
-  Paper,
   Typography,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
@@ -21,6 +20,7 @@ import { getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
 import { WalletField } from './WalletField';
+import { filterRecordDialogState } from '../hooks/recordsDialogsState';
 
 const styles = makeStyles((theme) => ({
   filterBar: {
@@ -28,7 +28,8 @@ const styles = makeStyles((theme) => ({
     gap: theme.spacing(3),
     position: 'sticky',
     overflow: 'auto',
-    top: theme.spacing(12),
+    top: 70,
+    bottom: 15,
   },
 }));
 
@@ -36,7 +37,7 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
   const { token } = useAuthentication();
 
   const [, setCurrentFilters] = useRecoilState(currentFilterState);
-
+  const [, setFilterRecordsDialog] = useRecoilState(filterRecordDialogState);
   const [description, setDescription] = useState('');
   const [categoryName, setCategoryName] = useState('all');
   const [walletName, setWalletName] = useState('all');
@@ -48,7 +49,7 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
 
   const classes = styles();
 
-  const applyFilter = () =>
+  const applyFilter = () => {
     setCurrentFilters({
       description,
       categoryId: getCategoryByName(categories, categoryName)?.id,
@@ -58,6 +59,8 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
       timestampTo:
         timestampTo && dayjs(timestampTo).format('YYYY-MM-DDTHH:mm:ss'),
     });
+    setFilterRecordsDialog({ open: false });
+  };
 
   const resetFilter = () => {
     setDescription('');
@@ -75,71 +78,69 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
   };
 
   return (
-    <Paper className={classes.filterBar}>
-      <Grid container direction="column" className={classes.filterBar}>
-        <Grid container item direction="row" alignItems="center">
-          <IconButton onClick={resetFilter}>
-            <Close />
-          </IconButton>
-          <Typography variant="h6">Filters</Typography>
-          <Divider />
-        </Grid>
-        <DescriptionField
-          description={description}
-          onDescriptionChange={(event) =>
-            setDescription(event.target.value || event.currentTarget.value)
-          }
-        />
-
-        <WalletField
-          withAll
-          walletName={walletName}
-          onWalletChange={(event) =>
-            setWalletName(
-              (event.target.value || event.currentTarget.value) as string
-            )
-          }
-          wallets={wallets}
-        />
-
-        <CategoryField
-          withAll
-          categoryName={categoryName}
-          onCategoryChange={(event) =>
-            setCategoryName(
-              (event.target.value || event.currentTarget.value) as string
-            )
-          }
-          categories={categories}
-        />
-        <DateTimePicker
-          inputVariant="outlined"
-          value={timestampFrom}
-          onChange={setTimestampFrom}
-          label="From Timestamp"
-          color="secondary"
-          name="timestampFrom"
-          fullWidth
-          showTodayButton
-          maxDate={dayjs(timestampTo)}
-          maxDateMessage="From Timestamp should not be after To Timestamp"
-        />
-        <DateTimePicker
-          inputVariant="outlined"
-          value={timestampTo}
-          onChange={setTimestampTo}
-          minDate={dayjs(timestampFrom)}
-          label="To Timestamp"
-          color="secondary"
-          name="timestampTo"
-          fullWidth
-          showTodayButton
-          maxDateMessage="To Timestamp should not be before From Timestamp"
-        />
-        <Button variant="contained" color="secondary" onClick={applyFilter}>
-          Filter
-        </Button>
+    <Grid container direction="column" className={classes.filterBar}>
+      <Grid container item direction="row" alignItems="center">
+        <IconButton onClick={resetFilter}>
+          <Close />
+        </IconButton>
+        <Typography variant="h6">Filters</Typography>
+        <Divider />
       </Grid>
-    </Paper>
+      <DescriptionField
+        description={description}
+        onDescriptionChange={(event) =>
+          setDescription(event.target.value || event.currentTarget.value)
+        }
+      />
+
+      <WalletField
+        withAll
+        walletName={walletName}
+        onWalletChange={(event) =>
+          setWalletName(
+            (event.target.value || event.currentTarget.value) as string
+          )
+        }
+        wallets={wallets}
+      />
+
+      <CategoryField
+        withAll
+        categoryName={categoryName}
+        onCategoryChange={(event) =>
+          setCategoryName(
+            (event.target.value || event.currentTarget.value) as string
+          )
+        }
+        categories={categories}
+      />
+      <DateTimePicker
+        inputVariant="outlined"
+        value={timestampFrom}
+        onChange={setTimestampFrom}
+        label="From Timestamp"
+        color="secondary"
+        name="timestampFrom"
+        fullWidth
+        showTodayButton
+        maxDate={dayjs(timestampTo)}
+        maxDateMessage="From Timestamp should not be after To Timestamp"
+      />
+      <DateTimePicker
+        inputVariant="outlined"
+        value={timestampTo}
+        onChange={setTimestampTo}
+        minDate={dayjs(timestampFrom)}
+        label="To Timestamp"
+        color="secondary"
+        name="timestampTo"
+        fullWidth
+        showTodayButton
+        maxDateMessage="To Timestamp should not be before From Timestamp"
+      />
+      <Button variant="contained" color="secondary" onClick={applyFilter}>
+        Filter
+      </Button>
+    </Grid>
   );
 };

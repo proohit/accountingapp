@@ -1,15 +1,12 @@
 import {
   Grid,
-  IconButton,
   Paper,
   Table,
   TableContainer,
   TablePagination,
   Toolbar,
-  Tooltip,
 } from '@material-ui/core';
-import { AddBox } from '@material-ui/icons';
-import React, { FunctionComponent, MouseEvent } from 'react';
+import React, { FunctionComponent } from 'react';
 
 interface RecordsTableProps {
   rowsPerPage: number;
@@ -19,7 +16,7 @@ interface RecordsTableProps {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   rowCount: number;
-  addClicked(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>): void;
+  toolbar: JSX.Element;
 }
 export const RecordsTable: FunctionComponent<RecordsTableProps> = (props) => {
   const {
@@ -28,19 +25,15 @@ export const RecordsTable: FunctionComponent<RecordsTableProps> = (props) => {
     page,
     rowsPerPage,
     rowCount,
-    addClicked,
+    toolbar,
     children,
   } = props;
 
   return (
     <Paper>
       <Toolbar>
-        <Grid container justify="flex-end">
-          <Tooltip title="Add">
-            <IconButton onClick={addClicked} color="primary" aria-label="add">
-              <AddBox />
-            </IconButton>
-          </Tooltip>
+        <Grid container item direction="row" alignContent="center">
+          {toolbar}
         </Grid>
       </Toolbar>
       <TableContainer>

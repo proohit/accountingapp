@@ -1,16 +1,12 @@
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid, Hidden, makeStyles } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import { RecordDialogContainer } from '../../src/records/components/RecordDialogContainer';
 import { RecordFilterBarContainer } from '../../src/records/components/RecordFilterBarContainer';
-import { RecordHeader } from '../../src/records/components/RecordHeader';
 import { RecordListContainer } from '../../src/records/components/RecordListContainer';
 
 const styles = makeStyles((theme) => ({
   list: {
-    marginTop: theme.spacing(10),
-  },
-  filterBar: {
-    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
 }));
 
@@ -19,14 +15,15 @@ const RecordPage: FunctionComponent = (props) => {
 
   return (
     <>
-      <Grid item xs={9} className={classes.list}>
-        <RecordHeader />
+      <Grid item xs className={classes.list} container direction="column">
         <RecordDialogContainer />
         <RecordListContainer />
       </Grid>
-      <Grid item xs={3} className={classes.filterBar}>
-        <RecordFilterBarContainer />
-      </Grid>
+      <Hidden smDown>
+        <Grid item xs={3}>
+          <RecordFilterBarContainer />
+        </Grid>
+      </Hidden>
     </>
   );
 };

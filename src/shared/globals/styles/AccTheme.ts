@@ -49,6 +49,12 @@ export const AccTheme = createMuiTheme({
     MuiListItem: {
       root: {
         color: palette.primary.main,
+        '&$selected': {
+          backgroundColor: palette.secondary.main,
+        },
+        '&$selected:hover': {
+          backgroundColor: palette.secondary.main,
+        },
       },
       button: {
         '&:hover': {

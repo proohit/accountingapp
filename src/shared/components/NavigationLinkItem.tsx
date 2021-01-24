@@ -1,10 +1,4 @@
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  makeStyles,
-} from '@material-ui/core';
-import clsx from 'clsx';
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import Link from 'next/link';
 import React from 'react';
 import Routes from '../constants/Routes';
@@ -16,23 +10,12 @@ interface NavigationItemProps {
   active: boolean;
 }
 
-const styles = makeStyles((theme) => ({
-  active: {
-    backgroundColor: theme.palette.secondary.main,
-  },
-}));
-
 const NavigationLinkItem = (props: NavigationItemProps) => {
   const { icon, link, text, active } = props;
-  const classes = styles();
 
   return (
     <Link href={link} passHref>
-      <ListItem
-        button
-        className={clsx({ [classes.active]: active })}
-        component="a"
-      >
+      <ListItem button selected={active} component="a">
         <ListItemIcon>{icon}</ListItemIcon>
         <ListItemText primary={text} />
       </ListItem>

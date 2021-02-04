@@ -1,5 +1,5 @@
 import { AuthenticationController } from '../models/AuthenticationController';
-import { login, register } from '../repositories/AuthenticationMapper';
+import { login, register } from '../repositories/authenticationMapper';
 
 const AuthenticationControllerImpl: AuthenticationController = {
     login: async (ctx) => {

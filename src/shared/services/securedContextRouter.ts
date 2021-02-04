@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { verify } from '../repositories/AuthenticationMapper';
+import { verify } from '../repositories/authenticationMapper';
 
 const router = new Router();
 

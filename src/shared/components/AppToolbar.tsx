@@ -18,7 +18,7 @@ export const AppToolbar: FunctionComponent = () => {
     <AppBar color="primary">
       <Toolbar>
         <Grid container alignItems="center" justify="space-between">
-          <Grid item container alignItems="center" xs={6}>
+          <Grid item container alignItems="center" xs={7}>
             {authenticated && (
               <Hidden lgUp>
                 <MobileMenuButton />

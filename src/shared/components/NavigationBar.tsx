@@ -52,7 +52,17 @@ export const NavigationBar: FunctionComponent = () => {
     <List>
       <ListItem alignItems="center" style={{ justifyContent: 'center' }}>
         <Person color="primary" fontSize="large" />
-        <Typography color="primary" display="inline" variant="h4">
+        <Typography
+          color="primary"
+          display="inline"
+          variant="h4"
+          style={{
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'normal',
+            maxWidth: 250,
+          }}
+        >
           {username}
         </Typography>
       </ListItem>

@@ -1,5 +1,11 @@
-import { Grid, IconButton, Paper, Typography } from '@material-ui/core';
-import { AddBox } from '@material-ui/icons';
+import {
+  Grid,
+  IconButton,
+  makeStyles,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+import { AccountBalance, AddBox, Payment } from '@material-ui/icons';
 import React, { Fragment } from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../src/authentication/hooks/useAuthentication';
@@ -12,10 +18,17 @@ import {
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 import { Wallet } from '../../src/wallets/models/Wallet';
 
+const walletPageStyles = makeStyles((theme) => ({
+  walletContainer: {
+    gap: theme.spacing(2),
+    padding: theme.spacing(2),
+  },
+}));
+
 const WalletPage: React.FunctionComponent = (props) => {
   const { token } = useAuthentication();
   const { data: wallets } = useWalletsQuery(token);
-
+  const classes = walletPageStyles();
   const [, setAddWalletDialog] = useRecoilState(addWalletDialogState);
   const [, setEditWalletDialog] = useRecoilState(editWalletDialogState);
 
@@ -28,22 +41,23 @@ const WalletPage: React.FunctionComponent = (props) => {
   };
 
   return wallets ? (
-    <Paper style={{ padding: 16 }}>
-      <Grid container style={{ gap: 16 }}>
-        <Grid item container>
-          <WalletDialogContainer />
-          <Typography variant="h3">Wallets</Typography>
-          <IconButton color="primary" onClick={openAddDialog}>
-            <AddBox />
-          </IconButton>
-        </Grid>
-        {wallets.map((wallet) => (
-          <Grid key={wallet.id}>
-            <WalletCard wallet={wallet} onWalletClicked={openEditDialog} />
-          </Grid>
-        ))}
+    <Grid container className={classes.walletContainer}>
+      <Grid item container>
+        <WalletDialogContainer />
+        <AccountBalance fontSize="large" color="primary" />
+        <Typography variant="h3" color="primary">
+          Wallets
+        </Typography>
+        <IconButton color="primary" onClick={openAddDialog}>
+          <AddBox />
+        </IconButton>
       </Grid>
-    </Paper>
+      {wallets.map((wallet) => (
+        <Grid key={wallet.id}>
+          <WalletCard wallet={wallet} onWalletClicked={openEditDialog} />
+        </Grid>
+      ))}
+    </Grid>
   ) : (
     <Fragment />
   );

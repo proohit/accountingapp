@@ -1,4 +1,11 @@
-import { AppBar, Button, Grid, Hidden, Toolbar } from '@material-ui/core';
+import {
+  AppBar,
+  Button,
+  Grid,
+  Hidden,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import { AccountBox, ExitToApp } from '@material-ui/icons';
 import Link from 'next/link';
 import React, { FunctionComponent } from 'react';
@@ -11,35 +18,36 @@ export const AppToolbar: FunctionComponent = () => {
     <AppBar color="primary">
       <Toolbar>
         <Grid container alignItems="center" justify="space-between">
-          <Grid item>
+          <Grid item container alignItems="center" xs={6}>
             {authenticated && (
               <Hidden lgUp>
                 <MobileMenuButton />
               </Hidden>
             )}
+            <Typography component="span" variant="h5">
+              Accounting App
+            </Typography>
           </Grid>
-          <Grid item>
-            <Grid item container alignItems="center">
-              {authenticated ? (
+          <Grid item container alignItems="center" xs justify="flex-end">
+            {authenticated ? (
+              <Button
+                color="secondary"
+                startIcon={<ExitToApp />}
+                onClick={logout}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Link href="/login" passHref>
                 <Button
                   color="secondary"
-                  startIcon={<ExitToApp />}
-                  onClick={logout}
+                  component="a"
+                  startIcon={<AccountBox />}
                 >
-                  Logout
+                  Login
                 </Button>
-              ) : (
-                <Link href="/login" passHref>
-                  <Button
-                    color="secondary"
-                    component="a"
-                    startIcon={<AccountBox />}
-                  >
-                    Login
-                  </Button>
-                </Link>
-              )}
-            </Grid>
+              </Link>
+            )}
           </Grid>
         </Grid>
       </Toolbar>

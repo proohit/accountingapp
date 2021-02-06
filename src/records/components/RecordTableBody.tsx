@@ -2,7 +2,7 @@ import { TableBody, TableCell, TableRow } from '@material-ui/core';
 import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
-import { WalletUtils } from '../../wallets/utils/WalletUtils';
+import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';

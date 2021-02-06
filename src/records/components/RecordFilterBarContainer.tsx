@@ -11,16 +11,16 @@ import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { currentFilterState } from '../hooks/currentQueryState';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
-import { WalletUtils } from '../../wallets/utils/WalletUtils';
+import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
+import { currentFilterState } from '../hooks/currentQueryState';
+import { filterRecordDialogState } from '../hooks/recordsDialogsState';
 import { getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
 import { WalletField } from './WalletField';
-import { filterRecordDialogState } from '../hooks/recordsDialogsState';
 
 const styles = makeStyles((theme) => ({
   filterBar: {

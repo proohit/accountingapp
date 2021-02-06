@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
 import { useForm } from '../../shared/hooks/useForm';
 import { Wallet } from '../../wallets/models/Wallet';
-import { WalletUtils } from '../../wallets/utils/WalletUtils';
+import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { validateRecordField } from '../services/RecordValidator';

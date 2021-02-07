@@ -36,7 +36,8 @@ export const WalletForm = (props: WalletFormProps) => {
     onWalletChange({
       id: formFields.id,
       name: formFields.name,
-      balance: formFields.balance,
+      balance: Number(formFields.balance),
+      currentBalance: wallet?.currentBalance || 0,
       ownerUsername: owner,
     });
   }, [formFields]);

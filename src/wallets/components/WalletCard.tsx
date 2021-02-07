@@ -43,7 +43,7 @@ export const WalletCard: FunctionComponent<WalletCardProps> = (props) => {
             initial balance: {wallet.balance}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            current balance: 0
+            current balance: {wallet.currentBalance}
           </Typography>
         </CardContent>
       </CardActionArea>

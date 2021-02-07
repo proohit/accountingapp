@@ -13,4 +13,6 @@ router.delete('/:id', WalletControllerImpl.deleteById);
 
 router.put('/:id', WalletControllerImpl.updateById);
 
+router.put('/:id/updateBalance', WalletControllerImpl.updateBalance);
+
 export default router.routes();

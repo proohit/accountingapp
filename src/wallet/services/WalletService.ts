@@ -55,8 +55,9 @@ export default class WalletService {
     async updateById(
         id: Wallet['id'],
         updatedName: Wallet['name'],
-        updatedBalance: Wallet['balance'],
+        initialBalance: Wallet['balance'],
         username: User['username'],
+        updatedBalance?: Wallet['currentBalance'],
     ) {
         const walletRepo = repositories.wallets();
 
@@ -68,11 +69,45 @@ export default class WalletService {
             throw new DuplicateWallet();
         }
 
+        let recalculatedBalance = updatedBalance;
+
+        if (!updatedBalance && updatedBalance !== 0) {
+            recalculatedBalance = await this.getCalculatedBalance(id, username);
+        }
+
         return walletRepo.save({
             id,
-            balance: updatedBalance,
+            balance: initialBalance,
+            currentBalance: recalculatedBalance,
             name: updatedName,
             ownerUsername: username,
         });
+    }
+    async recalculateCurrentBalance(id: Wallet['id'], username: User['username']) {
+        const walletToUpdate = await this.getById(id, username);
+        const recalculatedBalance = await this.getCalculatedBalance(id, username);
+
+        const updatedWallet = await this.updateById(
+            id,
+            walletToUpdate.name,
+            walletToUpdate.balance,
+            username,
+            recalculatedBalance,
+        );
+
+        return updatedWallet;
+    }
+
+    private async getCalculatedBalance(id: Wallet['id'], username: User['username']) {
+        const recordsRepo = repositories.records();
+        const walletToUpdate = await this.getById(id, username);
+        const recordsSumByWallet = await recordsRepo
+            .createQueryBuilder()
+            .select(['SUM(value) as balanceByValue'])
+            .where({ walletId: id })
+            .getRawOne();
+
+        const newBalance = recordsSumByWallet.balanceByValue + walletToUpdate.balance;
+        return newBalance;
     }
 }

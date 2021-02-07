@@ -38,9 +38,18 @@ const WalletControllerImpl: WalletController = {
     updateById: async (ctx) => {
         const username = ctx.state.token.username;
         const { id } = ctx.params;
-        const { name: updatedName, balance: updatedBalance } = ctx.request.body;
+        const { name: updatedName, balance: initialBalance } = ctx.request.body;
 
-        const updatedWallet = await services.walletService.updateById(id, updatedName, updatedBalance, username);
+        const updatedWallet = await services.walletService.updateById(id, updatedName, initialBalance, username);
+
+        return { status: 200, data: updatedWallet };
+    },
+
+    updateBalance: async (ctx) => {
+        const username = ctx.state.token.username;
+        const { id } = ctx.params;
+
+        const updatedWallet = await services.walletService.recalculateCurrentBalance(id, username);
 
         return { status: 200, data: updatedWallet };
     },

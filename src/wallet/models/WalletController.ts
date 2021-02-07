@@ -8,4 +8,5 @@ export interface WalletController {
     getById: ControllerFunction<Wallet>;
     deleteById: ControllerFunction<MessageResult>;
     updateById: ControllerFunction<Wallet>;
+    updateBalance: ControllerFunction<Wallet>;
 }

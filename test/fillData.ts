@@ -1,4 +1,4 @@
-import { createConnection } from 'typeorm';
+import { createConnection, getConnectionOptions } from 'typeorm';
 import { register } from '../src/shared/repositories/authenticationMapper';
 import { services } from '../src/shared/services/services';
 
@@ -37,7 +37,8 @@ const createCategory = async () => {
 };
 
 const createAllData = async () => {
-    await createConnection();
+    const con = await getConnectionOptions();
+    await createConnection({ ...con, migrationsRun: false });
     await createUser();
     const wallet = await createWallet();
     const category = await createCategory();

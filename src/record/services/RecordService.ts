@@ -174,13 +174,13 @@ export class RecordService {
     ) {
         const recordRepo = repositories.records();
 
-        await this.getById(id, username);
+        const originalRecord = await this.getById(id, username);
 
         const categoryOfRecord = await services.categoryService.getById(categoryId, username);
 
         const walletOfRecord = await services.walletService.getById(walletId, username);
 
-        return recordRepo.save({
+        const updatedRecord = await recordRepo.save({
             id,
             description,
             value,
@@ -189,5 +189,16 @@ export class RecordService {
             walletId: walletOfRecord.id,
             categoryId: categoryOfRecord.id,
         });
+
+        const newBalance = walletOfRecord.currentBalance - originalRecord.value + value;
+
+        await services.walletService.updateById(
+            walletOfRecord.id,
+            walletOfRecord.name,
+            walletOfRecord.balance,
+            username,
+        );
+
+        return updatedRecord;
     }
 }

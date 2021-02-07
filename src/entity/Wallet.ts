@@ -9,6 +9,8 @@ export class Wallet {
     name: string;
     @Column('float')
     balance: number;
+    @Column('float')
+    currentBalance: number;
 
     @Column()
     ownerUsername: string;

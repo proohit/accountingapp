@@ -165,12 +165,12 @@ export class RecordService {
 
     async updateById(
         id: Record['id'],
-        description: Record['description'],
-        value: Record['value'],
-        timestamp: Record['timestamp'],
-        walletId: Wallet['id'],
-        categoryId: Category['id'],
         username: User['username'],
+        description?: Record['description'],
+        value?: Record['value'],
+        timestamp?: Record['timestamp'],
+        walletId?: Wallet['id'],
+        categoryId?: Category['id'],
     ) {
         const recordRepo = repositories.records();
 
@@ -182,9 +182,9 @@ export class RecordService {
 
         const updatedRecord = await recordRepo.save({
             id,
-            description,
-            value,
-            timestamp,
+            description: description === '' ? '' : description || originalRecord.description,
+            value: Number.isNaN(value) ? originalRecord.value : value,
+            timestamp: timestamp || originalRecord.timestamp,
             ownerUsername: username,
             walletId: walletOfRecord.id,
             categoryId: categoryOfRecord.id,

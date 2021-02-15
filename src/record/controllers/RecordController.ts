@@ -93,12 +93,12 @@ const RecordControllerImpl: RecordController = {
 
         const updatedRecord = await services.recordService.updateById(
             id,
+            username,
             description,
             value,
             timestamp,
             walletId,
             categoryId,
-            username,
         );
 
         return { status: 200, data: updatedRecord };

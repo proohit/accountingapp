@@ -43,7 +43,7 @@ export class RecordService {
         const requestedOwner = await userRepo.findOne({ username });
         if (!requestedOwner) throw new UserNotFound();
 
-        return recordRepo.save({
+        const createdRecord = await recordRepo.save({
             description,
             timestamp,
             value,
@@ -51,6 +51,10 @@ export class RecordService {
             categoryId: requestedCategory.id,
             walletId: requestedWallet.id,
         });
+
+        await services.walletService.recalculateCurrentBalance(requestedWallet.id, username);
+
+        return createdRecord;
     }
 
     async getByQuery(searchQuery: SearchQuery, username: User['username']) {
@@ -139,7 +143,10 @@ export class RecordService {
     async deleteById(id: Record['id'], username: User['username']) {
         const recordRepo = repositories.records();
         const recordToDelete = await this.getById(id, username);
-        return await recordRepo.remove(recordToDelete);
+        const deletedRecord = await recordRepo.remove(recordToDelete);
+
+        await services.walletService.recalculateCurrentBalance(recordToDelete.walletId, username);
+        return deletedRecord;
     }
 
     async getById(id: Record['id'], username: User['username']) {
@@ -190,14 +197,9 @@ export class RecordService {
             categoryId: categoryOfRecord.id,
         });
 
-        const newBalance = walletOfRecord.currentBalance - originalRecord.value + value;
-
-        await services.walletService.updateById(
-            walletOfRecord.id,
-            walletOfRecord.name,
-            walletOfRecord.balance,
-            username,
-        );
+        if (originalRecord.value !== value) {
+            await services.walletService.recalculateCurrentBalance(walletOfRecord.id, username);
+        }
 
         return updatedRecord;
     }

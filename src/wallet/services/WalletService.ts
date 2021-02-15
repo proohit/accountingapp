@@ -24,7 +24,7 @@ export default class WalletService {
             throw new DuplicateWallet();
         }
 
-        return walletRepo.save({ name, balance, ownerUsername: username });
+        return walletRepo.save({ name, balance, ownerUsername: username, currentBalance: balance });
     }
 
     getByUser(username: User['username']) {
@@ -83,6 +83,7 @@ export default class WalletService {
             ownerUsername: username,
         });
     }
+
     async recalculateCurrentBalance(id: Wallet['id'], username: User['username']) {
         const walletToUpdate = await this.getById(id, username);
         const recalculatedBalance = await this.getCalculatedBalance(id, username);

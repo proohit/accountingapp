@@ -1,6 +1,5 @@
 import {
   Divider,
-  Drawer,
   Grid,
   Hidden,
   List,
@@ -11,9 +10,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import {
+  AccountBalance,
   Dashboard,
   MonetizationOn,
-  Payment,
   Person,
   Settings,
 } from '@material-ui/icons';
@@ -67,19 +66,19 @@ export const NavigationBar: FunctionComponent = () => {
         </Typography>
       </ListItem>
       <NavigationLinkItem
-        icon={<Dashboard />}
+        icon={<Dashboard color="primary" />}
         link={Routes.DASHBOARD}
         text="Dashboard"
         active={getCurrentRoute() === Routes.DASHBOARD}
       />
       <NavigationLinkItem
-        icon={<MonetizationOn />}
+        icon={<MonetizationOn color="primary" />}
         link={Routes.RECORDS}
         text="Records"
         active={getCurrentRoute() === Routes.RECORDS}
       />
       <NavigationLinkItem
-        icon={<Payment />}
+        icon={<AccountBalance color="primary" />}
         link={Routes.WALLETS}
         text="Wallets"
         active={getCurrentRoute() === Routes.WALLETS}
@@ -87,7 +86,7 @@ export const NavigationBar: FunctionComponent = () => {
       <Divider />
       <ListItem>
         <ListItemIcon>
-          <Settings />
+          <Settings color="primary" />
         </ListItemIcon>
         <ListItemText primary="Settings" />
       </ListItem>

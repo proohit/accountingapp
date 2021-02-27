@@ -7,6 +7,7 @@ const recordsDialogsState = atom<RecordDialogs>({
     ADD_RECORD: { open: false },
     EDIT_RECORD: { open: false, recordToEdit: null },
     FILTER_RECORDS: { open: false },
+    SORT_RECORDS: { open: false },
   },
 });
 
@@ -50,6 +51,20 @@ export const filterRecordDialogState = selector<
       filterDialogState instanceof DefaultValue
         ? filterDialogState
         : { ...dialogsState, FILTER_RECORDS: filterDialogState }
+    );
+  },
+});
+
+export const sortRecordDialogState = selector<RecordDialogs['SORT_RECORDS']>({
+  key: 'sortRecordsDialogState',
+  get: ({ get }) => get(recordsDialogsState).SORT_RECORDS,
+  set: ({ get, set }, sortDialogState) => {
+    const dialogsState = get(recordsDialogsState);
+    set(
+      recordsDialogsState,
+      sortDialogState instanceof DefaultValue
+        ? sortDialogState
+        : { ...dialogsState, SORT_RECORDS: sortDialogState }
     );
   },
 });

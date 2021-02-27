@@ -16,7 +16,7 @@ const RecordPage: FunctionComponent = (props) => {
 
   return (
     <>
-      <Grid item xs className={classes.list} container direction="column">
+      <Grid item xs className={classes.list}>
         <RecordDialogContainer />
         <RecordListContainer />
       </Grid>

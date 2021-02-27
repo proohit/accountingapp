@@ -45,6 +45,12 @@ export const NavigationBar: FunctionComponent = () => {
     }
   };
 
+  const handleLinkClick = () => {
+    if (mobileOpen) {
+      setMobileOpen(false);
+    }
+  };
+
   const [mobileOpen, setMobileOpen] = useRecoilState(mobileDrawerOpenState);
 
   const drawer = (
@@ -70,18 +76,21 @@ export const NavigationBar: FunctionComponent = () => {
         link={Routes.DASHBOARD}
         text="Dashboard"
         active={getCurrentRoute() === Routes.DASHBOARD}
+        onClick={handleLinkClick}
       />
       <NavigationLinkItem
         icon={<MonetizationOn color="primary" />}
         link={Routes.RECORDS}
         text="Records"
         active={getCurrentRoute() === Routes.RECORDS}
+        onClick={handleLinkClick}
       />
       <NavigationLinkItem
         icon={<AccountBalance color="primary" />}
         link={Routes.WALLETS}
         text="Wallets"
         active={getCurrentRoute() === Routes.WALLETS}
+        onClick={handleLinkClick}
       />
       <Divider />
       <ListItem>

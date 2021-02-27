@@ -104,7 +104,7 @@ export default class WalletService {
         const walletToUpdate = await this.getById(id, username);
         const recordsSumByWallet = await recordsRepo
             .createQueryBuilder()
-            .select(['SUM(value) as balanceByValue'])
+            .select(['COALESCE(SUM(value),0) as balanceByValue'])
             .where({ walletId: id })
             .getRawOne();
 

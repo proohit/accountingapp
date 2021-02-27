@@ -20,6 +20,7 @@ interface RecordFormProps {
   categories: Category[];
   owner: string;
   record?: Record;
+  withNewCategory?: boolean;
 }
 
 export const RecordForm = (props: RecordFormProps) => {
@@ -30,6 +31,7 @@ export const RecordForm = (props: RecordFormProps) => {
     categories,
     owner,
     record,
+    withNewCategory,
   } = props;
 
   type RecordFormFields = Partial<Record> & {
@@ -43,7 +45,6 @@ export const RecordForm = (props: RecordFormProps) => {
     [formErrors, , isFormValid],
   ] = useForm<RecordFormFields>(
     {
-      id: record?.id || null,
       description: record?.description || '',
       value: record?.value.toString() || '0.00',
       walletName:
@@ -66,12 +67,14 @@ export const RecordForm = (props: RecordFormProps) => {
 
   useEffect(() => {
     onRecordChange({
-      id: formFields.id,
+      id: record?.id || null,
       description: formFields.description,
       timestamp: dayjs(formFields.timestamp).toISOString(),
       value: Number(formFields.value),
       walletId: WalletUtils.getWalletByName(wallets, formFields.walletName)?.id,
-      categoryId: getCategoryByName(categories, formFields.categoryName)?.id,
+      categoryId:
+        getCategoryByName(categories, formFields.categoryName)?.id ||
+        formFields.categoryName,
       ownerUsername: owner,
     });
   }, [formFields]);
@@ -104,7 +107,10 @@ export const RecordForm = (props: RecordFormProps) => {
         errorText={formErrors.walletName}
       />
       <CategoryField
-        onCategoryChange={handleFormFieldChange}
+        onCategoryChange={(newCategory) => {
+          handleFormFieldChange(null, 'categoryName', newCategory);
+        }}
+        withNew={withNewCategory}
         categoryName={formFields.categoryName}
         categories={categories}
         errorText={formErrors.categoryName}

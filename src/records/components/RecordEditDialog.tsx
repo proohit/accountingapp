@@ -68,6 +68,7 @@ export const RecordEditDialog = (props: RecordEditDialogProps) => {
           categories={categories}
           owner={owner}
           record={record}
+          withNewCategory
         />
       </DialogContent>
       <DialogActions>

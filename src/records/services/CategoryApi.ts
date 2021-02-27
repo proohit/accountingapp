@@ -14,4 +14,15 @@ export class CategoryApiService implements CategoryApi {
     );
     return categories;
   }
+
+  async createCategory(
+    token: string,
+    categoryName: Category['name']
+  ): Promise<Category> {
+    return BASE_API.post<Partial<Category>, Category>(
+      API_ROUTES.CATEGORIES,
+      { name: categoryName },
+      token
+    );
+  }
 }

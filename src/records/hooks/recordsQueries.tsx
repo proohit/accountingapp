@@ -9,7 +9,9 @@ export const useRecordsQuery = (query: SearchQuery, token: string) => {
   return useQuery(
     ['getRecord', query],
     () => recordsApi.getRecordsByUser(token, query),
-    { keepPreviousData: true }
+    {
+      keepPreviousData: true,
+    }
   );
 };
 

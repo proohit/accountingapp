@@ -107,12 +107,9 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
       <CategoryField
         withAll
         categoryName={categoryName}
-        onCategoryChange={(event) =>
-          setCategoryName(
-            (event.target.value || event.currentTarget.value) as string
-          )
-        }
+        onCategoryChange={setCategoryName}
         categories={categories}
+        withNew={false}
       />
       <DateTimePicker
         inputVariant="outlined"

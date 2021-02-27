@@ -7,7 +7,10 @@ import {
 } from '../hooks/recordsDialogsState';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
-import { useCategoriesQuery } from '../hooks/categoriesQueries';
+import {
+  useCategoriesQuery,
+  useCreateCategoryMutation,
+} from '../hooks/categoriesQueries';
 import {
   useCreateRecordMutation,
   useDeleteRecordMutation,
@@ -18,6 +21,8 @@ import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
 import { Dialog, DialogContent, DialogTitle, Grid } from '@material-ui/core';
 import { RecordFilterBarContainer } from './RecordFilterBarContainer';
+import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
+import { Category } from '../models/Category';
 
 export const RecordDialogContainer: FunctionComponent = (props) => {
   const { username, token } = useAuthentication();
@@ -37,13 +42,35 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
   const editRecordMutation = useEditRecordMutation(token);
   const deleteRecordMutation = useDeleteRecordMutation(token);
 
+  const createCategoryMutation = useCreateCategoryMutation(token);
+
+  const createCategoryIfNeeded = async (categoryName: Category['name']) => {
+    const foundCategory =
+      getCategoryByName(categories, categoryName) ||
+      getCategoryById(categories, categoryName);
+    if (foundCategory) {
+      return foundCategory;
+    } else {
+      const newCategory = await createCategoryMutation.mutateAsync(
+        categoryName
+      );
+      return newCategory;
+    }
+  };
+
   const addRecord = async (recordToAdd: Record) => {
-    await createRecordMutation.mutateAsync(recordToAdd);
+    const updatedRecordToAdd = { ...recordToAdd };
+    const category = await createCategoryIfNeeded(recordToAdd.categoryId);
+    updatedRecordToAdd.categoryId = category.id;
+    await createRecordMutation.mutateAsync(updatedRecordToAdd);
     setAddRecordsDialog({ open: false });
   };
 
   const editRecord = async (editedRecord: Record) => {
-    await editRecordMutation.mutateAsync(editedRecord);
+    const updatedRecordToEdit = { ...editedRecord };
+    const category = await createCategoryIfNeeded(editedRecord.categoryId);
+    updatedRecordToEdit.categoryId = category.id;
+    await editRecordMutation.mutateAsync(updatedRecordToEdit);
     setEditRecordsDialog({ open: false, recordToEdit: null });
   };
 

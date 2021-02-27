@@ -5,8 +5,10 @@ import { WalletsApiService } from '../services/WalletsApi';
 const walletApi = new WalletsApiService();
 
 export const useWalletsQuery = (token: string) => {
-  return useQuery(['getWallets', token], () =>
-    walletApi.getWalletsByUser(token)
+  return useQuery(
+    ['getWallets', token],
+    () => walletApi.getWalletsByUser(token),
+    { initialData: [] }
   );
 };
 export const useCreateWalletMutation = (token: string) => {

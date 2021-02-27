@@ -36,6 +36,7 @@ export const RecordAddDialog = (props: RecordAddDialogProps) => {
           wallets={wallets}
           categories={categories}
           owner={owner}
+          withNewCategory
         />
       </DialogContent>
       <DialogActions>

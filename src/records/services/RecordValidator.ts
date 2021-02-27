@@ -1,11 +1,12 @@
 import { Record } from '../models/Record';
 
 export const validateRecordField = (
-  field: keyof Record,
+  field: string,
   value: Record[keyof Record]
 ): string => {
   switch (field) {
     case 'category':
+    case 'categoryName':
       if (!value) return 'Missing category';
       break;
     case 'timestamp':

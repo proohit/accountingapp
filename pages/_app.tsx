@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     ...theme.mixins.toolbar,
   },
+  content: {
+    padding: theme.spacing(2),
+  },
 }));
 
 const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
@@ -25,7 +28,7 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
           <Grid item lg={2}>
             <NavigationBar />
           </Grid>
-          <Grid container item xs>
+          <Grid container item lg={10} className={classes.content}>
             <Component {...pageProps} />
           </Grid>
         </Grid>

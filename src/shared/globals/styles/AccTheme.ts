@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core';
 import createPalette from '@material-ui/core/styles/createPalette';
 
-const palette = createPalette({
+export const palette = createPalette({
   type: 'light',
   primary: {
     main: '#3b4147',

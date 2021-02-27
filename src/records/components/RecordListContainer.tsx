@@ -1,7 +1,19 @@
-import React, { Fragment, FunctionComponent } from 'react';
+import {
+  Divider,
+  Hidden,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  TablePagination,
+  Typography,
+} from '@material-ui/core';
+import dayjs from 'dayjs';
+import React, { FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
+import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
   currentFilterState,
@@ -15,6 +27,7 @@ import {
 } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
+import { getCategoryById } from '../utils/categoryUtils';
 import { RecordsTable } from './RecordsTable';
 import { RecordsTableToolbar } from './RecordsTableToolbar';
 import { RecordTableBody } from './RecordTableBody';
@@ -85,33 +98,101 @@ export const RecordListContainer: FunctionComponent = () => {
     setFilterRecordsDialog({ open: true });
   };
 
-  return paginatedResult?.data && wallets?.length && categories?.length ? (
-    <RecordsTable
+  const shouldRender =
+    paginatedResult?.data && wallets?.length && categories?.length;
+  const recordsPagination = (
+    <TablePagination
+      rowsPerPageOptions={[5, 10, 20]}
+      count={paginatedResult?.totalCount || 0}
+      component="div"
       rowsPerPage={currentPage.itemsPerPage}
       page={currentPage.page - 1}
-      onChangePage={updatePage}
+      onChangePage={(_event, newPage) => {
+        updatePage(newPage);
+      }}
       onChangeRowsPerPage={updateRowsPerPage}
-      rowCount={paginatedResult.totalCount || 0}
-      toolbar={
-        <RecordsTableToolbar
-          onAddClicked={openAddRecordsDialog}
-          onFilterClicked={openFilterRecordsDialog}
-        />
-      }
-    >
-      <RecordTableHeader
-        sortBy={currentSort.sortBy}
-        sortDirection={currentSort.sortDirection}
-        sortClicked={handleSortClicked}
-      />
-      <RecordTableBody
-        records={paginatedResult.data}
-        onRecordClicked={openEditRecordsDialog}
-        categories={categories}
-        wallets={wallets}
-      />
-    </RecordsTable>
-  ) : (
-    <Fragment />
+    />
+  );
+  const recordsToolbar = (
+    <RecordsTableToolbar
+      onAddClicked={openAddRecordsDialog}
+      onFilterClicked={openFilterRecordsDialog}
+    />
+  );
+  return (
+    <>
+      {shouldRender && (
+        <>
+          <Hidden smDown>
+            <RecordsTable toolbar={recordsToolbar} controls={recordsPagination}>
+              <RecordTableHeader
+                sortBy={currentSort.sortBy}
+                sortDirection={currentSort.sortDirection}
+                sortClicked={handleSortClicked}
+              />
+              <RecordTableBody
+                records={paginatedResult.data}
+                onRecordClicked={openEditRecordsDialog}
+                categories={categories}
+                wallets={wallets}
+              />
+            </RecordsTable>
+          </Hidden>
+          <Hidden mdUp>
+            <Paper variant="outlined">
+              {recordsToolbar}
+              <Divider />
+              <List>
+                {paginatedResult.data.map((record) => (
+                  <ListItem
+                    key={record.id}
+                    button
+                    divider
+                    onClick={() => {
+                      openEditRecordsDialog(record);
+                    }}
+                  >
+                    <ListItemText
+                      primary={record.description}
+                      secondary={
+                        <>
+                          <Typography
+                            color={record.value < 0 ? 'error' : 'primary'}
+                          >
+                            Value: {record.value}
+                          </Typography>
+                          <Typography>
+                            Category:{' '}
+                            {
+                              getCategoryById(categories, record.categoryId)
+                                ?.name
+                            }
+                            {', '}
+                            Wallet:{' '}
+                            {
+                              WalletUtils.getWalletById(
+                                wallets,
+                                record.walletId
+                              )?.name
+                            }
+                          </Typography>
+                          <Typography>
+                            Timestamp:{' '}
+                            {dayjs(record.timestamp).format(
+                              'YYYY-MM-DD HH:mm:ss'
+                            )}
+                          </Typography>
+                        </>
+                      }
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+            {recordsPagination}
+          </Hidden>
+        </>
+      )}
+    </>
   );
 };

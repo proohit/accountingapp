@@ -1,4 +1,5 @@
 import {
+  Box,
   Grid,
   GridProps,
   makeStyles,
@@ -25,7 +26,7 @@ const Widget: React.FunctionComponent<IWidgetProps> = (props) => {
     <Grid item xs={width || 12}>
       <Paper variant="outlined" className={classes.widget}>
         {title && <Typography variant="h6">{title}</Typography>}
-        {children}
+        <Box overflow="auto">{children}</Box>
       </Paper>
     </Grid>
   );

@@ -17,25 +17,27 @@ interface ICurrentStatusProps {
   wallets: Wallet[];
 }
 
+const sortWalletsByBalance = (walleta: Wallet, walletb: Wallet): 1 | -1 =>
+  walleta.currentBalance > walletb.currentBalance ? -1 : 1;
+
 const CurrentStatus: React.FunctionComponent<ICurrentStatusProps> = (props) => {
   const { wallets } = props;
+
+  const sortedWallets = [...wallets].sort(sortWalletsByBalance);
   return (
-    <>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={wallets} maxBarSize={20} barGap={1}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" interval={0} minTickGap={50} />
-          <YAxis />
-          <Tooltip />
-          <Brush dataKey="name" stroke={palette.primary.main} />
-          <Bar
-            dataKey="currentBalance"
-            fill={palette.secondary.dark}
-            shape={<Rectangle radius={20} />}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </>
+    <ResponsiveContainer minWidth={400} width="100%" height={200}>
+      <BarChart data={sortedWallets} maxBarSize={15}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" interval={0} />
+        <YAxis />
+        <Tooltip />
+        <Bar
+          dataKey="currentBalance"
+          fill={palette.secondary.dark}
+          shape={<Rectangle radius={20} />}
+        />
+      </BarChart>
+    </ResponsiveContainer>
   );
 };
 

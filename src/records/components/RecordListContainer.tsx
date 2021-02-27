@@ -24,6 +24,7 @@ import {
   addRecordDialogState,
   editRecordDialogState,
   filterRecordDialogState,
+  sortRecordDialogState,
 } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
@@ -39,6 +40,7 @@ export const RecordListContainer: FunctionComponent = () => {
   const [, setEditRecordsDialog] = useRecoilState(editRecordDialogState);
   const [, setAddRecordsDialog] = useRecoilState(addRecordDialogState);
   const [, setFilterRecordsDialog] = useRecoilState(filterRecordDialogState);
+  const [, setSortRecordsDialog] = useRecoilState(sortRecordDialogState);
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [currentFilter] = useRecoilState(currentFilterState);
@@ -98,6 +100,10 @@ export const RecordListContainer: FunctionComponent = () => {
     setFilterRecordsDialog({ open: true });
   };
 
+  const openSortRecordsDialog = () => {
+    setSortRecordsDialog({ open: true });
+  };
+
   const shouldRender =
     paginatedResult?.data && wallets?.length && categories?.length;
   const recordsPagination = (
@@ -117,6 +123,7 @@ export const RecordListContainer: FunctionComponent = () => {
     <RecordsTableToolbar
       onAddClicked={openAddRecordsDialog}
       onFilterClicked={openFilterRecordsDialog}
+      onSortClicked={openSortRecordsDialog}
     />
   );
   return (
@@ -188,8 +195,8 @@ export const RecordListContainer: FunctionComponent = () => {
                   </ListItem>
                 ))}
               </List>
+              {recordsPagination}
             </Paper>
-            {recordsPagination}
           </Hidden>
         </>
       )}

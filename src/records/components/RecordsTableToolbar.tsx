@@ -6,11 +6,12 @@ import { RecordHeader } from './RecordHeader';
 type RecordsTableToolbarProps = {
   onFilterClicked: () => void;
   onAddClicked: () => void;
+  onSortClicked: () => void;
 };
 export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> = (
   props
 ) => {
-  const { onAddClicked, onFilterClicked } = props;
+  const { onAddClicked, onFilterClicked, onSortClicked } = props;
   return (
     <>
       <Grid item container xs>
@@ -18,7 +19,7 @@ export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> = 
         <Grid item xs container justify="flex-end">
           <Hidden mdUp>
             <Tooltip title="Sort">
-              <IconButton color="primary">
+              <IconButton onClick={onSortClicked} color="primary">
                 <Sort />
               </IconButton>
             </Tooltip>

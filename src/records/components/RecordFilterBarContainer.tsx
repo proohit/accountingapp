@@ -2,11 +2,9 @@ import {
   Button,
   Divider,
   Grid,
-  IconButton,
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
@@ -79,13 +77,10 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
 
   return (
     <Grid container direction="column" className={classes.filterBar}>
-      <Grid container item direction="row" alignItems="center">
-        <IconButton onClick={resetFilter}>
-          <Close />
-        </IconButton>
-        <Typography variant="h6">Filters</Typography>
-        <Divider />
-      </Grid>
+      <Typography variant="h6" align="center">
+        Filter Records
+      </Typography>
+      <Divider />
       <DescriptionField
         description={description}
         onDescriptionChange={(event) =>
@@ -135,9 +130,14 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
         showTodayButton
         maxDateMessage="To Timestamp should not be before From Timestamp"
       />
-      <Button variant="contained" color="secondary" onClick={applyFilter}>
-        Filter
-      </Button>
+      <Grid item xs>
+        <Button variant="outlined" color="primary" onClick={resetFilter}>
+          Reset
+        </Button>
+        <Button variant="contained" color="secondary" onClick={applyFilter}>
+          Filter
+        </Button>
+      </Grid>
     </Grid>
   );
 };

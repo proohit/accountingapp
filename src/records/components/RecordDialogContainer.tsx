@@ -1,10 +1,6 @@
+import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import React, { Fragment, FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
-import {
-  addRecordDialogState,
-  editRecordDialogState,
-  filterRecordDialogState,
-} from '../hooks/recordsDialogsState';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import {
@@ -12,17 +8,23 @@ import {
   useCreateCategoryMutation,
 } from '../hooks/categoriesQueries';
 import {
+  addRecordDialogState,
+  editRecordDialogState,
+  filterRecordDialogState,
+  sortRecordDialogState,
+} from '../hooks/recordsDialogsState';
+import {
   useCreateRecordMutation,
   useDeleteRecordMutation,
   useEditRecordMutation,
 } from '../hooks/recordsQueries';
+import { Category } from '../models/Category';
 import { Record } from '../models/Record';
+import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
-import { Dialog, DialogContent, DialogTitle, Grid } from '@material-ui/core';
 import { RecordFilterBarContainer } from './RecordFilterBarContainer';
-import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
-import { Category } from '../models/Category';
+import RecordSortContainer from './RecordSortContainer';
 
 export const RecordDialogContainer: FunctionComponent = (props) => {
   const { username, token } = useAuthentication();
@@ -34,6 +36,9 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
   );
   const [filterRecordsDialog, setFilterRecordsDialog] = useRecoilState(
     filterRecordDialogState
+  );
+  const [sortRecordDialog, setSortRecordDialog] = useRecoilState(
+    sortRecordDialogState
   );
   const { data: categories } = useCategoriesQuery(token);
   const { data: wallets } = useWalletsQuery(token);
@@ -113,9 +118,19 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
         open={true}
         onClose={() => setFilterRecordsDialog({ open: false })}
       >
-        <DialogTitle>Filter Records</DialogTitle>
         <DialogContent>
           <RecordFilterBarContainer />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (sortRecordDialog.open) {
+    return (
+      <Dialog open={true} onClose={() => setSortRecordDialog({ open: false })}>
+        <DialogTitle>Sort Records</DialogTitle>
+        <DialogContent>
+          <RecordSortContainer />
         </DialogContent>
       </Dialog>
     );

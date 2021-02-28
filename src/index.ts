@@ -13,6 +13,7 @@ import logger from './shared/services/loggingService';
 import categoryRouter from './category/services/categoryRouter';
 import userRouter from './user/services/userRouter';
 import 'reflect-metadata';
+import statisticsRouter from './statistics/services/statisticsRouter';
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -43,6 +44,7 @@ router.use('/users', userRouter);
 router.use('/records', recordRouter);
 router.use('/wallets', walletRouter);
 router.use('/categories', categoryRouter);
+router.use('/statistics', statisticsRouter);
 
 app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes());

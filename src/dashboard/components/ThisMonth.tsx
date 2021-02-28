@@ -1,3 +1,4 @@
+import { LinearProgress } from '@material-ui/core';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import {
@@ -22,14 +23,17 @@ const colors = [
   palette.warning.main,
 ];
 
-interface IThisMonthProps {}
-
-const ThisMonth: React.FunctionComponent<IThisMonthProps> = (props) => {
+const ThisMonth: React.FunctionComponent = () => {
   const { token } = useAuthentication();
   const today = dayjs();
   const month = today.month();
   const year = today.year();
-  const { data } = useMonthlyStatisticsQuery(token, month, year);
+  const { data, isLoading } = useMonthlyStatisticsQuery(token, month, year);
+
+  if (isLoading) {
+    return <LinearProgress />;
+  }
+
   return (
     <ResponsiveContainer minWidth={400} width="100%" height={200}>
       <LineChart data={data?.data} maxBarSize={15}>

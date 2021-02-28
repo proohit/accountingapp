@@ -106,12 +106,12 @@ export const NavigationBar: FunctionComponent = () => {
       <Hidden lgUp>
         <SwipeableDrawer
           disableBackdropTransition={!iOS}
+          disableDiscovery={iOS}
           variant="temporary"
           open={mobileOpen}
           onOpen={() => setMobileOpen(true)}
           onClose={() => setMobileOpen(false)}
           anchor="left"
-          PaperProps={{}}
         >
           {drawer}
         </SwipeableDrawer>

@@ -5,7 +5,7 @@ import { WalletsApiService } from '../services/WalletsApi';
 const walletApi = new WalletsApiService();
 
 export const useWalletsQuery = (token: string) => {
-  return useQuery(
+  return useQuery<Wallet[]>(
     ['getWallets', token],
     () => walletApi.getWalletsByUser(token),
     { initialData: [] }

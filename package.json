@@ -18,6 +18,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-query": "^3.5.11",
+    "recharts": "^2.0.8",
     "recoil": "^0.1.2"
   },
   "devDependencies": {

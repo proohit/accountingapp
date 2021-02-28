@@ -2,18 +2,13 @@ import {
   Divider,
   Hidden,
   List,
-  ListItem,
-  ListItemText,
   Paper,
   TablePagination,
-  Typography,
 } from '@material-ui/core';
-import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
-import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
   currentFilterState,
@@ -28,7 +23,7 @@ import {
 } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
-import { getCategoryById } from '../utils/categoryUtils';
+import { MobileRecordItem } from './MobileRecordItem';
 import { RecordsTable } from './RecordsTable';
 import { RecordsTableToolbar } from './RecordsTableToolbar';
 import { RecordTableBody } from './RecordTableBody';
@@ -151,48 +146,12 @@ export const RecordListContainer: FunctionComponent = () => {
               <Divider />
               <List>
                 {paginatedResult.data.map((record) => (
-                  <ListItem
-                    key={record.id}
-                    button
-                    divider
-                    onClick={() => {
-                      openEditRecordsDialog(record);
-                    }}
-                  >
-                    <ListItemText
-                      primary={record.description}
-                      secondary={
-                        <>
-                          <Typography
-                            color={record.value < 0 ? 'error' : 'primary'}
-                          >
-                            Value: {record.value}
-                          </Typography>
-                          <Typography>
-                            Category:{' '}
-                            {
-                              getCategoryById(categories, record.categoryId)
-                                ?.name
-                            }
-                            {', '}
-                            Wallet:{' '}
-                            {
-                              WalletUtils.getWalletById(
-                                wallets,
-                                record.walletId
-                              )?.name
-                            }
-                          </Typography>
-                          <Typography>
-                            Timestamp:{' '}
-                            {dayjs(record.timestamp).format(
-                              'YYYY-MM-DD HH:mm:ss'
-                            )}
-                          </Typography>
-                        </>
-                      }
-                    />
-                  </ListItem>
+                  <MobileRecordItem
+                    record={record}
+                    onRecordClick={openEditRecordsDialog}
+                    categories={categories}
+                    wallets={wallets}
+                  />
                 ))}
               </List>
               {recordsPagination}

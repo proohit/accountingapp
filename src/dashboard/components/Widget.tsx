@@ -10,7 +10,11 @@ import * as React from 'react';
 
 interface IWidgetProps {
   title?: string;
-  width?: GridProps['xs'];
+  xs?: GridProps['xs'];
+  lg?: GridProps['lg'];
+  md?: GridProps['md'];
+  sm?: GridProps['sm'];
+  xl?: GridProps['xl'];
 }
 
 const widgetStyle = makeStyles((theme) => ({
@@ -20,10 +24,10 @@ const widgetStyle = makeStyles((theme) => ({
 }));
 
 const Widget: React.FunctionComponent<IWidgetProps> = (props) => {
-  const { children, title, width } = props;
+  const { children, title, lg, md, sm, xl, xs } = props;
   const classes = widgetStyle();
   return (
-    <Grid item xs={width || 12}>
+    <Grid item xs={xs || 12} lg={lg} md={md} xl={xl} sm={sm}>
       <Paper variant="outlined" className={classes.widget}>
         {title && <Typography variant="h6">{title}</Typography>}
         <Box overflow="auto">{children}</Box>

@@ -28,8 +28,18 @@ const CurrentStatus: React.FunctionComponent<ICurrentStatusProps> = (props) => {
     <ResponsiveContainer minWidth={400} width="100%" height={200}>
       <BarChart data={sortedWallets} maxBarSize={15}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" interval={0} />
-        <YAxis />
+        <XAxis
+          dataKey="name"
+          label={{ value: 'Wallet', offset: -5, position: 'insideBottom' }}
+        />
+        <YAxis
+          label={{
+            value: 'current Balance',
+            angle: -90,
+            position: 'insideBottomLeft',
+            offset: 10,
+          }}
+        />
         <Tooltip />
         <Bar
           dataKey="currentBalance"

@@ -147,6 +147,7 @@ export const RecordListContainer: FunctionComponent = () => {
               <List>
                 {paginatedResult.data.map((record) => (
                   <MobileRecordItem
+                    key={record.id}
                     record={record}
                     onRecordClick={openEditRecordsDialog}
                     categories={categories}

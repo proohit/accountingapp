@@ -19,7 +19,6 @@ export const MobileRecordItem: FunctionComponent<MobileRecordItemProps> = (
   const { categories, onRecordClick, record, wallets } = props;
   return (
     <ListItem
-      key={record.id}
       button
       divider
       onClick={() => {

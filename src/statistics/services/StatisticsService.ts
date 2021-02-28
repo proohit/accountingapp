@@ -67,7 +67,7 @@ export class StatisticsService {
                     wallet.balance;
                 const balanceOfDay = recordsForDayForWallet.reduce(
                     (balance, record) => balance + record.value,
-                    walletData.data[walletData.data.length]?.balance || balanceOfWalletBeforeMonth,
+                    walletData.data[walletData.data.length - 1]?.balance || balanceOfWalletBeforeMonth,
                 );
                 walletData.data.push({
                     day,

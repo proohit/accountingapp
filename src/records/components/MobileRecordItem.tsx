@@ -1,6 +1,7 @@
 import { ListItem, ListItemText, Typography } from '@material-ui/core';
 import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
+import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';
@@ -9,7 +10,7 @@ type MobileRecordItemProps = {
   record: Record;
   onRecordClick: (record: Record) => void;
   categories: any[];
-  wallets: import('/home/direnc/workspace/AccountingAppWeb/src/wallets/models/Wallet').Wallet[];
+  wallets: Wallet[];
 };
 
 export const MobileRecordItem: FunctionComponent<MobileRecordItemProps> = (

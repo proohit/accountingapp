@@ -72,7 +72,7 @@ export default class WalletService {
         let recalculatedBalance = updatedBalance;
 
         if (!updatedBalance && updatedBalance !== 0) {
-            recalculatedBalance = await this.getCalculatedBalance(id, username);
+            recalculatedBalance = await this.getCalculatedBalance(id, username, initialBalance);
         }
 
         return walletRepo.save({
@@ -99,7 +99,11 @@ export default class WalletService {
         return updatedWallet;
     }
 
-    private async getCalculatedBalance(id: Wallet['id'], username: User['username']) {
+    private async getCalculatedBalance(
+        id: Wallet['id'],
+        username: User['username'],
+        initialBalance?: Wallet['balance'],
+    ) {
         const recordsRepo = repositories.records();
         const walletToUpdate = await this.getById(id, username);
         const recordsSumByWallet = await recordsRepo
@@ -107,8 +111,8 @@ export default class WalletService {
             .select(['COALESCE(SUM(value),0) as balanceByValue'])
             .where({ walletId: id })
             .getRawOne();
-
-        const newBalance = recordsSumByWallet.balanceByValue + walletToUpdate.balance;
+        const sanitizedInitialBalance = isNaN(initialBalance) ? walletToUpdate.balance : initialBalance;
+        const newBalance = recordsSumByWallet.balanceByValue + sanitizedInitialBalance;
         return newBalance;
     }
 }

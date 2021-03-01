@@ -5,20 +5,20 @@ import { RecordsApiService } from '../services/RecordsApi';
 
 const recordsApi = new RecordsApiService();
 
-export const useRecordsQuery = (query: SearchQuery, token: string) => {
+export const useRecordsQuery = (query: SearchQuery) => {
   return useQuery(
     ['getRecord', query],
-    () => recordsApi.getRecordsByUser(token, query),
+    () => recordsApi.getRecordsByUser(query),
     {
       keepPreviousData: true,
     }
   );
 };
 
-export const useCreateRecordMutation = (token: string) => {
+export const useCreateRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (recordToAdd: Record) => recordsApi.createRecord(token, recordToAdd),
+    (recordToAdd: Record) => recordsApi.createRecord(recordToAdd),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getRecord');
@@ -27,10 +27,10 @@ export const useCreateRecordMutation = (token: string) => {
   );
 };
 
-export const useEditRecordMutation = (token: string) => {
+export const useEditRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (editedRecord: Record) => recordsApi.editRecord(token, editedRecord),
+    (editedRecord: Record) => recordsApi.editRecord(editedRecord),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getRecord');
@@ -39,11 +39,10 @@ export const useEditRecordMutation = (token: string) => {
   );
 };
 
-export const useDeleteRecordMutation = (token: string) => {
+export const useDeleteRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (recordToDelete: Record) =>
-      recordsApi.deleteRecord(token, recordToDelete.id),
+    (recordToDelete: Record) => recordsApi.deleteRecord(recordToDelete.id),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getRecord');

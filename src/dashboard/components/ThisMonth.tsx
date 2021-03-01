@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { palette } from '../../shared/globals/styles/AccTheme';
 import { useMonthlyStatisticsQuery } from '../hooks/monthQuery';
 import { DailyStatisticsData } from '../models/DailyData';
@@ -30,11 +29,10 @@ type ThisMonthProps = {
 
 const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
   const { walletName } = props;
-  const { token } = useAuthentication();
   const today = dayjs();
   const month = today.month() + 1;
   const year = today.year();
-  const { data, isLoading } = useMonthlyStatisticsQuery(token, month, year);
+  const { data, isLoading } = useMonthlyStatisticsQuery(month, year);
 
   if (isLoading) {
     return <LinearProgress />;

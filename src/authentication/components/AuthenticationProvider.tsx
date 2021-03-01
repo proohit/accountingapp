@@ -2,42 +2,33 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { User } from '../../users/models/User';
 import USER_API_SERVICE from '../../users/services/UserApiService';
 import { AuthenticationContext } from '../hooks/useAuthentication';
+import { AUTHENTICATION_API } from '../services/AuthenticationApi';
 
 export const AuthenticationProvider: FunctionComponent = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [token, setToken] = useState('');
-  const STORAGE_TOKEN = 'token';
 
-  const login = (loggedInUsername: string, newToken: string) => {
+  const login = (loggedInUsername: string) => {
     setUsername(loggedInUsername);
     setAuthenticated(true);
-    setToken(newToken);
-    localStorage.setItem(STORAGE_TOKEN, newToken);
     setIsLoading(false);
   };
 
   const logout = () => {
     setUsername('');
     setAuthenticated(false);
-    setToken('');
-    localStorage.removeItem(STORAGE_TOKEN);
     setIsLoading(false);
+    AUTHENTICATION_API.logout();
   };
 
   const loginFromLocalStorage = async () => {
     setIsLoading(true);
-    const tokenFromStorage = localStorage.getItem(STORAGE_TOKEN);
-    if (!tokenFromStorage) {
-      logout();
-      return;
-    }
 
     let currentUser: User;
 
     try {
-      currentUser = await USER_API_SERVICE.getCurrentUser(tokenFromStorage);
+      currentUser = await USER_API_SERVICE.getCurrentUser();
     } catch (e) {
       logout();
       return;
@@ -48,12 +39,12 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
       return;
     }
 
-    login(currentUser.username, tokenFromStorage);
+    login(currentUser.username);
   };
 
   useEffect(() => {
     loginFromLocalStorage();
-  }, [token]);
+  }, []);
 
   return (
     <AuthenticationContext.Provider
@@ -62,7 +53,6 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
         login,
         logout,
         username,
-        token,
         isLoginLoading: isLoading,
       }}
     >

@@ -4,14 +4,10 @@ import { StatisticsApiService } from '../services/StatisticsApi';
 
 const statisticsApi = new StatisticsApiService();
 
-export const useMonthlyStatisticsQuery = (
-  token: string,
-  month: number,
-  year: number
-) => {
+export const useMonthlyStatisticsQuery = (month: number, year: number) => {
   return useQuery<DailyStatisticsData>(
-    ['getMonthlyData', token, month, year],
-    () => statisticsApi.getMonthlyData(token, month, year),
+    ['getMonthlyData', month, year],
+    () => statisticsApi.getMonthlyData(month, year),
     { initialData: null }
   );
 };

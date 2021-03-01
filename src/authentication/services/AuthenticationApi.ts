@@ -5,8 +5,12 @@ import { LoginResponse, RegisterResponse } from '../models/Responses';
 
 export interface AuthenticationApi {
   login: (username: string, password: string) => Promise<LoginResponse>;
-  register: (username: string, password: string) => void;
-  logout: () => void;
+  register: (
+    username: string,
+    password: string,
+    email: string
+  ) => Promise<RegisterResponse>;
+  logout: () => Promise<void>;
 }
 
 export const AUTHENTICATION_API: AuthenticationApi = {
@@ -16,10 +20,10 @@ export const AUTHENTICATION_API: AuthenticationApi = {
       { username, password }
     );
   },
-  register: async (username, password) => {
+  register: async (username, password, email) => {
     return await BASE_API.post<RegisterRequest, RegisterResponse>(
       API_ROUTES.AUTHENTICATION_REGISTER,
-      { username, password }
+      { username, password, email }
     );
   },
   logout: () => {

@@ -14,7 +14,7 @@ export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> = 
   const { onAddClicked, onFilterClicked, onSortClicked } = props;
   return (
     <>
-      <Grid item container xs direction="column">
+      <Grid item container xs>
         <RecordHeader />
         <Grid item xs container justify="flex-end">
           <Hidden mdUp>

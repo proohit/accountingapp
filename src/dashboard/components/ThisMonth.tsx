@@ -32,7 +32,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
   const { walletName } = props;
   const { token } = useAuthentication();
   const today = dayjs();
-  const month = today.month();
+  const month = today.month() + 1;
   const year = today.year();
   const { data, isLoading } = useMonthlyStatisticsQuery(token, month, year);
 

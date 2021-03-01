@@ -22,12 +22,24 @@ app.use(parser());
 app.use(cors());
 
 router.use('/docs', documentationRouter);
+import session from 'koa-session';
+app.keys = [config.secret];
+app.use(session(app));
+
+import passport from 'koa-passport';
+app.use(passport.initialize());
+app.use(passport.session());
+
 router.use(async (ctx, next) => {
     try {
         ctx.type = 'application/json';
         const result: RouteResult<unknown> = await next();
-        ctx.status = result.status;
-        ctx.body = JSON.stringify(result.data);
+        if (result?.status) {
+            ctx.status = result.status;
+        }
+        if (result?.data) {
+            ctx.body = JSON.stringify(result.data);
+        }
     } catch (error) {
         ctx.status = error.statusCode || error.status || 500;
         ctx.body = {

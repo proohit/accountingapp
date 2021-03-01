@@ -1,12 +1,15 @@
+import { Context, DefaultState } from 'koa';
 import Router from 'koa-router';
-import { verify } from '../repositories/authenticationMapper';
+import { NotLoggedIn } from '../models/Errors';
 
-const router = new Router();
+const router = new Router<DefaultState, Context>();
 
 router.use('/', async (ctx, next) => {
-    const decoded = verify(ctx.request);
-    ctx.state.token = decoded;
-    return await next();
+    if (ctx.isAuthenticated()) {
+        return await next();
+    } else {
+        throw new NotLoggedIn();
+    }
 });
 
 export default router.routes();

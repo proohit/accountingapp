@@ -35,6 +35,12 @@ export class TokenNotProvided extends HttpError {
     }
 }
 
+export class NotLoggedIn extends HttpError {
+    constructor() {
+        super('Not logged in', 401);
+    }
+}
+
 export class TokenInvalid extends HttpError {
     constructor() {
         super('Token invalid', 401);

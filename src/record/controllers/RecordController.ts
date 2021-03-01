@@ -3,7 +3,7 @@ import { RecordController } from '../models/RecordController';
 
 const RecordControllerImpl: RecordController = {
     getByCategory: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const categoryId = ctx.params.category;
 
         const recordsByUserByCategory = await services.recordService.getByCategory(categoryId, username);
@@ -12,7 +12,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     createNewRecord: async (ctx) => {
-        const username = ctx.state.token.username;
+        const username = ctx.state.user.username
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
 
         const createdRecord = await services.recordService.createRecord(
@@ -28,7 +28,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     getByUser: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const {
             page,
             itemsPerPage,
@@ -61,7 +61,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     deleteById: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const id = ctx.params.id;
 
         const deletedRecord = await services.recordService.deleteById(id, username);
@@ -69,7 +69,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     getById: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { id } = ctx.params;
 
         const record = await services.recordService.getById(id, username);
@@ -78,7 +78,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     getByWallet: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { walletId } = ctx.params;
 
         const recordsByWallet = await services.recordService.getByWallet(walletId, username);
@@ -87,7 +87,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     updateById: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { id } = ctx.params;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
 

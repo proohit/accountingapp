@@ -5,7 +5,7 @@ import { DailyData, DailyStatisticsResult, StatisticsType } from '../models/Stat
 
 const StatisticsControllerImpl: StatisticsController = {
     async getStatistics(ctx) {
-        const username = ctx.state.token.username;
+        const username = ctx.state.user.username;
         const requestedType: StatisticsType = ctx.query.type;
         const month = Number(ctx.query.month);
         const year = Number(ctx.query.year);

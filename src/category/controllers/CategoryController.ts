@@ -7,13 +7,13 @@ const categoryService = new CategoryService();
 
 const CategoryControllerImpl: CategoryController = {
     getByUser: async (ctx): Promise<RouteResult<Category[]>> => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
 
         const categoriesOfUser = await categoryService.getByUser(username);
         return { data: categoriesOfUser, status: 200 };
     },
     create: async (ctx): Promise<RouteResult<Category>> => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { name } = ctx.request.body;
         const createdCategory = await categoryService.createCategory(name, username);
 
@@ -22,7 +22,7 @@ const CategoryControllerImpl: CategoryController = {
 
     delete: async (ctx): Promise<RouteResult<MessageResult>> => {
         const { id } = ctx.params;
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
 
         await categoryService.deleteById(id, username);
 
@@ -31,7 +31,7 @@ const CategoryControllerImpl: CategoryController = {
 
     getById: async (ctx): Promise<RouteResult<Category>> => {
         const { id } = ctx.params;
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
 
         const foundCategory = await categoryService.getById(id, username);
 
@@ -39,7 +39,7 @@ const CategoryControllerImpl: CategoryController = {
     },
 
     update: async (ctx): Promise<RouteResult<Category>> => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { id } = ctx.params;
         const { name: updatedName } = ctx.request.body;
 

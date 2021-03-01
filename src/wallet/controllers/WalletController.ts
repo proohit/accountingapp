@@ -3,7 +3,7 @@ import { WalletController } from '../models/WalletController';
 
 const WalletControllerImpl: WalletController = {
     createNewWallet: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { name, balance } = ctx.request.body;
 
         const createdWallet = await services.walletService.createWallet(name, balance, username);
@@ -12,13 +12,13 @@ const WalletControllerImpl: WalletController = {
     },
 
     getByUser: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const walletsOfUser = await services.walletService.getByUser(username);
         return { status: 200, data: walletsOfUser };
     },
 
     getById: async (ctx) => {
-        const { username } = ctx.state.token;
+        const { username } = ctx.state.user;
         const { id } = ctx.params;
 
         const wallet = await services.walletService.getById(id, username);
@@ -27,7 +27,7 @@ const WalletControllerImpl: WalletController = {
     },
 
     deleteById: async (ctx) => {
-        const username = ctx.state.token.username;
+        const username = ctx.state.user.username;
         const { id } = ctx.params;
 
         const deletedWallet = await services.walletService.deleteById(id, username);
@@ -36,7 +36,7 @@ const WalletControllerImpl: WalletController = {
     },
 
     updateById: async (ctx) => {
-        const username = ctx.state.token.username;
+        const username = ctx.state.user.username;
         const { id } = ctx.params;
         const { name: updatedName, balance: initialBalance } = ctx.request.body;
 
@@ -46,7 +46,7 @@ const WalletControllerImpl: WalletController = {
     },
 
     updateBalance: async (ctx) => {
-        const username = ctx.state.token.username;
+        const username = ctx.state.user.username;
         const { id } = ctx.params;
 
         const updatedWallet = await services.walletService.recalculateCurrentBalance(id, username);

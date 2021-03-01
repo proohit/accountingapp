@@ -8,4 +8,6 @@ export class User {
     private_key: string;
     @Column()
     password: string;
+    @Column()
+    email: string;
 }

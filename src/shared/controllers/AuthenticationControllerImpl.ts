@@ -16,7 +16,8 @@ const AuthenticationControllerImpl: AuthenticationController = {
         })(ctx, next);
     },
     register: async (ctx) => {
-        const res = await register(ctx.request.body.username, ctx.request.body.password);
+        const { username, password, email } = ctx.request.body;
+        const res = await register(username, password, email);
         await ctx.login(res.username);
         return { status: 201, data: res };
     },

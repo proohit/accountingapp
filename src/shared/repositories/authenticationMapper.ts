@@ -3,6 +3,7 @@ import AES from 'crypto-js/aes';
 import passport from 'koa-passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { InvalidCredentials } from '../models/Errors';
+import { LoginToken } from '../models/Login';
 import { repositories } from './database';
 
 passport.serializeUser((username, done) => {
@@ -35,7 +36,7 @@ passport.use(
         }
     }),
 );
-export const register = async (username: string, password: string): Promise<{ username: string }> => {
+export const register = async (username: string, password: string, email: string): Promise<LoginToken> => {
     let private_key = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -44,6 +45,6 @@ export const register = async (username: string, password: string): Promise<{ us
     }
     const hashedPassword = crypto.enc.Utf8.parse(password);
     const passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
-    const newUser = await repositories.users().save({ username, password: passwordEncrypted, private_key });
-    return { username: newUser.username };
+    const newUser = await repositories.users().save({ username, password: passwordEncrypted, private_key, email });
+    return { username: newUser.username, email: newUser.email };
 };

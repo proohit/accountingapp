@@ -3,6 +3,7 @@ import {
   Button,
   Grid,
   Hidden,
+  IconButton,
   Toolbar,
   Typography,
 } from '@material-ui/core';
@@ -18,25 +19,21 @@ export const AppToolbar: FunctionComponent = () => {
     <AppBar color="primary">
       <Toolbar>
         <Grid container alignItems="center" justify="space-between">
-          <Grid item container alignItems="center" xs={7}>
+          <Grid item container alignItems="center" xs>
             {authenticated && (
               <Hidden lgUp>
                 <MobileMenuButton />
               </Hidden>
             )}
-            <Typography component="span" variant="h5">
+            <Typography component="span" variant="h6">
               Accounting App
             </Typography>
           </Grid>
-          <Grid item container alignItems="center" xs justify="flex-end">
+          <Grid item container alignItems="center" xs={1} justify="flex-end">
             {authenticated ? (
-              <Button
-                color="secondary"
-                startIcon={<ExitToApp />}
-                onClick={logout}
-              >
-                Logout
-              </Button>
+              <IconButton color="secondary" onClick={logout}>
+                <ExitToApp />
+              </IconButton>
             ) : (
               <Link href="/login" passHref>
                 <Button

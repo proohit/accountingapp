@@ -19,7 +19,7 @@ const app = new Koa();
 const router = new Router({ prefix: '/api' });
 
 app.use(parser());
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 router.use('/docs', documentationRouter);
 import session from 'koa-session';

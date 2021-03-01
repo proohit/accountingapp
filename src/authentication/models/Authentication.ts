@@ -1,8 +1,7 @@
 export interface Authentication {
   authenticated: boolean;
   username: string;
-  token: string;
-  login: (username: string, token: string) => void;
+  login: (username: string) => void;
   logout: () => void;
   isLoginLoading: boolean;
 }

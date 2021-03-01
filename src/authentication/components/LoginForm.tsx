@@ -8,9 +8,9 @@ import {
 } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
+import USER_API_SERVICE from '../../users/services/UserApiService';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
-import USER_API_SERVICE from '../../users/services/UserApiService';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,10 +36,9 @@ export function LoginForm() {
   const { login } = useAuthentication();
 
   const handleSubmit = async () => {
-    const { token } = await AUTHENTICATION_API.login(username, password);
-    const loggedInUser = await USER_API_SERVICE.getCurrentUser(token);
-    console.log('login', token, loggedInUser);
-    login(loggedInUser.username, token);
+    await AUTHENTICATION_API.login(username, password);
+    const loggedInUser = await USER_API_SERVICE.getCurrentUser();
+    login(loggedInUser.username);
     router.push('/home');
   };
 

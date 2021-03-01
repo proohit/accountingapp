@@ -20,9 +20,8 @@ import { palette } from '../../src/shared/globals/styles/AccTheme';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 
 const DashboardPage: React.FunctionComponent = (props) => {
-  const { token } = useAuthentication();
   const [selectedWallet, setSelectedWallet] = React.useState('all');
-  const { data: wallets } = useWalletsQuery(token);
+  const { data: wallets } = useWalletsQuery();
   return (
     <Grid container spacing={2}>
       <Widget

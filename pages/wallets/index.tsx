@@ -26,8 +26,7 @@ const walletPageStyles = makeStyles((theme) => ({
 }));
 
 const WalletPage: React.FunctionComponent = (props) => {
-  const { token } = useAuthentication();
-  const { data: wallets } = useWalletsQuery(token);
+  const { data: wallets } = useWalletsQuery();
   const classes = walletPageStyles();
   const [, setAddWalletDialog] = useRecoilState(addWalletDialogState);
   const [, setEditWalletDialog] = useRecoilState(editWalletDialogState);

@@ -1,19 +1,15 @@
 import { AccHeaderBuilder } from '../services/AccHeaderBuilder';
 
 export interface HttpService {
-  get: <R>(url: string, token: string, query?: string[][]) => Promise<R>;
-  post: <C, R>(url: string, body: C, token: string) => Promise<R>;
-  put: <C, R>(url: string, body: C, token: string) => Promise<R>;
-  delete: <R>(url: string, token: string) => Promise<R>;
+  get: <R>(url: string, query?: string[][]) => Promise<R>;
+  post: <C = {}, R = {}>(url: string, body: C) => Promise<R>;
+  put: <C = {}, R = {}>(url: string, body: C) => Promise<R>;
+  delete: <R>(url: string) => Promise<R>;
 }
 
 export const BASE_API: HttpService = {
-  get: async <R>(
-    url: string,
-    token: string,
-    query?: string[][]
-  ): Promise<R> => {
-    const headerBuilder = new AccHeaderBuilder(token);
+  get: async <R>(url: string, query?: string[][]): Promise<R> => {
+    const headerBuilder = new AccHeaderBuilder();
     const httpQuery = query
       ? `?${query
           .filter((singleQuery) => !!singleQuery)
@@ -24,6 +20,7 @@ export const BASE_API: HttpService = {
     const res = await fetch(finalUrl, {
       method: 'GET',
       headers: headerBuilder.getHeader(),
+      credentials: 'include',
     });
     const json = await res.json();
     if (!res.ok) {
@@ -32,13 +29,14 @@ export const BASE_API: HttpService = {
       return json;
     }
   },
-  post: async <C, R>(url: string, body: C, token: string): Promise<R> => {
-    const headerBuilder = new AccHeaderBuilder(token);
+  post: async <C, R>(url: string, body: C): Promise<R> => {
+    const headerBuilder = new AccHeaderBuilder();
 
     const fetchConfig: RequestInit = {
       method: 'POST',
       body: JSON.stringify(body),
       headers: headerBuilder.getHeader(),
+      credentials: 'include',
     };
 
     const res = await fetch(`${url}`, fetchConfig);
@@ -49,13 +47,14 @@ export const BASE_API: HttpService = {
       return json;
     }
   },
-  put: async <C, R>(url: string, body: C, token: string): Promise<R> => {
-    const headerBuilder = new AccHeaderBuilder(token);
+  put: async <C, R>(url: string, body: C): Promise<R> => {
+    const headerBuilder = new AccHeaderBuilder();
 
     const res = await fetch(`${url}`, {
       method: 'PUT',
       headers: headerBuilder.getHeader(),
       body: JSON.stringify(body),
+      credentials: 'include',
     });
     const json = await res.json();
     if (!res.ok) {
@@ -64,12 +63,13 @@ export const BASE_API: HttpService = {
       return json;
     }
   },
-  delete: async <R>(url: string, token: string): Promise<R> => {
-    const headerBuilder = new AccHeaderBuilder(token);
+  delete: async <R>(url: string): Promise<R> => {
+    const headerBuilder = new AccHeaderBuilder();
 
     const res = await fetch(`${url}`, {
       method: 'DELETE',
       headers: headerBuilder.getHeader(),
+      credentials: 'include',
     });
     const json = await res.json();
     if (!res.ok) {

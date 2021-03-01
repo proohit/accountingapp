@@ -1,5 +1,9 @@
 export interface LoginResponse {
-  token: string;
+  username: string;
+  email: string;
 }
 
-export interface RegisterResponse {}
+export interface RegisterResponse {
+  username: string;
+  email: string;
+}

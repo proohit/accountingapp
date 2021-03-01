@@ -15,7 +15,7 @@ import { WalletAddDialog } from './WalletAddDialog';
 import { WalletEditDialog } from './WalletEditDialog';
 
 export const WalletDialogContainer = () => {
-  const { username, token } = useAuthentication();
+  const { username } = useAuthentication();
 
   const [addWalletDialog, setAddWalletDialog] = useRecoilState(
     addWalletDialogState
@@ -24,9 +24,9 @@ export const WalletDialogContainer = () => {
     editWalletDialogState
   );
 
-  const editWallletMutation = useEditWalletMutation(token);
-  const createWalletMutation = useCreateWalletMutation(token);
-  const deleteWalletMutation = useDeleteWalletMutation(token);
+  const editWallletMutation = useEditWalletMutation();
+  const createWalletMutation = useCreateWalletMutation();
+  const deleteWalletMutation = useDeleteWalletMutation();
 
   const addWallet = async (walletToAdd: Wallet) => {
     await createWalletMutation.mutateAsync(walletToAdd);

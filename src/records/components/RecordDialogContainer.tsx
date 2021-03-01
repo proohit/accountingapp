@@ -27,7 +27,7 @@ import { RecordFilterBarContainer } from './RecordFilterBarContainer';
 import RecordSortContainer from './RecordSortContainer';
 
 export const RecordDialogContainer: FunctionComponent = (props) => {
-  const { username, token } = useAuthentication();
+  const { username } = useAuthentication();
   const [editRecordsDialog, setEditRecordsDialog] = useRecoilState(
     editRecordDialogState
   );
@@ -40,14 +40,14 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
   const [sortRecordDialog, setSortRecordDialog] = useRecoilState(
     sortRecordDialogState
   );
-  const { data: categories } = useCategoriesQuery(token);
-  const { data: wallets } = useWalletsQuery(token);
+  const { data: categories } = useCategoriesQuery();
+  const { data: wallets } = useWalletsQuery();
 
-  const createRecordMutation = useCreateRecordMutation(token);
-  const editRecordMutation = useEditRecordMutation(token);
-  const deleteRecordMutation = useDeleteRecordMutation(token);
+  const createRecordMutation = useCreateRecordMutation();
+  const editRecordMutation = useEditRecordMutation();
+  const deleteRecordMutation = useDeleteRecordMutation();
 
-  const createCategoryMutation = useCreateCategoryMutation(token);
+  const createCategoryMutation = useCreateCategoryMutation();
 
   const createCategoryIfNeeded = async (categoryName: Category['name']) => {
     const foundCategory =

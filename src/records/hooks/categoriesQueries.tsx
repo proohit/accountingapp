@@ -4,19 +4,17 @@ import { CategoryApiService } from '../services/CategoryApi';
 
 const categoryApi = new CategoryApiService();
 
-export const useCategoriesQuery = (token: string) => {
-  return useQuery(
-    ['getCategories', token],
-    () => categoryApi.getCategoriesByUser(token),
-    { initialData: [] }
-  );
+export const useCategoriesQuery = () => {
+  return useQuery(['getCategories'], () => categoryApi.getCategoriesByUser(), {
+    initialData: [],
+  });
 };
 
-export const useCreateCategoryMutation = (token: string) => {
+export const useCreateCategoryMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (categoryName: Category['name']) =>
-      categoryApi.createCategory(token, categoryName),
+      categoryApi.createCategory(categoryName),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getCategories');

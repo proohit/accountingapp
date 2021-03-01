@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
-import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
@@ -32,8 +31,6 @@ import { RecordTableBody } from './RecordTableBody';
 import { RecordTableHeader } from './RecordTableHeader';
 
 export const RecordListContainer: FunctionComponent = () => {
-  const { token } = useAuthentication();
-
   const [, setEditRecordsDialog] = useRecoilState(editRecordDialogState);
   const [, setAddRecordsDialog] = useRecoilState(addRecordDialogState);
   const [, setFilterRecordsDialog] = useRecoilState(filterRecordDialogState);
@@ -42,20 +39,18 @@ export const RecordListContainer: FunctionComponent = () => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [currentFilter] = useRecoilState(currentFilterState);
 
-  const { data: paginatedResult, isLoading: recordsLoading } = useRecordsQuery(
-    {
-      filterBy: currentFilter,
-      itemsPerPage: currentPage.itemsPerPage,
-      page: currentPage.page,
-      sortBy: currentSort.sortBy,
-      sortDirection: currentSort.sortDirection,
-    },
-    token
-  );
-  const { data: categories, isLoading: categoriesLoading } = useCategoriesQuery(
-    token
-  );
-  const { data: wallets, isLoading: walletsLoading } = useWalletsQuery(token);
+  const { data: paginatedResult, isLoading: recordsLoading } = useRecordsQuery({
+    filterBy: currentFilter,
+    itemsPerPage: currentPage.itemsPerPage,
+    page: currentPage.page,
+    sortBy: currentSort.sortBy,
+    sortDirection: currentSort.sortDirection,
+  });
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+  } = useCategoriesQuery();
+  const { data: wallets, isLoading: walletsLoading } = useWalletsQuery();
 
   const handleSortClicked = (newOrderKey: keyof Record) => {
     if (currentSort.sortBy !== newOrderKey) {

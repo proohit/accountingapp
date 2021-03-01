@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormControlProps,
   FormHelperText,
   InputLabel,
   MenuItem,
@@ -19,12 +20,20 @@ type WalletFieldProps = {
   wallets: Wallet[];
   withAll?: boolean;
   errorText?: string;
+  variant?: FormControlProps['variant'];
 };
 
 export const WalletField: FunctionComponent<WalletFieldProps> = (props) => {
-  const { onWalletChange, walletName, wallets, withAll, errorText } = props;
+  const {
+    onWalletChange,
+    walletName,
+    wallets,
+    withAll,
+    errorText,
+    variant,
+  } = props;
   return (
-    <FormControl variant="outlined">
+    <FormControl variant={variant || 'outlined'}>
       <InputLabel>Wallet</InputLabel>
       <Select
         error={!!errorText}

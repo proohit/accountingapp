@@ -14,6 +14,7 @@ import {
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { palette } from '../../shared/globals/styles/AccTheme';
 import { useMonthlyStatisticsQuery } from '../hooks/monthQuery';
+import { DailyStatisticsData } from '../models/DailyData';
 
 const colors = [
   palette.primary.main,
@@ -23,7 +24,12 @@ const colors = [
   palette.warning.main,
 ];
 
-const ThisMonth: React.FunctionComponent = () => {
+type ThisMonthProps = {
+  walletName?: string;
+};
+
+const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
+  const { walletName } = props;
   const { token } = useAuthentication();
   const today = dayjs();
   const month = today.month();
@@ -34,9 +40,35 @@ const ThisMonth: React.FunctionComponent = () => {
     return <LinearProgress />;
   }
 
+  const getDataWithFilteredWallets = (
+    dailyData: DailyStatisticsData,
+    walletNameToFilter: string
+  ) => {
+    return dailyData?.data?.find(
+      (walletData) => walletData.walletName === walletNameToFilter
+    );
+  };
+
+  const getDataWithFormattedDate = (dailyData: DailyStatisticsData) => {
+    return dailyData?.data?.map((walletData) => ({
+      ...walletData,
+      data: walletData.data.map((singleWalletData) => ({
+        ...singleWalletData,
+        day: dayjs(singleWalletData.day).format('D. MMM'),
+      })),
+    }));
+  };
+
+  const finalData = { ...data };
+  if (walletName && data?.data) {
+    finalData.data = [getDataWithFilteredWallets(data, walletName)];
+  }
+
+  finalData.data = getDataWithFormattedDate(finalData);
+
   return (
     <ResponsiveContainer minWidth={400} width="100%" height={200}>
-      <LineChart data={data?.data} maxBarSize={15}>
+      <LineChart data={finalData?.data} maxBarSize={15}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="day" type="category" allowDuplicatedCategory={false} />
         <YAxis
@@ -49,7 +81,7 @@ const ThisMonth: React.FunctionComponent = () => {
         />
         <Tooltip />
         <Legend />
-        {data?.data.map((wallet, index, _arr) => (
+        {finalData?.data?.map((wallet, index, _arr) => (
           <Line
             type="monotone"
             stroke={colors[index % colors.length]}

@@ -1,4 +1,4 @@
-import { Grid, makeStyles } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import * as React from 'react';
 import {
   Bar,
@@ -15,17 +15,40 @@ import { useAuthentication } from '../../src/authentication/hooks/useAuthenticat
 import CurrentStatus from '../../src/dashboard/components/CurrentStatus';
 import ThisMonth from '../../src/dashboard/components/ThisMonth';
 import Widget from '../../src/dashboard/components/Widget';
+import { WalletField } from '../../src/records/components/WalletField';
 import { palette } from '../../src/shared/globals/styles/AccTheme';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 
 const DashboardPage: React.FunctionComponent = (props) => {
   const { token } = useAuthentication();
-
+  const [selectedWallet, setSelectedWallet] = React.useState('all');
   const { data: wallets } = useWalletsQuery(token);
   return (
     <Grid container spacing={2}>
-      <Widget xs={12} title="This Month">
-        {wallets && <ThisMonth />}
+      <Widget
+        xs={12}
+        title="This Month"
+        actions={
+          <WalletField
+            onWalletChange={(event) => {
+              setSelectedWallet(
+                (event.target.value || event.currentTarget.value) as string
+              );
+            }}
+            walletName={selectedWallet}
+            wallets={wallets}
+            withAll
+            variant="standard"
+          />
+        }
+      >
+        {wallets && (
+          <>
+            <ThisMonth
+              walletName={selectedWallet !== 'all' ? selectedWallet : undefined}
+            />
+          </>
+        )}
       </Widget>
       <Widget xs={12} md={6} title="Current Status">
         {wallets && <CurrentStatus wallets={wallets} />}

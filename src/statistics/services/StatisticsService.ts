@@ -18,31 +18,35 @@ export class StatisticsService {
             order: { timestamp: 'DESC' },
         });
 
-        const dateUntilMonth = dayjs()
+        const lastDayOfPreviousMonth = dayjs()
             .year(year)
-            .month(month - 1)
-            .startOf('month');
-        const dateUntil = dayjs()
+            .month(month - 2)
+            .endOf('month');
+        const lastDayOfMonth = dayjs()
             .year(year)
             .month(month - 1)
             .endOf('month');
-        const recordsBeforeDate = recordsUntilMonth.filter((record) =>
-            dayjs(record.timestamp).isBefore(dateUntilMonth),
+        const recordsBeforeMonth = recordsUntilMonth.filter((record) =>
+            dayjs(record.timestamp).isBefore(lastDayOfPreviousMonth),
         );
         const recordsInMonth = recordsUntilMonth.filter((record) =>
-            dayjs(record.timestamp).isBetween(dateUntilMonth, dateUntil),
+            dayjs(record.timestamp).isBetween(lastDayOfPreviousMonth, lastDayOfMonth),
         );
         const walletsOfUser = await walletsService.getByUser(username);
         const balancesBeforeMonth = walletsOfUser.map((wallet) => {
-            const recordsOfMonth = recordsBeforeDate.filter((record) => record.walletId === wallet.id);
-            const balanceOfWallet = recordsOfMonth.reduce((sum, record) => sum + record.value, wallet.balance);
-            return { walletId: wallet.id, balance: balanceOfWallet };
+            const recordsOfWalletBeforeMonth = recordsBeforeMonth.filter((record) => record.walletId === wallet.id);
+            const balanceOfWalletBeforeMonth = recordsOfWalletBeforeMonth.reduce(
+                (sum, record) => sum + record.value,
+                wallet.balance,
+            );
+            return { walletId: wallet.id, balance: balanceOfWalletBeforeMonth };
         });
         const daysInMonth = dayjs()
             .year(year)
             .month(month - 1)
             .daysInMonth();
         const daysStatistics = [];
+        daysStatistics.push(lastDayOfPreviousMonth.format('YYYY-MM-DD'));
         for (let day = 1; day <= daysInMonth; day++) {
             daysStatistics.push(
                 dayjs()

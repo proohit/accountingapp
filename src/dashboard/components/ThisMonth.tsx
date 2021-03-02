@@ -6,6 +6,7 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -26,6 +27,8 @@ const colors = [
 type ThisMonthProps = {
   walletName?: string;
 };
+
+const dayFormat = 'D. MMM';
 
 const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
   const { walletName } = props;
@@ -52,7 +55,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
       ...walletData,
       data: walletData.data.map((singleWalletData) => ({
         ...singleWalletData,
-        day: dayjs(singleWalletData.day).format('D. MMM'),
+        day: dayjs(singleWalletData.day).format(dayFormat),
       })),
     }));
   };
@@ -76,6 +79,11 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
             position: 'insideBottomLeft',
             offset: 10,
           }}
+        />
+        <ReferenceLine
+          x={today.format(dayFormat)}
+          stroke={palette.primary.light}
+          strokeWidth={2}
         />
         <Tooltip />
         <Legend />

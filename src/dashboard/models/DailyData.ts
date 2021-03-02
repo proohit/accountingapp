@@ -1,3 +1,5 @@
+import { StatisticsType } from './StatisticsType';
+
 export interface DailyStatisticsData {
   type: StatisticsType.DAILY;
   month: number;
@@ -7,8 +9,4 @@ export interface DailyStatisticsData {
 export interface DailyData {
   walletName: string;
   data: { day: string; balance: number }[];
-}
-export enum StatisticsType {
-  MONTHLY = 'monthly',
-  DAILY = 'daily',
 }

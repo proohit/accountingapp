@@ -6,13 +6,14 @@ import {
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { palette } from '../../shared/globals/styles/AccTheme';
-import { useMonthlyStatisticsQuery } from '../hooks/monthQuery';
+import { useDailyStatisticsQuery } from '../hooks/monthQuery';
 import { DailyStatisticsData } from '../models/DailyData';
 
 const colors = [
@@ -27,12 +28,14 @@ type ThisMonthProps = {
   walletName?: string;
 };
 
+const dayFormat = 'D. MMM';
+
 const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
   const { walletName } = props;
   const today = dayjs();
   const month = today.month() + 1;
   const year = today.year();
-  const { data, isLoading } = useMonthlyStatisticsQuery(month, year);
+  const { data, isLoading } = useDailyStatisticsQuery(month, year);
 
   if (isLoading) {
     return <LinearProgress />;
@@ -52,7 +55,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
       ...walletData,
       data: walletData.data.map((singleWalletData) => ({
         ...singleWalletData,
-        day: dayjs(singleWalletData.day).format('D. MMM'),
+        day: dayjs(singleWalletData.day).format(dayFormat),
       })),
     }));
   };
@@ -76,6 +79,11 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
             position: 'insideBottomLeft',
             offset: 10,
           }}
+        />
+        <ReferenceLine
+          x={today.format(dayFormat)}
+          stroke={palette.primary.light}
+          strokeWidth={2}
         />
         <Tooltip />
         <Legend />

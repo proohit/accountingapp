@@ -1,22 +1,10 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import * as React from 'react';
-import {
-  Bar,
-  BarChart,
-  Brush,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
-import { useAuthentication } from '../../src/authentication/hooks/useAuthentication';
 import CurrentStatus from '../../src/dashboard/components/CurrentStatus';
 import ThisMonth from '../../src/dashboard/components/ThisMonth';
+import ThisYear from '../../src/dashboard/components/ThisYear';
 import Widget from '../../src/dashboard/components/Widget';
 import { WalletField } from '../../src/records/components/WalletField';
-import { palette } from '../../src/shared/globals/styles/AccTheme';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 
 const DashboardPage: React.FunctionComponent = (props) => {
@@ -52,20 +40,8 @@ const DashboardPage: React.FunctionComponent = (props) => {
       <Widget xs={12} md={6} title="Current Status">
         {wallets && <CurrentStatus wallets={wallets} />}
       </Widget>
-      <Widget md={6}>
-        {wallets && (
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={wallets}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Brush dataKey="name" height={30} stroke="#8884d8" />
-              <Bar dataKey="currentBalance" fill={palette.secondary.main} />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
+      <Widget md={12} title="This Year">
+        <ThisYear />
       </Widget>
     </Grid>
   );

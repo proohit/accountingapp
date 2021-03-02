@@ -23,6 +23,14 @@ const StatisticsControllerImpl: StatisticsController = {
             const dailyDataResult: DailyStatisticsResult = { type: StatisticsType.DAILY, month, data: dailyData };
             return { status: 200, data: dailyDataResult };
         }
+        if (requestedType === StatisticsType.MONTHLY) {
+            if (!year) {
+                throw new MissingProperty(['year']);
+            }
+            const monthlyData = await services.statisticsService.getMonthlyDataForYear(username, year);
+            const monthlyDataResult = { type: StatisticsType.MONTHLY, data: monthlyData };
+            return { status: 200, data: monthlyDataResult };
+        }
     },
 };
 

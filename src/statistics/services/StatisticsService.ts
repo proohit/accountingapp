@@ -4,6 +4,7 @@ import { services } from '../../shared/services/services';
 import { DailyData } from '../models/StatisticsResult';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import { getDaysInMonth } from '../../shared/utils/dateUtils';
 dayjs.extend(isBetween);
 export class StatisticsService {
     async getDailyDataForMonth(username: string, month: number, year: number): Promise<DailyData[]> {
@@ -41,21 +42,10 @@ export class StatisticsService {
             );
             return { walletId: wallet.id, balance: balanceOfWalletBeforeMonth };
         });
-        const daysInMonth = dayjs()
-            .year(year)
-            .month(month - 1)
-            .daysInMonth();
-        const daysStatistics = [];
-        daysStatistics.push(lastDayOfPreviousMonth.format('YYYY-MM-DD'));
-        for (let day = 1; day <= daysInMonth; day++) {
-            daysStatistics.push(
-                dayjs()
-                    .year(year)
-                    .month(month - 1)
-                    .date(day)
-                    .format('YYYY-MM-DD'),
-            );
-        }
+
+        const daysStatistics = getDaysInMonth(month, year);
+        daysStatistics.unshift(lastDayOfPreviousMonth.format('YYYY-MM-DD'));
+
         const walletsDayData = [];
         for (const wallet of walletsOfUser) {
             const walletData: DailyData = {

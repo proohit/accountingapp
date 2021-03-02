@@ -13,7 +13,7 @@ import {
   YAxis,
 } from 'recharts';
 import { palette } from '../../shared/globals/styles/AccTheme';
-import { useMonthlyStatisticsQuery } from '../hooks/monthQuery';
+import { useDailyStatisticsQuery } from '../hooks/monthQuery';
 import { DailyStatisticsData } from '../models/DailyData';
 
 const colors = [
@@ -35,7 +35,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
   const today = dayjs();
   const month = today.month() + 1;
   const year = today.year();
-  const { data, isLoading } = useMonthlyStatisticsQuery(month, year);
+  const { data, isLoading } = useDailyStatisticsQuery(month, year);
 
   if (isLoading) {
     return <LinearProgress />;

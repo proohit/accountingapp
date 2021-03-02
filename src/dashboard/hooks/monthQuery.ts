@@ -5,17 +5,17 @@ import { StatisticsApiService } from '../services/StatisticsApi';
 
 const statisticsApi = new StatisticsApiService();
 
-export const useMonthlyStatisticsQuery = (month: number, year: number) => {
+export const useDailyStatisticsQuery = (month: number, year: number) => {
   return useQuery<DailyStatisticsData>(
-    ['getMonthlyData', month, year],
+    ['getDailyData', month, year],
     () => statisticsApi.getMonthlyData(month, year),
     { initialData: null }
   );
 };
 
-export const useYearlyStatisticsQuery = (year: number) => {
+export const useMonthlyStatisticsQuery = (year: number) => {
   return useQuery<MonthlyStatisticsData>(
-    ['getYearlyData', year],
+    ['getMonthlyData', year],
     () => statisticsApi.getYearlyData(year),
     { initialData: null }
   );

@@ -1,10 +1,10 @@
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import { LessThan } from 'typeorm';
 import { repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
-import { DailyData } from '../models/StatisticsResult';
-import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
 import { getDaysInMonth } from '../../shared/utils/dateUtils';
+import { DailyData, MonthlyData } from '../models/StatisticsResult';
 dayjs.extend(isBetween);
 export class StatisticsService {
     async getDailyDataForMonth(username: string, month: number, year: number): Promise<DailyData[]> {
@@ -71,5 +71,44 @@ export class StatisticsService {
             walletsDayData.push(walletData);
         }
         return walletsDayData;
+    }
+
+    async getMonthlyDataForYear(username: string, year: number): Promise<MonthlyData[]> {
+        const recordsRepo = repositories.records();
+        const endOfYear = dayjs().year(year).endOf('year');
+        const recordsUntilYear = await recordsRepo.find({
+            where: {
+                timestamp: LessThan(endOfYear.toISOString()),
+                ownerUsername: username,
+            },
+            order: { timestamp: 'DESC' },
+        });
+        const beginningOfYear = dayjs().year(year).startOf('year');
+        const recordsBeforeYear = recordsUntilYear.filter((record) =>
+            dayjs(record.timestamp).isBefore(beginningOfYear),
+        );
+        const userWallets = await services.walletService.getByUser(username);
+        const initialWalletBalances = userWallets.reduce((balances, wallet) => wallet.balance + balances, 0);
+        const totalStatusBeforeYear = recordsBeforeYear.reduce(
+            (totalStatus, record) => totalStatus + record.value,
+            initialWalletBalances,
+        );
+
+        const monthlyData: MonthlyData[] = [];
+
+        const months = 12;
+        for (let month = 1; month <= months; month++) {
+            const currentMonth = dayjs().month(month - 1);
+            const recordsInMonth = recordsUntilYear.filter((record) =>
+                dayjs(record.timestamp).isSame(currentMonth, 'month'),
+            );
+            const totalStatusAfterMonth = recordsInMonth.reduce(
+                (totalStatus, record) => totalStatus + record.value,
+                monthlyData[monthlyData.length - 1]?.totalBalance || totalStatusBeforeYear,
+            );
+            monthlyData.push({ month, totalBalance: totalStatusAfterMonth });
+        }
+
+        return monthlyData;
     }
 }

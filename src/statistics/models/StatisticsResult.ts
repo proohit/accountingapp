@@ -9,6 +9,12 @@ export interface DailyStatisticsResult extends StatisticsResult {
     data: DailyData[];
 }
 
+export interface MonthlyStatisticsResult extends StatisticsResult {
+    type: StatisticsType.MONTHLY;
+    year: number;
+    data: MonthlyData[];
+}
+
 export interface StatisticsResult {
     type: StatisticsType;
 }
@@ -16,4 +22,9 @@ export interface StatisticsResult {
 export interface DailyData {
     walletName: string;
     data: { day: string; balance: number }[];
+}
+
+export interface MonthlyData {
+    month: number;
+    totalBalance: number;
 }

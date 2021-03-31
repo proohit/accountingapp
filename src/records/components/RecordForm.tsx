@@ -46,7 +46,7 @@ export const RecordForm = (props: RecordFormProps) => {
   ] = useForm<RecordFormFields>(
     {
       description: record?.description || '',
-      value: record?.value.toString() || '0.00',
+      value: record?.value.toString() || '',
       walletName:
         WalletUtils.getWalletById(wallets, record?.walletId)?.name ||
         (wallets?.length && wallets[0].name) ||
@@ -100,6 +100,7 @@ export const RecordForm = (props: RecordFormProps) => {
           color="secondary"
           label="value"
           name="value"
+          placeholder="0.00"
           value={formFields.value}
           onChange={handleFormFieldChange}
         />

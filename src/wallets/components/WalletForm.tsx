@@ -47,27 +47,31 @@ export const WalletForm = (props: WalletFormProps) => {
   }, [isFormValid]);
 
   return (
-    <Grid container direction="column" style={{ gap: 16 }}>
-      <TextField
-        variant="outlined"
-        error={!!formErrors.name}
-        helperText={formErrors.name}
-        color="secondary"
-        label="Name"
-        name="name"
-        value={formFields.name}
-        onChange={handleFormFieldChange}
-      />
-      <TextField
-        variant="outlined"
-        error={!!formErrors.balance}
-        helperText={formErrors.balance}
-        color="secondary"
-        label="Balance"
-        name="balance"
-        value={formFields.balance}
-        onChange={handleFormFieldChange}
-      />
+    <Grid container direction="column" spacing={2}>
+      <Grid item>
+        <TextField
+          variant="outlined"
+          error={!!formErrors.name}
+          helperText={formErrors.name}
+          color="secondary"
+          label="Name"
+          name="name"
+          value={formFields.name}
+          onChange={handleFormFieldChange}
+        />
+      </Grid>
+      <Grid item>
+        <TextField
+          variant="outlined"
+          error={!!formErrors.balance}
+          helperText={formErrors.balance}
+          color="secondary"
+          label="Balance"
+          name="balance"
+          value={formFields.balance}
+          onChange={handleFormFieldChange}
+        />
+      </Grid>
     </Grid>
   );
 };

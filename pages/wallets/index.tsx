@@ -14,14 +14,7 @@ import { Wallet } from '../../src/wallets/models/Wallet';
 
 const walletPageStyles = makeStyles((theme) => ({
   walletContainer: {
-    gap: theme.spacing(2),
     padding: theme.spacing(2),
-  },
-  header: {
-    gap: theme.spacing(2),
-  },
-  walletsList: {
-    gap: theme.spacing(2),
   },
 }));
 
@@ -41,23 +34,31 @@ const WalletPage: React.FunctionComponent = (props) => {
 
   return wallets ? (
     <Grid container className={classes.walletContainer}>
-      <Grid item container alignItems="center" className={classes.header}>
-        <WalletDialogContainer />
-        <AccountBalance fontSize="large" color="primary" />
-        <Typography variant="h3" color="primary">
-          Wallets
-        </Typography>
-        <IconButton color="primary" onClick={openAddDialog}>
-          <AddBox />
-        </IconButton>
+      <WalletDialogContainer />
+      <Grid item container alignItems="center" spacing={2}>
+        <Grid item>
+          <AccountBalance fontSize="large" color="primary" />
+        </Grid>
+        <Grid item>
+          <Typography variant="h3" color="primary">
+            Wallets
+          </Typography>
+        </Grid>
+        <Grid item>
+          <IconButton color="primary" onClick={openAddDialog}>
+            <AddBox />
+          </IconButton>
+        </Grid>
       </Grid>
-      <Grid container className={classes.walletsList}>
+      <Grid container spacing={2}>
         {wallets.map((wallet) => (
-          <WalletCard
-            key={wallet.id}
-            wallet={wallet}
-            onWalletClicked={openEditDialog}
-          />
+          <Grid item key={wallet.id}>
+            <WalletCard
+              key={wallet.id}
+              wallet={wallet}
+              onWalletClicked={openEditDialog}
+            />
+          </Grid>
         ))}
       </Grid>
     </Grid>

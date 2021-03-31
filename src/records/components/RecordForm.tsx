@@ -84,49 +84,59 @@ export const RecordForm = (props: RecordFormProps) => {
   }, [isFormValid]);
 
   return (
-    <Grid container direction="column" style={{ gap: 16 }}>
-      <DescriptionField
-        description={formFields.description}
-        onDescriptionChange={handleFormFieldChange}
-        errorText={formErrors.description}
-      />
-      <TextField
-        variant="outlined"
-        error={!!formErrors.value}
-        helperText={formErrors.value}
-        color="secondary"
-        label="value"
-        name="value"
-        value={formFields.value}
-        onChange={handleFormFieldChange}
-      />
-      <WalletField
-        onWalletChange={handleFormFieldChange}
-        walletName={formFields.walletName}
-        wallets={wallets}
-        errorText={formErrors.walletName}
-      />
-      <CategoryField
-        onCategoryChange={(newCategory) => {
-          handleFormFieldChange(null, 'categoryName', newCategory);
-        }}
-        withNew={withNewCategory}
-        categoryName={formFields.categoryName}
-        categories={categories}
-        errorText={formErrors.categoryName}
-      />
-      <DateTimePicker
-        value={formFields.timestamp}
-        label="timestamp"
-        name="timestamp"
-        color="secondary"
-        onChange={(date) => {
-          handleFormFieldChange(null, 'timestamp', date.format());
-        }}
-        fullWidth
-        inputVariant="outlined"
-        showTodayButton
-      />
+    <Grid container direction="column" spacing={2}>
+      <Grid item>
+        <DescriptionField
+          description={formFields.description}
+          onDescriptionChange={handleFormFieldChange}
+          errorText={formErrors.description}
+        />
+      </Grid>
+      <Grid item>
+        <TextField
+          variant="outlined"
+          error={!!formErrors.value}
+          helperText={formErrors.value}
+          color="secondary"
+          label="value"
+          name="value"
+          value={formFields.value}
+          onChange={handleFormFieldChange}
+        />
+      </Grid>
+      <Grid item>
+        <WalletField
+          onWalletChange={handleFormFieldChange}
+          walletName={formFields.walletName}
+          wallets={wallets}
+          errorText={formErrors.walletName}
+        />
+      </Grid>
+      <Grid item>
+        <CategoryField
+          onCategoryChange={(newCategory) => {
+            handleFormFieldChange(null, 'categoryName', newCategory);
+          }}
+          withNew={withNewCategory}
+          categoryName={formFields.categoryName}
+          categories={categories}
+          errorText={formErrors.categoryName}
+        />
+      </Grid>
+      <Grid item>
+        <DateTimePicker
+          value={formFields.timestamp}
+          label="timestamp"
+          name="timestamp"
+          color="secondary"
+          onChange={(date) => {
+            handleFormFieldChange(null, 'timestamp', date.format());
+          }}
+          fullWidth
+          inputVariant="outlined"
+          showTodayButton
+        />
+      </Grid>
     </Grid>
   );
 };

@@ -22,7 +22,6 @@ import { WalletField } from './WalletField';
 const styles = makeStyles((theme) => ({
   filterBar: {
     padding: theme.spacing(2),
-    gap: theme.spacing(3),
     position: 'sticky',
     overflow: 'auto',
     top: 70,
@@ -73,61 +72,76 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
   };
 
   return (
-    <Grid container direction="column" className={classes.filterBar}>
-      <Typography variant="h6" align="center">
-        Filter Records
-      </Typography>
+    <Grid
+      container
+      direction="column"
+      className={classes.filterBar}
+      spacing={2}
+    >
+      <Grid item>
+        <Typography variant="h6" align="center">
+          Filter Records
+        </Typography>
+      </Grid>
       <Divider />
-      <DescriptionField
-        description={description}
-        onDescriptionChange={(event) =>
-          setDescription(event.target.value || event.currentTarget.value)
-        }
-      />
-
-      <WalletField
-        withAll
-        walletName={walletName}
-        onWalletChange={(event) =>
-          setWalletName(
-            (event.target.value || event.currentTarget.value) as string
-          )
-        }
-        wallets={wallets}
-      />
-
-      <CategoryField
-        withAll
-        categoryName={categoryName}
-        onCategoryChange={setCategoryName}
-        categories={categories}
-        withNew={false}
-      />
-      <DateTimePicker
-        inputVariant="outlined"
-        value={timestampFrom}
-        onChange={setTimestampFrom}
-        label="From Timestamp"
-        color="secondary"
-        name="timestampFrom"
-        fullWidth
-        showTodayButton
-        maxDate={dayjs(timestampTo)}
-        maxDateMessage="From Timestamp should not be after To Timestamp"
-      />
-      <DateTimePicker
-        inputVariant="outlined"
-        value={timestampTo}
-        onChange={setTimestampTo}
-        minDate={dayjs(timestampFrom)}
-        label="To Timestamp"
-        color="secondary"
-        name="timestampTo"
-        fullWidth
-        showTodayButton
-        maxDateMessage="To Timestamp should not be before From Timestamp"
-      />
-      <Grid item xs>
+      <Grid item>
+        <DescriptionField
+          description={description}
+          onDescriptionChange={(event) =>
+            setDescription(event.target.value || event.currentTarget.value)
+          }
+        />
+      </Grid>
+      <Grid item>
+        <WalletField
+          withAll
+          walletName={walletName}
+          onWalletChange={(event) =>
+            setWalletName(
+              (event.target.value || event.currentTarget.value) as string
+            )
+          }
+          wallets={wallets}
+        />
+      </Grid>
+      <Grid item>
+        <CategoryField
+          withAll
+          categoryName={categoryName}
+          onCategoryChange={setCategoryName}
+          categories={categories}
+          withNew={false}
+        />
+      </Grid>
+      <Grid item>
+        <DateTimePicker
+          inputVariant="outlined"
+          value={timestampFrom}
+          onChange={setTimestampFrom}
+          label="From Timestamp"
+          color="secondary"
+          name="timestampFrom"
+          fullWidth
+          showTodayButton
+          maxDate={dayjs(timestampTo)}
+          maxDateMessage="From Timestamp should not be after To Timestamp"
+        />
+      </Grid>
+      <Grid item>
+        <DateTimePicker
+          inputVariant="outlined"
+          value={timestampTo}
+          onChange={setTimestampTo}
+          minDate={dayjs(timestampFrom)}
+          label="To Timestamp"
+          color="secondary"
+          name="timestampTo"
+          fullWidth
+          showTodayButton
+          maxDateMessage="To Timestamp should not be before From Timestamp"
+        />
+      </Grid>
+      <Grid item xs container justify="space-around">
         <Button variant="outlined" color="primary" onClick={resetFilter}>
           Reset
         </Button>

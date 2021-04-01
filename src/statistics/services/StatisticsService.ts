@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import { LessThan } from 'typeorm';
+import { Between, LessThan } from 'typeorm';
 import { repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
 import { getDaysInMonth } from '../../shared/utils/dateUtils';
-import { DailyData, MonthlyData } from '../models/StatisticsResult';
+import { CategoryBalanceData, DailyData, MonthlyData } from '../models/StatisticsResult';
 dayjs.extend(isBetween);
 export class StatisticsService {
     async getDailyDataForMonth(username: string, month: number, year: number): Promise<DailyData[]> {
@@ -110,5 +110,28 @@ export class StatisticsService {
         }
 
         return monthlyData;
+    }
+
+    async getMonthCategoryData(username: string, month: number, year: number): Promise<CategoryBalanceData[]> {
+        const recordsRepo = repositories.records();
+        const fromDay = dayjs().year(year).month(month).startOf('month');
+        const untilDay = dayjs().year(year).month(month).endOf('month');
+        const recordsForMonth = await recordsRepo.find({
+            where: {
+                timestamp: Between(fromDay.toISOString(), untilDay.toISOString()),
+                ownerUsername: username,
+            },
+            order: { timestamp: 'DESC' },
+        });
+
+        const categoryIdsForMonth = [...new Set(recordsForMonth.map((record) => record.categoryId))];
+
+        const monthlyCategoryData: CategoryBalanceData[] = [];
+        for (const categoryId of categoryIdsForMonth) {
+            const recordsForCategory = recordsForMonth.filter((record) => record.categoryId === categoryId);
+            const categoryBalance = recordsForCategory.reduce((balance, record) => balance + record.value, 0);
+            monthlyCategoryData.push({ category: categoryId, balance: categoryBalance });
+        }
+        return monthlyCategoryData;
     }
 }

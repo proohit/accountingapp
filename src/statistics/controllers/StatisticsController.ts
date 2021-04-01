@@ -32,6 +32,23 @@ const StatisticsControllerImpl: StatisticsController = {
             return { status: 200, data: monthlyDataResult };
         }
     },
+    async getCategoryStatistics(ctx) {
+        const username = ctx.state.user.username;
+        const requestedType: StatisticsType = ctx.query.type;
+        const month = Number(ctx.query.month);
+        const year = Number(ctx.query.year);
+        if (requestedType === StatisticsType.CATEGORY_MONTHLY) {
+            if (!month) {
+                throw new MissingProperty(['month']);
+            }
+            if (!year) {
+                throw new MissingProperty(['year']);
+            }
+            const monthlyCategoryData = await services.statisticsService.getMonthCategoryData(username, month, year);
+            const monthlyCategoryDataResult = { type: StatisticsType.CATEGORY_MONTHLY, data: monthlyCategoryData };
+            return { status: 200, data: monthlyCategoryDataResult };
+        }
+    },
 };
 
 export default StatisticsControllerImpl;

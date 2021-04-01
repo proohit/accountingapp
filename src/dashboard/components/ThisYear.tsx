@@ -27,7 +27,7 @@ const ThisYear: React.FunctionComponent = (props) => {
   const today = dayjs();
   const year = today.year();
   const month = today.month() + 1;
-  const { data, isLoading } = useMonthlyStatisticsQuery(year);
+  const { data, isFetching: isLoading } = useMonthlyStatisticsQuery(year);
 
   if (isLoading) {
     return <LinearProgress />;

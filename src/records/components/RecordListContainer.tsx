@@ -39,18 +39,20 @@ export const RecordListContainer: FunctionComponent = () => {
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const [currentFilter] = useRecoilState(currentFilterState);
 
-  const { data: paginatedResult, isLoading: recordsLoading } = useRecordsQuery({
-    filterBy: currentFilter,
-    itemsPerPage: currentPage.itemsPerPage,
-    page: currentPage.page,
-    sortBy: currentSort.sortBy,
-    sortDirection: currentSort.sortDirection,
-  });
+  const { data: paginatedResult, isFetching: recordsLoading } = useRecordsQuery(
+    {
+      filterBy: currentFilter,
+      itemsPerPage: currentPage.itemsPerPage,
+      page: currentPage.page,
+      sortBy: currentSort.sortBy,
+      sortDirection: currentSort.sortDirection,
+    }
+  );
   const {
     data: categories,
-    isLoading: categoriesLoading,
+    isFetching: categoriesLoading,
   } = useCategoriesQuery();
-  const { data: wallets, isLoading: walletsLoading } = useWalletsQuery();
+  const { data: wallets, isFetching: walletsLoading } = useWalletsQuery();
 
   const handleSortClicked = (newOrderKey: keyof Record) => {
     if (currentSort.sortBy !== newOrderKey) {

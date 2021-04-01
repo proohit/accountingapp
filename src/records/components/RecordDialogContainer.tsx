@@ -92,6 +92,7 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
         onAddRecord={addRecord}
         wallets={wallets}
         categories={categories}
+        isLoading={createRecordMutation.isLoading}
       />
     );
   }
@@ -108,6 +109,9 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
         onEditRecord={editRecord}
         onDeleteRecord={deleteRecord}
         wallets={wallets}
+        isLoading={
+          editRecordMutation.isLoading || deleteRecordMutation.isLoading
+        }
       />
     );
   }

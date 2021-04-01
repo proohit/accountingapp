@@ -53,6 +53,9 @@ export const WalletDialogContainer = () => {
         onEditWallet={editWallet}
         onDeleteWallet={deleteWallet}
         wallet={editWalletDialog.walletToEdit}
+        isLoading={
+          editWallletMutation.isLoading || deleteWalletMutation.isLoading
+        }
       />
     );
   }
@@ -63,6 +66,7 @@ export const WalletDialogContainer = () => {
         owner={username}
         onDialogClose={() => setAddWalletDialog({ open: false })}
         onAddWallet={addWallet}
+        isLoading={createWalletMutation.isLoading}
       />
     );
   }

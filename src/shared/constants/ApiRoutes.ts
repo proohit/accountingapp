@@ -15,4 +15,5 @@ export class API_ROUTES {
   static readonly WALLETS = `${API_ROUTES.BASE_ROUTE}/wallets`;
   static readonly CATEGORIES = `${API_ROUTES.BASE_ROUTE}/categories`;
   static readonly STATISTICS = `${API_ROUTES.BASE_ROUTE}/statistics`;
+  static readonly STATISTICS_CATEGORIES = `${API_ROUTES.STATISTICS}/categories`;
 }

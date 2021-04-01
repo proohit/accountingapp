@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
+  LinearProgress,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
@@ -17,10 +18,18 @@ interface RecordAddDialogProps {
   wallets: Wallet[];
   categories: Category[];
   owner: string;
+  isLoading?: boolean;
 }
 
 export const RecordAddDialog = (props: RecordAddDialogProps) => {
-  const { onDialogClose, wallets, onAddRecord, categories, owner } = props;
+  const {
+    onDialogClose,
+    wallets,
+    onAddRecord,
+    categories,
+    owner,
+    isLoading,
+  } = props;
   const [recordToAdd, setRecordToAdd] = useState<Record>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -38,6 +47,7 @@ export const RecordAddDialog = (props: RecordAddDialogProps) => {
           owner={owner}
           withNewCategory
         />
+        {isLoading && <LinearProgress />}
       </DialogContent>
       <DialogActions>
         <Button

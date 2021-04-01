@@ -4,6 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  LinearProgress,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
@@ -13,10 +14,11 @@ interface WalletAddDialogProps {
   onDialogClose(): void;
   onAddWallet(walletToAdd: Wallet): void;
   owner: string;
+  isLoading?: boolean;
 }
 
 export const WalletAddDialog = (props: WalletAddDialogProps) => {
-  const { onDialogClose, onAddWallet, owner } = props;
+  const { onDialogClose, onAddWallet, owner, isLoading } = props;
   const [walletToAdd, setWalletToAdd] = useState<Wallet>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -29,6 +31,7 @@ export const WalletAddDialog = (props: WalletAddDialogProps) => {
           onWalletChange={setWalletToAdd}
           owner={owner}
         />
+        {isLoading && <LinearProgress />}
       </DialogContent>
       <DialogActions>
         <Button

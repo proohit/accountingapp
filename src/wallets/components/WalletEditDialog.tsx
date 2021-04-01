@@ -6,6 +6,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  LinearProgress,
 } from '@material-ui/core';
 import { Close, Delete } from '@material-ui/icons';
 import React, { useState } from 'react';
@@ -18,6 +19,7 @@ interface WalletEditDialogProps {
   onDeleteWallet(walletToDelete: Wallet): void;
   owner: string;
   wallet: Wallet;
+  isLoading?: boolean;
 }
 
 export const WalletEditDialog = (props: WalletEditDialogProps) => {
@@ -27,6 +29,7 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
     onDeleteWallet: onDeleteRecord,
     owner,
     wallet,
+    isLoading,
   } = props;
 
   const [editedWallet, setEditedWallet] = useState<Wallet>(null);
@@ -58,6 +61,7 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
           onFormValidChanged={setIsFormValid}
           onWalletChange={setEditedWallet}
         />
+        {isLoading && <LinearProgress />}
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={onDialogClose} variant="outlined">

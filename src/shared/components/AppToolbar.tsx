@@ -30,9 +30,7 @@ export const AppToolbar: FunctionComponent = () => {
                   <MobileMenuButton />
                 </Hidden>
               )}
-              <Typography component="span" variant="h6">
-                Accounting App
-              </Typography>
+              <Typography variant="h6">Accounting App</Typography>
             </Grid>
             <Grid item container alignItems="center" xs={1} justify="flex-end">
               {authenticated ? (

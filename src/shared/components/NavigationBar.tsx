@@ -23,6 +23,7 @@ import { useAuthentication } from '../../authentication/hooks/useAuthentication'
 import Routes from '../constants/Routes';
 import { mobileDrawerOpenState } from '../hooks/mobileDrawerOpenState';
 import NavigationLinkItem from './NavigationLinkItem';
+import packageJson from '../../../package.json';
 
 // iOS is hosted on high-end devices. We can enable the backdrop transition without
 // dropping frames. The performance will be good enough.
@@ -98,6 +99,9 @@ export const NavigationBar: FunctionComponent = () => {
           <Settings color="primary" />
         </ListItemIcon>
         <ListItemText primary="Settings" />
+      </ListItem>
+      <ListItem alignItems="flex-start">
+        <Typography variant="body2"> v{packageJson.version}</Typography>
       </ListItem>
     </List>
   );

@@ -2,6 +2,7 @@ import { Grid } from '@material-ui/core';
 import * as React from 'react';
 import CurrentStatus from '../../src/dashboard/components/CurrentStatus';
 import LatestRecords from '../../src/dashboard/components/LatestRecords';
+import MonthlyCategory from '../../src/dashboard/components/MonthlyCategory';
 import ThisMonth from '../../src/dashboard/components/ThisMonth';
 import ThisYear from '../../src/dashboard/components/ThisYear';
 import Widget from '../../src/dashboard/components/Widget';
@@ -38,13 +39,16 @@ const DashboardPage: React.FunctionComponent = (props) => {
           </>
         )}
       </Widget>
+      <Widget xs={12} md={6} title="Categories this month">
+        <MonthlyCategory />
+      </Widget>
       <Widget xs={12} md={6} title="Current Status">
         {wallets && <CurrentStatus wallets={wallets} />}
       </Widget>
       <Widget xs={12} md={6} title="Latest Records">
         <LatestRecords />
       </Widget>
-      <Widget xs={12} title="This Year">
+      <Widget xs={12} md={6} title="This Year">
         <ThisYear />
       </Widget>
     </Grid>

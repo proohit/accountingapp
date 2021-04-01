@@ -9,3 +9,14 @@ export interface MonthlyStatisticsData {
   year: number;
   data: MonthlyData[];
 }
+
+export interface MonthCategoryData {
+  type: StatisticsType.CATEGORY_MONTHLY;
+  month: number;
+  data: CategoryBalanceData[];
+}
+
+export interface CategoryBalanceData {
+  category: string;
+  balance: number;
+}

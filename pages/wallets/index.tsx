@@ -1,8 +1,13 @@
-import { Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
+import {
+  Grid,
+  IconButton,
+  LinearProgress,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
 import { AccountBalance, AddBox } from '@material-ui/icons';
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useRecoilState } from 'recoil';
-import { useAuthentication } from '../../src/authentication/hooks/useAuthentication';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
 import { WalletDialogContainer } from '../../src/wallets/components/WalletDialogContainer';
 import {
@@ -19,7 +24,7 @@ const walletPageStyles = makeStyles((theme) => ({
 }));
 
 const WalletPage: React.FunctionComponent = (props) => {
-  const { data: wallets } = useWalletsQuery();
+  const { data: wallets, isFetching } = useWalletsQuery();
   const classes = walletPageStyles();
   const [, setAddWalletDialog] = useRecoilState(addWalletDialogState);
   const [, setEditWalletDialog] = useRecoilState(editWalletDialogState);
@@ -32,7 +37,7 @@ const WalletPage: React.FunctionComponent = (props) => {
     setAddWalletDialog({ open: true });
   };
 
-  return wallets ? (
+  return (
     <Grid container className={classes.walletContainer}>
       <WalletDialogContainer />
       <Grid item container alignItems="center" spacing={2}>
@@ -51,19 +56,23 @@ const WalletPage: React.FunctionComponent = (props) => {
         </Grid>
       </Grid>
       <Grid container spacing={2}>
-        {wallets.map((wallet) => (
-          <Grid item key={wallet.id}>
-            <WalletCard
-              key={wallet.id}
-              wallet={wallet}
-              onWalletClicked={openEditDialog}
-            />
+        {isFetching ? (
+          <Grid item xs>
+            <LinearProgress />
           </Grid>
-        ))}
+        ) : (
+          wallets.map((wallet) => (
+            <Grid item key={wallet.id}>
+              <WalletCard
+                key={wallet.id}
+                wallet={wallet}
+                onWalletClicked={openEditDialog}
+              />
+            </Grid>
+          ))
+        )}
       </Grid>
     </Grid>
-  ) : (
-    <Fragment />
   );
 };
 export default WalletPage;

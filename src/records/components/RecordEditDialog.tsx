@@ -8,6 +8,7 @@ import {
   Toolbar,
   Typography,
   Grid,
+  LinearProgress,
 } from '@material-ui/core';
 import { Close, Delete } from '@material-ui/icons';
 import React, { useState } from 'react';
@@ -24,6 +25,7 @@ interface RecordEditDialogProps {
   categories: Category[];
   owner: string;
   record: Record;
+  isLoading?: boolean;
 }
 
 export const RecordEditDialog = (props: RecordEditDialogProps) => {
@@ -35,6 +37,7 @@ export const RecordEditDialog = (props: RecordEditDialogProps) => {
     categories,
     owner,
     record,
+    isLoading,
   } = props;
   const [editedRecord, setEditedRecord] = useState<Record>(null);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -70,6 +73,7 @@ export const RecordEditDialog = (props: RecordEditDialogProps) => {
           record={record}
           withNewCategory
         />
+        {isLoading && <LinearProgress />}
       </DialogContent>
       <DialogActions>
         <Button color="primary" onClick={onDialogClose} variant="outlined">

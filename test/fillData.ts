@@ -5,7 +5,7 @@ import { services } from '../src/shared/services/services';
 const username = 'direnc';
 
 const createUser = async () => {
-    const user = await register(username, 'test123');
+    const user = await register(username, 'test123', 'test@mail.com');
     console.log('created', user);
     return user;
 };

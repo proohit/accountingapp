@@ -5,11 +5,10 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,37 +16,37 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Build Project
-      run: |
-        npm install
-        npm run build --if-present
-    - name: FTP Deploy
-      uses: SamKirkland/FTP-Deploy-Action@4.0.0
-      with:
-        # ftp server
-        server: ${{ secrets.host }}
-        # ftp username
-        username: ${{ secrets.username }}
-        # ftp password
-        password: ${{ secrets.password }}
-        # Server port to connect to (read your web hosts docs)
-        port: ${{ secrets.sftpport }}
-        # protocol to deploy with - ftp, ftps, or ftps-legacy
-        protocol: ftps
-        # Folder to upload from, must end with trailing slash /
-        local-dir: ./.next
-        # Path to upload to on the server. Must end with trailing slash /
-        server-dir: ${{ secrets.destination }}
-    - name: SSH Commands
-      uses: appleboy/ssh-action@v0.0.7
-      with:
-        host: ${{ secrets.host }}
-        port: ${{ secrets.sshport }}
-        username: ${{ secrets.username }}
-        password: ${{ secrets.password }}
-        script: supervisorctl restart accountingweb
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build Project
+        run: |
+          npm install
+          npm run build --if-present
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          # ftp server
+          server: ${{ secrets.host }}
+          # ftp username
+          username: ${{ secrets.username }}
+          # ftp password
+          password: ${{ secrets.password }}
+          # Server port to connect to (read your web hosts docs)
+          port: ${{ secrets.sftpport }}
+          # protocol to deploy with - ftp, ftps, or ftps-legacy
+          protocol: ftps
+          # Folder to upload from, must end with trailing slash /
+          local-dir: ./.next/
+          # Path to upload to on the server. Must end with trailing slash /
+          server-dir: ${{ secrets.destination }}/
+      - name: SSH Commands
+        uses: appleboy/ssh-action@v0.0.7
+        with:
+          host: ${{ secrets.host }}
+          port: ${{ secrets.sshport }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+          script: supervisorctl restart accountingweb

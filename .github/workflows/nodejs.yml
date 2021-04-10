@@ -38,5 +38,4 @@ jobs:
                   host: ${{ secrets.HOST }}
                   username: ${{ secrets.SSHUSERNAME }}
                   password: ${{ secrets.SSHPASSWORD }}
-                  port: ${{ secrets.PORT }}
                   script: supervisorctl restart accounting2

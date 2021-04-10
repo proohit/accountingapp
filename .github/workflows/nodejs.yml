@@ -17,7 +17,7 @@ jobs:
               with:
                   python-version: '3.x'
             - name: Apply config
-              run: python scripts prepareDeployment.py --dbuser ${{ secrets.DBUSER }} --dbpassword ${{ secrets.DBPASSWORD }} --dbdatabase ${{ secrets.DBDATABASE }} --outputFolder "./" --port 3002
+              run: python scripts/prepareDeployment.py --dbuser ${{ secrets.DBUSER }} --dbpassword ${{ secrets.DBPASSWORD }} --dbdatabase ${{ secrets.DBDATABASE }} --outputFolder "./" --port 3002
             - name: Build Project
               run: |
                   npm install

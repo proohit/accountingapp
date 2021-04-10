@@ -9,6 +9,7 @@
         "setup": "ts-node test/fillData.ts",
         "dev": "nodemon",
         "build": "tsc && npm run doc:prod",
+        "postbuild": "cp package.json dist/package.json && cd dist && npm install --only=production",
         "doc:dev": "redoc-cli bundle api/accountingapp.yaml --output ./docs/index.html",
         "doc:prod": "npx redoc-cli bundle api/accountingapp.yaml --output dist/docs/index.html"
     },

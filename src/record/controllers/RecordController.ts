@@ -1,4 +1,6 @@
+import { Record } from '../../entity/Record';
 import { services } from '../../shared/services/services';
+import { parseIntQuery, parseQuery } from '../../shared/utils/queryUtils';
 import { RecordController } from '../models/RecordController';
 
 const RecordControllerImpl: RecordController = {
@@ -12,7 +14,7 @@ const RecordControllerImpl: RecordController = {
     },
 
     createNewRecord: async (ctx) => {
-        const username = ctx.state.user.username
+        const username = ctx.state.user.username;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
 
         const createdRecord = await services.recordService.createRecord(
@@ -29,24 +31,17 @@ const RecordControllerImpl: RecordController = {
 
     getByUser: async (ctx) => {
         const { username } = ctx.state.user;
-        const {
-            page,
-            itemsPerPage,
-            sortBy,
-            sortDirection,
-            categoryId,
-            walletId,
-            description,
-            timestampFrom,
-            timestampTo,
-        } = ctx.query;
-
+        const { sortBy, sortDirection, categoryId, walletId, description, timestampFrom, timestampTo } = parseQuery(
+            ctx.query,
+        );
+        const page = parseIntQuery(ctx.query.page);
+        const itemsPerPage = parseIntQuery(ctx.query.itemsPerPage);
         const records = await services.recordService.getByQuery(
             {
                 itemsPerPage,
                 page,
-                sortBy,
-                sortDirection,
+                sortBy: sortBy as keyof Record,
+                sortDirection: sortDirection as 'asc' | 'desc',
                 filterBy: { categoryId, walletId, description, timestampFrom, timestampTo },
             },
             username,

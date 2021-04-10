@@ -1,14 +1,16 @@
 import { MissingProperty } from '../../shared/models/Errors';
 import { services } from '../../shared/services/services';
+import { parseIntQuery, parseQuery } from '../../shared/utils/queryUtils';
 import { StatisticsController } from '../models/StatisticsController';
 import { DailyData, DailyStatisticsResult, StatisticsType } from '../models/StatisticsResult';
 
 const StatisticsControllerImpl: StatisticsController = {
     async getStatistics(ctx) {
         const username = ctx.state.user.username;
-        const requestedType: StatisticsType = ctx.query.type;
-        const month = Number(ctx.query.month);
-        const year = Number(ctx.query.year);
+        const requestedType = parseQuery(ctx.query).type;
+        const month = parseIntQuery(ctx.query.month);
+        const year = parseIntQuery(ctx.query.year);
+
         if (!requestedType) {
             throw new MissingProperty(['type']);
         }
@@ -34,9 +36,9 @@ const StatisticsControllerImpl: StatisticsController = {
     },
     async getCategoryStatistics(ctx) {
         const username = ctx.state.user.username;
-        const requestedType: StatisticsType = ctx.query.type;
-        const month = Number(ctx.query.month);
-        const year = Number(ctx.query.year);
+        const requestedType = parseQuery(ctx.query).type;
+        const month = parseIntQuery(ctx.query.month);
+        const year = parseIntQuery(ctx.query.year);
         if (requestedType === StatisticsType.CATEGORY_MONTHLY) {
             if (!month) {
                 throw new MissingProperty(['month']);

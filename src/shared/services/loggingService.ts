@@ -1,5 +1,5 @@
 import winston from 'winston';
-import config from '../../../config';
+import config from '../../../config.json';
 const { combine, colorize, json, prettyPrint, timestamp, simple } = winston.format;
 const setupFormat = combine(json(), prettyPrint());
 

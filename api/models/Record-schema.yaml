@@ -1,0 +1,66 @@
+Record:
+    type: object
+    properties:
+        id:
+            $ref: '#/RecordId'
+        description:
+            type: string
+        value:
+            type: number
+        timestamp:
+            type: string
+            format: date-time
+        walletId:
+            $ref: ./Wallet-schema.yaml#/WalletId
+        ownerUsername:
+            $ref: ./User-schema.yaml#/Username
+        categoryId:
+            $ref: ./Category-schema.yaml#/CategoryId
+NewRecord:
+    type: object
+    required:
+        - description
+        - value
+        - timestamp
+        - walletId
+        - categoryId
+    properties:
+        description:
+            type: string
+        value:
+            type: number
+        timestamp:
+            type: string
+            format: date-time
+        walletId:
+            $ref: ./Wallet-schema.yaml#/WalletId
+        categoryId:
+            $ref: ./Category-schema.yaml#/CategoryId
+UpdateRecord:
+    type: object
+    properties:
+        description:
+            type: string
+        value:
+            type: number
+        timestamp:
+            type: string
+            format: date-time
+        wallet:
+            $ref: ./Wallet-schema.yaml#/WalletName
+        category:
+            $ref: ./Category-schema.yaml#/CategoryName
+
+PaginatedRecords:
+    type: object
+    properties:
+        data:
+            type: array
+            items:
+                $ref: '#/Record'
+        page:
+            type: number
+        count:
+            type: number
+RecordId:
+    type: number

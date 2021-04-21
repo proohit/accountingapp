@@ -1,0 +1,99 @@
+categories:
+    get:
+        tags:
+            - categories
+        description: Returns all categories by current user
+        operationId: Categories by user
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: ../accountingapp.yaml#/components/schemas/Category
+    post:
+        tags:
+            - categories
+        description: Creates a new category for the current user
+        operationId: New category
+        requestBody:
+            description: new category object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../accountingapp.yaml#/components/schemas/NewCategory
+        responses:
+            201:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/Category
+categories/{categoryId}:
+    delete:
+        tags:
+            - categories
+        operationId: Delete category
+        description: Deletes a category of the current user and all referenced records
+        parameters:
+            - in: path
+              name: categoryId
+              required: true
+              description: id of a category to delete
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/MessageResult
+    get:
+        tags:
+            - categories
+        operationId: Category by id
+        description: Returns a category with the requested name of the current user
+        parameters:
+            - in: path
+              name: categoryId
+              required: true
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/Category
+    put:
+        tags:
+            - categories
+        description: Update a category
+        operationId: Update category
+        parameters:
+            - in: path
+              name: categoryId
+              required: true
+              description: category to update
+              example:
+              schema:
+                  $ref: ../accountingapp.yaml#/components/schemas/CategoryId
+        requestBody:
+            description: updated category object
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: ../accountingapp.yaml#/components/schemas/UpdateCategory
+        responses:
+            200:
+                description: OK
+                content:
+                    application/json:
+                        schema:
+                            $ref: ../accountingapp.yaml#/components/schemas/Category

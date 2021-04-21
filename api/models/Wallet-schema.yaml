@@ -1,0 +1,35 @@
+Wallet:
+    type: object
+    description: ''
+    properties:
+        id:
+            $ref: '#/WalletId'
+        name:
+            $ref: '#/WalletName'
+        balance:
+            type: number
+        ownerUsername:
+            $ref: ../accountingapp.yaml#/components/schemas/Username
+UpdateWallet:
+    type: object
+    properties:
+        name:
+            type: string
+        balance:
+            type: number
+NewWallet:
+    title: NewWallet
+    type: object
+    description: New wallet schema
+    required:
+        - name
+        - balance
+    properties:
+        name:
+            type: string
+        balance:
+            type: number
+WalletName:
+    type: string
+WalletId:
+    type: string

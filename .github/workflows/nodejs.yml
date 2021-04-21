@@ -1,0 +1,41 @@
+name: Node.js CI
+
+on:
+    push:
+        branches: [master]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: '3.x'
+            - name: Apply config
+              run: python scripts/prepareDeployment.py --dbuser ${{ secrets.DBUSER }} --dbpassword ${{ secrets.DBPASSWORD }} --dbdatabase ${{ secrets.DBDATABASE }} --outputFolder "./" --port 3002
+            - name: Build Project
+              run: |
+                  npm install
+                  npm run build
+            - name: Deploy
+              uses: appleboy/scp-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.SSHUSERNAME }}
+                  password: ${{ secrets.SSHPASSWORD }}
+                  source: 'dist/*'
+                  target: ${{ secrets.DESTINATION }}
+                  strip_components: 1
+                  rm: true
+            - name: executing remote ssh commands using password
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.SSHUSERNAME }}
+                  password: ${{ secrets.SSHPASSWORD }}
+                  script: supervisorctl restart accounting2

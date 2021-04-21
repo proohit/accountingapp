@@ -1,0 +1,86 @@
+name: AccountingApp Pipeline
+
+on:
+    push:
+        branches: [master]
+
+jobs:
+    backend:
+        runs-on: ubuntu-latest
+        env:
+          working-dir: ./backend
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: '3.x'
+            - name: Apply config
+              working-directory: ${{env.working-dir}}
+              run: python scripts/prepareDeployment.py --dbuser ${{ secrets.DBUSER }} --dbpassword ${{ secrets.DBPASSWORD }} --dbdatabase ${{ secrets.DBDATABASE }} --outputFolder "./" --port 3002
+            - name: Build Project
+              working-directory: ${{env.working-dir}}
+              run: |
+                  npm install
+                  npm run build
+            - name: Deploy
+              uses: appleboy/scp-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.SSHUSERNAME }}
+                  password: ${{ secrets.SSHPASSWORD }}
+                  source: 'backend/dist/*'
+                  target: ${{ secrets.BACKEND_DESTINATION }}
+                  strip_components: 2
+                  rm: true
+            - name: executing remote ssh commands using password
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.SSHUSERNAME }}
+                  password: ${{ secrets.SSHPASSWORD }}
+                  script: supervisorctl restart accounting2
+    frontend:
+      runs-on: ubuntu-latest
+      env:
+        working-dir: ./frontend
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v2
+          with:
+            node-version: '14'
+        - name: Build Project
+          working-directory: ${{env.working-dir}}
+          run: |
+            npm install
+            npm run build:static
+        - name: Deploy
+          uses: appleboy/scp-action@master
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.SSHUSERNAME }}
+            password: ${{ secrets.SSHPASSWORD }}
+            source: 'frontend/out/*'
+            target: ${{ secrets.FRONTEND_DESTINATION }}
+            strip_components: 2
+            rm: true
+    release:
+        runs-on: ubuntu-latest
+        env:
+            working-dir: ./frontend
+        needs: [backend, frontend]
+        steps:
+            - uses: actions/checkout@master
+            - name: Extract version
+              id: extract_version
+              uses: Saionaro/extract-package-version@v1.1.1
+              with:
+                path: frontend
+            - uses: ncipollo/release-action@v1
+              with:
+                name: ${{ steps.extract_version.outputs.version }}
+                tag: ${{ steps.extract_version.outputs.version }}
+                token: ${{ secrets.GITHUB_TOKEN }}
+

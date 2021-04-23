@@ -2,6 +2,7 @@ import {
   Button,
   Container,
   Grid,
+  LinearProgress,
   makeStyles,
   TextField,
   Typography,
@@ -31,15 +32,22 @@ export const useStyles = makeStyles((theme) => ({
 export function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const classes = useStyles();
   const router = useRouter();
   const { login } = useAuthentication();
 
   const handleSubmit = async () => {
-    await AUTHENTICATION_API.login(username, password);
-    const loggedInUser = await USER_API_SERVICE.getCurrentUser();
-    login(loggedInUser.username);
-    router.push('/home');
+    try {
+      setLoginLoading(true);
+      await AUTHENTICATION_API.login(username, password);
+      const loggedInUser = await USER_API_SERVICE.getCurrentUser();
+      login(loggedInUser.username);
+      setLoginLoading(false);
+      router.push('/home');
+    } finally {
+      setLoginLoading(false);
+    }
   };
 
   return (
@@ -74,6 +82,7 @@ export function LoginForm() {
               autoComplete="current-password"
               onChange={(event) => setPassword(event.target.value)}
             />
+            {loginLoading && <LinearProgress />}
             <Button
               type="submit"
               fullWidth

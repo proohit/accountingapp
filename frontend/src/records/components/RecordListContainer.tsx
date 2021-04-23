@@ -112,15 +112,13 @@ export const RecordListContainer: FunctionComponent = () => {
       onChangeRowsPerPage={updateRowsPerPage}
     />
   );
-  const noRecords = !paginatedResult?.data || paginatedResult.totalCount <= 0;
-  const noRecordsText = (
-    <Typography>No records yet. Start tracking by creating a record</Typography>
-  );
 
   if (recordsLoading || walletsLoading || categoriesLoading) {
     return <LinearProgress />;
   }
 
+  const noRecords = !paginatedResult?.data || paginatedResult.totalCount <= 0;
+  const noRecordsText = 'No records yet. Start tracking by creating a record';
   return (
     <>
       <RecordsTableToolbar
@@ -136,33 +134,33 @@ export const RecordListContainer: FunctionComponent = () => {
               sortDirection={currentSort.sortDirection}
               sortClicked={handleSortClicked}
             />
-            {noRecords ? (
-              noRecordsText
-            ) : (
-              <RecordTableBody
-                records={paginatedResult.data}
-                onRecordClicked={openEditRecordsDialog}
-                categories={categories}
-                wallets={wallets}
-              />
-            )}
+            <RecordTableBody
+              records={paginatedResult.data}
+              onRecordClicked={openEditRecordsDialog}
+              categories={categories}
+              wallets={wallets}
+              noRecords={noRecords}
+              noRecordsText={noRecordsText}
+            />
           </RecordsTable>
         </Hidden>
         <Hidden mdUp>
           <Paper variant="outlined">
             <Divider />
             <List>
-              {noRecords
-                ? noRecordsText
-                : paginatedResult.data.map((record) => (
-                    <MobileRecordItem
-                      key={record.id}
-                      record={record}
-                      onRecordClick={openEditRecordsDialog}
-                      categories={categories}
-                      wallets={wallets}
-                    />
-                  ))}
+              {noRecords ? (
+                <Typography color="primary">noRecordsText</Typography>
+              ) : (
+                paginatedResult.data.map((record) => (
+                  <MobileRecordItem
+                    key={record.id}
+                    record={record}
+                    onRecordClick={openEditRecordsDialog}
+                    categories={categories}
+                    wallets={wallets}
+                  />
+                ))
+              )}
             </List>
             {recordsPagination}
           </Paper>

@@ -15,11 +15,11 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     setIsLoading(false);
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUsername('');
     setAuthenticated(false);
     setIsLoading(false);
-    AUTHENTICATION_API.logout();
+    await AUTHENTICATION_API.logout();
   };
 
   const loginFromLocalStorage = async () => {
@@ -30,12 +30,12 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     try {
       currentUser = await USER_API_SERVICE.getCurrentUser();
     } catch (e) {
-      logout();
+      await logout();
       return;
     }
 
     if (!currentUser) {
-      logout();
+      await logout();
       return;
     }
 

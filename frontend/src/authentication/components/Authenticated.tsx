@@ -19,7 +19,19 @@ const Authenticated: React.FunctionComponent<IAuthenticatedProps> = (props) => {
     );
   };
 
+  const isLoggedInAndAccessAuthentication = () => {
+    return (
+      authenticated &&
+      !isLoginLoading &&
+      (router.route === '/login' || router.route === '/register')
+    );
+  };
+
   useEffect(() => {
+    if (isLoggedInAndAccessAuthentication()) {
+      router.push('/home');
+      return;
+    }
     if (needsLogin()) {
       router.push('/login');
     }
@@ -27,7 +39,7 @@ const Authenticated: React.FunctionComponent<IAuthenticatedProps> = (props) => {
 
   return (
     <Fragment>
-      {isLoginLoading ? (
+      {isLoginLoading && !authenticated ? (
         <Backdrop open={true}>
           <CircularProgress />
         </Backdrop>

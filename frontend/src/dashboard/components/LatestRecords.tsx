@@ -1,11 +1,4 @@
-import {
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from '@material-ui/core';
+import { Grid, List, ListItem, Typography } from '@material-ui/core';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { useCategoriesQuery } from '../../records/hooks/categoriesQueries';

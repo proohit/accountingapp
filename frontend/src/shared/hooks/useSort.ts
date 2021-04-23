@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SortHook } from '../models/SortHook';
-import { SortOrder, Order } from '../models/SortOrder';
+import { Order, SortOrder } from '../models/SortOrder';
 
 export const useSort = <K>(initialState?: SortOrder<K>): SortHook<K> => {
   const defaultSortOrder: SortOrder<K> = {

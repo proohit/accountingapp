@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   Bar,
   BarChart,
-  Brush,
   CartesianGrid,
   Rectangle,
   ResponsiveContainer,

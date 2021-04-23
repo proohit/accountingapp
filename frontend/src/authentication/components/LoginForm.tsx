@@ -9,12 +9,7 @@ import {
 } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { notificationState } from '../../shared/hooks/notificationState';
-import { Error } from '../../shared/models/Error';
-import USER_API_SERVICE from '../../users/services/UserApiService';
 import { useAuthentication } from '../hooks/useAuthentication';
-import { AUTHENTICATION_API } from '../services/AuthenticationApi';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {

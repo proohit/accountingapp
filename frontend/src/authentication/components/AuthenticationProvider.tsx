@@ -1,6 +1,6 @@
 import { useRouter } from 'next/dist/client/router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { User } from '../../users/models/User';
 import USER_API_SERVICE from '../../users/services/UserApiService';

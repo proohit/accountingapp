@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { AccountBalance, AddBox } from '@material-ui/icons';
 import React from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
 import { WalletDialogContainer } from '../../src/wallets/components/WalletDialogContainer';
 import {

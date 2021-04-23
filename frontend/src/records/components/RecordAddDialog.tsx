@@ -1,9 +1,9 @@
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  DialogActions,
   LinearProgress,
 } from '@material-ui/core';
 import React, { useState } from 'react';

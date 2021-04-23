@@ -1,13 +1,11 @@
 import {
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  DialogActions,
-  IconButton,
-  Toolbar,
-  Typography,
   Grid,
+  IconButton,
   LinearProgress,
 } from '@material-ui/core';
 import { Close, Delete } from '@material-ui/icons';

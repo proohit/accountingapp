@@ -1,6 +1,6 @@
 import { IconButton } from '@material-ui/core';
-import React, { FunctionComponent } from 'react';
 import { Menu } from '@material-ui/icons';
+import React, { FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
 import { mobileDrawerOpenState } from '../hooks/mobileDrawerOpenState';
 

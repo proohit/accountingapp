@@ -39,7 +39,7 @@ export const RegisterForm: FunctionComponent = () => {
   const classes = useStyles();
   const router = useRouter();
   const {
-    login,
+    offlineLogin,
     authenticated,
     username: loggedInUsername,
   } = useAuthentication();
@@ -50,15 +50,9 @@ export const RegisterForm: FunctionComponent = () => {
       password,
       email
     );
-    login(createdUser.username);
+    offlineLogin(createdUser.username);
     setRegisterGreeting(true);
   };
-
-  useEffect(() => {
-    if (authenticated) {
-      router.push('/home');
-    }
-  }, []);
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/dist/client/router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
@@ -5,14 +6,32 @@ import { User } from '../../users/models/User';
 import USER_API_SERVICE from '../../users/services/UserApiService';
 import { AuthenticationContext } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
+import { isAuthenticationRoute } from '../services/RoutingService';
 
 export const AuthenticationProvider: FunctionComponent = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [, setNotification] = useRecoilState(notificationState);
+  const router = useRouter();
 
-  const login = (loggedInUsername: string) => {
+  const login = async (usernameForLogin: string, password: string) => {
+    setIsLoading(true);
+    try {
+      await AUTHENTICATION_API.login(usernameForLogin, password);
+      const loggedInUser = await USER_API_SERVICE.getCurrentUser();
+      setUsername(loggedInUser.username);
+      setAuthenticated(true);
+      return loggedInUser;
+    } catch (err) {
+      const error: Error = err;
+      setNotification({ severity: 'error', content: error.message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const offlineLogin = (loggedInUsername: string) => {
     setUsername(loggedInUsername);
     setAuthenticated(true);
     setIsLoading(false);
@@ -33,17 +52,19 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     try {
       currentUser = await USER_API_SERVICE.getCurrentUser();
     } catch (e) {
-      await logout();
-      setNotification({ severity: 'error', content: e?.message });
-      return;
+      if (!isAuthenticationRoute(router.route)) {
+        setNotification({ severity: 'error', content: e?.message });
+      }
     }
 
     if (!currentUser) {
       await logout();
+      setIsLoading(false);
       return;
     }
 
-    login(currentUser.username);
+    offlineLogin(currentUser.username);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -55,6 +76,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
       value={{
         authenticated,
         login,
+        offlineLogin,
         logout,
         username,
         isLoginLoading: isLoading,

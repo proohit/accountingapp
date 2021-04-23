@@ -35,24 +35,14 @@ export const useStyles = makeStyles((theme) => ({
 export function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loginLoading, setLoginLoading] = useState(false);
   const classes = useStyles();
   const router = useRouter();
-  const { login } = useAuthentication();
-  const [, setNotification] = useRecoilState(notificationState);
+  const { login, isLoginLoading } = useAuthentication();
 
   const handleSubmit = async () => {
-    try {
-      setLoginLoading(true);
-      await AUTHENTICATION_API.login(username, password);
-      const loggedInUser = await USER_API_SERVICE.getCurrentUser();
-      login(loggedInUser.username);
+    const user = await login(username, password);
+    if (user) {
       router.push('/home');
-    } catch (err) {
-      const error: Error = err;
-      setNotification({ severity: 'error', content: error.message });
-    } finally {
-      setLoginLoading(false);
     }
   };
 
@@ -88,7 +78,7 @@ export function LoginForm() {
               autoComplete="current-password"
               onChange={(event) => setPassword(event.target.value)}
             />
-            {loginLoading && <LinearProgress />}
+            {isLoginLoading && <LinearProgress />}
             <Button
               type="submit"
               fullWidth

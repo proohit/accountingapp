@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
@@ -37,7 +37,7 @@ export const RecordListContainer: FunctionComponent = () => {
   const setSortRecordsDialog = useSetRecoilState(sortRecordDialogState);
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
-  const [currentFilter] = useRecoilState(currentFilterState);
+  const currentFilter = useRecoilValue(currentFilterState);
 
   const { data: paginatedResult, isFetching: recordsLoading } = useRecordsQuery(
     {

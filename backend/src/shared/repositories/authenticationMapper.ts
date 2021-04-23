@@ -3,8 +3,14 @@ import AES from 'crypto-js/aes';
 import passport from 'koa-passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { DuplicatedUser } from '../../user/models/Errors';
-import { InvalidCredentials, MissingProperty } from '../models/Errors';
+import { BadRequest, InvalidCredentials, MissingProperty } from '../models/Errors';
 import { LoginToken } from '../models/Login';
+import { sanitizePassword, sanitizeUsername } from '../services/AuthenticationSanitizer';
+import {
+    getEmailValidationError,
+    getPasswordValidationError,
+    getUsernameValidationError,
+} from '../services/AuthenticationValidator';
 import { repositories } from './database';
 
 passport.serializeUser((username, done) => {
@@ -18,10 +24,19 @@ passport.deserializeUser(async (username, done) => {
 
 passport.use(
     new LocalStrategy({}, async (username, password, done) => {
-        const userToLogin = await repositories.users().findOne(username);
-
+        const sanitizedUsername = sanitizeUsername(username);
+        const sanitizedPassword = sanitizePassword(password);
+        const usernameError = getUsernameValidationError(sanitizedUsername);
+        if (usernameError) {
+            done(null, null, new BadRequest(usernameError));
+        }
+        const passwordError = getPasswordValidationError(sanitizedPassword);
+        if (passwordError) {
+            done(null, null, new BadRequest(passwordError));
+        }
+        const userToLogin = await repositories.users().findOne(sanitizedUsername);
         if (!userToLogin) {
-            return done(new InvalidCredentials());
+            return done(null, false, new InvalidCredentials());
         }
 
         const privateKey = userToLogin.private_key;
@@ -30,10 +45,10 @@ passport.use(
         let passwordDecrypted = AES.decrypt(dbPassword, privateKey);
         passwordDecrypted = crypto.enc.Utf8.stringify(passwordDecrypted);
 
-        if (password === passwordDecrypted) {
+        if (sanitizedPassword === passwordDecrypted) {
             return done(null, userToLogin);
         } else {
-            return done(new InvalidCredentials());
+            return done(null, false, new InvalidCredentials());
         }
     }),
 );
@@ -50,6 +65,15 @@ export const register = async (username: string, password: string, email: string
     }
     if (missingProperties.length) {
         throw new MissingProperty(missingProperties);
+    }
+    if (getUsernameValidationError(username)) {
+        throw new BadRequest(getUsernameValidationError(username));
+    }
+    if (getPasswordValidationError(password)) {
+        throw new BadRequest(getPasswordValidationError(password));
+    }
+    if (getEmailValidationError(email)) {
+        throw new BadRequest(getEmailValidationError(email));
     }
     const existingUser = await repositories.users().findOne({ where: [{ email }, { username }] });
     if (existingUser) {

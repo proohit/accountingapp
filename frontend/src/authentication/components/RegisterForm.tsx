@@ -16,6 +16,11 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
+import {
+  getUsernameValidationError,
+  getPasswordValidationError,
+  getEmailValidationError,
+} from '../services/AuthenticationValidator';
 import { registerGreetingState } from './registerGreetingState';
 
 export const useStyles = makeStyles((theme) => ({
@@ -38,6 +43,11 @@ export const RegisterForm: FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [isValid, setIsValid] = useState(false);
+
   const [registerGreeting, setRegisterGreeting] = useRecoilState(
     registerGreetingState
   );
@@ -49,6 +59,36 @@ export const RegisterForm: FunctionComponent = () => {
     isLoginLoading,
     username: loggedInUsername,
   } = useAuthentication();
+
+  const validateUsername = () => {
+    let error = getUsernameValidationError(username);
+    setUsernameError(error);
+    setIsValid(
+      !getPasswordValidationError(password) &&
+        !getEmailValidationError(email) &&
+        !error
+    );
+  };
+
+  const validatePassword = () => {
+    let error = getPasswordValidationError(password);
+    setPasswordError(error);
+    setIsValid(
+      !getUsernameValidationError(username) &&
+        !getEmailValidationError(email) &&
+        !error
+    );
+  };
+
+  const validateEmail = () => {
+    let error = getEmailValidationError(email);
+    setEmailError(error);
+    setIsValid(
+      !getUsernameValidationError(username) &&
+        !getPasswordValidationError(password) &&
+        !error
+    );
+  };
 
   const handleSubmit = async () => {
     setRegisterLoading(true);
@@ -64,6 +104,14 @@ export const RegisterForm: FunctionComponent = () => {
       setNotification({ severity: 'error', content: err?.message });
     } finally {
       setRegisterLoading(false);
+    }
+  };
+
+  const handleEnterPress = (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ): void => {
+    if (event.key === 'Enter' && isValid) {
+      handleSubmit();
     }
   };
 
@@ -112,6 +160,10 @@ export const RegisterForm: FunctionComponent = () => {
                 name="username"
                 autoComplete="username"
                 autoFocus
+                error={!!usernameError}
+                helperText={usernameError}
+                onBlur={() => validateUsername()}
+                onKeyPress={handleEnterPress}
                 onChange={(event) => setUsername(event.target.value)}
               />
               <TextField
@@ -122,7 +174,12 @@ export const RegisterForm: FunctionComponent = () => {
                 id="email"
                 label="Email"
                 name="email"
+                type="email"
                 autoComplete="email"
+                error={!!emailError}
+                helperText={emailError}
+                onBlur={() => validateEmail()}
+                onKeyPress={handleEnterPress}
                 onChange={(event) => setEmail(event.target.value)}
               />
               <TextField
@@ -135,6 +192,10 @@ export const RegisterForm: FunctionComponent = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={!!passwordError}
+                helperText={passwordError}
+                onBlur={() => validatePassword()}
+                onKeyPress={handleEnterPress}
                 onChange={(event) => setPassword(event.target.value)}
               />
               {(isLoginLoading || registerLoading) && <LinearProgress />}
@@ -144,6 +205,7 @@ export const RegisterForm: FunctionComponent = () => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                disabled={!isValid}
                 onClick={handleSubmit}
               >
                 Register

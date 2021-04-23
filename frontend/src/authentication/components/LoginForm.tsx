@@ -10,6 +10,10 @@ import {
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
 import { useAuthentication } from '../hooks/useAuthentication';
+import {
+  getUsernameValidationError,
+  getPasswordValidationError,
+} from '../services/AuthenticationValidator';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,11 +37,34 @@ export function LoginForm() {
   const classes = useStyles();
   const router = useRouter();
   const { login, isLoginLoading } = useAuthentication();
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isValid, setIsValid] = useState(false);
+
+  const validateUsername = () => {
+    let error = getUsernameValidationError(username);
+    setUsernameError(error);
+    setIsValid(!getPasswordValidationError(password) && !error);
+  };
+
+  const validatePassword = () => {
+    let error = getPasswordValidationError(password);
+    setPasswordError(error);
+    setIsValid(!getUsernameValidationError(username) && !error);
+  };
 
   const handleSubmit = async () => {
     const user = await login(username, password);
     if (user) {
       router.push('/home');
+    }
+  };
+
+  const handleEnterPress = (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ): void => {
+    if (event.key === 'Enter' && isValid) {
+      handleSubmit();
     }
   };
 
@@ -59,6 +86,10 @@ export function LoginForm() {
               name="username"
               autoComplete="username"
               autoFocus
+              onKeyPress={handleEnterPress}
+              error={!!usernameError}
+              helperText={usernameError}
+              onBlur={() => validateUsername()}
               onChange={(event) => setUsername(event.target.value)}
             />
             <TextField
@@ -71,6 +102,10 @@ export function LoginForm() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onKeyPress={handleEnterPress}
+              onBlur={() => validatePassword()}
+              error={!!passwordError}
+              helperText={passwordError}
               onChange={(event) => setPassword(event.target.value)}
             />
             {isLoginLoading && <LinearProgress />}
@@ -80,6 +115,7 @@ export function LoginForm() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={!isValid}
               onClick={handleSubmit}
             >
               Sign In

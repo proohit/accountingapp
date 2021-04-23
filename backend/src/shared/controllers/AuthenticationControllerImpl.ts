@@ -10,7 +10,10 @@ const AuthenticationControllerImpl: AuthenticationController = {
                 throw err;
             }
             if (!user && info) {
-                throw new InvalidCredentials();
+                if (!info.status) {
+                    throw new InvalidCredentials();
+                }
+                throw info;
             }
             if (user) {
                 ctx.body = { username: user.username };

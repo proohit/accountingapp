@@ -1,8 +1,10 @@
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
 import React, { Fragment, useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { isAuthenticationRoute } from '../services/RoutingService';
+import { registerGreetingState } from './registerGreetingState';
 
 interface IAuthenticatedProps {}
 const historyStack = [];
@@ -10,7 +12,7 @@ const historyStack = [];
 const Authenticated: React.FunctionComponent<IAuthenticatedProps> = (props) => {
   const router = useRouter();
   const { authenticated, isLoginLoading } = useAuthentication();
-
+  const registerGreeting = useRecoilValue(registerGreetingState);
   const needsLogin = () => {
     return (
       !authenticated && !isLoginLoading && !isAuthenticationRoute(router.route)
@@ -30,7 +32,7 @@ const Authenticated: React.FunctionComponent<IAuthenticatedProps> = (props) => {
   };
 
   useEffect(() => {
-    if (isLoggedInAndAccessAuthentication()) {
+    if (isLoggedInAndAccessAuthentication() && !registerGreeting) {
       router.push('/home');
       return;
     }

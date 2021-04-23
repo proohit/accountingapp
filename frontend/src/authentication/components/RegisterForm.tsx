@@ -5,15 +5,18 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  LinearProgress,
   makeStyles,
   TextField,
   Typography,
 } from '@material-ui/core';
-import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { notificationState } from '../../shared/hooks/notificationState';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
+import { registerGreetingState } from './registerGreetingState';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,23 +38,33 @@ export const RegisterForm: FunctionComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [registerGreeting, setRegisterGreeting] = useState(false);
+  const [registerGreeting, setRegisterGreeting] = useRecoilState(
+    registerGreetingState
+  );
+  const [, setNotification] = useRecoilState(notificationState);
+  const [registerLoading, setRegisterLoading] = useState(false);
   const classes = useStyles();
-  const router = useRouter();
   const {
     offlineLogin,
-    authenticated,
+    isLoginLoading,
     username: loggedInUsername,
   } = useAuthentication();
 
   const handleSubmit = async () => {
-    const createdUser = await AUTHENTICATION_API.register(
-      username,
-      password,
-      email
-    );
-    offlineLogin(createdUser.username);
-    setRegisterGreeting(true);
+    setRegisterLoading(true);
+    try {
+      const createdUser = await AUTHENTICATION_API.register(
+        username,
+        password,
+        email
+      );
+      setRegisterGreeting(true);
+      offlineLogin(createdUser.username);
+    } catch (err) {
+      setNotification({ severity: 'error', content: err?.message });
+    } finally {
+      setRegisterLoading(false);
+    }
   };
 
   return (
@@ -73,6 +86,7 @@ export const RegisterForm: FunctionComponent = () => {
                 variant="outlined"
                 color="primary"
                 component="a"
+                onClick={() => setRegisterGreeting(false)}
               >
                 Wallets page
               </Button>
@@ -123,6 +137,7 @@ export const RegisterForm: FunctionComponent = () => {
                 autoComplete="current-password"
                 onChange={(event) => setPassword(event.target.value)}
               />
+              {(isLoginLoading || registerLoading) && <LinearProgress />}
               <Button
                 type="submit"
                 fullWidth

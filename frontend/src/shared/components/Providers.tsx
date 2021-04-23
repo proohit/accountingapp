@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
 import { AuthenticationProvider } from '../../authentication/components/AuthenticationProvider';
 import { AccTheme } from '../globals/styles/AccTheme';
+import NotificationBar from './NotificationBar';
 const queryClient = new QueryClient();
 
 const Providers: FunctionComponent = (props) => {
@@ -15,7 +16,10 @@ const Providers: FunctionComponent = (props) => {
       <MuiPickersUtilsProvider utils={DayjsUtils}>
         <RecoilRoot>
           <QueryClientProvider client={queryClient}>
-            <AuthenticationProvider>{props.children}</AuthenticationProvider>
+            <AuthenticationProvider>
+              <NotificationBar />
+              {props.children}
+            </AuthenticationProvider>
           </QueryClientProvider>
         </RecoilRoot>
       </MuiPickersUtilsProvider>

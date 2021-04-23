@@ -1,4 +1,5 @@
 import { Grid, Hidden, makeStyles } from '@material-ui/core';
+import Head from 'next/head';
 import React, { FunctionComponent } from 'react';
 import { RecordDialogContainer } from '../../src/records/components/RecordDialogContainer';
 import { RecordFilterBarContainer } from '../../src/records/components/RecordFilterBarContainer';
@@ -16,6 +17,19 @@ const RecordPage: FunctionComponent = (props) => {
 
   return (
     <>
+      <Head>
+        <title>Records - AccountingApp</title>
+        <meta
+          property="og:title"
+          content="Records - AccountingApp"
+          key="title"
+        />
+        <meta
+          property="og:description"
+          content="Records overview in the AccountingApp."
+          key="description"
+        />
+      </Head>
       <Grid item xs className={classes.list}>
         <RecordDialogContainer />
         <RecordListContainer />

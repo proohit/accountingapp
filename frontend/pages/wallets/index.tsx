@@ -6,6 +6,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { AccountBalance, AddBox } from '@material-ui/icons';
+import Head from 'next/head';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
@@ -38,47 +39,62 @@ const WalletPage: React.FunctionComponent = (props) => {
   };
 
   return (
-    <Grid container className={classes.walletContainer}>
-      <WalletDialogContainer />
-      <Grid item container alignItems="center" spacing={2}>
-        <Grid item>
-          <AccountBalance fontSize="large" color="primary" />
-        </Grid>
-        <Grid item>
-          <Typography variant="h3" color="primary">
-            Wallets
-          </Typography>
-        </Grid>
-        <Grid item>
-          <IconButton color="primary" onClick={openAddDialog}>
-            <AddBox />
-          </IconButton>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        {isFetching ? (
-          <Grid item xs>
-            <LinearProgress />
-          </Grid>
-        ) : wallets.length ? (
-          wallets.map((wallet) => (
-            <Grid item key={wallet.id}>
-              <WalletCard
-                key={wallet.id}
-                wallet={wallet}
-                onWalletClicked={openEditDialog}
-              />
-            </Grid>
-          ))
-        ) : (
+    <>
+      <Head>
+        <title>Wallets - AccountingApp</title>
+        <meta
+          property="og:title"
+          content="Wallets - AccountingApp"
+          key="title"
+        />
+        <meta
+          property="og:description"
+          content="Wallets overview in the AccountingApp"
+          key="description"
+        />
+      </Head>
+      <Grid container className={classes.walletContainer}>
+        <WalletDialogContainer />
+        <Grid item container alignItems="center" spacing={2}>
           <Grid item>
-            <Typography color="primary">
-              You have no Wallets. Create one!
+            <AccountBalance fontSize="large" color="primary" />
+          </Grid>
+          <Grid item>
+            <Typography variant="h3" color="primary">
+              Wallets
             </Typography>
           </Grid>
-        )}
+          <Grid item>
+            <IconButton color="primary" onClick={openAddDialog}>
+              <AddBox />
+            </IconButton>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          {isFetching ? (
+            <Grid item xs>
+              <LinearProgress />
+            </Grid>
+          ) : wallets.length ? (
+            wallets.map((wallet) => (
+              <Grid item key={wallet.id}>
+                <WalletCard
+                  key={wallet.id}
+                  wallet={wallet}
+                  onWalletClicked={openEditDialog}
+                />
+              </Grid>
+            ))
+          ) : (
+            <Grid item>
+              <Typography color="primary">
+                You have no Wallets. Create one!
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 export default WalletPage;

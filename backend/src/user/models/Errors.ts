@@ -5,3 +5,9 @@ export class UserNotFound extends ResourceNotFound {
         super('User not found');
     }
 }
+
+export class DuplicatedUser extends ResourceNotFound {
+    constructor() {
+        super('User already exists');
+    }
+}

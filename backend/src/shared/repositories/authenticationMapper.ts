@@ -2,7 +2,8 @@ import crypto from 'crypto-js';
 import AES from 'crypto-js/aes';
 import passport from 'koa-passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { InvalidCredentials } from '../models/Errors';
+import { DuplicatedUser } from '../../user/models/Errors';
+import { InvalidCredentials, MissingProperty } from '../models/Errors';
 import { LoginToken } from '../models/Login';
 import { repositories } from './database';
 
@@ -37,6 +38,23 @@ passport.use(
     }),
 );
 export const register = async (username: string, password: string, email: string): Promise<LoginToken> => {
+    const missingProperties = [];
+    if (!username) {
+        missingProperties.push('username');
+    }
+    if (!password) {
+        missingProperties.push('password');
+    }
+    if (!email) {
+        missingProperties.push('email');
+    }
+    if (missingProperties.length) {
+        throw new MissingProperty(missingProperties);
+    }
+    const existingUser = await repositories.users().findOne({ where: [{ email }, { username }] });
+    if (existingUser) {
+        throw new DuplicatedUser();
+    }
     let private_key = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;

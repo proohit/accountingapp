@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import Link from 'next/link';
 import React, { FunctionComponent, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
@@ -41,7 +41,7 @@ export const RegisterForm: FunctionComponent = () => {
   const [registerGreeting, setRegisterGreeting] = useRecoilState(
     registerGreetingState
   );
-  const [, setNotification] = useRecoilState(notificationState);
+  const setNotification = useSetRecoilState(notificationState);
   const [registerLoading, setRegisterLoading] = useState(false);
   const classes = useStyles();
   const {

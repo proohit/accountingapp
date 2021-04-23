@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import * as React from 'react';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Order } from '../../shared/models/SortOrder';
 import { currentSortState } from '../hooks/currentQueryState';
 import { sortRecordDialogState } from '../hooks/recordsDialogsState';
@@ -16,7 +16,7 @@ import { Record } from '../models/Record';
 
 const RecordSortContainer: React.FunctionComponent = (props) => {
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
-  const [, setSortRecordDialog] = useRecoilState(sortRecordDialogState);
+  const setSortRecordDialog = useSetRecoilState(sortRecordDialogState);
 
   const [selectedOrder, setSelectedOrder] = useState(currentSort.sortDirection);
   const [selectedSortBy, setSelectedSortBy] = useState(currentSort.sortBy);

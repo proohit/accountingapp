@@ -8,7 +8,7 @@ import {
 import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
@@ -30,8 +30,8 @@ const styles = makeStyles((theme) => ({
 }));
 
 export const RecordFilterBarContainer: FunctionComponent = (props) => {
-  const [, setCurrentFilters] = useRecoilState(currentFilterState);
-  const [, setFilterRecordsDialog] = useRecoilState(filterRecordDialogState);
+  const setCurrentFilters = useSetRecoilState(currentFilterState);
+  const setFilterRecordsDialog = useSetRecoilState(filterRecordDialogState);
   const [description, setDescription] = useState('');
   const [categoryName, setCategoryName] = useState('all');
   const [walletName, setWalletName] = useState('all');

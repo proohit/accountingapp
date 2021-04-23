@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { AccountBalance, AddBox } from '@material-ui/icons';
 import React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
 import { WalletDialogContainer } from '../../src/wallets/components/WalletDialogContainer';
 import {
@@ -26,8 +26,8 @@ const walletPageStyles = makeStyles((theme) => ({
 const WalletPage: React.FunctionComponent = (props) => {
   const { data: wallets, isFetching } = useWalletsQuery();
   const classes = walletPageStyles();
-  const [, setAddWalletDialog] = useRecoilState(addWalletDialogState);
-  const [, setEditWalletDialog] = useRecoilState(editWalletDialogState);
+  const setAddWalletDialog = useSetRecoilState(addWalletDialogState);
+  const setEditWalletDialog = useSetRecoilState(editWalletDialogState);
 
   const openEditDialog = (wallet: Wallet) => {
     setEditWalletDialog({ open: true, walletToEdit: wallet });

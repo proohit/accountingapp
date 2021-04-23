@@ -1,6 +1,6 @@
 import { useRouter } from 'next/dist/client/router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { User } from '../../users/models/User';
 import USER_API_SERVICE from '../../users/services/UserApiService';
@@ -12,7 +12,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [, setNotification] = useRecoilState(notificationState);
+  const setNotification = useSetRecoilState(notificationState);
   const router = useRouter();
 
   const login = async (usernameForLogin: string, password: string) => {

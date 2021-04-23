@@ -1,12 +1,16 @@
 import { AuthenticationController } from '../models/AuthenticationController';
 import { register } from '../repositories/authenticationMapper';
 import passport from 'koa-passport';
+import { InvalidCredentials } from '../models/Errors';
 
 const AuthenticationControllerImpl: AuthenticationController = {
     login: async (ctx, next) => {
-        return passport.authenticate('local', (err, user) => {
+        return passport.authenticate('local', (err, user, info) => {
             if (err) {
                 throw err;
+            }
+            if (!user && info) {
+                throw new InvalidCredentials();
             }
             if (user) {
                 ctx.body = { username: user.username };

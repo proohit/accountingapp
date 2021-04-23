@@ -40,10 +40,13 @@ router.use(async (ctx, next) => {
         if (result?.data) {
             ctx.body = JSON.stringify(result.data);
         }
+        if (!ctx.status || !ctx.body) {
+            throw new Error();
+        }
     } catch (error) {
         ctx.status = error.statusCode || error.status || 500;
         ctx.body = {
-            message: ctx.status === 500 ? 'Oops, something went wrong...' : error.message,
+            message: ctx.status >= 500 ? 'Oops, something went wrong...' : error.message,
         };
         if (ctx.status >= 500) {
             logger.error({ message: error.message, trace: error.stack });

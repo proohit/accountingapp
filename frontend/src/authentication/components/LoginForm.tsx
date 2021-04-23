@@ -9,6 +9,9 @@ import {
 } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
 import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { notificationState } from '../../shared/hooks/notificationState';
+import { Error } from '../../shared/models/Error';
 import USER_API_SERVICE from '../../users/services/UserApiService';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
@@ -36,6 +39,7 @@ export function LoginForm() {
   const classes = useStyles();
   const router = useRouter();
   const { login } = useAuthentication();
+  const [, setNotification] = useRecoilState(notificationState);
 
   const handleSubmit = async () => {
     try {
@@ -43,8 +47,10 @@ export function LoginForm() {
       await AUTHENTICATION_API.login(username, password);
       const loggedInUser = await USER_API_SERVICE.getCurrentUser();
       login(loggedInUser.username);
-      setLoginLoading(false);
       router.push('/home');
+    } catch (err) {
+      const error: Error = err;
+      setNotification({ severity: 'error', content: error.message });
     } finally {
       setLoginLoading(false);
     }

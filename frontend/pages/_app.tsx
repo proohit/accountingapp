@@ -5,6 +5,7 @@ import React, { FunctionComponent } from 'react';
 import Authenticated from '../src/authentication/components/Authenticated';
 import { AppToolbar } from '../src/shared/components/AppToolbar';
 import { NavigationBar } from '../src/shared/components/NavigationBar';
+import NotificationBar from '../src/shared/components/NotificationBar';
 import Providers from '../src/shared/components/Providers';
 import '../styles/globals.css';
 
@@ -28,6 +29,7 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
         <AppToolbar />
         <div className={classes.appBar} />
         <Grid container>
+          <NotificationBar />
           {!isAuthenticationRoute && (
             <Grid item lg={2}>
               <NavigationBar />

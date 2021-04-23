@@ -1,4 +1,5 @@
 import { AccHeaderBuilder } from '../services/AccHeaderBuilder';
+import { Error } from './Error';
 
 export interface HttpService {
   get: <R>(url: string, query?: string[][]) => Promise<R>;
@@ -24,7 +25,11 @@ export const BASE_API: HttpService = {
     });
     const json = await res.json();
     if (!res.ok) {
-      throw json;
+      const error: Error = {
+        status: res.status,
+        message: json?.message || 'Unexpected Error',
+      };
+      throw error;
     } else {
       return json;
     }
@@ -42,7 +47,11 @@ export const BASE_API: HttpService = {
     const res = await fetch(`${url}`, fetchConfig);
     const json = await res.json();
     if (!res.ok) {
-      throw json;
+      const error: Error = {
+        status: res.status,
+        message: json?.message || 'Unexpected Error',
+      };
+      throw error;
     } else {
       return json;
     }
@@ -58,7 +67,11 @@ export const BASE_API: HttpService = {
     });
     const json = await res.json();
     if (!res.ok) {
-      throw json;
+      const error: Error = {
+        status: res.status,
+        message: json?.message || 'Unexpected Error',
+      };
+      throw error;
     } else {
       return json;
     }
@@ -73,7 +86,11 @@ export const BASE_API: HttpService = {
     });
     const json = await res.json();
     if (!res.ok) {
-      throw json;
+      const error: Error = {
+        status: res.status,
+        message: json?.message || 'Unexpected Error',
+      };
+      throw error;
     } else {
       return json;
     }

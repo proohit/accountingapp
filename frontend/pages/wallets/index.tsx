@@ -60,7 +60,7 @@ const WalletPage: React.FunctionComponent = (props) => {
           <Grid item xs>
             <LinearProgress />
           </Grid>
-        ) : (
+        ) : wallets.length ? (
           wallets.map((wallet) => (
             <Grid item key={wallet.id}>
               <WalletCard
@@ -70,6 +70,12 @@ const WalletPage: React.FunctionComponent = (props) => {
               />
             </Grid>
           ))
+        ) : (
+          <Grid item>
+            <Typography color="primary">
+              You have no Wallets. Create one!
+            </Typography>
+          </Grid>
         )}
       </Grid>
     </Grid>

@@ -3,7 +3,10 @@ import { useRouter } from 'next/dist/client/router';
 import React, { Fragment, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useAuthentication } from '../hooks/useAuthentication';
-import { isAuthenticationRoute } from '../services/RoutingService';
+import {
+  isAuthenticationRoute,
+  isOfflineRoute,
+} from '../services/RoutingService';
 import { registerGreetingState } from './registerGreetingState';
 
 interface IAuthenticatedProps {}
@@ -15,7 +18,10 @@ const Authenticated: React.FunctionComponent<IAuthenticatedProps> = (props) => {
   const registerGreeting = useRecoilValue(registerGreetingState);
   const needsLogin = () => {
     return (
-      !authenticated && !isLoginLoading && !isAuthenticationRoute(router.route)
+      !authenticated &&
+      !isLoginLoading &&
+      !isAuthenticationRoute(router.route) &&
+      !isOfflineRoute(router.route)
     );
   };
 

@@ -14,6 +14,10 @@
 
 # production
 /build
+**/public/workbox-*.js*
+**/public/workbox-*.js*
+**/public/sw.js*
+**/public/fallback-*.js
 
 # misc
 .DS_Store

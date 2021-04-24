@@ -1,6 +1,7 @@
 import { Grid, makeStyles } from '@material-ui/core';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/dist/client/router';
+import Head from 'next/head';
 import React, { FunctionComponent } from 'react';
 import Authenticated from '../src/authentication/components/Authenticated';
 import { isAuthenticationRoute } from '../src/authentication/services/RoutingService';
@@ -23,6 +24,11 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
   return (
     <Providers>
+      <Head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"></link>
+        <meta name="theme-color" content="#3b4147" />
+      </Head>
       <Authenticated>
         <AppToolbar />
         <div className={classes.appBar} />

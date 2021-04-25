@@ -5,6 +5,7 @@ import {
   Hidden,
   IconButton,
   Slide,
+  SvgIcon,
   Toolbar,
   Typography,
   useScrollTrigger,
@@ -13,6 +14,7 @@ import { AccountBox, ExitToApp } from '@material-ui/icons';
 import Link from 'next/link';
 import React, { FunctionComponent } from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
+import AppIconSvg from './AppIconSvg';
 import { MobileMenuButton } from './MobileMenuButton';
 
 export const AppToolbar: FunctionComponent = () => {
@@ -30,6 +32,9 @@ export const AppToolbar: FunctionComponent = () => {
                   <MobileMenuButton />
                 </Hidden>
               )}
+              <SvgIcon style={{ fontSize: 48 }}>
+                <AppIconSvg />
+              </SvgIcon>
               <Typography variant="h6">Accounting App</Typography>
             </Grid>
             <Grid item container alignItems="center" xs={1} justify="flex-end">

@@ -20,6 +20,10 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     try {
       await AUTHENTICATION_API.login(usernameForLogin, password);
       const loggedInUser = await USER_API_SERVICE.getCurrentUser();
+      setNotification({
+        severity: 'success',
+        content: 'Login successful',
+      });
       setUsername(loggedInUser.username);
       setAuthenticated(true);
       return loggedInUser;

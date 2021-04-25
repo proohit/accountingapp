@@ -8,23 +8,17 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useRouter } from 'next/dist/client/router';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { useAuthentication } from '../hooks/useAuthentication';
 import {
-  getUsernameValidationError,
   getPasswordValidationError,
+  getUsernameValidationError,
 } from '../services/AuthenticationValidator';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(10),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -69,60 +63,70 @@ export function LoginForm() {
   };
 
   return (
-    <Grid container direction="row" justify="center">
-      <Container maxWidth="xs">
-        <div className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <div className={classes.form}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              autoFocus
-              onKeyPress={handleEnterPress}
-              error={!!usernameError}
-              helperText={usernameError}
-              onBlur={() => validateUsername()}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onKeyPress={handleEnterPress}
-              onBlur={() => validatePassword()}
-              error={!!passwordError}
-              helperText={passwordError}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-            {isLoginLoading && <LinearProgress />}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              disabled={!isValid}
-              onClick={handleSubmit}
-            >
-              Sign In
+    <Container maxWidth="xs">
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        className={classes.paper}
+      >
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="username"
+          label="Username"
+          name="username"
+          autoComplete="username"
+          autoFocus
+          onKeyPress={handleEnterPress}
+          error={!!usernameError}
+          helperText={usernameError}
+          onBlur={() => validateUsername()}
+          onChange={(event) => setUsername(event.target.value)}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          onKeyPress={handleEnterPress}
+          onBlur={() => validatePassword()}
+          error={!!passwordError}
+          helperText={passwordError}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        {isLoginLoading && <LinearProgress />}
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          disabled={!isValid}
+          onClick={handleSubmit}
+        >
+          Sign In
+        </Button>
+        <Typography variant="body2">
+          Or{' '}
+          <Link href="/register" passHref>
+            <Button size="small" variant="outlined">
+              sign up
             </Button>
-          </div>
-        </div>
-      </Container>
-    </Grid>
+          </Link>{' '}
+          if you're new here
+        </Typography>
+      </Grid>
+    </Container>
   );
 }

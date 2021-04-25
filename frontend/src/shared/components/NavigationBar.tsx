@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  SvgIcon,
   SwipeableDrawer,
   Typography,
 } from '@material-ui/core';
@@ -22,7 +23,9 @@ import { useRecoilState } from 'recoil';
 import packageJson from '../../../package.json';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import Routes from '../constants/Routes';
+import { palette } from '../globals/styles/AccTheme';
 import { mobileDrawerOpenState } from '../hooks/mobileDrawerOpenState';
+import AppIconSvg from './AppIconSvg';
 import NavigationLinkItem from './NavigationLinkItem';
 
 // iOS is hosted on high-end devices. We can enable the backdrop transition without
@@ -56,6 +59,18 @@ export const NavigationBar: FunctionComponent = () => {
 
   const drawer = (
     <List>
+      <Hidden lgUp>
+        <ListItem>
+          <SvgIcon style={{ fontSize: 32 }}>
+            <AppIconSvg
+              textColor={palette.primary.main}
+              backgroundColor={palette.background.paper}
+            />
+          </SvgIcon>
+          <Typography variant="h6">Accounting App</Typography>
+        </ListItem>
+        <Divider />
+      </Hidden>
       <ListItem alignItems="center" style={{ justifyContent: 'center' }}>
         <Person color="primary" fontSize="large" />
         <Typography

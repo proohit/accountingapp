@@ -1,13 +1,14 @@
 import { atom, DefaultValue, selector } from 'recoil';
 import { RecordDialogs } from '../models/RecordDialogs';
 
-const recordsDialogsState = atom<RecordDialogs>({
+export const recordsDialogsState = atom<RecordDialogs>({
   key: 'recordsDialogs',
   default: {
     ADD_RECORD: { open: false },
     EDIT_RECORD: { open: false, recordToEdit: null },
     FILTER_RECORDS: { open: false },
     SORT_RECORDS: { open: false },
+    EXPORT_RECORDS: { open: false },
   },
 });
 
@@ -65,6 +66,22 @@ export const sortRecordDialogState = selector<RecordDialogs['SORT_RECORDS']>({
       sortDialogState instanceof DefaultValue
         ? sortDialogState
         : { ...dialogsState, SORT_RECORDS: sortDialogState }
+    );
+  },
+});
+
+export const exportRecordDialogState = selector<
+  RecordDialogs['EXPORT_RECORDS']
+>({
+  key: 'exportRecordsDialogState',
+  get: ({ get }) => get(recordsDialogsState).EXPORT_RECORDS,
+  set: ({ get, set }, exportDialogState) => {
+    const dialogsState = get(recordsDialogsState);
+    set(
+      recordsDialogsState,
+      exportDialogState instanceof DefaultValue
+        ? exportDialogState
+        : { ...dialogsState, EXPORT_RECORDS: exportDialogState }
     );
   },
 });

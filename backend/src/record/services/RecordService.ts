@@ -197,8 +197,11 @@ export class RecordService {
             categoryId: categoryOfRecord.id,
         });
 
-        if (originalRecord.value !== value) {
+        if (originalRecord.value !== value || originalRecord.walletId !== walletOfRecord.id) {
             await services.walletService.recalculateCurrentBalance(walletOfRecord.id, username);
+            if (originalRecord.walletId !== walletOfRecord.id) {
+                await services.walletService.recalculateCurrentBalance(originalRecord.walletId, username);
+            }
         }
 
         return updatedRecord;

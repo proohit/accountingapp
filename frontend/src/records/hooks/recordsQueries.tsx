@@ -11,7 +11,6 @@ export const useRecordsQuery = (query: SearchQuery) => {
     () => recordsApi.getRecordsByUser(query),
     {
       keepPreviousData: true,
-      staleTime: 15000,
     }
   );
 };

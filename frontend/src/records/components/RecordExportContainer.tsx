@@ -75,7 +75,9 @@ const RecordExportContainer: React.FC = (props) => {
         </RadioGroup>
       </Grid>
       <Grid item xs>
-        <Button> Cancel</Button>
+        <Button onClick={() => setExportRecordDialog({ open: false })}>
+          Cancel
+        </Button>
         <Button disabled={!records?.totalCount} onClick={exportRecords}>
           Export
         </Button>

@@ -20,6 +20,7 @@ import {
   addRecordDialogState,
   editRecordDialogState,
   filterRecordDialogState,
+  recordsDialogsState,
   sortRecordDialogState,
 } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
@@ -31,10 +32,7 @@ import { RecordTableBody } from './RecordTableBody';
 import { RecordTableHeader } from './RecordTableHeader';
 
 export const RecordListContainer: FunctionComponent = () => {
-  const setEditRecordsDialog = useSetRecoilState(editRecordDialogState);
-  const setAddRecordsDialog = useSetRecoilState(addRecordDialogState);
-  const setFilterRecordsDialog = useSetRecoilState(filterRecordDialogState);
-  const setSortRecordsDialog = useSetRecoilState(sortRecordDialogState);
+  const [recordsDialog, setRecordsDialog] = useRecoilState(recordsDialogsState);
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const currentFilter = useRecoilValue(currentFilterState);
@@ -84,19 +82,26 @@ export const RecordListContainer: FunctionComponent = () => {
   };
 
   const openAddRecordsDialog = () => {
-    setAddRecordsDialog({ open: true });
+    setRecordsDialog({ ...recordsDialog, ADD_RECORD: { open: true } });
   };
 
   const openEditRecordsDialog = (record: Record): void => {
-    setEditRecordsDialog({ open: true, recordToEdit: record });
+    setRecordsDialog({
+      ...recordsDialog,
+      EDIT_RECORD: { open: true, recordToEdit: record },
+    });
   };
 
   const openFilterRecordsDialog = () => {
-    setFilterRecordsDialog({ open: true });
+    setRecordsDialog({ ...recordsDialog, FILTER_RECORDS: { open: true } });
   };
 
   const openSortRecordsDialog = () => {
-    setSortRecordsDialog({ open: true });
+    setRecordsDialog({ ...recordsDialog, SORT_RECORDS: { open: true } });
+  };
+
+  const openExportRecordsDialog = () => {
+    setRecordsDialog({ ...recordsDialog, EXPORT_RECORDS: { open: true } });
   };
 
   const recordsPagination = (
@@ -125,6 +130,7 @@ export const RecordListContainer: FunctionComponent = () => {
         onAddClicked={openAddRecordsDialog}
         onFilterClicked={openFilterRecordsDialog}
         onSortClicked={openSortRecordsDialog}
+        onExportClicked={openExportRecordsDialog}
       />
       <>
         <Hidden smDown>

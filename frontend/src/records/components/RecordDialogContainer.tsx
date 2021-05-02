@@ -7,12 +7,7 @@ import {
   useCategoriesQuery,
   useCreateCategoryMutation,
 } from '../hooks/categoriesQueries';
-import {
-  addRecordDialogState,
-  editRecordDialogState,
-  filterRecordDialogState,
-  sortRecordDialogState,
-} from '../hooks/recordsDialogsState';
+import { recordsDialogsState } from '../hooks/recordsDialogsState';
 import {
   useCreateRecordMutation,
   useDeleteRecordMutation,
@@ -23,23 +18,13 @@ import { Record } from '../models/Record';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
+import RecordExportContainer from './RecordExportContainer';
 import { RecordFilterBarContainer } from './RecordFilterBarContainer';
 import RecordSortContainer from './RecordSortContainer';
 
 export const RecordDialogContainer: FunctionComponent = (props) => {
   const { username } = useAuthentication();
-  const [editRecordsDialog, setEditRecordsDialog] = useRecoilState(
-    editRecordDialogState
-  );
-  const [addRecordsDialog, setAddRecordsDialog] = useRecoilState(
-    addRecordDialogState
-  );
-  const [filterRecordsDialog, setFilterRecordsDialog] = useRecoilState(
-    filterRecordDialogState
-  );
-  const [sortRecordDialog, setSortRecordDialog] = useRecoilState(
-    sortRecordDialogState
-  );
+  const [recordsDialog, setRecordsDialog] = useRecoilState(recordsDialogsState);
   const { data: categories } = useCategoriesQuery();
   const { data: wallets } = useWalletsQuery();
 
@@ -68,7 +53,7 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
     const category = await createCategoryIfNeeded(recordToAdd.categoryId);
     updatedRecordToAdd.categoryId = category.id;
     await createRecordMutation.mutateAsync(updatedRecordToAdd);
-    setAddRecordsDialog({ open: false });
+    setRecordsDialog({ ...recordsDialog, ADD_RECORD: { open: false } });
   };
 
   const editRecord = async (editedRecord: Record) => {
@@ -76,19 +61,30 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
     const category = await createCategoryIfNeeded(editedRecord.categoryId);
     updatedRecordToEdit.categoryId = category.id;
     await editRecordMutation.mutateAsync(updatedRecordToEdit);
-    setEditRecordsDialog({ open: false, recordToEdit: null });
+    setRecordsDialog({
+      ...recordsDialog,
+      EDIT_RECORD: { open: false, recordToEdit: null },
+    });
   };
 
   const deleteRecord = async (recordToDelete: Record) => {
     await deleteRecordMutation.mutateAsync(recordToDelete);
-    setEditRecordsDialog({ open: false, recordToEdit: null });
+    setRecordsDialog({
+      ...recordsDialog,
+      EDIT_RECORD: { open: false, recordToEdit: null },
+    });
   };
 
-  if (addRecordsDialog.open) {
+  if (recordsDialog.ADD_RECORD.open) {
     return (
       <RecordAddDialog
         owner={username}
-        onDialogClose={() => setAddRecordsDialog({ open: false })}
+        onDialogClose={() =>
+          setRecordsDialog({
+            ...recordsDialog,
+            ADD_RECORD: { open: false },
+          })
+        }
         onAddRecord={addRecord}
         wallets={wallets}
         categories={categories}
@@ -97,14 +93,17 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
     );
   }
 
-  if (editRecordsDialog.open) {
+  if (recordsDialog.EDIT_RECORD.open) {
     return (
       <RecordEditDialog
-        record={editRecordsDialog.recordToEdit}
+        record={recordsDialog.EDIT_RECORD.recordToEdit}
         categories={categories}
         owner={username}
         onDialogClose={() =>
-          setEditRecordsDialog({ open: false, recordToEdit: null })
+          setRecordsDialog({
+            ...recordsDialog,
+            EDIT_RECORD: { open: false, recordToEdit: null },
+          })
         }
         onEditRecord={editRecord}
         onDeleteRecord={deleteRecord}
@@ -116,11 +115,16 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
     );
   }
 
-  if (filterRecordsDialog.open) {
+  if (recordsDialog.FILTER_RECORDS.open) {
     return (
       <Dialog
         open={true}
-        onClose={() => setFilterRecordsDialog({ open: false })}
+        onClose={() =>
+          setRecordsDialog({
+            ...recordsDialog,
+            FILTER_RECORDS: { open: false },
+          })
+        }
       >
         <DialogContent>
           <RecordFilterBarContainer />
@@ -129,12 +133,36 @@ export const RecordDialogContainer: FunctionComponent = (props) => {
     );
   }
 
-  if (sortRecordDialog.open) {
+  if (recordsDialog.SORT_RECORDS.open) {
     return (
-      <Dialog open={true} onClose={() => setSortRecordDialog({ open: false })}>
+      <Dialog
+        open={true}
+        onClose={() =>
+          setRecordsDialog({ ...recordsDialog, SORT_RECORDS: { open: false } })
+        }
+      >
         <DialogTitle>Sort Records</DialogTitle>
         <DialogContent>
           <RecordSortContainer />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (recordsDialog.EXPORT_RECORDS.open) {
+    return (
+      <Dialog
+        open={true}
+        onClose={() =>
+          setRecordsDialog({
+            ...recordsDialog,
+            EXPORT_RECORDS: { open: false },
+          })
+        }
+      >
+        <DialogTitle>Export Records</DialogTitle>
+        <DialogContent>
+          <RecordExportContainer />
         </DialogContent>
       </Dialog>
     );

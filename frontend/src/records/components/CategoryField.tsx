@@ -69,6 +69,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
       selectOnFocus
       clearOnBlur
       handleHomeEndKeys
+      getOptionSelected={(option, value) => option.inputValue === value}
       getOptionLabel={(option) => {
         if (typeof option === 'string') {
           return option;

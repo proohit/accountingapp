@@ -12,6 +12,7 @@ export const DescriptionField: FunctionComponent<DescriptionFieldProps> = (
   const { description, onDescriptionChange, errorText } = props;
   return (
     <TextField
+      fullWidth
       variant="outlined"
       error={!!errorText}
       helperText={errorText}

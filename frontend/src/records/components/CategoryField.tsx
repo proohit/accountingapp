@@ -79,6 +79,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
         }
         return option.name;
       }}
+      fullWidth
       renderOption={(option) => option.name}
       options={options}
       renderInput={(params) => (

@@ -46,10 +46,8 @@ export const RecordListContainer: FunctionComponent = () => {
       sortDirection: currentSort.sortDirection,
     }
   );
-  const {
-    data: categories,
-    isFetching: categoriesLoading,
-  } = useCategoriesQuery();
+  const { data: categories, isFetching: categoriesLoading } =
+    useCategoriesQuery();
   const { data: wallets, isFetching: walletsLoading } = useWalletsQuery();
 
   const handleSortClicked = (newOrderKey: keyof Record) => {
@@ -155,7 +153,7 @@ export const RecordListContainer: FunctionComponent = () => {
             <Divider />
             <List>
               {noRecords ? (
-                <Typography color="primary">noRecordsText</Typography>
+                <Typography color="primary">{noRecordsText}</Typography>
               ) : (
                 paginatedResult.data.map((record) => (
                   <MobileRecordItem

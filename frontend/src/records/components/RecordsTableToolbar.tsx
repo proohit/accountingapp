@@ -5,9 +5,11 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
+  Theme,
   Tooltip,
   Typography,
   useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { AddBox, FilterList, GetApp, MoreVert, Sort } from '@material-ui/icons';
 import React, { FunctionComponent } from 'react';
@@ -19,14 +21,19 @@ type RecordsTableToolbarProps = {
   onSortClicked: () => void;
   onExportClicked: () => void;
 };
+
 export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> =
   (props) => {
     const { onAddClicked, onFilterClicked, onSortClicked, onExportClicked } =
       props;
     const shouldShowExtraIcons = useMediaQuery('(max-width:450px');
     const shouldShowExport = useMediaQuery('(min-width:450px');
-    const shouldShowSort = useMediaQuery('(min-width:450px');
-    const shouldShowFilter = useMediaQuery('(min-width:400px');
+    const shouldShowSort = useMediaQuery((theme: Theme) =>
+      theme.breakpoints.between(450, 'sm')
+    );
+    const shouldShowFilter = useMediaQuery((theme: Theme) =>
+      theme.breakpoints.between(400, 'sm')
+    );
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {

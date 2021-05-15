@@ -1,6 +1,6 @@
 import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
-import React, { FunctionComponent, useState } from 'react';
+import { Autocomplete, createFilterOptions } from '@material-ui/lab';
+import React, { FunctionComponent } from 'react';
 import { Category } from '../models/Category';
 
 type CategoryFieldProps = {
@@ -11,6 +11,9 @@ type CategoryFieldProps = {
   withNew?: boolean;
   errorText?: string;
 };
+
+const filter = createFilterOptions();
+
 export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
   const {
     categories,
@@ -21,37 +24,66 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
     errorText,
   } = props;
 
-  const [categoryInput, setCategoryInput] = useState(categoryName);
   const options = [];
   if (withAll) {
-    options.push('all');
+    options.push({ name: 'all', inputValue: 'all' });
   }
 
-  options.push(...categories?.map((option) => option.name));
+  options.push(
+    ...categories?.map((category) => ({
+      name: category.name,
+      inputValue: category.name,
+    }))
+  );
+
   return (
     <Autocomplete
       value={categoryName}
       onChange={(_event, newValue) => {
-        onCategoryChange(newValue);
-      }}
-      freeSolo={withNew}
-      inputValue={categoryInput}
-      onInputChange={(_event, newInputValue) => {
-        if (withNew) {
-          onCategoryChange(newInputValue);
-          setCategoryInput(newInputValue);
+        if (typeof newValue === 'string') {
+          onCategoryChange(newValue);
+        } else if (newValue?.inputValue) {
+          onCategoryChange(newValue.inputValue);
         } else {
-          if (options.includes(newInputValue)) {
-            onCategoryChange(newInputValue);
-          }
-          setCategoryInput(newInputValue);
+          onCategoryChange(newValue);
         }
       }}
+      freeSolo={withNew}
+      filterOptions={(prevOptions, params) => {
+        const filtered = filter(prevOptions, params);
+        if (
+          params.inputValue !== '' &&
+          !filtered.find(
+            (option: { name: string; inputValue: string }) =>
+              option.inputValue === params.inputValue
+          ) &&
+          withNew
+        ) {
+          filtered.push({
+            inputValue: params.inputValue,
+            name: `Create "${params.inputValue}"`,
+          });
+        }
+        return filtered;
+      }}
+      selectOnFocus
+      clearOnBlur
+      handleHomeEndKeys
+      getOptionLabel={(option) => {
+        if (typeof option === 'string') {
+          return option;
+        }
+        if (option.inputValue) {
+          return option.inputValue;
+        }
+        return option.name;
+      }}
+      renderOption={(option) => option.name}
       options={options}
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Category"
+          label="category"
           error={!!errorText}
           helperText={errorText}
           variant="outlined"

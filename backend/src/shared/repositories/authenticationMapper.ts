@@ -42,10 +42,10 @@ passport.use(
         const privateKey = userToLogin.private_key;
         const dbPassword = userToLogin.password;
 
-        let passwordDecrypted = AES.decrypt(dbPassword, privateKey);
-        passwordDecrypted = crypto.enc.Utf8.stringify(passwordDecrypted);
+        const passwordDecrypted = AES.decrypt(dbPassword, privateKey);
+        const passwordDecryptedString = crypto.enc.Utf8.stringify(passwordDecrypted);
 
-        if (sanitizedPassword === passwordDecrypted) {
+        if (sanitizedPassword === passwordDecryptedString) {
             return done(null, userToLogin);
         } else {
             return done(null, false, new InvalidCredentials());

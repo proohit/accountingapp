@@ -22,7 +22,7 @@
         "@types/jsonwebtoken": "^8.5.0",
         "@types/koa-cors": "0.0.0",
         "@types/koa-passport": "^4.0.2",
-        "@types/koa-router": "^7.4.1",
+        "@types/koa-router": "^7.4.2",
         "@types/koa-session": "^5.10.3",
         "@types/mysql2": "github:types/mysql2",
         "@types/passport-local": "^1.0.33",

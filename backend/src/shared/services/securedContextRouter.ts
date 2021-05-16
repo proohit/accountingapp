@@ -1,5 +1,5 @@
 import { Context, DefaultState } from 'koa';
-import Router from 'koa-router';
+import Router from '@koa/router';
 import { NotLoggedIn } from '../models/Errors';
 
 const router = new Router<DefaultState, Context>();

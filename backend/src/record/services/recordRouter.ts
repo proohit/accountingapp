@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 import RecordControllerImpl from '../controllers/RecordController';
 
 const router = new Router();

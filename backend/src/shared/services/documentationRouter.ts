@@ -1,5 +1,5 @@
 import { createReadStream } from 'fs';
-import Router from 'koa-router';
+import Router from '@koa/router';
 
 const router = new Router();
 

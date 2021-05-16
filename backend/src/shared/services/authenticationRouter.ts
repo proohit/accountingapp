@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 import AuthenticationControllerImpl from '../controllers/AuthenticationControllerImpl';
 const router = new Router();
 

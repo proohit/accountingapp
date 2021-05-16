@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 import WalletControllerImpl from '../controllers/WalletController';
 
 const router = new Router();

@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 import CategoryControllerImpl from '../controllers/CategoryController';
 
 const router = new Router();

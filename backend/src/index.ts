@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import parser from 'koa-bodyparser';
 import cors from 'koa-cors';
-import Router from 'koa-router';
+import Router from '@koa/router';
 import config from '../config.json';
 import recordRouter from './record/services/recordRouter';
 import { RouteResult } from './shared/models/RouteResult';

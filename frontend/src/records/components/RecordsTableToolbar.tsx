@@ -26,8 +26,12 @@ export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> =
   (props) => {
     const { onAddClicked, onFilterClicked, onSortClicked, onExportClicked } =
       props;
-    const shouldShowExtraIcons = useMediaQuery('(max-width:450px');
-    const shouldShowExport = useMediaQuery('(min-width:450px');
+    const shouldShowExtraIcons = useMediaQuery((theme: Theme) =>
+      theme.breakpoints.down(450)
+    );
+    const shouldShowExport = useMediaQuery((theme: Theme) =>
+      theme.breakpoints.between(450, 'sm')
+    );
     const shouldShowSort = useMediaQuery((theme: Theme) =>
       theme.breakpoints.between(450, 'sm')
     );

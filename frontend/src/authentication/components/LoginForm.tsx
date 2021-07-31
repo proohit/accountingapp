@@ -26,27 +26,41 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 export function LoginForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const classes = useStyles();
   const router = useRouter();
   const { login, isLoginLoading } = useAuthentication();
+  const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
+  const [usernameValid, setUsernameValid] = useState(false);
+  const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [isValid, setIsValid] = useState(false);
+  const [passwordValid, setPasswordValid] = useState(false);
+  const isValid = usernameValid && passwordValid;
 
-  const validateUsername = () => {
-    let error = getUsernameValidationError(username);
+  const validateUsername = (usernameToValidate: string) => {
+    let error = getUsernameValidationError(usernameToValidate);
     setUsernameError(error);
-    setIsValid(!getPasswordValidationError(password) && !error);
+    setUsernameValid(!error);
   };
 
-  const validatePassword = () => {
-    let error = getPasswordValidationError(password);
+  const validatePassword = (passwordToValidate: string) => {
+    let error = getPasswordValidationError(passwordToValidate);
     setPasswordError(error);
-    setIsValid(!getUsernameValidationError(username) && !error);
+    setPasswordValid(!error);
   };
-
+  const handleFieldChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    const field = event.target.name || event.currentTarget.name;
+    const value = event.target.value || event.currentTarget.value;
+    if (field === 'username') {
+      validateUsername(value);
+      setUsername(value);
+    } else if (field === 'password') {
+      validatePassword(value);
+      setPassword(value);
+    }
+  };
   const handleSubmit = async () => {
     const user = await login(username, password);
     if (user) {
@@ -86,8 +100,7 @@ export function LoginForm() {
           onKeyPress={handleEnterPress}
           error={!!usernameError}
           helperText={usernameError}
-          onBlur={() => validateUsername()}
-          onChange={(event) => setUsername(event.target.value)}
+          onChange={handleFieldChange}
         />
         <TextField
           variant="outlined"
@@ -100,10 +113,9 @@ export function LoginForm() {
           id="password"
           autoComplete="current-password"
           onKeyPress={handleEnterPress}
-          onBlur={() => validatePassword()}
           error={!!passwordError}
           helperText={passwordError}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={handleFieldChange}
         />
         {isLoginLoading && <LinearProgress />}
         <Button

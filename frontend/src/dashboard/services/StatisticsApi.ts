@@ -7,13 +7,13 @@ import {
 } from '../models/MonthlyData';
 import { StatisticsType } from '../models/StatisticsType';
 
-export interface WalletsApi {
+export interface StatisticsApi {
   getMonthlyData(month: number, year: number): Promise<DailyStatisticsData>;
   getYearlyData(year: number): Promise<MonthlyStatisticsData>;
   getMonthCategoryData(month: number, year: number): Promise<MonthCategoryData>;
 }
 
-export class StatisticsApiService implements WalletsApi {
+export class StatisticsApiService implements StatisticsApi {
   getYearlyData(year: number): Promise<MonthlyStatisticsData> {
     return BASE_API.get(API_ROUTES.STATISTICS, [
       ['year', year.toString()],

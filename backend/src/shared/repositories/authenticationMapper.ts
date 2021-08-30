@@ -1,5 +1,3 @@
-import crypto from 'crypto-js';
-import AES from 'crypto-js/aes';
 import passport from 'koa-passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { DuplicatedUser } from '../../user/models/Errors';
@@ -11,6 +9,7 @@ import {
     getPasswordValidationError,
     getUsernameValidationError,
 } from '../services/AuthenticationValidator';
+import { services } from '../services/services';
 import { repositories } from './database';
 
 passport.serializeUser((username, done) => {
@@ -42,8 +41,7 @@ passport.use(
         const privateKey = userToLogin.private_key;
         const dbPassword = userToLogin.password;
 
-        const passwordDecrypted = AES.decrypt(dbPassword, privateKey);
-        const passwordDecryptedString = crypto.enc.Utf8.stringify(passwordDecrypted);
+        const passwordDecryptedString = services.authenticationService.decodePassword(dbPassword, privateKey);
 
         if (sanitizedPassword === passwordDecryptedString) {
             return done(null, userToLogin);
@@ -79,14 +77,7 @@ export const register = async (username: string, password: string, email: string
     if (existingUser) {
         throw new DuplicatedUser();
     }
-    let private_key = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < 32; i++) {
-        private_key += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    const hashedPassword = crypto.enc.Utf8.parse(password);
-    const passwordEncrypted = AES.encrypt(hashedPassword, private_key).toString();
-    const newUser = await repositories.users().save({ username, password: passwordEncrypted, private_key, email });
+    const { encryptedPassword, privateKey } = services.authenticationService.encodePassword(password);
+    const newUser = await repositories.users().save({ username, password: encryptedPassword, privateKey, email });
     return { username: newUser.username, email: newUser.email };
 };

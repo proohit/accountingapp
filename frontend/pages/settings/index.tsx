@@ -10,7 +10,10 @@ import { Person } from '@material-ui/icons';
 import { FormikErrors, FormikTouched, useFormik } from 'formik';
 import Head from 'next/head';
 import React from 'react';
+import { useRecoilState } from 'recoil';
 import * as yup from 'yup';
+import { SettingsApiService } from '../../src/settings/services/SettingsApi';
+import { notificationState } from '../../src/shared/hooks/notificationState';
 
 const SettingsPage: React.FunctionComponent = (props) => {
   return (
@@ -34,6 +37,8 @@ const SettingsPage: React.FunctionComponent = (props) => {
 };
 
 const ChangePasswordContainer: React.FunctionComponent = () => {
+  const [notificationsState, setNotificationsState] =
+    useRecoilState(notificationState);
   let schema = yup.object().shape({
     currentPassword: yup.string().required(),
     newPassword: yup
@@ -57,9 +62,21 @@ const ChangePasswordContainer: React.FunctionComponent = () => {
       },
       validationSchema: schema,
       onSubmit: (values) => {
-        console.log(values);
+        changePassword(values.currentPassword, values.newPassword);
       },
     });
+
+  const changePassword = async (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    const apiService = new SettingsApiService();
+    await apiService.changePassword(currentPassword, newPassword);
+    setNotificationsState({
+      content: 'Successfully updated password',
+      severity: 'success',
+    });
+  };
 
   return (
     <SettingsEntry>
@@ -71,40 +88,54 @@ const ChangePasswordContainer: React.FunctionComponent = () => {
       </SettingsEntryHeader>
       <SettingsEntryContent>
         <form onSubmit={handleSubmit}>
-          <TextField
-            type="password"
-            label="Current Password"
-            name="currentPassword"
-            value={values.currentPassword}
-            onChange={handleChange}
-            error={shouldDisplayError('currentPassword', errors, touched)}
-            helperText={getError('currentPassword', errors, touched)}
-          />
-          <TextField
-            type="password"
-            label="New Password"
-            name="newPassword"
-            value={values.newPassword}
-            onChange={handleChange}
-            error={shouldDisplayError('newPassword', errors, touched)}
-            helperText={getError('newPassword', errors, touched)}
-          />
-          <TextField
-            type="password"
-            label="Confirm new password"
-            name="newPasswordConfirmation"
-            value={values.newPasswordConfirmation}
-            onChange={handleChange}
-            error={shouldDisplayError(
-              'newPasswordConfirmation',
-              errors,
-              touched
-            )}
-            helperText={getError('newPasswordConfirmation', errors, touched)}
-          />
-          <Button type="submit" disabled={!isValid}>
-            Confirm
-          </Button>
+          <Grid container direction="column">
+            <TextField
+              type="password"
+              label="Current Password"
+              name="currentPassword"
+              value={values.currentPassword}
+              onChange={handleChange}
+              error={errors.currentPassword && touched.currentPassword}
+              helperText={
+                errors.currentPassword && touched.currentPassword
+                  ? errors.currentPassword
+                  : null
+              }
+            />
+            <TextField
+              type="password"
+              label="New Password"
+              name="newPassword"
+              value={values.newPassword}
+              onChange={handleChange}
+              error={errors.newPassword && touched.newPassword}
+              helperText={
+                errors.newPassword && touched.newPassword
+                  ? errors.newPassword
+                  : null
+              }
+            />
+            <TextField
+              type="password"
+              label="Confirm new password"
+              name="newPasswordConfirmation"
+              value={values.newPasswordConfirmation}
+              onChange={handleChange}
+              error={
+                errors.newPasswordConfirmation &&
+                touched.newPasswordConfirmation
+              }
+              helperText={
+                errors.newPasswordConfirmation &&
+                touched.newPasswordConfirmation
+                  ? errors.newPasswordConfirmation
+                  : null
+              }
+            />
+            <Button type="submit" disabled={!isValid}>
+              Confirm
+            </Button>
+          </Grid>
         </form>
       </SettingsEntryContent>
     </SettingsEntry>
@@ -116,10 +147,14 @@ const shouldDisplayError = <R, _>(
   errors: FormikErrors<R>,
   touched: FormikTouched<R>
 ) => {
-  return errors[field] && touched[field];
+  return !!(errors[field] && touched[field]);
 };
 
-const getError = (field: string, errors, touched) => {
+const getError = <R, _>(
+  field: string,
+  errors: FormikErrors<R>,
+  touched: FormikTouched<R>
+) => {
   return errors[field] && touched[field] ? errors[field] : '';
 };
 

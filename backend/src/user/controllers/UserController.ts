@@ -8,6 +8,12 @@ const USER_CONTROLLER: UserController = {
         const user = await services.userService.getByUsername(username);
         return { data: { username: user.username }, status: 200 };
     },
+    changePassword: async (ctx) => {
+        const { username } = ctx.state.user;
+        const { password, newPassword } = ctx.request.body;
+        const message = await services.userService.changePasswordOfUser(username, password, newPassword);
+        return { data: { message }, status: 200 };
+    },
 };
 
 export default USER_CONTROLLER;

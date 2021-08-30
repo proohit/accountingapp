@@ -109,12 +109,13 @@ export const NavigationBar: FunctionComponent = () => {
         onClick={handleLinkClick}
       />
       <Divider />
-      <ListItem>
-        <ListItemIcon>
-          <Settings color="primary" />
-        </ListItemIcon>
-        <ListItemText primary="Settings" />
-      </ListItem>
+      <NavigationLinkItem
+        icon={<Settings color="primary" />}
+        link={Routes.SETTINGS}
+        text="Settings"
+        active={getCurrentRoute() === Routes.SETTINGS}
+        onClick={handleLinkClick}
+      />
       <ListItem alignItems="flex-start">
         <Typography variant="body2"> v{packageJson.version}</Typography>
       </ListItem>

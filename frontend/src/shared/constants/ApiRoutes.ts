@@ -11,6 +11,7 @@ export class API_ROUTES {
   static readonly AUTHENTICATION_LOGOUT = `${API_ROUTES.AUTHENTICATION}/logout`;
   static readonly USERS = `${API_ROUTES.BASE_ROUTE}/users`;
   static readonly USERS_ME = `${API_ROUTES.USERS}/me`;
+  static readonly USERS_CHANGE_PASSWORD = `${API_ROUTES.USERS}/change-password`;
   static readonly RECORDS = `${API_ROUTES.BASE_ROUTE}/records`;
   static readonly WALLETS = `${API_ROUTES.BASE_ROUTE}/wallets`;
   static readonly CATEGORIES = `${API_ROUTES.BASE_ROUTE}/categories`;

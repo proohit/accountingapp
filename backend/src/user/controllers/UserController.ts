@@ -1,3 +1,4 @@
+import { User } from '../../entity/User';
 import { services } from '../../shared/services/services';
 import { UserController } from '../models/UserController';
 
@@ -6,7 +7,10 @@ const USER_CONTROLLER: UserController = {
         const { username } = ctx.state.user;
 
         const user = await services.userService.getByUsername(username);
-        return { data: { username: user.username }, status: 200 };
+        const currentUser: User = { ...user };
+        delete currentUser.private_key;
+        delete currentUser.password;
+        return { data: currentUser, status: 200 };
     },
     changePassword: async (ctx) => {
         const { username } = ctx.state.user;

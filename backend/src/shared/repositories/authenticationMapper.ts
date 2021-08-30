@@ -78,6 +78,8 @@ export const register = async (username: string, password: string, email: string
         throw new DuplicatedUser();
     }
     const { encryptedPassword, privateKey } = services.authenticationService.encodePassword(password);
-    const newUser = await repositories.users().save({ username, password: encryptedPassword, privateKey, email });
+    const newUser = await repositories
+        .users()
+        .save({ username, password: encryptedPassword, private_key: privateKey, email });
     return { username: newUser.username, email: newUser.email };
 };

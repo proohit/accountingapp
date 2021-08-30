@@ -11,6 +11,7 @@ import { isAuthenticationRoute } from '../services/RoutingService';
 export const AuthenticationProvider: FunctionComponent = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const setNotification = useSetRecoilState(notificationState);
   const router = useRouter();
@@ -35,14 +36,16 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
     }
   };
 
-  const offlineLogin = (loggedInUsername: string) => {
-    setUsername(loggedInUsername);
+  const offlineLogin = (loggedInUser: User) => {
+    setUsername(loggedInUser.username);
+    setUser(loggedInUser);
     setAuthenticated(true);
     setIsLoading(false);
   };
 
   const logout = async () => {
     setUsername('');
+    setUser(null);
     setAuthenticated(false);
     setIsLoading(false);
     await AUTHENTICATION_API.logout();
@@ -67,7 +70,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
       return;
     }
 
-    offlineLogin(currentUser.username);
+    offlineLogin(currentUser);
     setIsLoading(false);
   };
 
@@ -80,6 +83,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
       value={{
         authenticated,
         login,
+        user,
         offlineLogin,
         logout,
         username,

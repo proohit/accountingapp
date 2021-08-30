@@ -1,7 +1,8 @@
+import { User } from '../../entity/User';
 import { ControllerFunction } from '../../shared/models/BaseController';
 import { MessageResult } from '../../shared/models/RouteResult';
 
 export interface UserController {
-    getCurrentUser: ControllerFunction<{ username: string }>;
+    getCurrentUser: ControllerFunction<User>;
     changePassword: ControllerFunction<MessageResult>;
 }

@@ -92,7 +92,7 @@ export const RegisterForm: FunctionComponent = () => {
         email
       );
       setRegisterGreeting(true);
-      offlineLogin(createdUser.username);
+      offlineLogin(createdUser);
     } catch (err) {
       setNotification({ severity: 'error', content: err?.message });
     } finally {

@@ -7,6 +7,7 @@
         "start": "npm run doc:dev && ts-node src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "setup": "ts-node test/fillData.ts",
+        "cli:migration:generate": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:generate",
         "dev": "nodemon",
         "build": "tsc && npm run doc:prod",
         "postbuild": "cp package.json dist/package.json && cp ormconfig.json dist/ormconfig.json && cd dist && npm install --only=production",

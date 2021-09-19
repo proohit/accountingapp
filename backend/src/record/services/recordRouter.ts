@@ -1,11 +1,14 @@
 import Router from '@koa/router';
 import RecordControllerImpl from '../controllers/RecordController';
+import recurrentRecordRouter from './recurrentRecordRouter';
 
 const router = new Router();
 
 router.post('/', RecordControllerImpl.createNewRecord);
 
 router.get('/', RecordControllerImpl.getByUser);
+
+router.use('/recurrentRecords', recurrentRecordRouter);
 
 router.delete('/:id', RecordControllerImpl.deleteById);
 

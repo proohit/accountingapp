@@ -26,6 +26,7 @@ export const AuthenticationProvider: FunctionComponent = (props) => {
         content: 'Login successful',
       });
       setUsername(loggedInUser.username);
+      setUser(loggedInUser);
       setAuthenticated(true);
       return loggedInUser;
     } catch (err) {

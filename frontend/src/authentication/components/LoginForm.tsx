@@ -7,14 +7,12 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { useFormik } from 'formik';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
+import * as yup from 'yup';
 import { useAuthentication } from '../hooks/useAuthentication';
-import {
-  getPasswordValidationError,
-  getUsernameValidationError,
-} from '../services/AuthenticationValidator';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,54 +23,33 @@ export const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function LoginForm() {
+export const LoginForm = () => {
   const classes = useStyles();
   const router = useRouter();
   const { login, isLoginLoading } = useAuthentication();
-  const [username, setUsername] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [usernameValid, setUsernameValid] = useState(false);
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [passwordValid, setPasswordValid] = useState(false);
-  const isValid = usernameValid && passwordValid;
 
-  const validateUsername = (usernameToValidate: string) => {
-    let error = getUsernameValidationError(usernameToValidate);
-    setUsernameError(error);
-    setUsernameValid(!error);
-  };
+  let schema = yup.object().shape({
+    username: yup.string().required('Please enter your username'),
+    password: yup.string().required('Please enter your password'),
+  });
 
-  const validatePassword = (passwordToValidate: string) => {
-    let error = getPasswordValidationError(passwordToValidate);
-    setPasswordError(error);
-    setPasswordValid(!error);
-  };
-  const handleFieldChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    const field = event.target.name || event.currentTarget.name;
-    const value = event.target.value || event.currentTarget.value;
-    if (field === 'username') {
-      validateUsername(value);
-      setUsername(value);
-    } else if (field === 'password') {
-      validatePassword(value);
-      setPassword(value);
-    }
-  };
-  const handleSubmit = async () => {
+  const { values, errors, handleChange, handleSubmit } = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: schema,
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: (values) => {
+      attemptLogin(values.username, values.password);
+    },
+  });
+
+  const attemptLogin = async (username, password) => {
     const user = await login(username, password);
     if (user) {
       router.push('/home');
-    }
-  };
-
-  const handleEnterPress = (
-    event: React.KeyboardEvent<HTMLDivElement>
-  ): void => {
-    if (event.key === 'Enter' && isValid) {
-      handleSubmit();
     }
   };
 
@@ -87,48 +64,46 @@ export function LoginForm() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="username"
-          label="Username"
-          name="username"
-          autoComplete="username"
-          autoFocus
-          onKeyPress={handleEnterPress}
-          error={!!usernameError}
-          helperText={usernameError}
-          onChange={handleFieldChange}
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          onKeyPress={handleEnterPress}
-          error={!!passwordError}
-          helperText={passwordError}
-          onChange={handleFieldChange}
-        />
-        {isLoginLoading && <LinearProgress />}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          disabled={!isValid}
-          onClick={handleSubmit}
-        >
-          Sign In
-        </Button>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            error={!!errors.username}
+            helperText={errors.username}
+            onChange={handleChange}
+            value={values.username}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            error={!!errors.password}
+            helperText={errors.password}
+            onChange={handleChange}
+            value={values.password}
+          />
+          {isLoginLoading && <LinearProgress />}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Sign In
+          </Button>
+        </form>
         <Typography variant="body2">
           Or{' '}
           <Link href="/register" passHref>
@@ -141,4 +116,4 @@ export function LoginForm() {
       </Grid>
     </Container>
   );
-}
+};

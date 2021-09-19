@@ -36,9 +36,8 @@ export const ChangePasswordForm: React.FunctionComponent = () => {
     errors,
     handleChange,
     handleSubmit,
-    isValid,
-    handleBlur,
     handleReset,
+    handleBlur,
   } = useFormik({
     initialValues: {
       currentPassword: '',
@@ -46,6 +45,8 @@ export const ChangePasswordForm: React.FunctionComponent = () => {
       newPasswordConfirmation: '',
     },
     validationSchema: schema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: (values) => {
       changePassword(values.currentPassword, values.newPassword);
     },
@@ -104,12 +105,7 @@ export const ChangePasswordForm: React.FunctionComponent = () => {
           error={!!errors.newPasswordConfirmation}
           helperText={errors.newPasswordConfirmation}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={!isValid}
-        >
+        <Button variant="contained" color="primary" type="submit">
           Confirm
         </Button>
       </Grid>

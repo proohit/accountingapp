@@ -1,14 +1,12 @@
 import dayjs from 'dayjs';
-import { Category } from '../../entity/Category';
 import { Record } from '../../entity/Record';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
 import { User } from '../../entity/User';
-import { Wallet } from '../../entity/Wallet';
 import { BadRequest, MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
 import { repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
 import { UserNotFound } from '../../user/models/Errors';
-import { RecordNotFound, RecurrentRecordNotFound } from '../models/Errors';
+import { RecurrentRecordNotFound } from '../models/Errors';
 
 export class RecurrentRecordService {
     async createRecurrentRecord(

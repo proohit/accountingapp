@@ -4,8 +4,6 @@ import {
   Hidden,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
   SvgIcon,
   SwipeableDrawer,
   Typography,
@@ -15,6 +13,7 @@ import {
   Dashboard,
   MonetizationOn,
   Person,
+  Replay,
   Settings,
 } from '@material-ui/icons';
 import { useRouter } from 'next/dist/client/router';
@@ -100,7 +99,16 @@ export const NavigationBar: FunctionComponent = () => {
         text="Records"
         active={getCurrentRoute() === Routes.RECORDS}
         onClick={handleLinkClick}
-      />
+      >
+        <NavigationLinkItem
+          icon={<Replay color="primary" />}
+          link={Routes.RECURRENT_RECORDS}
+          text="Recurrent Records"
+          active={getCurrentRoute() === Routes.RECURRENT_RECORDS}
+          onClick={handleLinkClick}
+        />
+      </NavigationLinkItem>
+
       <NavigationLinkItem
         icon={<AccountBalance color="primary" />}
         link={Routes.WALLETS}

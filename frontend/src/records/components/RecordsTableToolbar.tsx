@@ -1,6 +1,5 @@
 import {
   Grid,
-  Hidden,
   IconButton,
   ListItemIcon,
   Menu,
@@ -9,11 +8,10 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
-  useTheme,
 } from '@material-ui/core';
 import { AddBox, FilterList, GetApp, MoreVert, Sort } from '@material-ui/icons';
 import React, { FunctionComponent } from 'react';
-import { RecordHeader } from './RecordHeader';
+import PageHeader from '../../shared/components/PageHeader';
 
 type RecordsTableToolbarProps = {
   onFilterClicked: () => void;
@@ -50,7 +48,7 @@ export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> =
     return (
       <>
         <Grid item container xs>
-          <RecordHeader />
+          <PageHeader>Records</PageHeader>
           <Grid item xs container justify="flex-end">
             {shouldShowSort && (
               <Tooltip title="Sort">

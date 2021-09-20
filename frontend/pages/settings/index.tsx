@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import React from 'react';
 import { SettingsEntries } from '../../src/settings/components/SettingsEntries';
+import PageHeader from '../../src/shared/components/PageHeader';
 
 const SettingsPage: React.FunctionComponent = (props) => {
   return (
@@ -18,6 +19,7 @@ const SettingsPage: React.FunctionComponent = (props) => {
           key="description"
         />
       </Head>
+      <PageHeader>Settings</PageHeader>
       <SettingsEntries />
     </>
   );

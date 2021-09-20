@@ -9,6 +9,7 @@ import { AccountBalance, AddBox } from '@material-ui/icons';
 import Head from 'next/head';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
+import PageHeader from '../../src/shared/components/PageHeader';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
 import { WalletDialogContainer } from '../../src/wallets/components/WalletDialogContainer';
 import {
@@ -60,9 +61,7 @@ const WalletPage: React.FunctionComponent = (props) => {
             <AccountBalance fontSize="large" color="primary" />
           </Grid>
           <Grid item>
-            <Typography variant="h3" color="primary">
-              Wallets
-            </Typography>
+            <PageHeader>Wallets</PageHeader>
           </Grid>
           <Grid item>
             <IconButton color="primary" onClick={openAddDialog}>

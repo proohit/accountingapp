@@ -1,10 +1,13 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
 
-export const RecordHeader = () => {
+const PageHeader: React.FunctionComponent = (props) => {
+  const { children } = props;
   return (
     <Typography color="primary" variant="h3">
-      Records
+      {children}
     </Typography>
   );
 };
+
+export default PageHeader;

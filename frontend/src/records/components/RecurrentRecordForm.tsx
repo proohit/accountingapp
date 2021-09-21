@@ -15,7 +15,7 @@ import { DescriptionField } from './DescriptionField';
 import { ValueField } from './ValueField';
 import { WalletField } from './WalletField';
 
-const schema = (walletNames: string[], categoryNames: string[]) =>
+const schema = (walletNames: string[]) =>
   yup.object().shape({
     description: yup.string(),
     walletName: yup
@@ -24,8 +24,8 @@ const schema = (walletNames: string[], categoryNames: string[]) =>
       .oneOf(walletNames),
     categoryName: yup
       .string()
-      .required('Please provide a category')
-      .oneOf(categoryNames),
+      .typeError('Please provide a category')
+      .required('Please provide a category'),
     value: yup.number().required('Please provide a value'),
     startDate: yup.date().required('Please provide a starting date'),
     endDate: yup.date().nullable(),
@@ -65,10 +65,7 @@ export const RecurrentRecordForm = (props: Props) => {
           : null,
         periodicity: Periodicity.MONTHLY,
       },
-      validationSchema: schema(
-        wallets?.map((wallet) => wallet.name),
-        categories?.map((category) => category.name)
-      ),
+      validationSchema: schema(wallets?.map((wallet) => wallet.name)),
       validateOnChange: false,
       onSubmit: (submittedValues) => {
         onAddRecurrentRecord({

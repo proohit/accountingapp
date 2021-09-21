@@ -12,3 +12,13 @@ export function getCategoryById(
 ) {
   return categories?.find((category) => category.id === categoryId);
 }
+
+export const getCategoryByIdOrName = (
+  categories: Category[],
+  categoryName: Category['name']
+) => {
+  const foundCategory =
+    getCategoryByName(categories, categoryName) ||
+    getCategoryById(categories, categoryName);
+  return foundCategory;
+};

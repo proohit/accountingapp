@@ -10,8 +10,11 @@ import {
 } from '@material-ui/core';
 import { AddBox, Replay } from '@material-ui/icons';
 import Head from 'next/head';
-import React, { FunctionComponent } from 'react';
+import React from 'react';
+import { useRecoilState } from 'recoil';
+import { RecurrentRecordDialogContainer } from '../../../src/records/components/RecurrentRecordDialogContainer';
 import { useRecurrentRecordsQuery } from '../../../src/records/hooks/recurrentRecordQueries';
+import { recurrentRecordsDialogsState } from '../../../src/records/hooks/recurrentRecordsStore';
 import PageHeader from '../../../src/shared/components/PageHeader';
 
 const styles = makeStyles((theme) => ({
@@ -23,6 +26,11 @@ const styles = makeStyles((theme) => ({
 
 const RecurrentRecordPage = () => {
   const classes = styles();
+  const [dialogs, setDialogs] = useRecoilState(recurrentRecordsDialogsState);
+
+  const openAddDialog = () => {
+    setDialogs({ ...dialogs, ADD_RECURRENT_RECORD: { open: true } });
+  };
 
   return (
     <>
@@ -50,6 +58,7 @@ const RecurrentRecordPage = () => {
           }
         />
         <RecurrentRecordsList />
+        <RecurrentRecordDialogContainer />
       </Grid>
     </>
   );

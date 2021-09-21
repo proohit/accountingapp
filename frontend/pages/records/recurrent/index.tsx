@@ -1,5 +1,6 @@
 import {
   Grid,
+  IconButton,
   LinearProgress,
   List,
   ListItem,
@@ -7,6 +8,7 @@ import {
   makeStyles,
   Paper,
 } from '@material-ui/core';
+import { AddBox, Replay } from '@material-ui/icons';
 import Head from 'next/head';
 import React, { FunctionComponent } from 'react';
 import { useRecurrentRecordsQuery } from '../../../src/records/hooks/recurrentRecordQueries';
@@ -38,7 +40,15 @@ const RecurrentRecordPage = () => {
         />
       </Head>
       <Grid item xs className={classes.list}>
-        <PageHeader>Recurrent Records</PageHeader>
+        <PageHeader
+          header={'Recurrent Records'}
+          icon={<Replay fontSize="large" color="primary" />}
+          actions={
+            <IconButton color="primary" onClick={openAddDialog}>
+              <AddBox />
+            </IconButton>
+          }
+        />
         <RecurrentRecordsList />
       </Grid>
     </>

@@ -28,7 +28,7 @@ export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> =
       theme.breakpoints.down(450)
     );
     const shouldShowExport = useMediaQuery((theme: Theme) =>
-      theme.breakpoints.between(450, 'sm')
+      theme.breakpoints.up(450)
     );
     const shouldShowSort = useMediaQuery((theme: Theme) =>
       theme.breakpoints.between(450, 'sm')
@@ -48,7 +48,9 @@ export const RecordsTableToolbar: FunctionComponent<RecordsTableToolbarProps> =
     return (
       <>
         <Grid item container xs>
-          <PageHeader>Records</PageHeader>
+          <Typography variant="h3" color="primary">
+            Records
+          </Typography>
           <Grid item xs container justify="flex-end">
             {shouldShowSort && (
               <Tooltip title="Sort">

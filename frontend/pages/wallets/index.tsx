@@ -56,19 +56,15 @@ const WalletPage: React.FunctionComponent = (props) => {
       </Head>
       <Grid container className={classes.walletContainer}>
         <WalletDialogContainer />
-        <Grid item container alignItems="center" spacing={2}>
-          <Grid item>
-            <AccountBalance fontSize="large" color="primary" />
-          </Grid>
-          <Grid item>
-            <PageHeader>Wallets</PageHeader>
-          </Grid>
-          <Grid item>
+        <PageHeader
+          header={'Wallets'}
+          icon={<AccountBalance fontSize="large" color="primary" />}
+          actions={
             <IconButton color="primary" onClick={openAddDialog}>
               <AddBox />
             </IconButton>
-          </Grid>
-        </Grid>
+          }
+        />
         <Grid container spacing={2}>
           {isFetching ? (
             <Grid item xs>

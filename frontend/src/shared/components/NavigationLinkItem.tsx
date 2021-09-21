@@ -28,6 +28,7 @@ const NavigationLinkItem: React.FunctionComponent<NavigationItemProps> = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
+    event.stopPropagation();
     setChildrenOpen(!childrenOpen);
   };
 

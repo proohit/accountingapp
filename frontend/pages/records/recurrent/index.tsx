@@ -83,6 +83,7 @@ const RecurrentRecordsList = () => {
       <List>
         {recurrentRecords?.map((recurrentRecord) => (
           <ListItem
+            divider
             button
             key={recurrentRecord.id}
             onClick={() => openRecord(recurrentRecord)}

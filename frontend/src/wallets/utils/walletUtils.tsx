@@ -6,6 +6,6 @@ export class WalletUtils {
   }
 
   public static getWalletById(wallets: Wallet[], walletId: Wallet['id']) {
-    return wallets.find((wallet) => wallet.id === walletId);
+    return wallets?.find((wallet) => wallet.id === walletId);
   }
 }

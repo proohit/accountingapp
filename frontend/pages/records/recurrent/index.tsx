@@ -15,6 +15,7 @@ import { useRecoilState } from 'recoil';
 import { RecurrentRecordDialogContainer } from '../../../src/records/components/RecurrentRecordDialogContainer';
 import { useRecurrentRecordsQuery } from '../../../src/records/hooks/recurrentRecordQueries';
 import { recurrentRecordsDialogsState } from '../../../src/records/hooks/recurrentRecordsStore';
+import { RecurrentRecord } from '../../../src/records/models/RecurrentRecord';
 import PageHeader from '../../../src/shared/components/PageHeader';
 
 const styles = makeStyles((theme) => ({
@@ -66,13 +67,26 @@ const RecurrentRecordPage = () => {
 
 const RecurrentRecordsList = () => {
   const { data: recurrentRecords, isLoading } = useRecurrentRecordsQuery();
+  const [dialogs, setDialogs] = useRecoilState(recurrentRecordsDialogsState);
+
+  const openRecord = (recurrentRecord: RecurrentRecord) => {
+    setDialogs({
+      ...dialogs,
+      EDIT_RECURRENT_RECORD: { open: true, recordToEdit: recurrentRecord },
+    });
+  };
+
   return isLoading ? (
     <LinearProgress />
   ) : (
     <Paper>
       <List>
         {recurrentRecords?.map((recurrentRecord) => (
-          <ListItem button key={recurrentRecord.id}>
+          <ListItem
+            button
+            key={recurrentRecord.id}
+            onClick={() => openRecord(recurrentRecord)}
+          >
             <ListItemText>{recurrentRecord.description}</ListItemText>
           </ListItem>
         ))}

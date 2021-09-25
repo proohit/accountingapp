@@ -68,7 +68,7 @@ export const RecurrentRecordForm = (props: Props) => {
         endDate: recurrentRecord?.endDate
           ? dayjs(recurrentRecord.endDate).format()
           : null,
-        periodicity: Periodicity.MONTHLY,
+        periodicity: recurrentRecord?.periodicity || Periodicity.MONTHLY,
       },
       validationSchema: schema(wallets?.map((wallet) => wallet.name)),
       validateOnChange: false,
@@ -155,7 +155,6 @@ export const RecurrentRecordForm = (props: Props) => {
             fullWidth
             inputVariant="outlined"
             showTodayButton
-            disablePast
           />
         </Grid>
         <Grid item>

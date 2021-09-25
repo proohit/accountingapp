@@ -55,6 +55,7 @@ const RecurrentRecordControllerImpl: RecurrentRecordController = {
         const {
             description: updatedDescription,
             value: updatedValue,
+            startDate: updatedStartDate,
             endDate: updatedEndDate,
             walletId: updatedWalletId,
             categoryId: updatedCategoryId,
@@ -67,6 +68,7 @@ const RecurrentRecordControllerImpl: RecurrentRecordController = {
         recurrentRecord.walletId = updatedWalletId;
         recurrentRecord.description = updatedDescription;
         recurrentRecord.value = updatedValue;
+        recurrentRecord.startDate = updatedStartDate;
         recurrentRecord.endDate = updatedEndDate;
         recurrentRecord.periodicity = updatedPeriodicity;
         recurrentRecord.ownerUsername = username;

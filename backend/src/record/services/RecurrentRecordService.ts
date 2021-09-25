@@ -81,7 +81,16 @@ export class RecurrentRecordService {
         updatedRecurrentRecord: Partial<RecurrentRecord>,
         username: User['username'],
     ): Promise<RecurrentRecord> {
-        const { categoryId, walletId, endDate, description, periodicity, value, id } = updatedRecurrentRecord;
+        const {
+            categoryId,
+            walletId,
+            endDate,
+            startDate,
+            description,
+            periodicity,
+            value,
+            id,
+        } = updatedRecurrentRecord;
         const recurrentRecordRepo = repositories.recurrentRecords();
 
         const recurrentRecord = await this.getById(id, username);
@@ -95,6 +104,7 @@ export class RecurrentRecordService {
             description: description === '' ? '' : description || recurrentRecord.description,
             value: Number.isNaN(value) ? recurrentRecord.value : value,
             endDate: endDate || recurrentRecord.endDate,
+            startDate: startDate || recurrentRecord.startDate,
             periodicity: periodicity || recurrentRecord.periodicity,
             ownerUsername: username,
             walletId: walletOfRecord.id,

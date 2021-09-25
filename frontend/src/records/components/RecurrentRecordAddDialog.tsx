@@ -4,9 +4,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  LinearProgress,
 } from '@material-ui/core';
 import React from 'react';
 import { useRecoilState } from 'recoil';
+import { useAuthentication } from '../../authentication/hooks/useAuthentication';
+import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import {
   useCategoriesQuery,
   useCreateCategoryMutation,
@@ -21,7 +24,10 @@ const RecurrentRecordAddDialog = (props) => {
   const [dialogs, setDialogs] = useRecoilState(recurrentRecordsDialogsState);
 
   const { mutateAsync } = useCreateRecurrentRecordMutation();
-  const { data: categories } = useCategoriesQuery();
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useCategoriesQuery();
+  const { data: wallets, isLoading: isWalletsLoading } = useWalletsQuery();
+  const { username } = useAuthentication();
 
   const closeDialog = () => {
     setDialogs({ ...dialogs, ADD_RECURRENT_RECORD: { open: false } });
@@ -47,7 +53,16 @@ const RecurrentRecordAddDialog = (props) => {
     <Dialog open={dialogs.ADD_RECURRENT_RECORD.open} onClose={closeDialog}>
       <DialogTitle>Add Recurrent Record</DialogTitle>
       <DialogContent>
-        <RecurrentRecordForm onAddRecurrentRecord={addRecurrentRecord} />
+        {isCategoriesLoading || isWalletsLoading ? (
+          <LinearProgress />
+        ) : (
+          <RecurrentRecordForm
+            onAddRecurrentRecord={addRecurrentRecord}
+            categories={categories}
+            wallets={wallets}
+            username={username}
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button color="secondary" onClick={closeDialog} variant="outlined">

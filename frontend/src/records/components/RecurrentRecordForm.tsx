@@ -4,10 +4,9 @@ import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React from 'react';
 import * as yup from 'yup';
-import { useAuthentication } from '../../authentication/hooks/useAuthentication';
-import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
+import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
-import { useCategoriesQuery } from '../hooks/categoriesQueries';
+import { Category } from '../models/Category';
 import { Periodicity, RecurrentRecord } from '../models/RecurrentRecord';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
@@ -37,14 +36,20 @@ const schema = (walletNames: string[]) =>
 
 interface Props {
   recurrentRecord?: RecurrentRecord;
+  wallets: Wallet[];
+  categories: Category[];
   onAddRecurrentRecord: (recurrentRecord: RecurrentRecord) => void;
+  username: string;
 }
 
 export const RecurrentRecordForm = (props: Props) => {
-  const { recurrentRecord, onAddRecurrentRecord } = props;
-  const { data: wallets } = useWalletsQuery();
-  const { data: categories } = useCategoriesQuery();
-  const { username } = useAuthentication();
+  const {
+    recurrentRecord,
+    onAddRecurrentRecord,
+    categories,
+    wallets,
+    username,
+  } = props;
 
   const { values, errors, handleSubmit, handleChange, setFieldValue } =
     useFormik({

@@ -27,7 +27,10 @@ const schema = (walletNames: string[]) =>
       .required('Please provide a category'),
     value: yup.number().required('Please provide a value'),
     startDate: yup.date().required('Please provide a starting date'),
-    endDate: yup.date().nullable(),
+    endDate: yup
+      .date()
+      .nullable()
+      .min(yup.ref('startDate'), 'End date must be after start date'),
     periodicity: yup
       .string()
       .required('Please provide how often the record should be executed')
@@ -149,6 +152,8 @@ export const RecurrentRecordForm = (props: Props) => {
             label="Start Date"
             name="startDate"
             color="secondary"
+            error={!!errors.startDate}
+            helperText={errors.startDate}
             onChange={(date) => {
               setFieldValue('startDate', date.format());
             }}
@@ -163,6 +168,8 @@ export const RecurrentRecordForm = (props: Props) => {
             label="End Date"
             name="endDate"
             color="secondary"
+            error={!!errors.endDate}
+            helperText={errors.endDate}
             onChange={(date) => {
               setFieldValue('endDate', date.format());
             }}

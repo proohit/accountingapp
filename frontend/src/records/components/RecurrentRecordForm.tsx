@@ -1,4 +1,4 @@
-import { Grid, TextField } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
@@ -11,6 +11,7 @@ import { Periodicity, RecurrentRecord } from '../models/RecurrentRecord';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
+import { PeriodicityField } from './PeriodicityField';
 import { ValueField } from './ValueField';
 import { WalletField } from './WalletField';
 
@@ -124,9 +125,9 @@ export const RecurrentRecordForm = (props: Props) => {
         </Grid>
         <Grid item>
           <CategoryField
-            onCategoryChange={(newCategory) => {
-              setFieldValue('categoryName', newCategory);
-            }}
+            onCategoryChange={(newCategory) =>
+              setFieldValue('categoryName', newCategory)
+            }
             withNew={true}
             categoryName={values.categoryName}
             categories={categories}
@@ -134,16 +135,13 @@ export const RecurrentRecordForm = (props: Props) => {
           />
         </Grid>
         <Grid item>
-          <TextField
-            variant="outlined"
-            label="periodicity"
-            name="periodicity"
-            value={values.periodicity}
-            onChange={handleChange}
-            fullWidth
-            error={!!errors.periodicity}
-            helperText={errors.periodicity}
-            color="secondary"
+          <PeriodicityField
+            onPeriodicityChange={(newPeriodicity) =>
+              setFieldValue('periodicity', newPeriodicity)
+            }
+            periodicities={Object.values(Periodicity)}
+            periodicityName={values.periodicity}
+            errorText={errors.periodicity}
           />
         </Grid>
         <Grid item>

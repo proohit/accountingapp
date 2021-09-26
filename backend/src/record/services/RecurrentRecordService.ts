@@ -3,12 +3,23 @@ import { Record } from '../../entity/Record';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
 import { User } from '../../entity/User';
 import { BadRequest, MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { repositories } from '../../shared/repositories/database';
+import { connection, repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
 import { UserNotFound } from '../../user/models/Errors';
 import { RecurrentRecordNotFound } from '../models/Errors';
-
+import RecurrentRecordScheduler from './RecurrentRecordScheduler';
 export class RecurrentRecordService {
+    private scheduleService: RecurrentRecordScheduler;
+    constructor() {
+        this.configureScheduler();
+    }
+
+    private async configureScheduler() {
+        await connection;
+        const records = await repositories.recurrentRecords().find();
+        this.scheduleService = new RecurrentRecordScheduler(records);
+    }
+
     async createRecurrentRecord(
         recurrentRecord: Partial<RecurrentRecord>,
         username: User['username'],
@@ -25,16 +36,14 @@ export class RecurrentRecordService {
         }
         const sanitizedStartDate = dayjs(startDate) || dayjs();
         const sanitizedEndDate = endDate ? dayjs(endDate) : null;
-        if (sanitizedStartDate.isBefore(dayjs(), 'minutes')) {
-            throw new BadRequest('Start date cannot be in the past!');
-        }
+
         if (sanitizedEndDate?.isBefore(dayjs())) {
             throw new BadRequest('End date cannot be in the past!');
         }
         if (sanitizedEndDate && sanitizedStartDate.isAfter(sanitizedEndDate)) {
             throw new BadRequest('Start date cannot be after end date!');
         }
-        if (!['daily', 'monthly', 'yearly'].includes(periodicity)) {
+        if (!['hourly', 'daily', 'monthly', 'yearly'].includes(periodicity)) {
             throw new BadRequest('Periodicity must be one of daily, monthly, yearly');
         }
         const recurrentRecordRepo = repositories.recurrentRecords();
@@ -45,7 +54,7 @@ export class RecurrentRecordService {
         const requestedOwner = await userRepo.findOne({ username });
         if (!requestedOwner) throw new UserNotFound();
 
-        return recurrentRecordRepo.save({
+        const createdRecord = await recurrentRecordRepo.save({
             description,
             startDate: sanitizedStartDate.toISOString(),
             endDate: sanitizedEndDate?.toISOString(),
@@ -55,12 +64,17 @@ export class RecurrentRecordService {
             categoryId: requestedCategory.id,
             walletId: requestedWallet.id,
         });
+
+        this.scheduleService.scheduleJob(createdRecord);
+        return createdRecord;
     }
 
     async deleteById(id: RecurrentRecord['id'], username: User['username']): Promise<RecurrentRecord> {
         const recurrentRecordRepo = repositories.recurrentRecords();
         const recurrentRecordToDelete = await this.getById(id, username);
-        return recurrentRecordRepo.remove(recurrentRecordToDelete);
+        const deletion = await recurrentRecordRepo.remove(recurrentRecordToDelete);
+        this.rescheduleRecords();
+        return deletion;
     }
 
     async getById(id: Record['id'], username: User['username']): Promise<RecurrentRecord> {
@@ -99,20 +113,39 @@ export class RecurrentRecordService {
 
         const walletOfRecord = await services.walletService.getById(walletId, username);
 
-        return recurrentRecordRepo.save({
+        const updatedRecord = await recurrentRecordRepo.save({
             id,
             description: description === '' ? '' : description || recurrentRecord.description,
             value: Number.isNaN(value) ? recurrentRecord.value : value,
-            endDate: endDate || recurrentRecord.endDate,
-            startDate: startDate || recurrentRecord.startDate,
+            endDate: dayjs(endDate).toISOString() || recurrentRecord.endDate,
+            startDate: dayjs(startDate).toISOString() || recurrentRecord.startDate,
             periodicity: periodicity || recurrentRecord.periodicity,
             ownerUsername: username,
             walletId: walletOfRecord.id,
             categoryId: categoryOfRecord.id,
         });
+        this.rescheduleRecords();
+        return updatedRecord;
     }
 
     getByUser(username: User['username']): Promise<RecurrentRecord[]> {
         return repositories.recurrentRecords().find({ ownerUsername: username });
+    }
+
+    async applyRecurrentRecord(record: RecurrentRecord) {
+        await services.recordService.createRecord(
+            record.description,
+            record.value,
+            dayjs().toDate(),
+            record.walletId,
+            record.categoryId,
+            record.ownerUsername,
+        );
+    }
+
+    private async rescheduleRecords() {
+        this.scheduleService.resetSchedule();
+        const records = await repositories.recurrentRecords().find();
+        this.scheduleService.scheduleJobs(records);
     }
 }

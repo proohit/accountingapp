@@ -8,6 +8,8 @@
     "synchronize": false,
     "logging": false,
     "migrationsRun": true,
+    "useUtc": true,
+    "timezone": "Z",
     "entities": ["src/entity/**/*{.ts,.js}"],
     "migrations": ["src/migration/**/*{.ts,.js}"],
     "subscribers": ["src/subscriber/**/*{.ts,.js}"],

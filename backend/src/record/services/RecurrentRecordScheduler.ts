@@ -1,18 +1,17 @@
 import dayjs from 'dayjs';
-import { scheduledJobs, scheduleJob } from 'node-schedule';
+import { Job, scheduleJob } from 'node-schedule';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
+import logger from '../../shared/services/loggingService';
 import { services } from '../../shared/services/services';
 
 export default class RecurrentRecordScheduler {
+    private scheduledJobs: Map<RecurrentRecord['id'], Job> = new Map();
     constructor(recurrentRecords: RecurrentRecord[]) {
         this.scheduleJobs(recurrentRecords);
-        for (const job of Object.values(scheduledJobs)) {
-            console.log(job?.nextInvocation()?.toLocaleString());
-        }
     }
 
     private buildRule(startDate: RecurrentRecord['startDate'], periodicity: RecurrentRecord['periodicity']) {
-        const date = dayjs(startDate.toISOString());
+        const date = dayjs(startDate);
         switch (periodicity) {
             case 'hourly':
                 return `${date.minute()} * * * *`;
@@ -30,19 +29,34 @@ export default class RecurrentRecordScheduler {
     }
 
     public resetSchedule() {
-        for (const job of Object.values(scheduledJobs)) {
-            job.cancel();
+        for (const job of this.scheduledJobs.values()) {
+            job?.cancel();
         }
+        logger.info('Reset schedule');
     }
 
-    public scheduleJobs(records: RecurrentRecord[]) {
-        for (const record of records) {
-            this.scheduleJob(record);
+    public scheduleJobs(records: RecurrentRecord[] | RecurrentRecord) {
+        if (Array.isArray(records)) {
+            for (const record of records) {
+                this.scheduleJob(record);
+            }
+        } else {
+            this.scheduleJob(records);
         }
+        logger.info(
+            'Scheduled jobs',
+            [...this.scheduledJobs].map(([id, job]) => ({
+                id,
+                nextExecution: job?.nextInvocation()?.toLocaleString(),
+            })),
+        );
     }
 
-    public scheduleJob(record: RecurrentRecord) {
+    private scheduleJob(record: RecurrentRecord) {
         const rule = this.buildRule(record.startDate, record.periodicity);
-        scheduleJob({ start: record.startDate, end: record.endDate, rule }, () => this.executeUpdate(record));
+        const job = scheduleJob({ start: record.startDate, end: record.endDate, rule }, () =>
+            this.executeUpdate(record),
+        );
+        this.scheduledJobs.set(record.id, job);
     }
 }

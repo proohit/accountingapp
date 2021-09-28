@@ -65,7 +65,7 @@ export class RecurrentRecordService {
             walletId: requestedWallet.id,
         });
 
-        this.scheduleService.scheduleJob(createdRecord);
+        this.scheduleService.scheduleJobs(createdRecord);
         return createdRecord;
     }
 

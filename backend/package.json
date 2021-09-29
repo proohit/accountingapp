@@ -23,7 +23,7 @@
         "@koa/router": "^10.1.1",
         "@types/express": "^4.17.13",
         "@types/express-serve-static-core": "^4.17.24",
-        "@types/koa-cors": "0.0.0",
+        "@types/koa-cors": "0.0.2",
         "@types/koa-passport": "^4.0.2",
         "@types/koa-session": "^5.10.4",
         "@types/mysql2": "github:types/mysql2",

@@ -11,6 +11,7 @@ import { validateRecordField } from '../services/RecordValidator';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
+import { ValueField } from './ValueField';
 import { WalletField } from './WalletField';
 
 interface RecordFormProps {
@@ -39,31 +40,28 @@ export const RecordForm = (props: RecordFormProps) => {
     walletName: string;
   };
 
-  const [
-    formFields,
-    handleFormFieldChange,
-    [formErrors, , isFormValid],
-  ] = useForm<RecordFormFields>(
-    {
-      description: record?.description || '',
-      value: record?.value.toString() || '',
-      walletName:
-        WalletUtils.getWalletById(wallets, record?.walletId)?.name ||
-        (wallets?.length && wallets[0].name) ||
-        '',
-      categoryName:
-        getCategoryById(categories, record?.categoryId)?.name ||
-        (categories?.length > 0 && categories[0].name) ||
-        '',
-      timestamp: dayjs(record?.timestamp).format(),
-    },
-    {
-      validation: {
-        validationFunction: validateRecordField,
-        initialValidation: true,
+  const [formFields, handleFormFieldChange, [formErrors, , isFormValid]] =
+    useForm<RecordFormFields>(
+      {
+        description: record?.description || '',
+        value: record?.value.toString() || '',
+        walletName:
+          WalletUtils.getWalletById(wallets, record?.walletId)?.name ||
+          (wallets?.length && wallets[0].name) ||
+          '',
+        categoryName:
+          getCategoryById(categories, record?.categoryId)?.name ||
+          (categories?.length > 0 && categories[0].name) ||
+          '',
+        timestamp: dayjs(record?.timestamp).format(),
       },
-    }
-  );
+      {
+        validation: {
+          validationFunction: validateRecordField,
+          initialValidation: true,
+        },
+      }
+    );
 
   useEffect(() => {
     onRecordChange({
@@ -93,16 +91,10 @@ export const RecordForm = (props: RecordFormProps) => {
         />
       </Grid>
       <Grid item>
-        <TextField
-          variant="outlined"
-          error={!!formErrors.value}
-          helperText={formErrors.value}
-          color="secondary"
-          label="value"
-          name="value"
-          placeholder="0.00"
+        <ValueField
+          onValueChange={handleFormFieldChange}
           value={formFields.value}
-          onChange={handleFormFieldChange}
+          errorText={formErrors.value}
         />
       </Grid>
       <Grid item>

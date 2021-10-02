@@ -2,6 +2,7 @@ import {
   Button,
   Divider,
   Grid,
+  LinearProgress,
   makeStyles,
   Typography,
 } from '@material-ui/core';
@@ -38,8 +39,9 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
 
   const [timestampFrom, setTimestampFrom] = useState(null);
   const [timestampTo, setTimestampTo] = useState(null);
-  const { data: categories } = useCategoriesQuery();
-  const { data: wallets } = useWalletsQuery();
+  const { data: categories, isLoading: categoriesLoading } =
+    useCategoriesQuery();
+  const { data: wallets, isLoading: walletsLoading } = useWalletsQuery();
 
   const classes = styles();
 
@@ -70,6 +72,10 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
       walletId: undefined,
     });
   };
+
+  if (categoriesLoading || walletsLoading) {
+    return <LinearProgress />;
+  }
 
   return (
     <Grid

@@ -8,7 +8,9 @@ export const useWalletsQuery = () => {
   return useQuery<Wallet[]>(
     ['getWallets'],
     () => walletApi.getWalletsByUser(),
-    { initialData: [] }
+    {
+      staleTime: 15000,
+    }
   );
 };
 export const useCreateWalletMutation = () => {

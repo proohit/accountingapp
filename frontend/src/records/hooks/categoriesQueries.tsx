@@ -6,7 +6,7 @@ const categoryApi = new CategoryApiService();
 
 export const useCategoriesQuery = () => {
   return useQuery(['getCategories'], () => categoryApi.getCategoriesByUser(), {
-    initialData: [],
+    staleTime: 15000,
   });
 };
 

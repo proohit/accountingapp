@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
+import { Format } from '../models/Format';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';
@@ -14,6 +15,7 @@ type RecordTableBodyProps = {
   wallets: Wallet[];
   noRecords?: boolean;
   noRecordsText?: string;
+  format: Format;
 };
 export const RecordTableBody: FunctionComponent<RecordTableBodyProps> = (
   props
@@ -25,6 +27,7 @@ export const RecordTableBody: FunctionComponent<RecordTableBodyProps> = (
     wallets,
     noRecords,
     noRecordsText,
+    format,
   } = props;
   return (
     <TableBody>
@@ -50,7 +53,7 @@ export const RecordTableBody: FunctionComponent<RecordTableBodyProps> = (
               {WalletUtils.getWalletById(wallets, record.walletId)?.name}
             </TableCell>
             <TableCell>
-              {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+              {dayjs(record.timestamp).format(format.dateTimeFormat)}
             </TableCell>
             <TableCell>{record.value}</TableCell>
           </TableRow>

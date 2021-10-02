@@ -1,7 +1,14 @@
-import { Grid, List, ListItem, Typography } from '@material-ui/core';
+import {
+  Grid,
+  LinearProgress,
+  List,
+  ListItem,
+  Typography,
+} from '@material-ui/core';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { useCategoriesQuery } from '../../records/hooks/categoriesQueries';
+import { formatState } from '../../records/hooks/formatState';
 import { useRecordsQuery } from '../../records/hooks/recordsQueries';
 import { getCategoryById } from '../../records/utils/categoryUtils';
 
@@ -14,7 +21,13 @@ const LatestRecords: React.FunctionComponent<ILatestRecordsProps> = (props) => {
     sortDirection: 'desc',
     itemsPerPage: 5,
   });
-  const { data: categories } = useCategoriesQuery();
+  const { data: format, isLoading: formatLoading } = formatState();
+  const { data: categories, isLoading: categoriesLoading } =
+    useCategoriesQuery();
+
+  if (formatLoading || categoriesLoading) {
+    return <LinearProgress />;
+  }
   return (
     <Grid style={{ maxHeight: 200 }}>
       <List>
@@ -27,7 +40,7 @@ const LatestRecords: React.FunctionComponent<ILatestRecordsProps> = (props) => {
                   {getCategoryById(categories, record.categoryId)?.name}
                 </Typography>
                 <Typography color="primary" variant="body2">
-                  {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+                  {dayjs(record.timestamp).format(format.dateTimeFormat)}
                 </Typography>
               </Grid>
               <Grid item xs={2}>

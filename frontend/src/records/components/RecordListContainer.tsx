@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import {
@@ -16,13 +16,8 @@ import {
   currentPageState,
   currentSortState,
 } from '../hooks/currentQueryState';
-import {
-  addRecordDialogState,
-  editRecordDialogState,
-  filterRecordDialogState,
-  recordsDialogsState,
-  sortRecordDialogState,
-} from '../hooks/recordsDialogsState';
+import { formatState } from '../hooks/formatState';
+import { recordsDialogsState } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
 import { MobileRecordItem } from './MobileRecordItem';
@@ -36,7 +31,7 @@ export const RecordListContainer: FunctionComponent = () => {
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const currentFilter = useRecoilValue(currentFilterState);
-
+  const { data: format, isLoading: formatLoading } = formatState();
   const { data: paginatedResult, isFetching: recordsLoading } = useRecordsQuery(
     {
       filterBy: currentFilter,
@@ -116,7 +111,7 @@ export const RecordListContainer: FunctionComponent = () => {
     />
   );
 
-  if (recordsLoading || walletsLoading || categoriesLoading) {
+  if (recordsLoading || walletsLoading || categoriesLoading || formatLoading) {
     return <LinearProgress />;
   }
 
@@ -145,6 +140,7 @@ export const RecordListContainer: FunctionComponent = () => {
               wallets={wallets}
               noRecords={noRecords}
               noRecordsText={noRecordsText}
+              format={format}
             />
           </RecordsTable>
         </Hidden>
@@ -162,6 +158,7 @@ export const RecordListContainer: FunctionComponent = () => {
                     onRecordClick={openEditRecordsDialog}
                     categories={categories}
                     wallets={wallets}
+                    format={format}
                   />
                 ))
               )}

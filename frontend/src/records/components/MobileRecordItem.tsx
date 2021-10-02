@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
+import { Format } from '../models/Format';
 import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';
 
@@ -11,12 +12,13 @@ type MobileRecordItemProps = {
   onRecordClick: (record: Record) => void;
   categories: any[];
   wallets: Wallet[];
+  format: Format;
 };
 
 export const MobileRecordItem: FunctionComponent<MobileRecordItemProps> = (
   props
 ) => {
-  const { categories, onRecordClick, record, wallets } = props;
+  const { categories, onRecordClick, record, wallets, format } = props;
   return (
     <ListItem
       button
@@ -39,7 +41,7 @@ export const MobileRecordItem: FunctionComponent<MobileRecordItemProps> = (
           Wallet: {WalletUtils.getWalletById(wallets, record.walletId)?.name}
         </Typography>
         <Typography variant="body2">
-          Timestamp: {dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+          Timestamp: {dayjs(record.timestamp).format(format.dateTimeFormat)}
         </Typography>
       </ListItemText>
     </ListItem>

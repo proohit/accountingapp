@@ -19,7 +19,7 @@ const SettingsPage: React.FunctionComponent = (props) => {
           key="description"
         />
       </Head>
-      <PageHeader>Settings</PageHeader>
+      <PageHeader header="Settings" />
       <SettingsEntries />
     </>
   );

@@ -1,9 +1,12 @@
 import { API_ROUTES } from '../../shared/constants/ApiRoutes';
 import { BASE_API } from '../../shared/models/Api';
-import { RecurrentRecord } from '../models/RecurrentRecord';
+import {
+  PlannedRecurrentRecord,
+  RecurrentRecord,
+} from '../models/RecurrentRecord';
 
 export interface RecurrentRecordsApi {
-  getRecordsByUser(): Promise<RecurrentRecord[]>;
+  getRecordsByUser(): Promise<PlannedRecurrentRecord[]>;
   createRecord(recurrentRecord: RecurrentRecord): Promise<RecurrentRecord>;
   editRecord(recurrentRecord: RecurrentRecord): Promise<RecurrentRecord>;
   deleteRecord(recurrentRecordId: RecurrentRecord['id']): Promise<string>;
@@ -27,7 +30,7 @@ export class RecurrentRecordsApiService implements RecurrentRecordsApi {
       recurrentRecord
     );
   }
-  getRecordsByUser(): Promise<RecurrentRecord[]> {
-    return BASE_API.get<RecurrentRecord[]>(API_ROUTES.RECURRENT_RECORDS);
+  getRecordsByUser(): Promise<PlannedRecurrentRecord[]> {
+    return BASE_API.get<PlannedRecurrentRecord[]>(API_ROUTES.RECURRENT_RECORDS);
   }
 }

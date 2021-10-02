@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { PlannedRecurrentRecord } from '../../entity/PlannedRecurrentRecord';
 import { Record } from '../../entity/Record';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
 import { User } from '../../entity/User';
@@ -95,16 +96,8 @@ export class RecurrentRecordService {
         updatedRecurrentRecord: Partial<RecurrentRecord>,
         username: User['username'],
     ): Promise<RecurrentRecord> {
-        const {
-            categoryId,
-            walletId,
-            endDate,
-            startDate,
-            description,
-            periodicity,
-            value,
-            id,
-        } = updatedRecurrentRecord;
+        const { categoryId, walletId, endDate, startDate, description, periodicity, value, id } =
+            updatedRecurrentRecord;
         const recurrentRecordRepo = repositories.recurrentRecords();
 
         const recurrentRecord = await this.getById(id, username);
@@ -128,8 +121,20 @@ export class RecurrentRecordService {
         return updatedRecord;
     }
 
-    getByUser(username: User['username']): Promise<RecurrentRecord[]> {
-        return repositories.recurrentRecords().find({ ownerUsername: username });
+    async getByUser(username: User['username']): Promise<PlannedRecurrentRecord[]> {
+        const records: PlannedRecurrentRecord[] = await repositories
+            .recurrentRecords()
+            .find({ ownerUsername: username });
+        const nextInvocations = this.scheduleService.getNextInvocations(records);
+        if (Array.isArray(nextInvocations)) {
+            nextInvocations.forEach((nextInvocation) => {
+                const idx = records.findIndex((record) => record.id === nextInvocation.id);
+                if (idx >= 0) {
+                    records[idx].nextInvocation = nextInvocation.nextInvocation;
+                }
+            });
+        }
+        return records;
     }
 
     async applyRecurrentRecord(record: RecurrentRecord) {

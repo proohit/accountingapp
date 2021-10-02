@@ -9,13 +9,18 @@ import {
   Paper,
 } from '@material-ui/core';
 import { AddBox, Replay } from '@material-ui/icons';
+import dayjs from 'dayjs';
 import Head from 'next/head';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import { RecurrentRecordDialogContainer } from '../../../src/records/components/RecurrentRecordDialogContainer';
+import { formatState } from '../../../src/records/hooks/formatState';
 import { useRecurrentRecordsQuery } from '../../../src/records/hooks/recurrentRecordQueries';
 import { recurrentRecordsDialogsState } from '../../../src/records/hooks/recurrentRecordsStore';
-import { RecurrentRecord } from '../../../src/records/models/RecurrentRecord';
+import {
+  PlannedRecurrentRecord,
+  RecurrentRecord,
+} from '../../../src/records/models/RecurrentRecord';
 import PageHeader from '../../../src/shared/components/PageHeader';
 
 const styles = makeStyles((theme) => ({
@@ -66,9 +71,10 @@ const RecurrentRecordPage = () => {
 };
 
 const RecurrentRecordsList = () => {
-  const { data: recurrentRecords, isLoading } = useRecurrentRecordsQuery();
+  const { data: recurrentRecords, isLoading: recurrentRecordsLoading } =
+    useRecurrentRecordsQuery();
   const [dialogs, setDialogs] = useRecoilState(recurrentRecordsDialogsState);
-
+  const { data: format, isLoading: formatLoading } = formatState();
   const openRecord = (recurrentRecord: RecurrentRecord) => {
     setDialogs({
       ...dialogs,
@@ -76,9 +82,20 @@ const RecurrentRecordsList = () => {
     });
   };
 
-  return isLoading ? (
-    <LinearProgress />
-  ) : (
+  const getNextInvocation = (recurrentRecord: PlannedRecurrentRecord) => {
+    if (recurrentRecord.nextInvocation) {
+      return `next execution on ${dayjs(recurrentRecord.nextInvocation).format(
+        format.dateTimeFormat
+      )}`;
+    } else {
+      return 'expired';
+    }
+  };
+
+  if (recurrentRecordsLoading || formatLoading) {
+    return <LinearProgress />;
+  }
+  return (
     <Paper>
       <List>
         {recurrentRecords?.map((recurrentRecord) => (
@@ -88,7 +105,10 @@ const RecurrentRecordsList = () => {
             key={recurrentRecord.id}
             onClick={() => openRecord(recurrentRecord)}
           >
-            <ListItemText>{recurrentRecord.description}</ListItemText>
+            <ListItemText>
+              {recurrentRecord.description} -{' '}
+              {getNextInvocation(recurrentRecord)}
+            </ListItemText>
           </ListItem>
         ))}
       </List>

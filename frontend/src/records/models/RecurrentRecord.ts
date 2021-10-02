@@ -16,3 +16,7 @@ export interface RecurrentRecord {
   ownerUsername: string;
   categoryId: string;
 }
+
+export interface PlannedRecurrentRecord extends RecurrentRecord {
+  nextInvocation: string;
+}

@@ -43,13 +43,7 @@ export default class RecurrentRecordScheduler {
         } else {
             this.scheduleJob(records);
         }
-        logger.info(
-            'Scheduled jobs',
-            [...this.scheduledJobs].map(([id, job]) => ({
-                id,
-                nextExecution: job?.nextInvocation()?.toLocaleString(),
-            })),
-        );
+        logger.info('Scheduled jobs', this.getNextInvocations());
     }
 
     private scheduleJob(record: RecurrentRecord) {
@@ -58,5 +52,33 @@ export default class RecurrentRecordScheduler {
             this.executeUpdate(record),
         );
         this.scheduledJobs.set(record.id, job);
+    }
+
+    public getNextInvocations(records?: RecurrentRecord[] | RecurrentRecord) {
+        if (!records) {
+            return [...this.scheduledJobs].map(([id, job]) => ({
+                id,
+                nextInvocation: job?.nextInvocation()?.toLocaleString(),
+            }));
+        } else {
+            return this.getNextInvocationsByRecords(records);
+        }
+    }
+
+    private getNextInvocationsByRecords(records: RecurrentRecord[] | RecurrentRecord) {
+        if (Array.isArray(records)) {
+            return [...this.scheduledJobs]
+                .filter(([id]) => this.scheduledJobs.has(id))
+                .map(([id, job]) => ({
+                    id,
+                    nextInvocation: job?.nextInvocation()?.toLocaleString(),
+                }));
+        } else {
+            const job = this.scheduledJobs.get(records.id);
+            return {
+                id: records.id,
+                nextInvocation: job?.nextInvocation()?.toLocaleString(),
+            };
+        }
     }
 }

@@ -169,12 +169,17 @@ export const RecurrentRecordForm = (props: Props) => {
             error={!!errors.endDate}
             helperText={errors.endDate}
             onChange={(date) => {
-              setFieldValue('endDate', date.format());
+              let newDateValue = null;
+              if (date) {
+                newDateValue = date.format();
+              }
+              setFieldValue('endDate', newDateValue);
             }}
             fullWidth
             inputVariant="outlined"
             showTodayButton
             disablePast
+            clearable
             minDate={dayjs(values.startDate).format()}
           />
         </Grid>

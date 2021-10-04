@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { PlannedRecurrentRecord } from '../../entity/PlannedRecurrentRecord';
 import { Record } from '../../entity/Record';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
@@ -106,11 +106,18 @@ export class RecurrentRecordService {
 
         const walletOfRecord = await services.walletService.getById(walletId, username);
 
+        let newEndDate: Dayjs | string = dayjs(endDate);
+        if (!newEndDate.isValid()) {
+            newEndDate = null;
+        } else {
+            newEndDate = newEndDate.toISOString();
+        }
+
         const updatedRecord = await recurrentRecordRepo.save({
             id,
             description: description === '' ? '' : description || recurrentRecord.description,
             value: Number.isNaN(value) ? recurrentRecord.value : value,
-            endDate: endDate ? dayjs(endDate).toISOString() : recurrentRecord?.endDate,
+            endDate: newEndDate,
             startDate: dayjs(startDate).toISOString() || recurrentRecord.startDate,
             periodicity: periodicity || recurrentRecord.periodicity,
             ownerUsername: username,

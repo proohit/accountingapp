@@ -48,9 +48,7 @@ export default class RecurrentRecordScheduler {
 
     private scheduleJob(record: RecurrentRecord) {
         const rule = this.buildRule(record.startDate, record.periodicity);
-        const job = scheduleJob({ start: record.startDate, end: record.endDate, rule }, () =>
-            this.executeUpdate(record),
-        );
+        const job = scheduleJob({ end: record.endDate, rule }, () => this.executeUpdate(record));
         this.scheduledJobs.set(record.id, job);
     }
 

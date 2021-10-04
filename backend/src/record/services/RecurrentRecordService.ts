@@ -110,7 +110,7 @@ export class RecurrentRecordService {
             id,
             description: description === '' ? '' : description || recurrentRecord.description,
             value: Number.isNaN(value) ? recurrentRecord.value : value,
-            endDate: dayjs(endDate).toISOString() || recurrentRecord.endDate,
+            endDate: endDate ? dayjs(endDate).toISOString() : recurrentRecord?.endDate,
             startDate: dayjs(startDate).toISOString() || recurrentRecord.startDate,
             periodicity: periodicity || recurrentRecord.periodicity,
             ownerUsername: username,

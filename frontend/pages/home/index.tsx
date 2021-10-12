@@ -4,6 +4,7 @@ import * as React from 'react';
 import CurrentStatus from '../../src/dashboard/components/CurrentStatus';
 import LatestRecords from '../../src/dashboard/components/LatestRecords';
 import MonthlyCategory from '../../src/dashboard/components/MonthlyCategory';
+import { QuickActions } from '../../src/dashboard/components/QuickActions';
 import ThisMonth from '../../src/dashboard/components/ThisMonth';
 import ThisYear from '../../src/dashboard/components/ThisYear';
 import Widget from '../../src/dashboard/components/Widget';
@@ -29,6 +30,9 @@ const DashboardPage: React.FunctionComponent = (props) => {
         />
       </Head>
       <Grid container spacing={2}>
+        <Widget xs={12} title="Quick actions">
+          <QuickActions />
+        </Widget>
         <Widget
           xs={12}
           title="This Month"

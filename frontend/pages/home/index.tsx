@@ -32,7 +32,7 @@ const DashboardPage: React.FunctionComponent = (props) => {
         <Widget
           xs={12}
           title="This Month"
-          actions={
+          actions={[
             <WalletField
               onWalletChange={(event) => {
                 setSelectedWallet(
@@ -43,8 +43,9 @@ const DashboardPage: React.FunctionComponent = (props) => {
               wallets={wallets}
               withAll
               variant="standard"
-            />
-          }
+              fullWidth={false}
+            />,
+          ]}
         >
           {wallets && (
             <>

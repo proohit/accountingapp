@@ -21,13 +21,24 @@ type WalletFieldProps = {
   withAll?: boolean;
   errorText?: string;
   variant?: FormControlProps['variant'];
+  fullWidth?: boolean;
 };
 
 export const WalletField: FunctionComponent<WalletFieldProps> = (props) => {
-  const { onWalletChange, walletName, wallets, withAll, errorText, variant } =
-    props;
+  const {
+    onWalletChange,
+    walletName,
+    wallets,
+    withAll,
+    errorText,
+    variant,
+    fullWidth,
+  } = props;
   return (
-    <FormControl variant={variant || 'outlined'} fullWidth>
+    <FormControl
+      variant={variant || 'outlined'}
+      fullWidth={fullWidth !== undefined ? fullWidth : true}
+    >
       <InputLabel>Wallet</InputLabel>
       <Select
         error={!!errorText}

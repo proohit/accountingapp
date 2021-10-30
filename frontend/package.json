@@ -1,6 +1,6 @@
 {
   "name": "accountingapp-web",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "private": true,
   "scripts": {
     "dev": "node --inspect ./node_modules/next/dist/bin/next dev",

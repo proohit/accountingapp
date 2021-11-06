@@ -104,7 +104,7 @@ export const RecordListContainer: FunctionComponent = () => {
       component="div"
       rowsPerPage={currentPage.itemsPerPage}
       page={currentPage.page - 1}
-      onChangePage={(_event, newPage) => {
+      onPageChange={(_event, newPage) => {
         updatePage(newPage);
       }}
       onChangeRowsPerPage={updateRowsPerPage}

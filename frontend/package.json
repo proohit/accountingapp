@@ -23,7 +23,7 @@
     "react-dom": "^17.0.2",
     "react-query": "^3.31.0",
     "recharts": "^2.1.6",
-    "recoil": "^0.3.1",
+    "recoil": "^0.5.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
 import { AuthenticationProvider } from '../../authentication/components/AuthenticationProvider';
 import { AccTheme } from '../globals/styles/AccTheme';
+import DialogsProvider from './DialogsProvider';
 import NotificationBar from './NotificationBar';
 const queryClient = new QueryClient();
 
@@ -17,8 +18,10 @@ const Providers: FunctionComponent = (props) => {
         <RecoilRoot>
           <QueryClientProvider client={queryClient}>
             <AuthenticationProvider>
-              <NotificationBar />
-              {props.children}
+              <DialogsProvider>
+                <NotificationBar />
+                {props.children}
+              </DialogsProvider>
             </AuthenticationProvider>
           </QueryClientProvider>
         </RecoilRoot>

@@ -11,7 +11,6 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import PageHeader from '../../src/shared/components/PageHeader';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
-import { WalletDialogContainer } from '../../src/wallets/components/WalletDialogContainer';
 import {
   addWalletDialogState,
   editWalletDialogState,
@@ -55,7 +54,6 @@ const WalletPage: React.FunctionComponent = (props) => {
         />
       </Head>
       <Grid container className={classes.walletContainer}>
-        <WalletDialogContainer />
         <PageHeader
           header={'Wallets'}
           icon={<AccountBalance fontSize="large" color="primary" />}

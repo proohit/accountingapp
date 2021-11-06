@@ -13,7 +13,6 @@ import dayjs from 'dayjs';
 import Head from 'next/head';
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { RecurrentRecordDialogContainer } from '../../../src/records/components/RecurrentRecordDialogContainer';
 import { formatState } from '../../../src/records/hooks/formatState';
 import { useRecurrentRecordsQuery } from '../../../src/records/hooks/recurrentRecordQueries';
 import { recurrentRecordsDialogsState } from '../../../src/records/hooks/recurrentRecordsStore';
@@ -64,7 +63,6 @@ const RecurrentRecordPage = () => {
           }
         />
         <RecurrentRecordsList />
-        <RecurrentRecordDialogContainer />
       </Grid>
     </>
   );

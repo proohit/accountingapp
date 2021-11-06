@@ -45,9 +45,7 @@ const Widget: React.FunctionComponent<IWidgetProps> = (props) => {
             )}
             {(!disableClosable || actions) && (
               <Grid item container justify="flex-end" xs>
-                {actions?.map((action) => (
-                  <Grid item>{action}</Grid>
-                ))}
+                {open && actions?.map((action) => <Grid item>{action}</Grid>)}
                 {!disableClosable && (
                   <Grid item>
                     <IconButton onClick={() => setOpen(!open)}>

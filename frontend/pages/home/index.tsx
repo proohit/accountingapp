@@ -48,6 +48,7 @@ const DashboardPage: React.FunctionComponent = (props) => {
               withAll
               variant="standard"
               fullWidth={false}
+              key="filterByWallet"
             />,
           ]}
         >

@@ -11,7 +11,7 @@ const OfflinePage: React.FC = (props) => {
       </Grid>
       <Grid item>
         <Typography variant="h3" color="primary">
-          It seems like you're offline...
+          It seems like you&apos;re offline...
         </Typography>
       </Grid>
     </Grid>

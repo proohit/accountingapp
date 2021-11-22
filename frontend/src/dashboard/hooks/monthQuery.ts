@@ -3,6 +3,7 @@ import { DailyStatisticsData } from '../models/DailyData';
 import {
   MonthCategoryData,
   MonthlyStatisticsData,
+  MonthStatusData,
 } from '../models/MonthlyData';
 import { StatisticsApiService } from '../services/StatisticsApi';
 
@@ -32,5 +33,11 @@ export const useMonthlyCategoryStatisticsQuery = (
     ['getMonthlyCategoryData', year],
     () => statisticsApi.getMonthCategoryData(month, year),
     { initialData: null }
+  );
+};
+
+export const useMonthStatusStatisticsQuery = (month: number, year: number) => {
+  return useQuery<MonthStatusData>(['getMonthStatusData', month, year], () =>
+    statisticsApi.getMonthStatusData(month, year)
   );
 };

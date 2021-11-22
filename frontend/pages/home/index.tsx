@@ -4,6 +4,7 @@ import * as React from 'react';
 import CurrentStatus from '../../src/dashboard/components/CurrentStatus';
 import LatestRecords from '../../src/dashboard/components/LatestRecords';
 import MonthlyCategory from '../../src/dashboard/components/MonthlyCategory';
+import MonthStatus from '../../src/dashboard/components/MonthStatus';
 import { QuickActions } from '../../src/dashboard/components/QuickActions';
 import ThisMonth from '../../src/dashboard/components/ThisMonth';
 import ThisYear from '../../src/dashboard/components/ThisYear';
@@ -30,6 +31,12 @@ const DashboardPage: React.FunctionComponent = (props) => {
         />
       </Head>
       <Grid container spacing={2}>
+        <Widget xs={12} md={6} title="Month Status">
+          <MonthStatus />
+        </Widget>
+        <Widget xs={12} md={6} title="Categories this month">
+          <MonthlyCategory />
+        </Widget>
         <Widget xs={12} title="Quick actions">
           <QuickActions />
         </Widget>
@@ -61,9 +68,6 @@ const DashboardPage: React.FunctionComponent = (props) => {
               />
             </>
           )}
-        </Widget>
-        <Widget xs={12} md={6} title="Categories this month">
-          <MonthlyCategory />
         </Widget>
         <Widget xs={12} md={6} title="Current Status">
           {wallets && <CurrentStatus wallets={wallets} />}

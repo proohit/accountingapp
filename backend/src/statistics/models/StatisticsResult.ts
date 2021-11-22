@@ -2,6 +2,7 @@ export enum StatisticsType {
     MONTHLY = 'monthly',
     DAILY = 'daily',
     CATEGORY_MONTHLY = 'category_daily',
+    MONTH_STATUS = 'month_status',
 }
 
 export interface DailyStatisticsResult extends StatisticsResult {
@@ -22,6 +23,12 @@ export interface MonthCategoryStatisticsResult extends StatisticsResult {
     data: CategoryBalanceData[];
 }
 
+export interface MonthStatusStatisticsResult extends StatisticsResult {
+    type: StatisticsType.MONTH_STATUS;
+    month: number;
+    data: MonthStatusData;
+}
+
 export interface StatisticsResult {
     type: StatisticsType;
 }
@@ -38,5 +45,9 @@ export interface MonthlyData {
 
 export interface CategoryBalanceData {
     category: string;
+    balance: number;
+}
+
+export interface MonthStatusData {
     balance: number;
 }

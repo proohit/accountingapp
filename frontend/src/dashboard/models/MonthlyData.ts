@@ -4,6 +4,7 @@ export interface MonthlyData {
   month: number;
   totalBalance: number;
 }
+
 export interface MonthlyStatisticsData {
   type: StatisticsType.MONTHLY;
   year: number;
@@ -18,5 +19,15 @@ export interface MonthCategoryData {
 
 export interface CategoryBalanceData {
   category: string;
+  balance: number;
+}
+
+export interface MonthStatusData {
+  type: StatisticsType.MONTH_STATUS;
+  month: number;
+  data: MonthStatusBalanceData;
+}
+
+export interface MonthStatusBalanceData {
   balance: number;
 }

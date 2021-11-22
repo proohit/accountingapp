@@ -4,7 +4,7 @@ import { Between, LessThan } from 'typeorm';
 import { repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
 import { getDaysInMonth } from '../../shared/utils/dateUtils';
-import { CategoryBalanceData, DailyData, MonthlyData } from '../models/StatisticsResult';
+import { CategoryBalanceData, DailyData, MonthlyData, MonthStatusData } from '../models/StatisticsResult';
 dayjs.extend(isBetween);
 export class StatisticsService {
     async getDailyDataForMonth(username: string, month: number, year: number): Promise<DailyData[]> {
@@ -133,5 +133,22 @@ export class StatisticsService {
             monthlyCategoryData.push({ category: categoryId, balance: categoryBalance });
         }
         return monthlyCategoryData;
+    }
+
+    async getMonthStatusData(username: string, month: number, year: number): Promise<MonthStatusData> {
+        const recordsRepo = repositories.records();
+        const fromDay = dayjs().year(year).month(month).startOf('month');
+        const untilDay = dayjs().year(year).month(month).endOf('month');
+        const recordsForMonth = await recordsRepo.find({
+            where: {
+                timestamp: Between(fromDay.toISOString(), untilDay.toISOString()),
+                ownerUsername: username,
+            },
+            order: { timestamp: 'DESC' },
+        });
+
+        const totalBalance = recordsForMonth.reduce((balance, record) => balance + record.value, 0);
+
+        return { balance: totalBalance };
     }
 }

@@ -15,14 +15,10 @@ const MonthlyCategory: React.FC = () => {
   const month = dayjs().month();
   const year = dayjs().year();
 
-  const {
-    data,
-    isFetching: categoryDataLoading,
-  } = useMonthlyCategoryStatisticsQuery(month, year);
-  const {
-    data: categories,
-    isFetching: categoriesLoading,
-  } = useCategoriesQuery();
+  const { data, isLoading: categoryDataLoading } =
+    useMonthlyCategoryStatisticsQuery(month, year);
+  const { data: categories, isLoading: categoriesLoading } =
+    useCategoriesQuery();
 
   if (categoryDataLoading || categoriesLoading) {
     return <LinearProgress />;

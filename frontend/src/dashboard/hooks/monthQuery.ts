@@ -10,18 +10,14 @@ import { StatisticsApiService } from '../services/StatisticsApi';
 const statisticsApi = new StatisticsApiService();
 
 export const useDailyStatisticsQuery = (month: number, year: number) => {
-  return useQuery<DailyStatisticsData>(
-    ['getDailyData', month, year],
-    () => statisticsApi.getMonthlyData(month, year),
-    { initialData: null }
+  return useQuery<DailyStatisticsData>(['getDailyData', month, year], () =>
+    statisticsApi.getMonthlyData(month, year)
   );
 };
 
 export const useMonthlyStatisticsQuery = (year: number) => {
-  return useQuery<MonthlyStatisticsData>(
-    ['getMonthlyData', year],
-    () => statisticsApi.getYearlyData(year),
-    { initialData: null }
+  return useQuery<MonthlyStatisticsData>(['getMonthlyData', year], () =>
+    statisticsApi.getYearlyData(year)
   );
 };
 
@@ -29,10 +25,8 @@ export const useMonthlyCategoryStatisticsQuery = (
   month: number,
   year: number
 ) => {
-  return useQuery<MonthCategoryData>(
-    ['getMonthlyCategoryData', year],
-    () => statisticsApi.getMonthCategoryData(month, year),
-    { initialData: null }
+  return useQuery<MonthCategoryData>(['getMonthlyCategoryData', year], () =>
+    statisticsApi.getMonthCategoryData(month, year)
   );
 };
 

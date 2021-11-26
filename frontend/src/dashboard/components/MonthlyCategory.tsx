@@ -5,15 +5,16 @@ import {
   ListItem,
   Typography,
 } from '@material-ui/core';
-import dayjs from 'dayjs';
 import React from 'react';
 import { useCategoriesQuery } from '../../records/hooks/categoriesQueries';
 import { getCategoryById } from '../../records/utils/categoryUtils';
 import { useMonthlyCategoryStatisticsQuery } from '../hooks/monthQuery';
+import { DateableWidget } from '../models/DateableWidget';
 
-const MonthlyCategory: React.FC = () => {
-  const month = dayjs().month();
-  const year = dayjs().year();
+const MonthlyCategory: React.FC<DateableWidget> = (props) => {
+  const { date } = props;
+  const month = date.month();
+  const year = date.year();
 
   const { data, isLoading: categoryDataLoading } =
     useMonthlyCategoryStatisticsQuery(month, year);

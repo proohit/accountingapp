@@ -15,6 +15,7 @@ import {
 import { palette } from '../../shared/globals/styles/AccTheme';
 import { useDailyStatisticsQuery } from '../hooks/monthQuery';
 import { DailyStatisticsData } from '../models/DailyData';
+import { DateableWidget } from '../models/DateableWidget';
 
 const colors = [
   palette.primary.main,
@@ -24,17 +25,16 @@ const colors = [
   palette.warning.main,
 ];
 
-type ThisMonthProps = {
+type ThisMonthProps = DateableWidget & {
   walletName?: string;
 };
 
 const dayFormat = 'D. MMM';
 
 const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
-  const { walletName } = props;
-  const today = dayjs();
-  const month = today.month() + 1;
-  const year = today.year();
+  const { walletName, date } = props;
+  const month = date.month() + 1;
+  const year = date.year();
   const { data, isLoading } = useDailyStatisticsQuery(month, year);
 
   if (isLoading) {
@@ -81,7 +81,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
           }}
         />
         <ReferenceLine
-          x={today.format(dayFormat)}
+          x={date.format(dayFormat)}
           stroke={palette.primary.light}
           strokeWidth={2}
         />

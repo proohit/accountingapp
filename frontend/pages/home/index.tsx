@@ -1,4 +1,6 @@
 import { Grid } from '@material-ui/core';
+import { DatePicker } from '@material-ui/pickers';
+import dayjs from 'dayjs';
 import Head from 'next/head';
 import * as React from 'react';
 import CurrentStatus from '../../src/dashboard/components/CurrentStatus';
@@ -14,6 +16,7 @@ import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 
 const DashboardPage: React.FunctionComponent = (props) => {
   const [selectedWallet, setSelectedWallet] = React.useState('all');
+  const [currentDate, setCurrentDate] = React.useState(dayjs());
   const { data: wallets } = useWalletsQuery();
   return (
     <>
@@ -31,11 +34,22 @@ const DashboardPage: React.FunctionComponent = (props) => {
         />
       </Head>
       <Grid container spacing={2}>
+        <Widget xs={6} title="Quick actions">
+          <QuickActions />
+        </Widget>
+        <Widget xs={6} title="Settings">
+          <DatePicker
+            views={['year', 'month']}
+            onChange={setCurrentDate}
+            value={currentDate}
+            label="Month"
+          />
+        </Widget>
         <Widget xs={12} md={6} title="Month Status">
-          <MonthStatus />
+          <MonthStatus date={currentDate} />
         </Widget>
         <Widget xs={12} md={6} title="Categories this month">
-          <MonthlyCategory />
+          <MonthlyCategory date={currentDate} />
         </Widget>
         <Widget xs={12} title="Quick actions">
           <QuickActions />
@@ -65,6 +79,7 @@ const DashboardPage: React.FunctionComponent = (props) => {
                 walletName={
                   selectedWallet !== 'all' ? selectedWallet : undefined
                 }
+                date={currentDate}
               />
             </>
           )}

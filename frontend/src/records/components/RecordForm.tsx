@@ -1,13 +1,13 @@
-import { Grid, TextField } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react';
-import { useForm } from '../../shared/hooks/useForm';
+import { useFormik } from 'formik';
+import React from 'react';
+import * as yup from 'yup';
 import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { Category } from '../models/Category';
 import { Record } from '../models/Record';
-import { validateRecordField } from '../services/RecordValidator';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
@@ -15,8 +15,7 @@ import { ValueField } from './ValueField';
 import { WalletField } from './WalletField';
 
 interface RecordFormProps {
-  onRecordChange(record: Record): void;
-  onFormValidChanged(isFormValid: boolean): void;
+  onSubmitRecord: (record: Record) => void;
   wallets: Wallet[];
   categories: Category[];
   owner: string;
@@ -24,112 +23,122 @@ interface RecordFormProps {
   withNewCategory?: boolean;
 }
 
+const schema = (walletNames: string[]) =>
+  yup.object().shape({
+    description: yup.string(),
+    value: yup.number().required('Please provide a value'),
+    walletName: yup
+      .string()
+      .required('Please provide a wallet')
+      .oneOf(walletNames),
+    categoryName: yup
+      .string()
+      .typeError('Please provide a category')
+      .required('Please provide a category'),
+    timestamp: yup.string().required('Please provide a timestamp'),
+  });
+
 export const RecordForm = (props: RecordFormProps) => {
   const {
-    onRecordChange,
-    onFormValidChanged,
     wallets,
     categories,
     owner,
     record,
     withNewCategory,
+    onSubmitRecord,
   } = props;
 
-  type RecordFormFields = Partial<Record> & {
-    categoryName: string;
-    walletName: string;
-  };
-
-  const [formFields, handleFormFieldChange, [formErrors, , isFormValid]] =
-    useForm<RecordFormFields>(
-      {
-        description: record?.description || '',
-        value: record?.value.toString() || '',
-        walletName:
-          WalletUtils.getWalletById(wallets, record?.walletId)?.name ||
-          (wallets?.length && wallets[0].name) ||
-          '',
-        categoryName:
-          getCategoryById(categories, record?.categoryId)?.name ||
-          (categories?.length > 0 && categories[0].name) ||
-          '',
-        timestamp: dayjs(record?.timestamp).format(),
-      },
-      {
-        validation: {
-          validationFunction: validateRecordField,
-          initialValidation: true,
-        },
-      }
-    );
-
-  useEffect(() => {
-    onRecordChange({
-      id: record?.id || null,
-      description: formFields.description,
-      timestamp: dayjs(formFields.timestamp).toISOString(),
-      value: Number(formFields.value),
-      walletId: WalletUtils.getWalletByName(wallets, formFields.walletName)?.id,
-      categoryId:
-        getCategoryByName(categories, formFields.categoryName)?.id ||
-        formFields.categoryName,
-      ownerUsername: owner,
-    });
-  }, [formFields]);
-
-  useEffect(() => {
-    onFormValidChanged(isFormValid);
-  }, [isFormValid]);
+  const {
+    values: formFields,
+    errors: formErrors,
+    handleSubmit,
+    handleChange,
+    setFieldValue,
+  } = useFormik({
+    initialValues: {
+      description: record?.description || '',
+      value: record?.value.toString() || '',
+      walletName:
+        WalletUtils.getWalletById(wallets, record?.walletId)?.name ||
+        (wallets?.length && wallets[0].name) ||
+        '',
+      categoryName:
+        getCategoryById(categories, record?.categoryId)?.name ||
+        (categories?.length > 0 && categories[0].name) ||
+        '',
+      timestamp: dayjs(record?.timestamp).format(),
+    },
+    validationSchema: schema(wallets?.map((wallet) => wallet.name)),
+    validateOnChange: false,
+    onSubmit: (submittedValues) => {
+      onSubmitRecord({
+        id: record?.id || null,
+        description: submittedValues.description,
+        timestamp: dayjs(submittedValues.timestamp).toISOString(),
+        value: Number(submittedValues.value),
+        walletId: WalletUtils.getWalletByName(
+          wallets,
+          submittedValues.walletName
+        )?.id,
+        categoryId:
+          getCategoryByName(categories, submittedValues.categoryName)?.id ||
+          submittedValues.categoryName,
+        ownerUsername: owner,
+      });
+    },
+  });
 
   return (
-    <Grid container direction="column" spacing={2}>
-      <Grid item>
-        <DescriptionField
-          description={formFields.description}
-          onDescriptionChange={handleFormFieldChange}
-          errorText={formErrors.description}
-        />
+    <form onSubmit={handleSubmit} id="record-form">
+      <Grid container direction="column" spacing={2}>
+        <Grid item>
+          <DescriptionField
+            description={formFields.description}
+            onDescriptionChange={handleChange}
+            errorText={formErrors.description}
+          />
+        </Grid>
+        <Grid item>
+          <ValueField
+            onValueChange={handleChange}
+            value={formFields.value}
+            errorText={formErrors.value}
+          />
+        </Grid>
+        <Grid item>
+          <WalletField
+            onWalletChange={handleChange}
+            walletName={formFields.walletName}
+            wallets={wallets}
+            errorText={formErrors.walletName}
+          />
+        </Grid>
+        <Grid item>
+          <CategoryField
+            onCategoryChange={(newCategory) => {
+              setFieldValue('categoryName', newCategory);
+            }}
+            withNew={withNewCategory}
+            categoryName={formFields.categoryName}
+            categories={categories}
+            errorText={formErrors.categoryName}
+          />
+        </Grid>
+        <Grid item>
+          <DateTimePicker
+            value={formFields.timestamp}
+            label="timestamp"
+            name="timestamp"
+            color="secondary"
+            onChange={(date) => {
+              setFieldValue('timestamp', date.format());
+            }}
+            fullWidth
+            inputVariant="outlined"
+            showTodayButton
+          />
+        </Grid>
       </Grid>
-      <Grid item>
-        <ValueField
-          onValueChange={handleFormFieldChange}
-          value={formFields.value}
-          errorText={formErrors.value}
-        />
-      </Grid>
-      <Grid item>
-        <WalletField
-          onWalletChange={handleFormFieldChange}
-          walletName={formFields.walletName}
-          wallets={wallets}
-          errorText={formErrors.walletName}
-        />
-      </Grid>
-      <Grid item>
-        <CategoryField
-          onCategoryChange={(newCategory) => {
-            handleFormFieldChange(null, 'categoryName', newCategory);
-          }}
-          withNew={withNewCategory}
-          categoryName={formFields.categoryName}
-          categories={categories}
-          errorText={formErrors.categoryName}
-        />
-      </Grid>
-      <Grid item>
-        <DateTimePicker
-          value={formFields.timestamp}
-          label="timestamp"
-          name="timestamp"
-          color="secondary"
-          onChange={(date) => {
-            handleFormFieldChange(null, 'timestamp', date.format());
-          }}
-          fullWidth
-          inputVariant="outlined"
-          showTodayButton
-        />
-      </Grid>
-    </Grid>
+    </form>
   );
 };

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.8] - 2021-11-26
+
+### Added
+
+- option to filter statistics for specific month
+- separation of dashboard widgets
+
+### Modified
+
+- invalidate statistics data on record mutations
+- refactor RecordForm to use formik
+- refactored record dialogs to be containers
+
 ## [0.9.7] - 2021-11-22
 
 ### Added

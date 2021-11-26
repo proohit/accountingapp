@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import { Record } from '../models/Record';
 import { SearchQuery } from '../models/SearchQuery';
 import { RecordsApiService } from '../services/RecordsApi';
@@ -10,6 +15,7 @@ export const useRecordsQuery = (query: SearchQuery) => {
     ['getRecord', query],
     () => recordsApi.getRecordsByUser(query),
     {
+      staleTime: 15000,
       keepPreviousData: true,
     }
   );
@@ -21,7 +27,7 @@ export const useCreateRecordMutation = () => {
     (recordToAdd: Record) => recordsApi.createRecord(recordToAdd),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('getRecord');
+        invalidateQueries(queryClient);
       },
     }
   );
@@ -33,7 +39,7 @@ export const useEditRecordMutation = () => {
     (editedRecord: Record) => recordsApi.editRecord(editedRecord),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('getRecord');
+        invalidateQueries(queryClient);
       },
     }
   );
@@ -45,8 +51,16 @@ export const useDeleteRecordMutation = () => {
     (recordToDelete: Record) => recordsApi.deleteRecord(recordToDelete.id),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('getRecord');
+        invalidateQueries(queryClient);
       },
     }
   );
+};
+
+const invalidateQueries = (queryClient: QueryClient) => {
+  queryClient.invalidateQueries('getRecord');
+  queryClient.invalidateQueries('getMonthlyCategoryData');
+  queryClient.invalidateQueries('getMonthStatusData');
+  queryClient.invalidateQueries('getMonthlyData');
+  queryClient.invalidateQueries('getDailyData');
 };

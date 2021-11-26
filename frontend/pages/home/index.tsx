@@ -11,6 +11,7 @@ import { QuickActions } from '../../src/dashboard/components/QuickActions';
 import ThisMonth from '../../src/dashboard/components/ThisMonth';
 import ThisYear from '../../src/dashboard/components/ThisYear';
 import Widget from '../../src/dashboard/components/Widget';
+import { WidgetHeader } from '../../src/dashboard/components/WidgetHeader';
 import { WalletField } from '../../src/records/components/WalletField';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 
@@ -34,6 +35,7 @@ const DashboardPage: React.FunctionComponent = (props) => {
         />
       </Head>
       <Grid container spacing={2}>
+        <WidgetHeader title="General" />
         <Widget xs={6} title="Quick actions">
           <QuickActions />
         </Widget>
@@ -45,15 +47,17 @@ const DashboardPage: React.FunctionComponent = (props) => {
             label="Month"
           />
         </Widget>
+        <WidgetHeader title="Overview" />
         <Widget xs={12} md={6} title="Month Status">
           <MonthStatus date={currentDate} />
         </Widget>
         <Widget xs={12} md={6} title="Categories this month">
           <MonthlyCategory date={currentDate} />
         </Widget>
-        <Widget xs={12} title="Quick actions">
-          <QuickActions />
+        <Widget xs={12} md={6} title="Current Status">
+          {wallets && <CurrentStatus wallets={wallets} />}
         </Widget>
+        <WidgetHeader title="Historical Data" />
         <Widget
           xs={12}
           title="This Month"
@@ -84,9 +88,7 @@ const DashboardPage: React.FunctionComponent = (props) => {
             </>
           )}
         </Widget>
-        <Widget xs={12} md={6} title="Current Status">
-          {wallets && <CurrentStatus wallets={wallets} />}
-        </Widget>
+
         <Widget xs={12} md={6} title="Latest Records">
           <LatestRecords />
         </Widget>

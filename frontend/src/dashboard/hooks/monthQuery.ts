@@ -30,7 +30,7 @@ export const useMonthlyCategoryStatisticsQuery = (
   year: number
 ) => {
   return useQuery<MonthCategoryData>(
-    ['getMonthlyCategoryData', year],
+    ['getMonthlyCategoryData', month, year],
     () => statisticsApi.getMonthCategoryData(month, year),
     { staleTime: 15000 }
   );

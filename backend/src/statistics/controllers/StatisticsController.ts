@@ -15,10 +15,10 @@ const StatisticsControllerImpl: StatisticsController = {
             throw new MissingProperty(['type']);
         }
         if (requestedType === StatisticsType.DAILY) {
-            if (!month) {
+            if (Number.isNaN(month)) {
                 throw new MissingProperty(['month']);
             }
-            if (!year) {
+            if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
             const dailyData: DailyData[] = await services.statisticsService.getDailyDataForMonth(username, month, year);
@@ -26,7 +26,7 @@ const StatisticsControllerImpl: StatisticsController = {
             return { status: 200, data: dailyDataResult };
         }
         if (requestedType === StatisticsType.MONTHLY) {
-            if (!year) {
+            if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
             const monthlyData = await services.statisticsService.getMonthlyDataForYear(username, year);
@@ -40,10 +40,10 @@ const StatisticsControllerImpl: StatisticsController = {
         const month = parseIntQuery(ctx.query.month);
         const year = parseIntQuery(ctx.query.year);
         if (requestedType === StatisticsType.CATEGORY_MONTHLY) {
-            if (!month) {
+            if (Number.isNaN(month)) {
                 throw new MissingProperty(['month']);
             }
-            if (!year) {
+            if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
             const monthlyCategoryData = await services.statisticsService.getMonthCategoryData(username, month, year);
@@ -57,10 +57,10 @@ const StatisticsControllerImpl: StatisticsController = {
         const month = parseIntQuery(ctx.query.month);
         const year = parseIntQuery(ctx.query.year);
         if (requestedType === StatisticsType.MONTH_STATUS) {
-            if (!month) {
+            if (Number.isNaN(month)) {
                 throw new MissingProperty(['month']);
             }
-            if (!year) {
+            if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
             const monthlyStatusData = await services.statisticsService.getMonthStatusData(username, month, year);

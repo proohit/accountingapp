@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.10] - 2022-01-03
+
+### Fixed
+
+- accept zero as number for statistics
+
+## [0.9.9] - 2021-12-23
+
+### Fixed
+
+- update monthly category on date change
+
 ## [0.9.8] - 2021-11-26
 
 ### Added

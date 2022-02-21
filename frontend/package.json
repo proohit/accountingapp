@@ -21,7 +21,7 @@
     "next-pwa": "^5.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-query": "^3.31.0",
+    "react-query": "^3.34.16",
     "recharts": "^2.1.6",
     "recoil": "^0.3.1",
     "yup": "^0.32.11"

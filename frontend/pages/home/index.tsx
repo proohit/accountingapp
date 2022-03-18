@@ -48,10 +48,10 @@ const DashboardPage: React.FunctionComponent = (props) => {
           />
         </Widget>
         <WidgetHeader title="Overview" />
-        <Widget xs={12} md={6} title="Month Status">
+        <Widget xs={12} md={6} title={`Month Status for ${currentDate.format("MMMM YYYY")}`}>
           <MonthStatus date={currentDate} />
         </Widget>
-        <Widget xs={12} md={6} title="Categories this month">
+        <Widget xs={12} md={6} title={`Categories for ${currentDate.format("MMMM YYYY")}`}>
           <MonthlyCategory date={currentDate} />
         </Widget>
         <Widget xs={12} md={6} title="Current Status">
@@ -60,7 +60,7 @@ const DashboardPage: React.FunctionComponent = (props) => {
         <WidgetHeader title="Historical Data" />
         <Widget
           xs={12}
-          title="This Month"
+          title={`Daily Records for ${currentDate.format("MMMM YYYY")}`}
           actions={[
             <WalletField
               onWalletChange={(event) => {

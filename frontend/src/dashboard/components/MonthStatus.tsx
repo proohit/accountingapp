@@ -24,15 +24,27 @@ const MonthStatus: React.FC<DateableWidget> = (props) => {
   return (
     <Grid style={{ maxHeight: 200 }}>
       <Card>
-        <CardHeader title={date.format('MMMM YYYY')}></CardHeader>
         <CardContent>
+        <Typography
+            display="inline"
+            color="primary"
+          >
+            You have a net of {" "}
+          </Typography>
           <Typography
-            variant="h6"
+            display='inline'
             color={data.data.balance >= 0 ? 'primary' : 'error'}
           >
             {data.data.balance > 0 ? '+' : ''}
-            {data.data.balance}
+            {data.data.balance} {" "}
           </Typography>
+          <Typography
+            display="inline"
+            color="primary"
+          >
+          for {date.format("MMMM YYYY")}
+          </Typography>
+
         </CardContent>
       </Card>
     </Grid>

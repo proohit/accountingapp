@@ -29,30 +29,39 @@ const MonthlyCategory: React.FC<DateableWidget> = (props) => {
     (dataA, dataB) => -(dataA.balance - dataB.balance)
   );
 
+  const renderCategoryData = () => {
+    if(categoryData?.length <= 0) {
+      return( <Typography color="primary">
+      No records yet
+    </Typography>)
+    }
+     return categoryData?.map((categoryMonthlyData) => (
+    <ListItem key={categoryMonthlyData.category} divider>
+      <Grid container justify="space-between" alignItems="center">
+        <Grid item xs={10}>
+          <Typography color="primary" variant="body2">
+            {
+              getCategoryById(categories, categoryMonthlyData.category)
+                ?.name
+            }
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography
+            color={categoryMonthlyData.balance < 0 ? 'error' : 'primary'}
+          >
+            {categoryMonthlyData.balance}
+          </Typography>
+        </Grid>
+      </Grid>
+    </ListItem>
+  ))
+  }
+
   return (
     <Grid style={{ maxHeight: 200 }}>
       <List>
-        {categoryData?.map((categoryMonthlyData) => (
-          <ListItem key={categoryMonthlyData.category} divider>
-            <Grid container justify="space-between" alignItems="center">
-              <Grid item xs={10}>
-                <Typography color="primary" variant="body2">
-                  {
-                    getCategoryById(categories, categoryMonthlyData.category)
-                      ?.name
-                  }
-                </Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography
-                  color={categoryMonthlyData.balance < 0 ? 'error' : 'primary'}
-                >
-                  {categoryMonthlyData.balance}
-                </Typography>
-              </Grid>
-            </Grid>
-          </ListItem>
-        ))}
+       {renderCategoryData()}
       </List>
     </Grid>
   );

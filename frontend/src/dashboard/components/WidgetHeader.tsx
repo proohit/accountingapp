@@ -3,10 +3,10 @@ import * as React from 'react';
 
 type WidgetHeaderProps = {
   title: string;
+  widgetId: string;
 };
-export const WidgetHeader: React.FunctionComponent<WidgetHeaderProps> = (
-  props
-) => {
+
+export const WidgetHeader: React.FC<WidgetHeaderProps> = (props) => {
   const { title } = props;
   return (
     <Grid xs={12} item>

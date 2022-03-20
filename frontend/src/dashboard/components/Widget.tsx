@@ -10,8 +10,9 @@ import {
 } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import * as React from 'react';
+import { AvailableWidgets } from '../models/AvailableWidgets';
 
-interface IWidgetProps {
+export interface WidgetProps {
   title?: string;
   actions?: JSX.Element[];
   xs?: GridProps['xs'];
@@ -20,6 +21,11 @@ interface IWidgetProps {
   sm?: GridProps['sm'];
   xl?: GridProps['xl'];
   disableClosable?: boolean;
+  onWidgetDrop: (
+    target: string,
+    event: React.DragEvent<HTMLDivElement>
+  ) => void;
+  widgetId: AvailableWidgets;
 }
 
 const widgetStyle = makeStyles((theme) => ({
@@ -28,13 +34,46 @@ const widgetStyle = makeStyles((theme) => ({
   },
 }));
 
-const Widget: React.FunctionComponent<IWidgetProps> = (props) => {
-  const { children, title, actions, lg, md, sm, xl, xs, disableClosable } =
-    props;
+const Widget: React.FunctionComponent<WidgetProps> = (props) => {
+  const {
+    children,
+    title,
+    actions,
+    lg,
+    md,
+    sm,
+    xl,
+    xs,
+    disableClosable,
+    onWidgetDrop,
+    widgetId,
+  } = props;
   const classes = widgetStyle();
   const [open, setOpen] = React.useState(!disableClosable);
   return (
-    <Grid item xs={xs || 12} lg={lg} md={md} xl={xl} sm={sm}>
+    <Grid
+      draggable
+      onDragStart={(event) => {
+        event.dataTransfer.setData(widgetId, '');
+        event.dataTransfer.effectAllowed = 'move';
+      }}
+      onDragOver={(event) => {
+        event.preventDefault();
+        const sourceWidgetKey = event.dataTransfer.types[0];
+        const targetWidgetKey = widgetId;
+        console.log({ sourceWidgetKey, targetWidgetKey });
+        if (sourceWidgetKey === targetWidgetKey) {
+          event.dataTransfer.dropEffect = 'none';
+        }
+      }}
+      onDrop={(event) => onWidgetDrop(widgetId, event)}
+      item
+      xs={xs || 12}
+      lg={lg}
+      md={md}
+      xl={xl}
+      sm={sm}
+    >
       <Paper variant="outlined" className={classes.widget}>
         {(title || actions || !disableClosable) && (
           <Grid container direction="row">
@@ -44,8 +83,13 @@ const Widget: React.FunctionComponent<IWidgetProps> = (props) => {
               </Grid>
             )}
             {(!disableClosable || actions) && (
-              <Grid item container justify="flex-end" xs>
-                {open && actions?.map((action) => <Grid item>{action}</Grid>)}
+              <Grid item container justifyContent="flex-end" xs>
+                {open &&
+                  actions?.map((action, idx) => (
+                    <Grid key={idx} item>
+                      {action}
+                    </Grid>
+                  ))}
                 {!disableClosable && (
                   <Grid item>
                     <IconButton onClick={() => setOpen(!open)}>

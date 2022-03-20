@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core';
 import createPalette from '@material-ui/core/styles/createPalette';
 
 export const palette = createPalette({
@@ -15,7 +15,7 @@ export const palette = createPalette({
   },
 });
 
-export const AccTheme = createMuiTheme({
+export const AccTheme = createTheme({
   palette: { ...palette },
   overrides: {
     MuiTableRow: {

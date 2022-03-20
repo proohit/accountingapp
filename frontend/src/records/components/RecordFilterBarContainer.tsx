@@ -147,7 +147,7 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
           maxDateMessage="To Timestamp should not be before From Timestamp"
         />
       </Grid>
-      <Grid item xs container justify="space-around">
+      <Grid item xs container justifyContent="space-around">
         <Button variant="outlined" color="primary" onClick={resetFilter}>
           Reset
         </Button>

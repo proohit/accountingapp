@@ -33,7 +33,7 @@ const LatestRecords: React.FunctionComponent<ILatestRecordsProps> = (props) => {
       <List>
         {records?.data?.map((record) => (
           <ListItem key={record.id} divider>
-            <Grid container justify="space-between" alignItems="center">
+            <Grid container justifyContent="space-between" alignItems="center">
               <Grid item xs={10}>
                 <Typography color="primary">{record.description}</Typography>
                 <Typography color="primary" variant="body2">

@@ -25,7 +25,7 @@ export const AppToolbar: FunctionComponent = () => {
     <Slide appear={false} direction="down" in={!trigger}>
       <AppBar color="primary">
         <Toolbar>
-          <Grid container alignItems="center" justify="space-between">
+          <Grid container alignItems="center" justifyContent="space-between">
             <Grid item container alignItems="center" xs>
               {authenticated && (
                 <Hidden lgUp>
@@ -37,7 +37,13 @@ export const AppToolbar: FunctionComponent = () => {
               </SvgIcon>
               <Typography variant="h6">Accounting App</Typography>
             </Grid>
-            <Grid item container alignItems="center" xs={1} justify="flex-end">
+            <Grid
+              item
+              container
+              alignItems="center"
+              xs={1}
+              justifyContent="flex-end"
+            >
               {authenticated ? (
                 <IconButton color="secondary" onClick={logout}>
                   <ExitToApp />

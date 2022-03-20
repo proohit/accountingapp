@@ -140,7 +140,7 @@ export const RegisterForm: FunctionComponent = () => {
         <Grid
           container
           direction="row"
-          justify="center"
+          justifyContent="center"
           className={classes.paper}
         >
           <Typography component="h1" variant="h5">

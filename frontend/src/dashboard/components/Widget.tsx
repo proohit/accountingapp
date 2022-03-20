@@ -32,6 +32,9 @@ const widgetStyle = makeStyles((theme) => ({
   widget: {
     padding: theme.spacing(2),
   },
+  dropTarget: {
+    border: '2px dashed #ccc',
+  },
 }));
 
 const Widget: React.FunctionComponent<WidgetProps> = (props) => {
@@ -50,6 +53,7 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
   } = props;
   const classes = widgetStyle();
   const [open, setOpen] = React.useState(!disableClosable);
+  const [dropTarget, setDropTarget] = React.useState(false);
   return (
     <Grid
       draggable
@@ -61,12 +65,21 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
         event.preventDefault();
         const sourceWidgetKey = event.dataTransfer.types[0];
         const targetWidgetKey = widgetId;
-        console.log({ sourceWidgetKey, targetWidgetKey });
         if (sourceWidgetKey === targetWidgetKey) {
           event.dataTransfer.dropEffect = 'none';
+          setDropTarget(false);
+        } else {
+          event.dataTransfer.dropEffect = 'move';
+          setDropTarget(true);
         }
       }}
-      onDrop={(event) => onWidgetDrop(widgetId, event)}
+      onDragLeave={() => {
+        setDropTarget(false);
+      }}
+      onDrop={(event) => {
+        setDropTarget(false);
+        onWidgetDrop(widgetId, event);
+      }}
       item
       xs={xs || 12}
       lg={lg}
@@ -74,7 +87,10 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
       xl={xl}
       sm={sm}
     >
-      <Paper variant="outlined" className={classes.widget}>
+      <Paper
+        variant="outlined"
+        className={`${classes.widget} ${dropTarget && classes.dropTarget}`}
+      >
         {(title || actions || !disableClosable) && (
           <Grid container direction="row">
             {title && (

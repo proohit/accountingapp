@@ -1,12 +1,6 @@
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-  CardHeader,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { Payment } from '@material-ui/icons';
+import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Payment } from '@mui/icons-material';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../models/Wallet';
 

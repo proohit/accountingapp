@@ -8,8 +8,14 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
-} from '@material-ui/core';
-import { AddBox, FilterList, GetApp, MoreVert, Sort } from '@material-ui/icons';
+} from '@mui/material';
+import {
+  AddBox,
+  FilterList,
+  GetApp,
+  MoreVert,
+  Sort,
+} from '@mui/icons-material';
 import React, { FunctionComponent } from 'react';
 import PageHeader from '../../shared/components/PageHeader';
 
@@ -32,10 +38,10 @@ export const RecordsTableToolbar: FunctionComponent<
     theme.breakpoints.up(450)
   );
   const shouldShowSort = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.between(450, 'sm')
+    theme.breakpoints.between(450, 'md')
   );
   const shouldShowFilter = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.between(400, 'sm')
+    theme.breakpoints.between(400, 'md')
   );
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -55,38 +61,46 @@ export const RecordsTableToolbar: FunctionComponent<
         <Grid item xs container justifyContent="flex-end">
           {shouldShowSort && (
             <Tooltip title="Sort">
-              <IconButton onClick={onSortClicked} color="primary">
+              <IconButton onClick={onSortClicked} color="primary" size="large">
                 <Sort />
               </IconButton>
             </Tooltip>
           )}
           {shouldShowFilter && (
             <Tooltip title="Filters">
-              <IconButton onClick={onFilterClicked} color="primary">
+              <IconButton
+                onClick={onFilterClicked}
+                color="primary"
+                size="large"
+              >
                 <FilterList />
               </IconButton>
             </Tooltip>
           )}
           <Tooltip title="Add">
-            <IconButton onClick={onAddClicked} color="primary">
+            <IconButton onClick={onAddClicked} color="primary" size="large">
               <AddBox />
             </IconButton>
           </Tooltip>
           {shouldShowExport && (
             <Tooltip title="Export">
-              <IconButton onClick={onExportClicked} color="primary">
+              <IconButton
+                onClick={onExportClicked}
+                color="primary"
+                size="large"
+              >
                 <GetApp />
               </IconButton>
             </Tooltip>
           )}
           {shouldShowExtraIcons && (
             <>
-              <IconButton onClick={handleClick}>
+              <IconButton onClick={handleClick} size="large">
                 <MoreVert />
               </IconButton>
               <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
                 {!shouldShowSort && (
-                  <MenuItem button onClick={onSortClicked}>
+                  <MenuItem onClick={onSortClicked}>
                     <ListItemIcon color="primary">
                       <Sort />
                     </ListItemIcon>
@@ -94,7 +108,7 @@ export const RecordsTableToolbar: FunctionComponent<
                   </MenuItem>
                 )}
                 {!shouldShowFilter && (
-                  <MenuItem button onClick={onFilterClicked}>
+                  <MenuItem onClick={onFilterClicked}>
                     <ListItemIcon>
                       <FilterList />
                     </ListItemIcon>
@@ -102,7 +116,7 @@ export const RecordsTableToolbar: FunctionComponent<
                   </MenuItem>
                 )}
                 {!shouldShowExport && (
-                  <MenuItem button onClick={onExportClicked}>
+                  <MenuItem onClick={onExportClicked}>
                     <ListItemIcon>
                       <GetApp />
                     </ListItemIcon>

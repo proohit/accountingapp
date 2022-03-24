@@ -7,7 +7,8 @@ import {
   SvgIcon,
   SwipeableDrawer,
   Typography,
-} from '@material-ui/core';
+  useTheme,
+} from '@mui/material';
 import {
   AccountBalance,
   Dashboard,
@@ -15,14 +16,13 @@ import {
   Person,
   Replay,
   Settings,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { useRouter } from 'next/dist/client/router';
 import React, { Fragment, FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
 import packageJson from '../../../package.json';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import Routes from '../constants/Routes';
-import { palette } from '../globals/styles/AccTheme';
 import { mobileDrawerOpenState } from '../hooks/mobileDrawerOpenState';
 import AppIconSvg from './AppIconSvg';
 import NavigationLinkItem from './NavigationLinkItem';
@@ -34,6 +34,7 @@ const iOS =
   typeof navigator !== 'undefined' &&
   /iPad|iPhone|iPod/.test(navigator.userAgent);
 export const NavigationBar: FunctionComponent = () => {
+  const { palette } = useTheme();
   const { username } = useAuthentication();
   const router = useRouter();
 
@@ -144,7 +145,7 @@ export const NavigationBar: FunctionComponent = () => {
           {drawer}
         </SwipeableDrawer>
       </Hidden>
-      <Hidden mdDown>
+      <Hidden lgDown>
         <Grid item>{drawer}</Grid>
       </Hidden>
     </>

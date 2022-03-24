@@ -1,4 +1,4 @@
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import {
@@ -12,18 +12,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { palette } from '../../shared/globals/styles/AccTheme';
 import { useDailyStatisticsQuery } from '../hooks/monthQuery';
 import { DailyStatisticsData } from '../models/DailyData';
 import { DateableWidget } from '../models/DateableWidget';
-
-const colors = [
-  palette.primary.main,
-  palette.secondary.dark,
-  palette.success.main,
-  palette.error.main,
-  palette.warning.main,
-];
 
 type ThisMonthProps = DateableWidget & {
   walletName?: string;
@@ -32,6 +23,14 @@ type ThisMonthProps = DateableWidget & {
 const dayFormat = 'D. MMM';
 
 const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
+  const { palette } = useTheme();
+  const colors = [
+    palette.primary.main,
+    palette.secondary.dark,
+    palette.success.main,
+    palette.error.main,
+    palette.warning.main,
+  ];
   const { walletName, date } = props;
   const month = date.month() + 1;
   const year = date.year();

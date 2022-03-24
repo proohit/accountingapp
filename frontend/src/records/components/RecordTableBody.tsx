@@ -1,4 +1,4 @@
-import { TableBody, TableCell, TableRow } from '@material-ui/core';
+import { TableBody, TableCell, TableRow } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';

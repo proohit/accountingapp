@@ -1,5 +1,5 @@
-import { IconButton } from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
+import { IconButton } from '@mui/material';
+import { Menu } from '@mui/icons-material';
 import React, { FunctionComponent } from 'react';
 import { useRecoilState } from 'recoil';
 import { mobileDrawerOpenState } from '../hooks/mobileDrawerOpenState';
@@ -12,7 +12,7 @@ export const MobileMenuButton: FunctionComponent = () => {
     <IconButton
       color="secondary"
       onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-    >
+      size="large">
       <Menu />
     </IconButton>
   );

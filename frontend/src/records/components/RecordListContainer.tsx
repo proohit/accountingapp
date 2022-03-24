@@ -6,7 +6,7 @@ import {
   Paper,
   TablePagination,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { FunctionComponent } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
@@ -107,7 +107,7 @@ export const RecordListContainer: FunctionComponent = () => {
       onPageChange={(_event, newPage) => {
         updatePage(newPage);
       }}
-      onChangeRowsPerPage={updateRowsPerPage}
+      onRowsPerPageChange={updateRowsPerPage}
     />
   );
 
@@ -117,56 +117,54 @@ export const RecordListContainer: FunctionComponent = () => {
 
   const noRecords = !paginatedResult?.data || paginatedResult.totalCount <= 0;
   const noRecordsText = 'No records yet. Start tracking by creating a record';
-  return (
+  return <>
+    <RecordsTableToolbar
+      onAddClicked={openAddRecordsDialog}
+      onFilterClicked={openFilterRecordsDialog}
+      onSortClicked={openSortRecordsDialog}
+      onExportClicked={openExportRecordsDialog}
+    />
     <>
-      <RecordsTableToolbar
-        onAddClicked={openAddRecordsDialog}
-        onFilterClicked={openFilterRecordsDialog}
-        onSortClicked={openSortRecordsDialog}
-        onExportClicked={openExportRecordsDialog}
-      />
-      <>
-        <Hidden smDown>
-          <RecordsTable controls={recordsPagination}>
-            <RecordTableHeader
-              sortBy={currentSort.sortBy}
-              sortDirection={currentSort.sortDirection}
-              sortClicked={handleSortClicked}
-            />
-            <RecordTableBody
-              records={paginatedResult.data}
-              onRecordClicked={openEditRecordsDialog}
-              categories={categories}
-              wallets={wallets}
-              noRecords={noRecords}
-              noRecordsText={noRecordsText}
-              format={format}
-            />
-          </RecordsTable>
-        </Hidden>
-        <Hidden mdUp>
-          <Paper variant="outlined">
-            <Divider />
-            <List>
-              {noRecords ? (
-                <Typography color="primary">{noRecordsText}</Typography>
-              ) : (
-                paginatedResult.data.map((record) => (
-                  <MobileRecordItem
-                    key={record.id}
-                    record={record}
-                    onRecordClick={openEditRecordsDialog}
-                    categories={categories}
-                    wallets={wallets}
-                    format={format}
-                  />
-                ))
-              )}
-            </List>
-            {recordsPagination}
-          </Paper>
-        </Hidden>
-      </>
+      <Hidden mdDown>
+        <RecordsTable controls={recordsPagination}>
+          <RecordTableHeader
+            sortBy={currentSort.sortBy}
+            sortDirection={currentSort.sortDirection}
+            sortClicked={handleSortClicked}
+          />
+          <RecordTableBody
+            records={paginatedResult.data}
+            onRecordClicked={openEditRecordsDialog}
+            categories={categories}
+            wallets={wallets}
+            noRecords={noRecords}
+            noRecordsText={noRecordsText}
+            format={format}
+          />
+        </RecordsTable>
+      </Hidden>
+      <Hidden mdUp>
+        <Paper variant="outlined">
+          <Divider />
+          <List>
+            {noRecords ? (
+              <Typography color="primary">{noRecordsText}</Typography>
+            ) : (
+              paginatedResult.data.map((record) => (
+                <MobileRecordItem
+                  key={record.id}
+                  record={record}
+                  onRecordClick={openEditRecordsDialog}
+                  categories={categories}
+                  wallets={wallets}
+                  format={format}
+                />
+              ))
+            )}
+          </List>
+          {recordsPagination}
+        </Paper>
+      </Hidden>
     </>
-  );
+  </>;
 };

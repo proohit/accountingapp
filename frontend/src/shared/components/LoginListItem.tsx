@@ -1,5 +1,5 @@
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { AccountBox } from '@material-ui/icons';
+import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { AccountBox } from '@mui/icons-material';
 import Link from 'next/link';
 import React from 'react';
 

@@ -1,65 +1,70 @@
-import { createTheme } from '@material-ui/core';
-import createPalette from '@material-ui/core/styles/createPalette';
-
-export const palette = createPalette({
-  type: 'light',
-  primary: {
-    main: '#3b4147',
-    dark: '#151b20',
-    light: '#656c72',
-  },
-  secondary: {
-    main: '#dedbd2',
-    light: '#ffffff',
-    dark: '#aca9a1',
-  },
-});
+import { createTheme } from '@mui/material';
 
 export const AccTheme = createTheme({
-  palette: { ...palette },
-  overrides: {
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#3b4147',
+      dark: '#151b20',
+      light: '#656c72',
+    },
+    secondary: {
+      main: '#dedbd2',
+      light: '#ffffff',
+      dark: '#aca9a1',
+    },
+  },
+  components: {
     MuiTableRow: {
-      hover: {
-        '&:hover': {
-          '&&': {
-            backgroundColor: palette.secondary.main,
+      styleOverrides: {
+        hover: {
+          '&:hover': {
+            '&&': {
+              backgroundColor: 'palette.secondary.main',
+            },
           },
         },
       },
     },
     MuiTableCell: {
-      head: {
-        fontWeight: 'bold',
-        borderBottom: `1px solid ${palette.secondary.dark}`,
-        color: palette.primary.main,
+      styleOverrides: {
+        head: ({ theme }) => ({
+          fontWeight: 'bold',
+          borderBottom: `1px solid ${theme.palette.secondary.dark}`,
+          color: theme.palette.primary.main,
+        }),
       },
     },
     MuiTableSortLabel: {
-      active: {
-        '&&': {
-          color: `${palette.secondary.dark} !important`,
-        },
-      },
-      icon: {
-        '&&': {
-          color: `${palette.secondary.dark} !important`,
-        },
+      styleOverrides: {
+        active: ({ theme }) => ({
+          '&&': {
+            color: `${theme.palette.secondary.dark} !important`,
+          },
+        }),
+        icon: ({ theme }) => ({
+          '&&': {
+            color: `${theme.palette.secondary.dark} !important`,
+          },
+        }),
       },
     },
     MuiListItem: {
-      root: {
-        color: palette.primary.main,
-        '&$selected': {
-          backgroundColor: palette.secondary.main,
-        },
-        '&$selected:hover': {
-          backgroundColor: palette.secondary.main,
-        },
-      },
-      button: {
-        '&:hover': {
-          backgroundColor: palette.secondary.main,
-        },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.main,
+          '&$selected': {
+            backgroundColor: theme.palette.secondary.main,
+          },
+          '&$selected:hover': {
+            backgroundColor: theme.palette.secondary.main,
+          },
+        }),
+        button: ({ theme }) => ({
+          '&:hover': {
+            backgroundColor: theme.palette.secondary.main,
+          },
+        }),
       },
     },
   },

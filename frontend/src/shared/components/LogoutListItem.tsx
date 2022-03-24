@@ -1,5 +1,5 @@
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { ExitToApp } from '@material-ui/icons';
+import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { ExitToApp } from '@mui/icons-material';
 import React from 'react';
 
 interface Props {

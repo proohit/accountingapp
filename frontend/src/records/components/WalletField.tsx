@@ -5,18 +5,14 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@material-ui/core';
-import React, { ChangeEvent, FunctionComponent } from 'react';
+  SelectChangeEvent,
+} from '@mui/material';
+import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 
 type WalletFieldProps = {
   walletName: string;
-  onWalletChange: (
-    event: ChangeEvent<{
-      name?: string;
-      value: unknown;
-    }>
-  ) => void;
+  onWalletChange: (event: SelectChangeEvent<string>) => void;
   wallets: Wallet[];
   withAll?: boolean;
   errorText?: string;
@@ -45,7 +41,7 @@ export const WalletField: FunctionComponent<WalletFieldProps> = (props) => {
         color="secondary"
         value={walletName}
         name="walletName"
-        onChange={onWalletChange}
+        onChange={(event) => onWalletChange(event)}
         label="Wallet"
       >
         {withAll && (

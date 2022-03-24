@@ -4,7 +4,7 @@ import {
   Grid,
   Radio,
   RadioGroup,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';

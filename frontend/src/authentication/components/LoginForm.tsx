@@ -1,12 +1,5 @@
-import {
-  Button,
-  Container,
-  Grid,
-  LinearProgress,
-  makeStyles,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Button, Container, Grid, LinearProgress, TextField, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';

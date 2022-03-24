@@ -1,5 +1,5 @@
-import { Container, Grid, Typography } from '@material-ui/core';
-import { Person, VpnKey } from '@material-ui/icons';
+import { Container, Grid, Typography } from '@mui/material';
+import { Person, VpnKey } from '@mui/icons-material';
 import React from 'react';
 import { AccountInformation } from './AccountInformation';
 import { ChangePasswordForm } from './ChangePasswordForm';

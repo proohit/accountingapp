@@ -3,7 +3,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { FunctionComponent } from 'react';
 import { HeadCell } from '../../shared/models/HeadCell';
 import { Record } from '../models/Record';

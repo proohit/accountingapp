@@ -1,4 +1,4 @@
-import { Grid, TextField } from '@material-ui/core';
+import { Grid, TextField } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useForm } from '../../shared/hooks/useForm';
 import { Wallet } from '../models/Wallet';

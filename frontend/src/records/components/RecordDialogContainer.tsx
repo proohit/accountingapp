@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle } from '@mui/material';
 import React, { Fragment } from 'react';
 import { useRecoilState } from 'recoil';
 import { recordsDialogsState } from '../hooks/recordsDialogsState';

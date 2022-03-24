@@ -1,11 +1,5 @@
-import {
-  Divider,
-  Grid,
-  GridProps,
-  makeStyles,
-  Paper,
-  PaperProps,
-} from '@material-ui/core';
+import { Divider, Grid, GridProps, Paper, PaperProps } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
 
 type SettingsEntryProps = { grid?: GridProps; paper?: PaperProps };

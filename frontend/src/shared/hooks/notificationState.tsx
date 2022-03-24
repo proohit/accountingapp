@@ -1,4 +1,4 @@
-import { AlertProps } from '@material-ui/lab';
+import { AlertProps } from '@mui/lab';
 import { atom } from 'recoil';
 
 type Notification = {

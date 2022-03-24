@@ -3,10 +3,10 @@ import {
   Divider,
   Grid,
   LinearProgress,
-  makeStyles,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import DatePicker from '@mui/lab/DatePicker';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
@@ -103,11 +103,7 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
         <WalletField
           withAll
           walletName={walletName}
-          onWalletChange={(event) =>
-            setWalletName(
-              (event.target.value || event.currentTarget.value) as string
-            )
-          }
+          onWalletChange={(event) => setWalletName(event.target.value)}
           wallets={wallets}
         />
       </Grid>

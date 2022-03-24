@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress } from '@material-ui/core';
+import { Backdrop, CircularProgress } from '@mui/material';
 import { useRouter } from 'next/dist/client/router';
 import React, { Fragment, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';

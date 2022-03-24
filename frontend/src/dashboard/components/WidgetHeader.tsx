@@ -1,4 +1,4 @@
-import { AppBar, Grid, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Grid, Toolbar, Typography } from '@mui/material';
 import * as React from 'react';
 
 type WidgetHeaderProps = {

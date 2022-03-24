@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material';
 import * as React from 'react';
 import {
   Bar,
@@ -9,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { palette } from '../../shared/globals/styles/AccTheme';
 import { Wallet } from '../../wallets/models/Wallet';
 
 interface ICurrentStatusProps {
@@ -21,6 +21,7 @@ const sortWalletsByBalance = (walleta: Wallet, walletb: Wallet): 1 | -1 =>
 
 const CurrentStatus: React.FunctionComponent<ICurrentStatusProps> = (props) => {
   const { wallets } = props;
+  const { palette } = useTheme();
 
   const sortedWallets = [...wallets].sort(sortWalletsByBalance);
   return (

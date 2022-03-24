@@ -7,8 +7,8 @@ import {
   Grid,
   IconButton,
   LinearProgress,
-} from '@material-ui/core';
-import { Close, Delete } from '@material-ui/icons';
+} from '@mui/material';
+import { Close, Delete } from '@mui/icons-material';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
@@ -77,12 +77,12 @@ const RecurrentRecordEditDialog = (props) => {
               onClick={() =>
                 onDeleteRecord(dialogs.EDIT_RECURRENT_RECORD.recordToEdit)
               }
-            >
+              size="large">
               <Delete />
             </IconButton>
           </Grid>
           <Grid item xs={2}>
-            <IconButton color="primary" onClick={closeDialog}>
+            <IconButton color="primary" onClick={closeDialog} size="large">
               <Close />
             </IconButton>
           </Grid>

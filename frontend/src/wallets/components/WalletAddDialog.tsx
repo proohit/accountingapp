@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   LinearProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { useState } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { WalletForm } from './WalletForm';

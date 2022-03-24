@@ -7,8 +7,8 @@ import {
   Grid,
   IconButton,
   LinearProgress,
-} from '@material-ui/core';
-import { Close, Delete } from '@material-ui/icons';
+} from '@mui/material';
+import { Close, Delete } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';
 import { WalletForm } from './WalletForm';
@@ -43,12 +43,12 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
             Edit Wallet
           </Grid>
           <Grid item xs={2}>
-            <IconButton color="primary" onClick={() => onDeleteRecord(wallet)}>
+            <IconButton color="primary" onClick={() => onDeleteRecord(wallet)} size="large">
               <Delete />
             </IconButton>
           </Grid>
           <Grid item xs={2}>
-            <IconButton color="primary" onClick={onDialogClose}>
+            <IconButton color="primary" onClick={onDialogClose} size="large">
               <Close />
             </IconButton>
           </Grid>

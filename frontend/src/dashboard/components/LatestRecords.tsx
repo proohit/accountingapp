@@ -4,7 +4,7 @@ import {
   List,
   ListItem,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { useCategoriesQuery } from '../../records/hooks/categoriesQueries';

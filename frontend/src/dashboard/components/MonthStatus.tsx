@@ -5,7 +5,7 @@ import {
   Grid,
   LinearProgress,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import { useMonthStatusStatisticsQuery } from '../hooks/monthQuery';
 import { DateableWidget } from '../models/DateableWidget';

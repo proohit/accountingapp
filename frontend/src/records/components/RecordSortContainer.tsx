@@ -5,7 +5,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@material-ui/core';
+} from '@mui/material';
 import * as React from 'react';
 import { useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -34,11 +34,7 @@ const RecordSortContainer: React.FunctionComponent = (props) => {
             color="secondary"
             value={selectedOrder}
             name="order"
-            onChange={(event) =>
-              setSelectedOrder(
-                (event.target.value || event.currentTarget.value) as Order
-              )
-            }
+            onChange={(event) => setSelectedOrder(event.target.value as Order)}
             label="Order"
           >
             <MenuItem key={Order.asc} value={Order.asc}>
@@ -59,10 +55,7 @@ const RecordSortContainer: React.FunctionComponent = (props) => {
             name="order"
             label="Order By"
             onChange={(event) =>
-              setSelectedSortBy(
-                (event.target.value ||
-                  event.currentTarget.value) as keyof Record
-              )
+              setSelectedSortBy(event.target.value as keyof Record)
             }
           >
             <MenuItem key={'description'} value={'description'}>

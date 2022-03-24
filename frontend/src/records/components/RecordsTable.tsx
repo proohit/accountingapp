@@ -1,4 +1,4 @@
-import { Grid, Paper, Table, TableContainer, Toolbar } from '@material-ui/core';
+import { Grid, Paper, Table, TableContainer, Toolbar } from '@mui/material';
 import React, { FunctionComponent } from 'react';
 
 interface RecordsTableProps {

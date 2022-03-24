@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   LinearProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';

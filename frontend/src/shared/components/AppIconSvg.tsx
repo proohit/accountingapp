@@ -1,5 +1,5 @@
+import { useTheme } from '@mui/material';
 import React from 'react';
-import { palette } from '../globals/styles/AccTheme';
 
 type AppIconProps = {
   backgroundColor?: string;
@@ -7,6 +7,7 @@ type AppIconProps = {
 };
 
 const AppIconSvg: React.FC<AppIconProps> = (props) => {
+  const { palette } = useTheme();
   const { backgroundColor, textColor } = props;
   const colorBackground = backgroundColor || palette.primary.main;
   const colorText = textColor || palette.secondary.main;

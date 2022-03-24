@@ -1,4 +1,4 @@
-import { ListItem, ListItemText, Typography } from '@material-ui/core';
+import { ListItem, ListItemText, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../../wallets/models/Wallet';

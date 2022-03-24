@@ -1,14 +1,6 @@
-import {
-  Box,
-  Collapse,
-  Grid,
-  GridProps,
-  IconButton,
-  makeStyles,
-  Paper,
-  Typography,
-} from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { Box, Collapse, Grid, GridProps, IconButton, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import * as React from 'react';
 import { AvailableWidgets } from '../models/AvailableWidgets';
 
@@ -108,7 +100,7 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
                   ))}
                 {!disableClosable && (
                   <Grid item>
-                    <IconButton onClick={() => setOpen(!open)}>
+                    <IconButton onClick={() => setOpen(!open)} size="large">
                       {open ? <ExpandLess /> : <ExpandMore />}
                     </IconButton>
                   </Grid>

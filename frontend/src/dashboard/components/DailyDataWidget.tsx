@@ -21,9 +21,7 @@ export const DailyDataWidget: React.FC<
       actions={[
         <WalletField
           onWalletChange={(event) => {
-            setSelectedWallet(
-              (event.target.value || event.currentTarget.value) as string
-            );
+            setSelectedWallet(event.target.value);
           }}
           walletName={selectedWallet}
           wallets={wallets}

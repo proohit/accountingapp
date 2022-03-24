@@ -1,4 +1,4 @@
-import { LinearProgress, Typography } from '@material-ui/core';
+import { LinearProgress, Typography } from '@mui/material';
 import React from 'react';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 

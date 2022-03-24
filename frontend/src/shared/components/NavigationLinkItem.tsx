@@ -4,8 +4,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-} from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+} from '@mui/material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import Routes from '../constants/Routes';

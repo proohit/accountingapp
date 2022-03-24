@@ -1,4 +1,4 @@
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
 import {
@@ -12,18 +12,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { palette } from '../../shared/globals/styles/AccTheme';
 import { useMonthlyStatisticsQuery } from '../hooks/monthQuery';
 
-const colors = [
-  palette.primary.main,
-  palette.secondary.dark,
-  palette.success.main,
-  palette.error.main,
-  palette.warning.main,
-];
-
 const ThisYear: React.FunctionComponent = (props) => {
+  const { palette } = useTheme();
   const today = dayjs();
   const year = today.year();
   const month = today.month() + 1;

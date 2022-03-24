@@ -1,4 +1,4 @@
-import { Grid, TextField } from '@material-ui/core';
+import { Grid, TextField } from '@mui/material';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
@@ -137,7 +137,7 @@ export const RecurrentRecordForm = (props: Props) => {
         <Grid item>
           <PeriodicityField
             onPeriodicityChange={(newPeriodicity) =>
-              setFieldValue('periodicity', newPeriodicity)
+              setFieldValue('periodicity', newPeriodicity.target.value)
             }
             periodicities={Object.values(Periodicity)}
             periodicityName={values.periodicity}

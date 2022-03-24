@@ -1,5 +1,5 @@
-import { Button, Grid } from '@material-ui/core';
-import { AddBox } from '@material-ui/icons';
+import { Button, Grid } from '@mui/material';
+import { AddBox } from '@mui/icons-material';
 import { useRecoilState } from 'recoil';
 import { addRecordDialogState } from '../../records/hooks/recordsDialogsState';
 import { addWalletDialogState } from '../../wallets/hooks/walletDialogsState';

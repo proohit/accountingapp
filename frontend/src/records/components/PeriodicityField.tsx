@@ -5,18 +5,14 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@material-ui/core';
-import React, { ChangeEvent, FunctionComponent } from 'react';
+  SelectChangeEvent,
+} from '@mui/material';
+import React, { FunctionComponent } from 'react';
 import { Periodicity } from '../models/RecurrentRecord';
 
 type PeriodicityFieldProps = {
   periodicityName: string;
-  onPeriodicityChange: (
-    event: ChangeEvent<{
-      name?: string;
-      value: unknown;
-    }>
-  ) => void;
+  onPeriodicityChange: (event: SelectChangeEvent<string>) => void;
   periodicities: Periodicity[];
   errorText?: string;
   variant?: FormControlProps['variant'];
@@ -40,7 +36,7 @@ export const PeriodicityField: FunctionComponent<PeriodicityFieldProps> = (
         color="secondary"
         value={periodicityName}
         name="periodicity"
-        onChange={onPeriodicityChange}
+        onChange={(event) => onPeriodicityChange(event)}
         label="Periodicity"
       >
         {periodicities &&

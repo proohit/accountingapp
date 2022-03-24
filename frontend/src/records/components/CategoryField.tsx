@@ -1,5 +1,9 @@
-import { TextField } from '@material-ui/core';
-import { Autocomplete, createFilterOptions } from '@material-ui/lab';
+import {
+  TextField,
+  Autocomplete,
+  createFilterOptions,
+  MenuItem,
+} from '@mui/material';
 import React, { FunctionComponent } from 'react';
 import { Category } from '../models/Category';
 
@@ -69,7 +73,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
       selectOnFocus
       clearOnBlur
       handleHomeEndKeys
-      getOptionSelected={(option, value) => option.inputValue === value}
+      isOptionEqualToValue={(option, value) => option.inputValue === value}
       getOptionLabel={(option) => {
         if (typeof option === 'string') {
           return option;
@@ -80,7 +84,9 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
         return option.name;
       }}
       fullWidth
-      renderOption={(option) => option.name}
+      renderOption={(optionProps, option) => (
+        <li {...optionProps}>{option.name}</li>
+      )}
       options={options}
       renderInput={(params) => (
         <TextField

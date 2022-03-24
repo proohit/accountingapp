@@ -1,9 +1,10 @@
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import DatePicker from '@mui/lab/DatePicker';
 import { DateableWidget } from '../models/DateableWidget';
 import { MovableWidgetProps } from '../models/MovableWidgetProps';
 import Widget from './Widget';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
+import { useState } from 'react';
 
 export const MonthPickerWidget: React.FC<
   MovableWidgetProps &
@@ -12,13 +13,19 @@ export const MonthPickerWidget: React.FC<
     }
 > = (props) => {
   const { date, setCurrentDate, ...rest } = props;
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(date);
   return (
     <Widget widgetId="month-picker" xs={6} title="Settings" {...rest}>
       <DatePicker
         renderInput={(inputProps) => <TextField {...inputProps} />}
         views={['year', 'month']}
-        onChange={setCurrentDate}
-        value={date}
+        onChange={(acceptedDate) => {
+          setSelectedDate(acceptedDate);
+          if (acceptedDate && acceptedDate.isValid()) {
+            setCurrentDate(acceptedDate);
+          }
+        }}
+        value={selectedDate}
         label="Month"
       />
     </Widget>

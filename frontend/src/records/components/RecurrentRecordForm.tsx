@@ -1,5 +1,5 @@
-import { Grid } from '@material-ui/core';
-import { DateTimePicker } from '@material-ui/pickers';
+import { Grid, TextField } from '@material-ui/core';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React from 'react';
@@ -146,37 +146,39 @@ export const RecurrentRecordForm = (props: Props) => {
         </Grid>
         <Grid item>
           <DateTimePicker
+            renderInput={(inputProps) => (
+              <TextField
+                {...inputProps}
+                label="Start Date"
+                name="startDate"
+                color="secondary"
+                error={!!errors.startDate}
+                variant="outlined"
+                fullWidth
+                helperText={errors.startDate}
+              />
+            )}
             value={values.startDate}
-            label="Start Date"
-            name="startDate"
-            color="secondary"
-            error={!!errors.startDate}
-            helperText={errors.startDate}
-            onChange={(date) => {
-              setFieldValue('startDate', date.format());
-            }}
-            fullWidth
-            inputVariant="outlined"
+            onChange={(date) => setFieldValue('startDate', date)}
             showTodayButton
           />
         </Grid>
         <Grid item>
           <DateTimePicker
+            renderInput={(inputProps) => (
+              <TextField
+                {...inputProps}
+                label="End Date"
+                name="endDate"
+                color="secondary"
+                error={!!errors.endDate}
+                variant="outlined"
+                fullWidth
+                helperText={errors.endDate}
+              />
+            )}
             value={values.endDate}
-            label="End Date"
-            name="endDate"
-            color="secondary"
-            error={!!errors.endDate}
-            helperText={errors.endDate}
-            onChange={(date) => {
-              let newDateValue = null;
-              if (date) {
-                newDateValue = date.format();
-              }
-              setFieldValue('endDate', newDateValue);
-            }}
-            fullWidth
-            inputVariant="outlined"
+            onChange={(date) => setFieldValue('endDate', date)}
             showTodayButton
             disablePast
             clearable

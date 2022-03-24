@@ -4,9 +4,10 @@ import {
   Grid,
   LinearProgress,
   makeStyles,
+  TextField,
   Typography,
 } from '@material-ui/core';
-import { DateTimePicker } from '@material-ui/pickers';
+import DatePicker from '@mui/lab/DatePicker';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
@@ -120,31 +121,40 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
         />
       </Grid>
       <Grid item>
-        <DateTimePicker
-          inputVariant="outlined"
+        <DatePicker
+          renderInput={(inputProps) => (
+            <TextField
+              {...inputProps}
+              fullWidth
+              name="timestampFrom"
+              label="From Timestamp"
+              color="secondary"
+              variant="outlined"
+            />
+          )}
           value={timestampFrom}
           onChange={setTimestampFrom}
-          label="From Timestamp"
-          color="secondary"
-          name="timestampFrom"
-          fullWidth
           showTodayButton
           maxDate={dayjs(timestampTo)}
-          maxDateMessage="From Timestamp should not be after To Timestamp"
         />
       </Grid>
       <Grid item>
-        <DateTimePicker
-          inputVariant="outlined"
+        <DatePicker
+          renderInput={(inputProps) => (
+            <TextField
+              {...inputProps}
+              fullWidth
+              name="timestampTo"
+              label="To Timestamp"
+              color="secondary"
+              variant="outlined"
+            />
+          )}
           value={timestampTo}
           onChange={setTimestampTo}
           minDate={dayjs(timestampFrom)}
-          label="To Timestamp"
-          color="secondary"
-          name="timestampTo"
-          fullWidth
           showTodayButton
-          maxDateMessage="To Timestamp should not be before From Timestamp"
+          clearable
         />
       </Grid>
       <Grid item xs container justifyContent="space-around">

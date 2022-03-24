@@ -6,21 +6,12 @@ import React, { FunctionComponent } from 'react';
 import Authenticated from '../src/authentication/components/Authenticated';
 import { isAuthenticationRoute } from '../src/authentication/services/RoutingService';
 import { AppToolbar } from '../src/shared/components/AppToolbar';
+import ContentContainer from '../src/shared/components/ContentContainer';
 import { NavigationBar } from '../src/shared/components/NavigationBar';
 import Providers from '../src/shared/components/Providers';
 import '../styles/globals.css';
 
-const useStyles = makeStyles((theme) => ({
-  appBar: {
-    ...theme.mixins.toolbar,
-  },
-  content: {
-    padding: theme.spacing(2),
-  },
-}));
-
 const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
-  const classes = useStyles();
   const router = useRouter();
   return (
     <Providers>
@@ -31,21 +22,17 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
       </Head>
       <Authenticated>
         <AppToolbar />
-        <div className={classes.appBar} />
         <Grid container>
           {!isAuthenticationRoute(router.route) && (
             <Grid item lg={2}>
               <NavigationBar />
             </Grid>
           )}
-          <Grid
-            container
-            item
-            lg={isAuthenticationRoute(router.route) ? 12 : 10}
-            className={classes.content}
+          <ContentContainer
+            isAuthenticationRoute={isAuthenticationRoute(router.route)}
           >
             <Component {...pageProps} />
-          </Grid>
+          </ContentContainer>
         </Grid>
       </Authenticated>
     </Providers>

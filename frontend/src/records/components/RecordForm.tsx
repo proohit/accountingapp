@@ -1,5 +1,5 @@
-import { Grid } from '@material-ui/core';
-import { DateTimePicker } from '@material-ui/pickers';
+import { Grid, TextField } from '@material-ui/core';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React from 'react';
@@ -127,14 +127,17 @@ export const RecordForm = (props: RecordFormProps) => {
         <Grid item>
           <DateTimePicker
             value={formFields.timestamp}
-            label="timestamp"
-            name="timestamp"
-            color="secondary"
-            onChange={(date) => {
-              setFieldValue('timestamp', date.format());
-            }}
-            fullWidth
-            inputVariant="outlined"
+            onChange={(date) => setFieldValue('timestamp', date)}
+            renderInput={(inputProps) => (
+              <TextField
+                {...inputProps}
+                variant="outlined"
+                color="secondary"
+                label="timestamp"
+                name="timestamp"
+                fullWidth
+              />
+            )}
             showTodayButton
           />
         </Grid>

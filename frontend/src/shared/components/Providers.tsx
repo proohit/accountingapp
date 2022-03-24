@@ -1,6 +1,6 @@
-import DayjsUtils from '@date-io/dayjs';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateAdapter from '@mui/lab/AdapterDayjs';
+import { LocalizationProvider } from '@mui/lab';
 import React, { FunctionComponent } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
@@ -8,13 +8,15 @@ import { AuthenticationProvider } from '../../authentication/components/Authenti
 import { AccTheme } from '../globals/styles/AccTheme';
 import DialogsProvider from './DialogsProvider';
 import NotificationBar from './NotificationBar';
+
 const queryClient = new QueryClient();
 
 const Providers: FunctionComponent = (props) => {
   return (
     <ThemeProvider theme={AccTheme}>
       <CssBaseline />
-      <MuiPickersUtilsProvider utils={DayjsUtils}>
+      {/* @ts-ignore */}
+      <LocalizationProvider dateAdapter={DateAdapter}>
         <RecoilRoot>
           <QueryClientProvider client={queryClient}>
             <AuthenticationProvider>
@@ -25,7 +27,7 @@ const Providers: FunctionComponent = (props) => {
             </AuthenticationProvider>
           </QueryClientProvider>
         </RecoilRoot>
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 };

@@ -1,56 +1,44 @@
 import { Grid } from '@mui/material';
 import dayjs from 'dayjs';
 import Head from 'next/head';
-import * as React from 'react';
+import { FunctionComponent, useState } from 'react';
 import { CategoryDataWidget } from '../../src/dashboard/components/CategoryDataWidget';
 import { CurrentStatusWidget } from '../../src/dashboard/components/CurrentStatusWidget';
 import { DailyDataWidget } from '../../src/dashboard/components/DailyDataWidget';
 import { GeneralHeaderWidget } from '../../src/dashboard/components/GeneralHeaderWidget';
 import { HistoricalDataHeaderWidget } from '../../src/dashboard/components/HistoricalDataHeaderWidget';
 import { LatestRecordsWidget } from '../../src/dashboard/components/LatestRecordsWidget';
+import { LoadingWidgets } from '../../src/dashboard/components/LoadingWidgets';
 import { MonthPickerWidget } from '../../src/dashboard/components/MonthPickerWidget';
 import { MonthStatusWidget } from '../../src/dashboard/components/MonthStatusWidget';
 import { OverviewHeaderWidget } from '../../src/dashboard/components/OverviewHeaderWidget';
 import { QuickActionsWidget } from '../../src/dashboard/components/QuickActionsWidget';
 import { ThisYearWidget } from '../../src/dashboard/components/ThisYearWidget';
 import { AvailableWidgets } from '../../src/dashboard/models/AvailableWidgets';
+import {
+  useUpdateUserSettingsMutation,
+  useUserSettingsQuery,
+} from '../../src/settings/hooks/useSettingsQuery';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 
-const defaultWidgetIdsOrder: AvailableWidgets[] = [
-  'general-header',
-  'quick-actions',
-  'month-picker',
-  'overview-header',
-  'month-status',
-  'category-data',
-  'current-status',
-  'daily-records',
-  'historical-data-header',
-  'latest-records',
-  'this-year',
-];
-
-const DashboardPage: React.FunctionComponent = (props) => {
-  const [selectedWallet, setSelectedWallet] = React.useState('all');
-  const [currentDate, setCurrentDate] = React.useState(dayjs());
+const DashboardPage: FunctionComponent = (props) => {
+  const [selectedWallet, setSelectedWallet] = useState('all');
+  const [currentDate, setCurrentDate] = useState(dayjs());
   const { data: wallets } = useWalletsQuery();
-
-  const [dashboardWidgetsOrder, setDashboardWidgetsOrder] = React.useState<
-    AvailableWidgets[]
-  >(defaultWidgetIdsOrder);
-
-  const handleWidgetMove = (
+  const { data: dashboardWidgetsOrder, isLoading } = useUserSettingsQuery();
+  const updateUserSettings = useUpdateUserSettingsMutation();
+  const handleWidgetMove = async (
     target: string,
     event: React.DragEvent<HTMLDivElement>
   ) => {
     const sourceWidget = event.dataTransfer.types[0];
     const targetWidget = target;
-    const newOrders = [...dashboardWidgetsOrder];
+    const newOrders = [...dashboardWidgetsOrder.widgets];
     const sourceIndex = newOrders.indexOf(sourceWidget as AvailableWidgets);
     const targetIndex = newOrders.indexOf(targetWidget as AvailableWidgets);
     newOrders[sourceIndex] = targetWidget as AvailableWidgets;
     newOrders[targetIndex] = sourceWidget as AvailableWidgets;
-    setDashboardWidgetsOrder(newOrders);
+    await updateUserSettings.mutateAsync({ widgets: newOrders });
   };
 
   const getWidgetForWidgetId = (widgetId: AvailableWidgets) => {
@@ -136,8 +124,12 @@ const DashboardPage: React.FunctionComponent = (props) => {
         />
       </Head>
       <Grid container spacing={2}>
-        {dashboardWidgetsOrder.map((widgetId) =>
-          getWidgetForWidgetId(widgetId)
+        {isLoading ? (
+          <LoadingWidgets />
+        ) : (
+          dashboardWidgetsOrder.widgets.map((widgetId) =>
+            getWidgetForWidgetId(widgetId)
+          )
         )}
       </Grid>
     </>

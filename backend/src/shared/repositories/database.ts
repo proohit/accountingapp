@@ -4,6 +4,7 @@ import { User } from '../../entity/User';
 import { CategoryRepository } from '../../category/repositories/CategoryRepository';
 import { WalletRepository } from '../../wallet/repositories/WalletRepository';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
+import { DashboardSettings } from '../../entity/DashboardSettings';
 
 export const connection = createConnection();
 
@@ -13,4 +14,5 @@ export const repositories = {
     categories: () => getCustomRepository(CategoryRepository),
     users: () => getRepository(User),
     recurrentRecords: () => getRepository(RecurrentRecord),
+    settings: () => getRepository(DashboardSettings),
 };

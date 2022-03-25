@@ -1,7 +1,15 @@
-import { Box, Collapse, Grid, GridProps, IconButton, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import * as React from 'react';
+import {
+  Box,
+  Collapse,
+  Grid,
+  GridProps,
+  IconButton,
+  Paper,
+  Typography,
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { FunctionComponent, useState } from 'react';
 import { AvailableWidgets } from '../models/AvailableWidgets';
 
 export interface WidgetProps {
@@ -29,7 +37,7 @@ const widgetStyle = makeStyles((theme) => ({
   },
 }));
 
-const Widget: React.FunctionComponent<WidgetProps> = (props) => {
+const Widget: FunctionComponent<WidgetProps> = (props) => {
   const {
     children,
     title,
@@ -44,8 +52,8 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
     widgetId,
   } = props;
   const classes = widgetStyle();
-  const [open, setOpen] = React.useState(!disableClosable);
-  const [dropTarget, setDropTarget] = React.useState(false);
+  const [open, setOpen] = useState(!disableClosable);
+  const [dropTarget, setDropTarget] = useState(false);
   return (
     <Grid
       draggable

@@ -9,7 +9,6 @@ import { AppToolbar } from '../src/shared/components/AppToolbar';
 import ContentContainer from '../src/shared/components/ContentContainer';
 import { NavigationBar } from '../src/shared/components/NavigationBar';
 import Providers from '../src/shared/components/Providers';
-import '../styles/globals.css';
 
 const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();

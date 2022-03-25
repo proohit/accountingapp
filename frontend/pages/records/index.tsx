@@ -1,4 +1,5 @@
-import { Grid, Hidden, makeStyles } from '@material-ui/core';
+import { Grid, Hidden } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import Head from 'next/head';
 import React, { FunctionComponent } from 'react';
 import { RecordFilterBarContainer } from '../../src/records/components/RecordFilterBarContainer';
@@ -32,7 +33,7 @@ const RecordPage: FunctionComponent = (props) => {
       <Grid item xs className={classes.list}>
         <RecordListContainer />
       </Grid>
-      <Hidden smDown>
+      <Hidden mdDown>
         <Grid item xs={3}>
           <RecordFilterBarContainer />
         </Grid>

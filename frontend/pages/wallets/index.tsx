@@ -1,11 +1,6 @@
-import {
-  Grid,
-  IconButton,
-  LinearProgress,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import { AccountBalance, AddBox } from '@material-ui/icons';
+import { Grid, IconButton, LinearProgress, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { AccountBalance, AddBox } from '@mui/icons-material';
 import Head from 'next/head';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
@@ -58,7 +53,7 @@ const WalletPage: React.FunctionComponent = (props) => {
           header={'Wallets'}
           icon={<AccountBalance fontSize="large" color="primary" />}
           actions={
-            <IconButton color="primary" onClick={openAddDialog}>
+            <IconButton color="primary" onClick={openAddDialog} size="large">
               <AddBox />
             </IconButton>
           }

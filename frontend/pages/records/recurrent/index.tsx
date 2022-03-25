@@ -5,10 +5,10 @@ import {
   List,
   ListItem,
   ListItemText,
-  makeStyles,
   Paper,
-} from '@material-ui/core';
-import { AddBox, Replay } from '@material-ui/icons';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { AddBox, Replay } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import Head from 'next/head';
 import React from 'react';
@@ -57,7 +57,7 @@ const RecurrentRecordPage = () => {
           header={'Recurrent Records'}
           icon={<Replay fontSize="large" color="primary" />}
           actions={
-            <IconButton color="primary" onClick={openAddDialog}>
+            <IconButton color="primary" onClick={openAddDialog} size="large">
               <AddBox />
             </IconButton>
           }

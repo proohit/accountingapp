@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import dayjs from 'dayjs';
 import Head from 'next/head';
 import * as React from 'react';

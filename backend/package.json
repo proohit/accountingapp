@@ -58,7 +58,7 @@
         "eslint-plugin-prettier": "^4.0.0",
         "nodemon": "^2.0.15",
         "pre-commit": "^1.2.2",
-        "prettier": "^2.6.0",
+        "prettier": "^2.6.1",
         "redoc-cli": "^0.13.9",
         "ts-node": "^10.7.0",
         "typescript": "^4.6.2"

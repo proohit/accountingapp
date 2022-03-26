@@ -28,11 +28,9 @@ const DashboardPage: FunctionComponent = (props) => {
   const { data: dashboardWidgetsOrder, isLoading } = useUserSettingsQuery();
   const updateUserSettings = useUpdateUserSettingsMutation();
   const handleWidgetMove = async (
-    target: string,
-    event: React.DragEvent<HTMLDivElement>
+    sourceWidget: string,
+    targetWidget: string
   ) => {
-    const sourceWidget = event.dataTransfer.types[0];
-    const targetWidget = target;
     const newOrders = [...dashboardWidgetsOrder.widgets];
     const sourceIndex = newOrders.indexOf(sourceWidget as AvailableWidgets);
     const targetIndex = newOrders.indexOf(targetWidget as AvailableWidgets);

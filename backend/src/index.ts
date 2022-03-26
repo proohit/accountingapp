@@ -27,6 +27,7 @@ app.keys = [config.secret];
 app.use(session(app));
 
 import passport from 'koa-passport';
+import settingsRouter from './settings/services/settingsRouter';
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -60,6 +61,7 @@ router.use('/records', recordRouter);
 router.use('/wallets', walletRouter);
 router.use('/categories', categoryRouter);
 router.use('/statistics', statisticsRouter);
+router.use('/settings', settingsRouter);
 
 app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes());

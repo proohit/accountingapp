@@ -1,20 +1,14 @@
 import { Wallet } from '../../wallets/models/Wallet';
-import { MovableWidgetProps } from '../models/MovableWidgetProps';
+import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import CurrentStatus from './CurrentStatus';
 import Widget from './Widget';
 
 export const CurrentStatusWidget: React.FC<
-  MovableWidgetProps & { wallets: Wallet[] }
+  EditableWidgetProps & { wallets: Wallet[] }
 > = (props) => {
   const { wallets, ...rest } = props;
   return (
-    <Widget
-      widgetId="current-status"
-      xs={12}
-      md={6}
-      title="Current Status"
-      {...rest}
-    >
+    <Widget {...rest} xs={12} md={6}>
       {wallets && <CurrentStatus wallets={wallets} />}
     </Widget>
   );

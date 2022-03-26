@@ -1,6 +1,7 @@
 import { CategoryService } from '../../category/services/CategoryService';
 import { RecordService } from '../../record/services/RecordService';
 import { RecurrentRecordService } from '../../record/services/RecurrentRecordService';
+import SettingsService from '../../settings/services/SettingsService';
 import { StatisticsService } from '../../statistics/services/StatisticsService';
 import UserService from '../../user/services/UserService';
 import WalletService from '../../wallet/services/WalletService';
@@ -14,4 +15,5 @@ export const services = {
     userService: new UserService(),
     statisticsService: new StatisticsService(),
     authenticationService: new AuthenticationService(),
+    settingsService: new SettingsService(),
 };

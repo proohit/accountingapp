@@ -1,5 +1,6 @@
 import passport from 'koa-passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { DEFAULT_WIDGETS } from '../../settings/models/Settings';
 import { DuplicatedUser } from '../../user/models/Errors';
 import { BadRequest, InvalidCredentials, MissingProperty } from '../models/Errors';
 import { LoginToken } from '../models/Login';
@@ -81,5 +82,6 @@ export const register = async (username: string, password: string, email: string
     const newUser = await repositories
         .users()
         .save({ username, password: encryptedPassword, private_key: privateKey, email });
+    await services.settingsService.updateWidgets(newUser.username, DEFAULT_WIDGETS);
     return { username: newUser.username, email: newUser.email };
 };

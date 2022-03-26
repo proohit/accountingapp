@@ -19,4 +19,5 @@ export class API_ROUTES {
   static readonly STATISTICS = `${API_ROUTES.BASE_ROUTE}/statistics`;
   static readonly STATISTICS_CATEGORIES = `${API_ROUTES.STATISTICS}/categories`;
   static readonly STATISTICS_STATUS = `${API_ROUTES.STATISTICS}/month-status`;
+  static readonly SETTINGS = `${API_ROUTES.BASE_ROUTE}/settings`;
 }

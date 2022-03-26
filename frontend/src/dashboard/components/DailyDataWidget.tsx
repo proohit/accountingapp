@@ -1,12 +1,12 @@
 import { WalletField } from '../../records/components/WalletField';
 import { Wallet } from '../../wallets/models/Wallet';
 import { DateableWidget } from '../models/DateableWidget';
-import { MovableWidgetProps } from '../models/MovableWidgetProps';
+import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import ThisMonth from './ThisMonth';
 import Widget from './Widget';
 
 export const DailyDataWidget: React.FC<
-  MovableWidgetProps &
+  EditableWidgetProps &
     DateableWidget & {
       selectedWallet: string;
       wallets: Wallet[];
@@ -16,6 +16,7 @@ export const DailyDataWidget: React.FC<
   const { date, selectedWallet, wallets, setSelectedWallet, ...rest } = props;
   return (
     <Widget
+      {...rest}
       xs={12}
       title={`Daily Records for ${date.format('MMMM YYYY')}`}
       actions={[
@@ -31,8 +32,6 @@ export const DailyDataWidget: React.FC<
           key="filterByWallet"
         />,
       ]}
-      widgetId="daily-records"
-      {...rest}
     >
       {wallets && (
         <>

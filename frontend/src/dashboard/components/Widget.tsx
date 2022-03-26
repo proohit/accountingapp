@@ -1,7 +1,22 @@
-import { Box, Collapse, Grid, GridProps, IconButton, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import * as React from 'react';
+import {
+  Close,
+  DragIndicator,
+  ExpandLess,
+  ExpandMore,
+} from '@mui/icons-material';
+import {
+  Box,
+  Collapse,
+  Grid,
+  GridProps,
+  IconButton,
+  Paper,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
+import { styled } from '@mui/styles';
+import { FunctionComponent, useState } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
 import { AvailableWidgets } from '../models/AvailableWidgets';
 
 export interface WidgetProps {
@@ -14,22 +29,29 @@ export interface WidgetProps {
   xl?: GridProps['xl'];
   disableClosable?: boolean;
   onWidgetDrop: (
-    target: string,
-    event: React.DragEvent<HTMLDivElement>
+    sourceWidget: AvailableWidgets,
+    targetWidget: AvailableWidgets
   ) => void;
   widgetId: AvailableWidgets;
+  onWidgetRemove: (widget: AvailableWidgets) => void;
 }
 
-const widgetStyle = makeStyles((theme) => ({
-  widget: {
-    padding: theme.spacing(2),
-  },
-  dropTarget: {
-    border: '2px dashed #ccc',
-  },
+const DragIcon = styled(Grid)(({ theme }) => ({
+  cursor: 'move',
+  padding: theme.spacing(1),
+  height: theme.spacing(5),
+  width: theme.spacing(5),
 }));
 
-const Widget: React.FunctionComponent<WidgetProps> = (props) => {
+type WidgetDragObject = {
+  widgetId: AvailableWidgets;
+};
+
+type WidgetDropCollectedProps = {
+  isOver: boolean;
+};
+
+const Widget: FunctionComponent<WidgetProps> = (props) => {
   const {
     children,
     title,
@@ -41,47 +63,54 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
     xs,
     disableClosable,
     onWidgetDrop,
+    onWidgetRemove,
     widgetId,
   } = props;
-  const classes = widgetStyle();
-  const [open, setOpen] = React.useState(!disableClosable);
-  const [dropTarget, setDropTarget] = React.useState(false);
+
+  const [open, setOpen] = useState(!disableClosable);
+  const isDesktop = useMediaQuery('(pointer: fine)');
+  const [, drag, preview] = useDrag<WidgetDragObject>(
+    () => ({
+      type: 'widget',
+      item: {
+        widgetId,
+      },
+      options: {
+        dropEffect: 'move',
+      },
+    }),
+    [widgetId]
+  );
+
+  const [{ isOver }, drop] = useDrop<
+    WidgetDragObject,
+    unknown,
+    WidgetDropCollectedProps
+  >(
+    () => ({
+      accept: 'widget',
+      canDrop: (item) => item.widgetId !== widgetId,
+      drop: (item) => {
+        onWidgetDrop(widgetId, item.widgetId);
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver() && !!monitor.canDrop(),
+      }),
+    }),
+    [widgetId, onWidgetDrop]
+  );
+
   return (
-    <Grid
-      draggable
-      onDragStart={(event) => {
-        event.dataTransfer.setData(widgetId, '');
-        event.dataTransfer.effectAllowed = 'move';
-      }}
-      onDragOver={(event) => {
-        event.preventDefault();
-        const sourceWidgetKey = event.dataTransfer.types[0];
-        const targetWidgetKey = widgetId;
-        if (sourceWidgetKey === targetWidgetKey) {
-          event.dataTransfer.dropEffect = 'none';
-          setDropTarget(false);
-        } else {
-          event.dataTransfer.dropEffect = 'move';
-          setDropTarget(true);
-        }
-      }}
-      onDragLeave={() => {
-        setDropTarget(false);
-      }}
-      onDrop={(event) => {
-        setDropTarget(false);
-        onWidgetDrop(widgetId, event);
-      }}
-      item
-      xs={xs || 12}
-      lg={lg}
-      md={md}
-      xl={xl}
-      sm={sm}
-    >
+    <Grid ref={preview} item xs={xs || 12} lg={lg} md={md} xl={xl} sm={sm}>
       <Paper
+        sx={(theme) => ({
+          ...(isOver && {
+            border: '2px dashed #ccc',
+          }),
+          padding: theme.spacing(2),
+        })}
+        ref={drop}
         variant="outlined"
-        className={`${classes.widget} ${dropTarget && classes.dropTarget}`}
       >
         {(title || actions || !disableClosable) && (
           <Grid container direction="row">
@@ -90,23 +119,37 @@ const Widget: React.FunctionComponent<WidgetProps> = (props) => {
                 {<Typography variant="h6">{title}</Typography>}
               </Grid>
             )}
-            {(!disableClosable || actions) && (
-              <Grid item container justifyContent="flex-end" xs>
-                {open &&
-                  actions?.map((action, idx) => (
-                    <Grid key={idx} item>
-                      {action}
-                    </Grid>
-                  ))}
-                {!disableClosable && (
-                  <Grid item>
-                    <IconButton onClick={() => setOpen(!open)} size="large">
-                      {open ? <ExpandLess /> : <ExpandMore />}
-                    </IconButton>
+            <Grid
+              item
+              container
+              justifyContent="flex-end"
+              alignItems="center"
+              xs
+            >
+              {open &&
+                actions?.map((action, idx) => (
+                  <Grid key={idx} item>
+                    {action}
                   </Grid>
-                )}
+                ))}
+              {isDesktop && (
+                <DragIcon item ref={drag}>
+                  <DragIndicator />
+                </DragIcon>
+              )}
+              <Grid item>
+                <IconButton onClick={() => onWidgetRemove(widgetId)}>
+                  <Close />
+                </IconButton>
               </Grid>
-            )}
+              {!disableClosable && (
+                <Grid item>
+                  <IconButton onClick={() => setOpen(!open)}>
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
         )}
         <Collapse in={open}>

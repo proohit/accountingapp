@@ -41,4 +41,8 @@ export default class UserService {
         repositories.users().save({ ...user, password: encryptedNewPassword });
         return 'Successfully updated password';
     }
+
+    async getAllUsers() {
+        return repositories.users().find();
+    }
 }

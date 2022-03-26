@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material';
+import { alpha, createTheme } from '@mui/material';
 
 export const AccTheme = createTheme({
   palette: {
@@ -63,6 +63,18 @@ export const AccTheme = createTheme({
         button: ({ theme }) => ({
           '&:hover': {
             backgroundColor: theme.palette.secondary.main,
+          },
+        }),
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: ({ theme, ownerState }) => ({
+          '&.Mui-disabled': {
+            color:
+              ownerState.color === 'primary'
+                ? alpha(theme.palette.primary.main, 0.5)
+                : alpha(theme.palette.secondary.main, 0.5),
           },
         }),
       },

@@ -11,11 +11,10 @@ export const CategoryDataWidget: React.FC<
   const { date, ...rest } = props;
   return (
     <Widget
-      widgetId="category-data"
+      {...rest}
       xs={12}
       md={6}
       title={`Categories for ${date.format('MMMM YYYY')}`}
-      {...rest}
     >
       <MonthlyCategory date={date} />
     </Widget>

@@ -1,12 +1,12 @@
-import dayjs, { Dayjs } from 'dayjs';
 import DatePicker from '@mui/lab/DatePicker';
+import { TextField } from '@mui/material';
+import { Dayjs } from 'dayjs';
+import { FunctionComponent, useState } from 'react';
 import { DateableWidget } from '../models/DateableWidget';
 import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import Widget from './Widget';
-import { TextField } from '@mui/material';
-import { useState } from 'react';
 
-export const MonthPickerWidget: React.FC<
+export const MonthPickerWidget: FunctionComponent<
   EditableWidgetProps &
     DateableWidget & {
       setCurrentDate: (date: Dayjs) => void;
@@ -15,7 +15,7 @@ export const MonthPickerWidget: React.FC<
   const { date, setCurrentDate, ...rest } = props;
   const [selectedDate, setSelectedDate] = useState<Dayjs>(date);
   return (
-    <Widget widgetId="month-picker" xs={6} title="Settings" {...rest}>
+    <Widget {...rest} xs={6}>
       <DatePicker
         renderInput={(inputProps) => <TextField {...inputProps} />}
         views={['year', 'month']}

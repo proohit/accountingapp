@@ -16,6 +16,7 @@ export const DailyDataWidget: React.FC<
   const { date, selectedWallet, wallets, setSelectedWallet, ...rest } = props;
   return (
     <Widget
+      {...rest}
       xs={12}
       title={`Daily Records for ${date.format('MMMM YYYY')}`}
       actions={[
@@ -31,8 +32,6 @@ export const DailyDataWidget: React.FC<
           key="filterByWallet"
         />,
       ]}
-      widgetId="daily-records"
-      {...rest}
     >
       {wallets && (
         <>

@@ -8,13 +8,7 @@ export const CurrentStatusWidget: React.FC<
 > = (props) => {
   const { wallets, ...rest } = props;
   return (
-    <Widget
-      widgetId="current-status"
-      xs={12}
-      md={6}
-      title="Current Status"
-      {...rest}
-    >
+    <Widget {...rest} xs={12} md={6}>
       {wallets && <CurrentStatus wallets={wallets} />}
     </Widget>
   );

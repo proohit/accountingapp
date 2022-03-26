@@ -10,7 +10,6 @@ export const MonthStatusWidget: React.FC<
   return (
     <Widget
       {...rest}
-      widgetId="month-status"
       xs={12}
       md={6}
       title={`Month Status for ${date.format('MMMM YYYY')}`}

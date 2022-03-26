@@ -3,13 +3,7 @@ import Widget from './Widget';
 import { EditableWidgetProps } from '../models/EditableWidgetProps';
 
 export const LatestRecordsWidget: React.FC<EditableWidgetProps> = (props) => (
-  <Widget
-    widgetId="latest-records"
-    xs={12}
-    md={6}
-    title="Latest Records"
-    {...props}
-  >
+  <Widget xs={12} md={6} {...props}>
     <LatestRecords />
   </Widget>
 );

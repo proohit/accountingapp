@@ -1,10 +1,10 @@
 import { DateableWidget } from '../models/DateableWidget';
-import { MovableWidgetProps } from '../models/MovableWidgetProps';
+import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import MonthStatus from './MonthStatus';
 import Widget from './Widget';
 
 export const MonthStatusWidget: React.FC<
-  MovableWidgetProps & DateableWidget
+  EditableWidgetProps & DateableWidget
 > = (props) => {
   const { date, ...rest } = props;
   return (

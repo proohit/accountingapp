@@ -27,6 +27,7 @@ const DashboardPage: FunctionComponent = (props) => {
   const { data: wallets } = useWalletsQuery();
   const { data: dashboardWidgetsOrder, isLoading } = useUserSettingsQuery();
   const updateUserSettings = useUpdateUserSettingsMutation();
+
   const handleWidgetMove = async (
     sourceWidget: string,
     targetWidget: string
@@ -39,6 +40,13 @@ const DashboardPage: FunctionComponent = (props) => {
     await updateUserSettings.mutateAsync({ widgets: newOrders });
   };
 
+  const handleWidgetRemove = async (widget: AvailableWidgets) => {
+    const newOrders = [...dashboardWidgetsOrder.widgets];
+    const index = newOrders.indexOf(widget);
+    newOrders.splice(index, 1);
+    await updateUserSettings.mutateAsync({ widgets: newOrders });
+  };
+
   const getWidgetForWidgetId = (widgetId: AvailableWidgets) => {
     switch (widgetId) {
       case 'category-data':
@@ -47,6 +55,7 @@ const DashboardPage: FunctionComponent = (props) => {
             key={widgetId}
             date={currentDate}
             onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
           />
         );
       case 'current-status':
@@ -54,6 +63,7 @@ const DashboardPage: FunctionComponent = (props) => {
           <CurrentStatusWidget
             key={widgetId}
             onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
             wallets={wallets}
           />
         );
@@ -63,6 +73,7 @@ const DashboardPage: FunctionComponent = (props) => {
             key={widgetId}
             date={currentDate}
             onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
             selectedWallet={selectedWallet}
             setSelectedWallet={setSelectedWallet}
             wallets={wallets}
@@ -74,7 +85,11 @@ const DashboardPage: FunctionComponent = (props) => {
         return <HistoricalDataHeaderWidget key={widgetId} />;
       case 'latest-records':
         return (
-          <LatestRecordsWidget key={widgetId} onWidgetDrop={handleWidgetMove} />
+          <LatestRecordsWidget
+            key={widgetId}
+            onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
+          />
         );
       case 'month-picker':
         return (
@@ -82,6 +97,7 @@ const DashboardPage: FunctionComponent = (props) => {
             key={widgetId}
             date={currentDate}
             onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
             setCurrentDate={setCurrentDate}
           />
         );
@@ -91,17 +107,26 @@ const DashboardPage: FunctionComponent = (props) => {
             key={widgetId}
             date={currentDate}
             onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
           />
         );
       case 'overview-header':
         return <OverviewHeaderWidget key={widgetId} />;
       case 'quick-actions':
         return (
-          <QuickActionsWidget key={widgetId} onWidgetDrop={handleWidgetMove} />
+          <QuickActionsWidget
+            key={widgetId}
+            onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
+          />
         );
       case 'this-year':
         return (
-          <ThisYearWidget key={widgetId} onWidgetDrop={handleWidgetMove} />
+          <ThisYearWidget
+            key={widgetId}
+            onWidgetDrop={handleWidgetMove}
+            onWidgetRemove={handleWidgetRemove}
+          />
         );
     }
   };

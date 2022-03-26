@@ -1,4 +1,9 @@
-import { DragIndicator, ExpandLess, ExpandMore } from '@mui/icons-material';
+import {
+  Close,
+  DragIndicator,
+  ExpandLess,
+  ExpandMore,
+} from '@mui/icons-material';
 import {
   Box,
   Collapse,
@@ -23,8 +28,12 @@ export interface WidgetProps {
   sm?: GridProps['sm'];
   xl?: GridProps['xl'];
   disableClosable?: boolean;
-  onWidgetDrop: (sourceWidget: string, targetWidget: string) => void;
+  onWidgetDrop: (
+    sourceWidget: AvailableWidgets,
+    targetWidget: AvailableWidgets
+  ) => void;
   widgetId: AvailableWidgets;
+  onWidgetRemove: (widget: AvailableWidgets) => void;
 }
 
 const DragIcon = styled(Grid)(({ theme }) => ({
@@ -35,7 +44,7 @@ const DragIcon = styled(Grid)(({ theme }) => ({
 }));
 
 type WidgetDragObject = {
-  widgetId: string;
+  widgetId: AvailableWidgets;
 };
 
 type WidgetDropCollectedProps = {
@@ -54,6 +63,7 @@ const Widget: FunctionComponent<WidgetProps> = (props) => {
     xs,
     disableClosable,
     onWidgetDrop,
+    onWidgetRemove,
     widgetId,
   } = props;
 
@@ -109,34 +119,37 @@ const Widget: FunctionComponent<WidgetProps> = (props) => {
                 {<Typography variant="h6">{title}</Typography>}
               </Grid>
             )}
-            {(!disableClosable || actions) && (
-              <Grid
-                item
-                container
-                justifyContent="flex-end"
-                alignItems="center"
-                xs
-              >
-                {open &&
-                  actions?.map((action, idx) => (
-                    <Grid key={idx} item>
-                      {action}
-                    </Grid>
-                  ))}
-                {isDesktop && (
-                  <DragIcon item ref={drag}>
-                    <DragIndicator />
-                  </DragIcon>
-                )}
-                {!disableClosable && (
-                  <Grid item>
-                    <IconButton onClick={() => setOpen(!open)}>
-                      {open ? <ExpandLess /> : <ExpandMore />}
-                    </IconButton>
+            <Grid
+              item
+              container
+              justifyContent="flex-end"
+              alignItems="center"
+              xs
+            >
+              {open &&
+                actions?.map((action, idx) => (
+                  <Grid key={idx} item>
+                    {action}
                   </Grid>
-                )}
+                ))}
+              {isDesktop && (
+                <DragIcon item ref={drag}>
+                  <DragIndicator />
+                </DragIcon>
+              )}
+              <Grid item>
+                <IconButton onClick={() => onWidgetRemove(widgetId)}>
+                  <Close />
+                </IconButton>
               </Grid>
-            )}
+              {!disableClosable && (
+                <Grid item>
+                  <IconButton onClick={() => setOpen(!open)}>
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                  </IconButton>
+                </Grid>
+              )}
+            </Grid>
           </Grid>
         )}
         <Collapse in={open}>

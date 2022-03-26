@@ -1,12 +1,12 @@
 import { WalletField } from '../../records/components/WalletField';
 import { Wallet } from '../../wallets/models/Wallet';
 import { DateableWidget } from '../models/DateableWidget';
-import { MovableWidgetProps } from '../models/MovableWidgetProps';
+import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import ThisMonth from './ThisMonth';
 import Widget from './Widget';
 
 export const DailyDataWidget: React.FC<
-  MovableWidgetProps &
+  EditableWidgetProps &
     DateableWidget & {
       selectedWallet: string;
       wallets: Wallet[];

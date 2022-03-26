@@ -1,8 +1,8 @@
 import LatestRecords from './LatestRecords';
 import Widget from './Widget';
-import { MovableWidgetProps } from '../models/MovableWidgetProps';
+import { EditableWidgetProps } from '../models/EditableWidgetProps';
 
-export const LatestRecordsWidget: React.FC<MovableWidgetProps> = (props) => (
+export const LatestRecordsWidget: React.FC<EditableWidgetProps> = (props) => (
   <Widget
     widgetId="latest-records"
     xs={12}

@@ -17,6 +17,7 @@ import {
 import { styled } from '@mui/styles';
 import { FunctionComponent, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { getHeaderWidgetOfWidget } from '../constants/widgets';
 import { AvailableWidgets } from '../models/AvailableWidgets';
 
 export interface WidgetProps {
@@ -89,7 +90,10 @@ const Widget: FunctionComponent<WidgetProps> = (props) => {
   >(
     () => ({
       accept: 'widget',
-      canDrop: (item) => item.widgetId !== widgetId,
+      canDrop: (item) =>
+        item.widgetId !== widgetId &&
+        getHeaderWidgetOfWidget(item.widgetId) ===
+          getHeaderWidgetOfWidget(widgetId),
       drop: (item) => {
         onWidgetDrop(widgetId, item.widgetId);
       },

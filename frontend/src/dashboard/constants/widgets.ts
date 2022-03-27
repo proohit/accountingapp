@@ -39,3 +39,7 @@ export const getHeaderWidgetOfWidget = (widget: AvailableWidgets) => {
   );
   return headerWidget as AvailableWidgets;
 };
+
+export const isHeaderWidget = (widget: AvailableWidgets) => {
+  return Object.keys(headerWidgetMapping).includes(widget);
+};

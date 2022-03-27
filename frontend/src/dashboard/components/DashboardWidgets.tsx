@@ -71,6 +71,51 @@ const DashboardWidgets: FunctionComponent = () => {
     await updateUserSettings.mutateAsync({ widgets: newOrders });
   };
 
+  const handleHeaderWidgetMove = async (
+    sourceWidget: AvailableWidgets,
+    targetWidget: AvailableWidgets
+  ) => {
+    const widgets = [...dashboardWidgetsOrder.widgets];
+    const usedWidgetsOfSourceHeader = headerWidgetMapping[sourceWidget].filter(
+      (widget) => widgets.includes(widget)
+    );
+    const usedWidgetsOfTargetHeader = headerWidgetMapping[targetWidget].filter(
+      (widget) => widgets.includes(widget)
+    );
+    let sourceWidgetIndex = widgets.indexOf(sourceWidget);
+    let targetWidgetIndex = widgets.indexOf(targetWidget);
+    if (sourceWidgetIndex > targetWidgetIndex) {
+      widgets.splice(sourceWidgetIndex, usedWidgetsOfSourceHeader.length + 1);
+      widgets.splice(
+        sourceWidgetIndex,
+        0,
+        ...[targetWidget, ...usedWidgetsOfTargetHeader]
+      );
+      targetWidgetIndex = widgets.indexOf(targetWidget);
+      widgets.splice(targetWidgetIndex, usedWidgetsOfTargetHeader.length + 1);
+      widgets.splice(
+        targetWidgetIndex,
+        0,
+        ...[sourceWidget, ...usedWidgetsOfSourceHeader]
+      );
+    } else {
+      widgets.splice(targetWidgetIndex, usedWidgetsOfTargetHeader.length + 1);
+      widgets.splice(
+        targetWidgetIndex,
+        0,
+        ...[sourceWidget, ...usedWidgetsOfSourceHeader]
+      );
+      sourceWidgetIndex = widgets.indexOf(sourceWidget);
+      widgets.splice(sourceWidgetIndex, usedWidgetsOfSourceHeader.length + 1);
+      widgets.splice(
+        sourceWidgetIndex,
+        0,
+        ...[targetWidget, ...usedWidgetsOfTargetHeader]
+      );
+    }
+    await updateUserSettings.mutateAsync({ widgets });
+  };
+
   const handleWidgetRemove = async (widget: AvailableWidgets) => {
     const newOrders = [...dashboardWidgetsOrder.widgets];
     const index = newOrders.indexOf(widget);
@@ -89,8 +134,14 @@ const DashboardWidgets: FunctionComponent = () => {
       title: widgetLabels[widgetId],
       widgetAdded: handleWidgetAdd,
       addableWidgets: getMissingWidgetsForHeader(widgetId),
+      onWidgetDrop: handleHeaderWidgetMove,
+      widgetId,
     };
     switch (widgetId) {
+      case AvailableWidgets.GENERAL_HEADER:
+      case AvailableWidgets.HISTORICAL_DATA_HEADER:
+      case AvailableWidgets.OVERVIEW_HEADER:
+        return <WidgetHeader key={widgetId} {...headerWidgetProps} />;
       case AvailableWidgets.CATEGORY_DATA:
         return (
           <CategoryDataWidget
@@ -118,10 +169,6 @@ const DashboardWidgets: FunctionComponent = () => {
             {...editableWidgetProps}
           />
         );
-      case AvailableWidgets.GENERAL_HEADER:
-        return <WidgetHeader key={widgetId} {...headerWidgetProps} />;
-      case AvailableWidgets.HISTORICAL_DATA_HEADER:
-        return <WidgetHeader key={widgetId} {...headerWidgetProps} />;
       case AvailableWidgets.LATEST_RECORDS:
         return <LatestRecordsWidget key={widgetId} {...editableWidgetProps} />;
       case AvailableWidgets.MONTH_PICKER:
@@ -141,8 +188,6 @@ const DashboardWidgets: FunctionComponent = () => {
             {...editableWidgetProps}
           />
         );
-      case AvailableWidgets.OVERVIEW_HEADER:
-        return <WidgetHeader key={widgetId} {...headerWidgetProps} />;
       case AvailableWidgets.QUICK_ACTIONS:
         return <QuickActionsWidget key={widgetId} {...editableWidgetProps} />;
       case AvailableWidgets.THIS_YEAR:

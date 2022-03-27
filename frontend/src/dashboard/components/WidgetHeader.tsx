@@ -1,4 +1,4 @@
-import { AddBox } from '@mui/icons-material';
+import { AddBox, DragIndicator } from '@mui/icons-material';
 import {
   AppBar,
   Grid,
@@ -12,11 +12,13 @@ import {
 import {
   FunctionComponent,
   MouseEvent as ReactMouseEvent,
-  useState,
   useEffect,
+  useState,
 } from 'react';
-import { widgetLabels } from '../constants/widgets';
+import { useDrag, useDrop } from 'react-dnd';
+import { isHeaderWidget, widgetLabels } from '../constants/widgets';
 import { AvailableWidgets } from '../models/AvailableWidgets';
+import { DragIcon } from './DragIcon';
 import { WidgetProps } from './Widget';
 
 export type HeaderWidgetProps = Partial<WidgetProps> & {
@@ -24,11 +26,49 @@ export type HeaderWidgetProps = Partial<WidgetProps> & {
   widgetAdded: (widget: AvailableWidgets) => void;
 };
 
+type WidgetDragObject = {
+  widgetId: AvailableWidgets;
+};
+
+type WidgetDropCollectedProps = {
+  isOver: boolean;
+};
+
 export const WidgetHeader: FunctionComponent<HeaderWidgetProps> = (props) => {
-  const { title, widgetAdded, addableWidgets } = props;
+  const { title, widgetAdded, addableWidgets, widgetId, onWidgetDrop } = props;
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [, drag, preview] = useDrag<WidgetDragObject>(
+    () => ({
+      type: 'widget',
+      item: {
+        widgetId,
+      },
+      options: {
+        dropEffect: 'move',
+      },
+    }),
+    [widgetId]
+  );
 
+  const [{ isOver }, drop] = useDrop<
+    WidgetDragObject,
+    unknown,
+    WidgetDropCollectedProps
+  >(
+    () => ({
+      accept: 'widget',
+      canDrop: (item) =>
+        item.widgetId !== widgetId && isHeaderWidget(item.widgetId),
+      drop: (item) => {
+        onWidgetDrop(item.widgetId, widgetId);
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver() && !!monitor.canDrop(),
+      }),
+    }),
+    [widgetId, onWidgetDrop]
+  );
   const openMenu = (event: ReactMouseEvent<HTMLButtonElement, MouseEvent>) => {
     setMenuOpen(true);
     setMenuAnchor(event.currentTarget);
@@ -47,11 +87,19 @@ export const WidgetHeader: FunctionComponent<HeaderWidgetProps> = (props) => {
   }, [menuOpen, menuAnchor, addableWidgets]);
 
   return (
-    <Grid xs={12} item>
-      <AppBar color="primary" position="static" style={{ zIndex: 0 }}>
+    <Grid xs={12} item ref={preview}>
+      <AppBar
+        ref={drop}
+        color="primary"
+        position="static"
+        style={{ zIndex: 0 }}
+      >
         <Toolbar variant="dense">
           <Typography variant="h6">{title}</Typography>
           <Grid xs item container justifyContent="flex-end">
+            <DragIcon item ref={drag}>
+              <DragIndicator />
+            </DragIcon>
             <Tooltip title="Add Widget">
               <IconButton
                 disabled={addableWidgets?.length <= 0}

@@ -14,11 +14,11 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { styled } from '@mui/styles';
 import { FunctionComponent, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { getHeaderWidgetOfWidget } from '../constants/widgets';
 import { AvailableWidgets } from '../models/AvailableWidgets';
+import { DragIcon } from './DragIcon';
 
 export interface WidgetProps {
   title?: string;
@@ -36,13 +36,6 @@ export interface WidgetProps {
   widgetId: AvailableWidgets;
   onWidgetRemove: (widget: AvailableWidgets) => void;
 }
-
-const DragIcon = styled(Grid)(({ theme }) => ({
-  cursor: 'move',
-  padding: theme.spacing(1),
-  height: theme.spacing(5),
-  width: theme.spacing(5),
-}));
 
 type WidgetDragObject = {
   widgetId: AvailableWidgets;

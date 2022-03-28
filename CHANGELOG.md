@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.1] - 2022-03-29
+
+## Added
+
+- movable header widgets
+- moving indicators on widgets
+- prevent moving widgets outside of the header
+
+## [0.10.0] - 2022-03-27
+
+## Added
+
+- configurable widgets
+- mui 5
+- persisted user settings
+- show selected month for statistics
+- empty text for category statistics
+
+## Changed
+
+- updated dependencies
+
+## Removed
+
+- material ui 4
+
 ## [0.9.10] - 2022-01-03
 
 ### Fixed

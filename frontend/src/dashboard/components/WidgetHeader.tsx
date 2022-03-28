@@ -40,7 +40,7 @@ export const WidgetHeader: FunctionComponent<HeaderWidgetProps> = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [, drag, preview] = useDrag<WidgetDragObject>(
     () => ({
-      type: 'widget',
+      type: 'widgetHeader',
       item: {
         widgetId,
       },
@@ -57,7 +57,7 @@ export const WidgetHeader: FunctionComponent<HeaderWidgetProps> = (props) => {
     WidgetDropCollectedProps
   >(
     () => ({
-      accept: 'widget',
+      accept: 'widgetHeader',
       canDrop: (item) =>
         item.widgetId !== widgetId && isHeaderWidget(item.widgetId),
       drop: (item) => {

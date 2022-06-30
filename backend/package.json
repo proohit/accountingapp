@@ -35,7 +35,7 @@
         "node-schedule": "^2.0.0",
         "passport-local": "^1.0.0",
         "reflect-metadata": "^0.1.13",
-        "typeorm": "^0.2.45",
+        "typeorm": "^0.3.7",
         "winston": "^3.6.0"
     },
     "devDependencies": {

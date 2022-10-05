@@ -7,13 +7,12 @@ import {
   ListItemText,
   Paper,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { AddBox, Replay } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import Head from 'next/head';
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { formatState } from '../../../src/records/hooks/formatState';
+import { useFormatState } from '../../../src/records/hooks/useFormatState';
 import { useRecurrentRecordsQuery } from '../../../src/records/hooks/recurrentRecordQueries';
 import { recurrentRecordsDialogsState } from '../../../src/records/hooks/recurrentRecordsStore';
 import {
@@ -21,8 +20,9 @@ import {
   RecurrentRecord,
 } from '../../../src/records/models/RecurrentRecord';
 import PageHeader from '../../../src/shared/components/PageHeader';
+import { makeStyles } from 'tss-react/mui';
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles()((theme) => ({
   list: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -30,7 +30,7 @@ const styles = makeStyles((theme) => ({
 }));
 
 const RecurrentRecordPage = () => {
-  const classes = styles();
+  const { classes } = styles();
   const [dialogs, setDialogs] = useRecoilState(recurrentRecordsDialogsState);
 
   const openAddDialog = () => {
@@ -72,7 +72,7 @@ const RecurrentRecordsList = () => {
   const { data: recurrentRecords, isLoading: recurrentRecordsLoading } =
     useRecurrentRecordsQuery();
   const [dialogs, setDialogs] = useRecoilState(recurrentRecordsDialogsState);
-  const { data: format, isLoading: formatLoading } = formatState();
+  const { data: format, isLoading: formatLoading } = useFormatState();
   const openRecord = (recurrentRecord: RecurrentRecord) => {
     setDialogs({
       ...dialogs,

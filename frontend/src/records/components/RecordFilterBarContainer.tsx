@@ -6,8 +6,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import DatePicker from '@mui/lab/DatePicker';
+import { makeStyles } from 'tss-react/mui';
 import dayjs from 'dayjs';
 import React, { FunctionComponent, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
@@ -20,8 +19,9 @@ import { getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
 import { WalletField } from './WalletField';
+import { DatePicker } from '@mui/x-date-pickers';
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles()((theme) => ({
   filterBar: {
     padding: theme.spacing(2),
     position: 'sticky',
@@ -44,7 +44,7 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
     useCategoriesQuery();
   const { data: wallets, isLoading: walletsLoading } = useWalletsQuery();
 
-  const classes = styles();
+  const { classes } = styles();
 
   const applyFilter = () => {
     setCurrentFilters({
@@ -130,7 +130,6 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
           )}
           value={timestampFrom}
           onChange={setTimestampFrom}
-          showTodayButton
           maxDate={dayjs(timestampTo)}
         />
       </Grid>
@@ -149,8 +148,6 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
           value={timestampTo}
           onChange={setTimestampTo}
           minDate={dayjs(timestampFrom)}
-          showTodayButton
-          clearable
         />
       </Grid>
       <Grid item xs container justifyContent="space-around">

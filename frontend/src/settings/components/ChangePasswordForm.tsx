@@ -1,5 +1,5 @@
 import { Button, Grid, TextField } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import { useFormik } from 'formik';
 import React from 'react';
 import { useRecoilState } from 'recoil';
@@ -7,14 +7,14 @@ import * as yup from 'yup';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { SettingsApiService } from '../services/SettingsApi';
 
-const changePasswordFormStyles = makeStyles((theme) => ({
+const changePasswordFormStyles = makeStyles()((theme) => ({
   form: {
     gap: theme.spacing(3),
   },
 }));
 export const ChangePasswordForm: React.FunctionComponent = () => {
   const [, setNotificationsState] = useRecoilState(notificationState);
-  const classes = changePasswordFormStyles();
+  const { classes } = changePasswordFormStyles();
   let schema = yup.object().shape({
     currentPassword: yup
       .string()

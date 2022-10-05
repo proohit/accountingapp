@@ -1,9 +1,9 @@
-import { Grid, IconButton, LinearProgress, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { AccountBalance, AddBox } from '@mui/icons-material';
+import { Grid, IconButton, LinearProgress, Typography } from '@mui/material';
 import Head from 'next/head';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
+import { makeStyles } from 'tss-react/mui';
 import PageHeader from '../../src/shared/components/PageHeader';
 import { WalletCard } from '../../src/wallets/components/WalletCard';
 import {
@@ -13,7 +13,7 @@ import {
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
 import { Wallet } from '../../src/wallets/models/Wallet';
 
-const walletPageStyles = makeStyles((theme) => ({
+const walletPageStyles = makeStyles()((theme) => ({
   walletContainer: {
     padding: theme.spacing(2),
   },
@@ -21,7 +21,7 @@ const walletPageStyles = makeStyles((theme) => ({
 
 const WalletPage: React.FunctionComponent = (props) => {
   const { data: wallets, isFetching } = useWalletsQuery();
-  const classes = walletPageStyles();
+  const { classes } = walletPageStyles();
   const setAddWalletDialog = useSetRecoilState(addWalletDialogState);
   const setEditWalletDialog = useSetRecoilState(editWalletDialogState);
 

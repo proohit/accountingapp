@@ -1,5 +1,10 @@
 import { useRouter } from 'next/dist/client/router';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  PropsWithChildren,
+  useEffect,
+  useState,
+} from 'react';
 import { useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { User } from '../../users/models/User';
@@ -8,7 +13,9 @@ import { AuthenticationContext } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
 import { isAuthenticationRoute } from '../services/RoutingService';
 
-export const AuthenticationProvider: FunctionComponent = (props) => {
+export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
+  props
+) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [user, setUser] = useState(null);

@@ -1,5 +1,12 @@
-import { Button, Container, Grid, LinearProgress, TextField, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  Button,
+  Container,
+  Grid,
+  LinearProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { makeStyles } from 'tss-react/mui';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/dist/client/router';
 import Link from 'next/link';
@@ -7,7 +14,7 @@ import React from 'react';
 import * as yup from 'yup';
 import { useAuthentication } from '../hooks/useAuthentication';
 
-export const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   paper: {
     marginTop: theme.spacing(10),
   },
@@ -17,7 +24,7 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 export const LoginForm = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const router = useRouter();
   const { login, isLoginLoading } = useAuthentication();
 
@@ -104,7 +111,7 @@ export const LoginForm = () => {
               sign up
             </Button>
           </Link>{' '}
-          if you're new here
+          if you&apos;re new here
         </Typography>
       </Grid>
     </Container>

@@ -1,24 +1,13 @@
 import { Grid } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, PropsWithChildren } from 'react';
 
-const useStyles = makeStyles((theme) => ({
-  content: {
-    padding: theme.spacing(2),
-  },
-}));
-
-const ContentContainer: FunctionComponent<{
-  isAuthenticationRoute?: boolean;
-}> = ({ children, isAuthenticationRoute }) => {
-  const classes = useStyles();
+const ContentContainer: FunctionComponent<
+  PropsWithChildren<{
+    isAuthenticationRoute?: boolean;
+  }>
+> = ({ children, isAuthenticationRoute }) => {
   return (
-    <Grid
-      container
-      item
-      lg={isAuthenticationRoute ? 12 : 10}
-      className={classes.content}
-    >
+    <Grid container item lg={isAuthenticationRoute ? 12 : 10} padding={2}>
       {children}
     </Grid>
   );

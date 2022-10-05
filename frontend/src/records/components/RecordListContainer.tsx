@@ -16,7 +16,7 @@ import {
   currentPageState,
   currentSortState,
 } from '../hooks/currentQueryState';
-import { formatState } from '../hooks/formatState';
+import { useFormatState } from '../hooks/useFormatState';
 import { recordsDialogsState } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
@@ -31,7 +31,7 @@ export const RecordListContainer: FunctionComponent = () => {
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);
   const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
   const currentFilter = useRecoilValue(currentFilterState);
-  const { data: format, isLoading: formatLoading } = formatState();
+  const { data: format, isLoading: formatLoading } = useFormatState();
   const { data: paginatedResult, isFetching: recordsLoading } = useRecordsQuery(
     {
       filterBy: currentFilter,
@@ -117,54 +117,56 @@ export const RecordListContainer: FunctionComponent = () => {
 
   const noRecords = !paginatedResult?.data || paginatedResult.totalCount <= 0;
   const noRecordsText = 'No records yet. Start tracking by creating a record';
-  return <>
-    <RecordsTableToolbar
-      onAddClicked={openAddRecordsDialog}
-      onFilterClicked={openFilterRecordsDialog}
-      onSortClicked={openSortRecordsDialog}
-      onExportClicked={openExportRecordsDialog}
-    />
+  return (
     <>
-      <Hidden mdDown>
-        <RecordsTable controls={recordsPagination}>
-          <RecordTableHeader
-            sortBy={currentSort.sortBy}
-            sortDirection={currentSort.sortDirection}
-            sortClicked={handleSortClicked}
-          />
-          <RecordTableBody
-            records={paginatedResult.data}
-            onRecordClicked={openEditRecordsDialog}
-            categories={categories}
-            wallets={wallets}
-            noRecords={noRecords}
-            noRecordsText={noRecordsText}
-            format={format}
-          />
-        </RecordsTable>
-      </Hidden>
-      <Hidden mdUp>
-        <Paper variant="outlined">
-          <Divider />
-          <List>
-            {noRecords ? (
-              <Typography color="primary">{noRecordsText}</Typography>
-            ) : (
-              paginatedResult.data.map((record) => (
-                <MobileRecordItem
-                  key={record.id}
-                  record={record}
-                  onRecordClick={openEditRecordsDialog}
-                  categories={categories}
-                  wallets={wallets}
-                  format={format}
-                />
-              ))
-            )}
-          </List>
-          {recordsPagination}
-        </Paper>
-      </Hidden>
+      <RecordsTableToolbar
+        onAddClicked={openAddRecordsDialog}
+        onFilterClicked={openFilterRecordsDialog}
+        onSortClicked={openSortRecordsDialog}
+        onExportClicked={openExportRecordsDialog}
+      />
+      <>
+        <Hidden mdDown>
+          <RecordsTable controls={recordsPagination}>
+            <RecordTableHeader
+              sortBy={currentSort.sortBy}
+              sortDirection={currentSort.sortDirection}
+              sortClicked={handleSortClicked}
+            />
+            <RecordTableBody
+              records={paginatedResult.data}
+              onRecordClicked={openEditRecordsDialog}
+              categories={categories}
+              wallets={wallets}
+              noRecords={noRecords}
+              noRecordsText={noRecordsText}
+              format={format}
+            />
+          </RecordsTable>
+        </Hidden>
+        <Hidden mdUp>
+          <Paper variant="outlined">
+            <Divider />
+            <List>
+              {noRecords ? (
+                <Typography color="primary">{noRecordsText}</Typography>
+              ) : (
+                paginatedResult.data.map((record) => (
+                  <MobileRecordItem
+                    key={record.id}
+                    record={record}
+                    onRecordClick={openEditRecordsDialog}
+                    categories={categories}
+                    wallets={wallets}
+                    format={format}
+                  />
+                ))
+              )}
+            </List>
+            {recordsPagination}
+          </Paper>
+        </Hidden>
+      </>
     </>
-  </>;
+  );
 };

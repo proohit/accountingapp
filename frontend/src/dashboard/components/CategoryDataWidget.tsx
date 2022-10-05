@@ -1,12 +1,11 @@
-import { Dayjs } from 'dayjs';
-import * as React from 'react';
+import { FunctionComponent, PropsWithChildren } from 'react';
+import { DateableWidget } from '../models/DateableWidget';
+import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import MonthlyCategory from './MonthlyCategory';
 import Widget from './Widget';
-import { EditableWidgetProps } from '../models/EditableWidgetProps';
-import { DateableWidget } from '../models/DateableWidget';
 
-export const CategoryDataWidget: React.FC<
-  EditableWidgetProps & DateableWidget
+export const CategoryDataWidget: FunctionComponent<
+  PropsWithChildren<EditableWidgetProps & DateableWidget>
 > = (props) => {
   const { date, ...rest } = props;
   return (

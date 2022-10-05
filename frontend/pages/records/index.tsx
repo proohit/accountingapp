@@ -1,11 +1,11 @@
 import { Grid, Hidden } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import Head from 'next/head';
 import React, { FunctionComponent } from 'react';
+import { makeStyles } from 'tss-react/mui';
 import { RecordFilterBarContainer } from '../../src/records/components/RecordFilterBarContainer';
 import { RecordListContainer } from '../../src/records/components/RecordListContainer';
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles()((theme) => ({
   list: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -13,7 +13,7 @@ const styles = makeStyles((theme) => ({
 }));
 
 const RecordPage: FunctionComponent = (props) => {
-  const classes = styles();
+  const { classes } = styles();
 
   return (
     <>

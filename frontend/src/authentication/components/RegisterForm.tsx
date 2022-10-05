@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import Link from 'next/link';
 import React, { FunctionComponent, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -23,7 +23,7 @@ import {
 } from '../services/AuthenticationValidator';
 import { registerGreetingState } from './registerGreetingState';
 
-export const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   paper: {
     marginTop: theme.spacing(10),
   },
@@ -46,7 +46,7 @@ export const RegisterForm: FunctionComponent = () => {
   );
   const setNotification = useSetRecoilState(notificationState);
   const [registerLoading, setRegisterLoading] = useState(false);
-  const classes = useStyles();
+  const { classes } = useStyles();
   const {
     offlineLogin,
     isLoginLoading,
@@ -213,7 +213,7 @@ export const RegisterForm: FunctionComponent = () => {
                 sign in
               </Button>
             </Link>{' '}
-            if you're already registered
+            if you&apos;re already registered
           </Typography>
         </Grid>
       </Container>

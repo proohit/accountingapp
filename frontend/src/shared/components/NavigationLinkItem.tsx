@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import Routes from '../constants/Routes';
 
 interface NavigationItemProps {
@@ -18,9 +18,9 @@ interface NavigationItemProps {
   onClick(link: Routes): void;
 }
 
-const NavigationLinkItem: React.FunctionComponent<NavigationItemProps> = (
-  props
-) => {
+const NavigationLinkItem: React.FunctionComponent<
+  PropsWithChildren<NavigationItemProps>
+> = (props) => {
   const { icon, link, text, active, onClick, children } = props;
   const [childrenOpen, setChildrenOpen] = useState(false);
 

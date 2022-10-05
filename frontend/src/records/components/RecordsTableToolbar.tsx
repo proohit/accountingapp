@@ -1,4 +1,11 @@
 import {
+  AddBox,
+  FilterList,
+  GetApp,
+  MoreVert,
+  Sort,
+} from '@mui/icons-material';
+import {
   Grid,
   IconButton,
   ListItemIcon,
@@ -9,15 +16,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import {
-  AddBox,
-  FilterList,
-  GetApp,
-  MoreVert,
-  Sort,
-} from '@mui/icons-material';
 import React, { FunctionComponent } from 'react';
-import PageHeader from '../../shared/components/PageHeader';
 
 type RecordsTableToolbarProps = {
   onFilterClicked: () => void;

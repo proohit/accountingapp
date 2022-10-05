@@ -7,7 +7,7 @@ const defaultFormat: Format = {
   timeFormat: 'HH:mm:ss',
 };
 
-export const formatState = () =>
+export const useFormatState = () =>
   useQuery<Format>('format', () => defaultFormat, {
     initialData: defaultFormat,
   });

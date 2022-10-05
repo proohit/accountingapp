@@ -1,5 +1,5 @@
 import { Grid, TextField } from '@mui/material';
-import DateTimePicker from '@mui/lab/DateTimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React from 'react';
@@ -138,7 +138,6 @@ export const RecordForm = (props: RecordFormProps) => {
                 fullWidth
               />
             )}
-            showTodayButton
           />
         </Grid>
       </Grid>

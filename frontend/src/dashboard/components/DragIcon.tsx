@@ -1,5 +1,4 @@
-import { Grid } from '@mui/material';
-import { styled } from '@mui/styles';
+import { Grid, styled } from '@mui/material';
 
 export const DragIcon = styled(Grid)(({ theme }) => ({
   cursor: 'move',

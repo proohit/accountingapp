@@ -1,5 +1,5 @@
 import { Grid, TextField } from '@mui/material';
-import DateTimePicker from '@mui/lab/DateTimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React from 'react';
@@ -160,7 +160,6 @@ export const RecurrentRecordForm = (props: Props) => {
             )}
             value={values.startDate}
             onChange={(date) => setFieldValue('startDate', date)}
-            showTodayButton
           />
         </Grid>
         <Grid item>
@@ -179,9 +178,7 @@ export const RecurrentRecordForm = (props: Props) => {
             )}
             value={values.endDate}
             onChange={(date) => setFieldValue('endDate', date)}
-            showTodayButton
             disablePast
-            clearable
             minDate={dayjs(values.startDate).format()}
           />
         </Grid>

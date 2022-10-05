@@ -17,7 +17,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, PropsWithChildren, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { getHeaderWidgetOfWidget } from '../constants/widgets';
 import { AvailableWidgets } from '../models/AvailableWidgets';
@@ -73,7 +73,7 @@ const SwapOverlay = styled(SwapHoriz)({
   height: 48,
 });
 
-const Widget: FunctionComponent<WidgetProps> = (props) => {
+const Widget: FunctionComponent<PropsWithChildren<WidgetProps>> = (props) => {
   const {
     children,
     title,

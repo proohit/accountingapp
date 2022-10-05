@@ -1,4 +1,4 @@
-import DatePicker from '@mui/lab/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import { FunctionComponent, useState } from 'react';
@@ -25,6 +25,7 @@ export const MonthPickerWidget: FunctionComponent<
             setCurrentDate(acceptedDate);
           }
         }}
+        openTo="month"
         value={selectedDate}
         label="Month"
       />

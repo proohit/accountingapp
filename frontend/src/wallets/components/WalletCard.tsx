@@ -1,10 +1,16 @@
-import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  Typography,
+} from '@mui/material';
+import { makeStyles } from 'tss-react/mui';
 import { Payment } from '@mui/icons-material';
 import React, { FunctionComponent } from 'react';
 import { Wallet } from '../models/Wallet';
 
-const walletCardStyles = makeStyles((theme) => ({
+const walletCardStyles = makeStyles()((theme) => ({
   cardTitle: {
     textOverflow: 'ellipsis',
     overflow: 'hidden',
@@ -19,7 +25,7 @@ type WalletCardProps = {
 
 export const WalletCard: FunctionComponent<WalletCardProps> = (props) => {
   const { wallet, onWalletClicked } = props;
-  const classes = walletCardStyles();
+  const { classes } = walletCardStyles();
   return (
     <Card key={wallet.id} elevation={4}>
       <CardActionArea onClick={() => onWalletClicked(wallet)}>

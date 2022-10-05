@@ -8,7 +8,7 @@ import {
 import dayjs from 'dayjs';
 import * as React from 'react';
 import { useCategoriesQuery } from '../../records/hooks/categoriesQueries';
-import { formatState } from '../../records/hooks/formatState';
+import { useFormatState } from '../../records/hooks/useFormatState';
 import { useRecordsQuery } from '../../records/hooks/recordsQueries';
 import { getCategoryById } from '../../records/utils/categoryUtils';
 
@@ -21,7 +21,7 @@ const LatestRecords: React.FunctionComponent<ILatestRecordsProps> = (props) => {
     sortDirection: 'desc',
     itemsPerPage: 5,
   });
-  const { data: format, isLoading: formatLoading } = formatState();
+  const { data: format, isLoading: formatLoading } = useFormatState();
   const { data: categories, isLoading: categoriesLoading } =
     useCategoriesQuery();
 

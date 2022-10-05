@@ -1,11 +1,13 @@
 import { Grid, Paper, Table, TableContainer, Toolbar } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent, PropsWithChildren } from 'react';
 
 interface RecordsTableProps {
   toolbar?: JSX.Element;
   controls?: JSX.Element;
 }
-export const RecordsTable: FunctionComponent<RecordsTableProps> = (props) => {
+export const RecordsTable: FunctionComponent<
+  PropsWithChildren<RecordsTableProps>
+> = (props) => {
   const { toolbar, children, controls } = props;
 
   return (

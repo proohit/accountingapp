@@ -1,6 +1,6 @@
 import { Box, Grid, GridProps, Paper, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, PropsWithChildren } from 'react';
+import { makeStyles } from 'tss-react/mui';
 
 export interface WidgetProps {
   title?: string | JSX.Element;
@@ -11,15 +11,17 @@ export interface WidgetProps {
   xl?: GridProps['xl'];
 }
 
-const widgetStyle = makeStyles((theme) => ({
+const widgetStyle = makeStyles()((theme) => ({
   widget: {
     padding: theme.spacing(2),
   },
 }));
 
-const LoadingWidget: FunctionComponent<WidgetProps> = (props) => {
+const LoadingWidget: FunctionComponent<PropsWithChildren<WidgetProps>> = (
+  props
+) => {
   const { children, title, lg, md, sm, xl, xs } = props;
-  const classes = widgetStyle();
+  const { classes } = widgetStyle();
   return (
     <Grid item xs={xs || 12} lg={lg} md={md} xl={xl} sm={sm}>
       <Paper variant="outlined" className={classes.widget}>

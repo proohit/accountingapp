@@ -25,7 +25,7 @@ export default class RecurrentRecordScheduler {
     }
 
     private executeUpdate(record: RecurrentRecord) {
-        services.recurrentRecordService.applyRecurrentRecord(record);
+        services().recurrentRecordService.applyRecurrentRecord(record);
     }
 
     public resetSchedule() {

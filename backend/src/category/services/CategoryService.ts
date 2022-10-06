@@ -12,7 +12,7 @@ export class CategoryService {
 
         const categoryRepository = repositories.categories();
 
-        if (await categoryRepository.findOne({ name: name, ownerUsername: username })) {
+        if (await categoryRepository.findOneBy({ name: name, ownerUsername: username })) {
             throw new DuplicateCategory();
         }
 
@@ -21,7 +21,7 @@ export class CategoryService {
     }
 
     getByUser(username: User['username']) {
-        return repositories.categories().find({ ownerUsername: username });
+        return repositories.categories().findBy({ ownerUsername: username });
     }
 
     async deleteById(id: Category['id'], username: User['username']) {
@@ -33,7 +33,7 @@ export class CategoryService {
     }
 
     async getById(id: Category['id'], username: User['username']) {
-        const foundCategory = await repositories.categories().findOne(id);
+        const foundCategory = await repositories.categories().findOneBy({ id });
 
         if (!foundCategory) {
             throw new CategoryNotFound();

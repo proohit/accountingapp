@@ -8,7 +8,7 @@ const RecordControllerImpl: RecordController = {
         const { username } = ctx.state.user;
         const categoryId = ctx.params.category;
 
-        const recordsByUserByCategory = await services.recordService.getByCategory(categoryId, username);
+        const recordsByUserByCategory = await services().recordService.getByCategory(categoryId, username);
 
         return { data: recordsByUserByCategory, status: 200 };
     },
@@ -17,7 +17,7 @@ const RecordControllerImpl: RecordController = {
         const username = ctx.state.user.username;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
 
-        const createdRecord = await services.recordService.createRecord(
+        const createdRecord = await services().recordService.createRecord(
             description,
             value,
             timestamp,
@@ -36,7 +36,7 @@ const RecordControllerImpl: RecordController = {
         );
         const page = parseIntQuery(ctx.query.page);
         const itemsPerPage = parseIntQuery(ctx.query.itemsPerPage);
-        const records = await services.recordService.getByQuery(
+        const records = await services().recordService.getByQuery(
             {
                 itemsPerPage,
                 page,
@@ -47,7 +47,7 @@ const RecordControllerImpl: RecordController = {
             username,
         );
 
-        const recordCount = await services.recordService.getRecordsCountByQuery(
+        const recordCount = await services().recordService.getRecordsCountByQuery(
             { filterBy: { categoryId, description, walletId } },
             username,
         );
@@ -59,7 +59,7 @@ const RecordControllerImpl: RecordController = {
         const { username } = ctx.state.user;
         const id = ctx.params.id;
 
-        const deletedRecord = await services.recordService.deleteById(id, username);
+        const deletedRecord = await services().recordService.deleteById(id, username);
         return { status: 200, data: { message: `Deleted record with id ${deletedRecord.id}` } };
     },
 
@@ -67,7 +67,7 @@ const RecordControllerImpl: RecordController = {
         const { username } = ctx.state.user;
         const { id } = ctx.params;
 
-        const record = await services.recordService.getById(id, username);
+        const record = await services().recordService.getById(id, username);
 
         return { status: 200, data: record };
     },
@@ -76,7 +76,7 @@ const RecordControllerImpl: RecordController = {
         const { username } = ctx.state.user;
         const { walletId } = ctx.params;
 
-        const recordsByWallet = await services.recordService.getByWallet(walletId, username);
+        const recordsByWallet = await services().recordService.getByWallet(walletId, username);
 
         return { status: 200, data: recordsByWallet };
     },
@@ -86,7 +86,7 @@ const RecordControllerImpl: RecordController = {
         const { id } = ctx.params;
         const { description, value, walletId, timestamp, categoryId } = ctx.request.body;
 
-        const updatedRecord = await services.recordService.updateById(
+        const updatedRecord = await services().recordService.updateById(
             id,
             username,
             description,

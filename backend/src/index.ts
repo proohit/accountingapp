@@ -28,6 +28,8 @@ app.use(session(app));
 
 import passport from 'koa-passport';
 import settingsRouter from './settings/services/settingsRouter';
+import { dataSource } from './shared/repositories/database';
+import { services } from './shared/services/services';
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -66,9 +68,15 @@ router.use('/settings', settingsRouter);
 app.use(router.allowedMethods({ throw: true }));
 app.use(router.routes());
 
-try {
-    app.listen(config.backendPort);
-    console.log(`running on port ${config.backendPort}`);
-} catch (e) {
-    console.log(e);
+async function start() {
+    try {
+        await dataSource.initialize();
+        services();
+        app.listen(config.backendPort);
+        console.log(`running on port ${config.backendPort}`);
+    } catch (e) {
+        console.log(e);
+    }
 }
+
+start();

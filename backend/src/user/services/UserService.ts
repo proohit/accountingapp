@@ -6,7 +6,7 @@ import { getPasswordValidationError } from '../../shared/services/Authentication
 import { services } from '../../shared/services/services';
 export default class UserService {
     getByUsername(username: User['username']) {
-        return repositories.users().findOne(username);
+        return repositories.users().findOneBy({ username });
     }
 
     async changePasswordOfUser(
@@ -24,7 +24,7 @@ export default class UserService {
         const privateKey = user.private_key;
         const dbPassword = user.password;
 
-        const passwordDecryptedString = services.authenticationService.decodePassword(dbPassword, privateKey);
+        const passwordDecryptedString = services().authenticationService.decodePassword(dbPassword, privateKey);
 
         if (sanitizedPassword !== passwordDecryptedString) {
             throw new InvalidCredentials();
@@ -34,7 +34,7 @@ export default class UserService {
         if (newPasswordError) {
             throw new BadRequest(newPasswordError);
         }
-        const { encryptedPassword: encryptedNewPassword } = services.authenticationService.encodePassword(
+        const { encryptedPassword: encryptedNewPassword } = services().authenticationService.encodePassword(
             sanitizedNewPassword,
             privateKey,
         );

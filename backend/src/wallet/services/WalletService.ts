@@ -19,7 +19,7 @@ export default class WalletService {
         }
 
         const walletRepo = repositories.wallets();
-        const walletByNameByUser = await walletRepo.findOne({ ownerUsername: username, name });
+        const walletByNameByUser = await walletRepo.findOneBy({ ownerUsername: username, name });
         if (walletByNameByUser) {
             throw new DuplicateWallet();
         }
@@ -28,11 +28,11 @@ export default class WalletService {
     }
 
     getByUser(username: User['username']) {
-        return repositories.wallets().find({ ownerUsername: username });
+        return repositories.wallets().findBy({ ownerUsername: username });
     }
 
     async getById(id: Wallet['id'], username: User['username']) {
-        const wallet = await repositories.wallets().findOne(id);
+        const wallet = await repositories.wallets().findOneBy({ id });
 
         if (!wallet) {
             throw new WalletNotFound();
@@ -63,7 +63,7 @@ export default class WalletService {
 
         await this.getById(id, username);
 
-        const walletWithNewName = await walletRepo.findOne({ name: updatedName, ownerUsername: username });
+        const walletWithNewName = await walletRepo.findOneBy({ name: updatedName, ownerUsername: username });
 
         if (walletWithNewName && walletWithNewName.id !== id) {
             throw new DuplicateWallet();

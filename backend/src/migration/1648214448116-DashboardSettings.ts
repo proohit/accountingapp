@@ -13,9 +13,9 @@ export class DashboardSettings1648214448116 implements MigrationInterface {
             `ALTER TABLE \`dashboard_settings\` ADD CONSTRAINT \`FK_44eca2a73ba5b456b2a9509e390\` FOREIGN KEY (\`ownerUsername\`) REFERENCES \`user\`(\`username\`) ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
 
-        const users = await services.userService.getAllUsers();
+        const users = await services().userService.getAllUsers();
         for (const user of users) {
-            await services.settingsService.updateWidgets(user.username, DEFAULT_WIDGETS);
+            await services().settingsService.updateWidgets(user.username, DEFAULT_WIDGETS);
         }
     }
 

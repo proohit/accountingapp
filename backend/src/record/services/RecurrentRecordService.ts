@@ -4,7 +4,7 @@ import { Record } from '../../entity/Record';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
 import { User } from '../../entity/User';
 import { BadRequest, MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { connection, repositories } from '../../shared/repositories/database';
+import { repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
 import { UserNotFound } from '../../user/models/Errors';
 import { RecurrentRecordNotFound } from '../models/Errors';
@@ -16,7 +16,6 @@ export class RecurrentRecordService {
     }
 
     private async configureScheduler() {
-        await connection;
         const records = await repositories.recurrentRecords().find();
         this.scheduleService = new RecurrentRecordScheduler(records);
     }
@@ -50,9 +49,9 @@ export class RecurrentRecordService {
         const recurrentRecordRepo = repositories.recurrentRecords();
         const userRepo = repositories.users();
 
-        const requestedWallet = await services.walletService.getById(walletId, username);
-        const requestedCategory = await services.categoryService.getById(categoryId, username);
-        const requestedOwner = await userRepo.findOne({ username });
+        const requestedWallet = await services().walletService.getById(walletId, username);
+        const requestedCategory = await services().categoryService.getById(categoryId, username);
+        const requestedOwner = await userRepo.findOneBy({ username });
         if (!requestedOwner) throw new UserNotFound();
 
         const createdRecord = await recurrentRecordRepo.save({
@@ -80,7 +79,7 @@ export class RecurrentRecordService {
 
     async getById(id: Record['id'], username: User['username']): Promise<RecurrentRecord> {
         const recurrentRecordRepo = repositories.recurrentRecords();
-        const recurrentRecord = await recurrentRecordRepo.findOne(id);
+        const recurrentRecord = await recurrentRecordRepo.findOneBy({ id });
         if (!recurrentRecord) {
             throw new RecurrentRecordNotFound();
         }
@@ -102,9 +101,9 @@ export class RecurrentRecordService {
 
         const recurrentRecord = await this.getById(id, username);
 
-        const categoryOfRecord = await services.categoryService.getById(categoryId, username);
+        const categoryOfRecord = await services().categoryService.getById(categoryId, username);
 
-        const walletOfRecord = await services.walletService.getById(walletId, username);
+        const walletOfRecord = await services().walletService.getById(walletId, username);
 
         let newEndDate: Dayjs | string = dayjs(endDate);
         if (!newEndDate.isValid()) {
@@ -131,7 +130,7 @@ export class RecurrentRecordService {
     async getByUser(username: User['username']): Promise<PlannedRecurrentRecord[]> {
         const records: PlannedRecurrentRecord[] = await repositories
             .recurrentRecords()
-            .find({ ownerUsername: username });
+            .findBy({ ownerUsername: username });
         const nextInvocations = this.scheduleService.getNextInvocations(records);
         if (Array.isArray(nextInvocations)) {
             nextInvocations.forEach((nextInvocation) => {
@@ -145,10 +144,10 @@ export class RecurrentRecordService {
     }
 
     async applyRecurrentRecord(record: RecurrentRecord) {
-        await services.recordService.createRecord(
+        await services().recordService.createRecord(
             record.description,
             record.value,
-            dayjs().toDate(),
+            dayjs().toISOString(),
             record.walletId,
             record.categoryId,
             record.ownerUsername,

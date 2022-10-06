@@ -1,19 +1,20 @@
+import dayjs from 'dayjs';
+import { Between, FindOptionsWhere, LessThanOrEqual, Like, MoreThanOrEqual } from 'typeorm';
 import { Category } from '../../entity/Category';
-import { User } from '../../entity/User';
 import { Record } from '../../entity/Record';
-import { repositories } from '../../shared/repositories/database';
+import { User } from '../../entity/User';
 import { Wallet } from '../../entity/Wallet';
 import { MissingProperty, ResourceNotAllowed } from '../../shared/models/Errors';
-import { UserNotFound } from '../../user/models/Errors';
-import { SearchQuery } from '../models/SearchQuery';
-import { calculateOffset } from '../../shared/utils/paginationUtils';
-import { RecordNotFound } from '../models/Errors';
+import { repositories } from '../../shared/repositories/database';
 import { services } from '../../shared/services/services';
-import { Between, FindConditions, LessThanOrEqual, Like, MoreThanOrEqual } from 'typeorm';
+import { calculateOffset } from '../../shared/utils/paginationUtils';
+import { UserNotFound } from '../../user/models/Errors';
+import { RecordNotFound } from '../models/Errors';
+import { SearchQuery } from '../models/SearchQuery';
 
 export class RecordService {
     getByCategory(categoryId: Category['id'], username: User['username']) {
-        return repositories.records().find({
+        return repositories.records().findBy({
             ownerUsername: username,
             categoryId: categoryId,
         });
@@ -22,7 +23,7 @@ export class RecordService {
     async createRecord(
         description: Record['description'],
         value: Record['value'],
-        timestamp: Record['timestamp'],
+        timestamp: string,
         walletId: Wallet['id'],
         categoryId: Category['id'],
         username: User['username'],
@@ -38,9 +39,9 @@ export class RecordService {
         const recordRepo = repositories.records();
         const userRepo = repositories.users();
 
-        const requestedWallet = await services.walletService.getById(walletId, username);
-        const requestedCategory = await services.categoryService.getById(categoryId, username);
-        const requestedOwner = await userRepo.findOne({ username });
+        const requestedWallet = await services().walletService.getById(walletId, username);
+        const requestedCategory = await services().categoryService.getById(categoryId, username);
+        const requestedOwner = await userRepo.findOneBy({ username });
         if (!requestedOwner) throw new UserNotFound();
 
         const createdRecord = await recordRepo.save({
@@ -52,7 +53,7 @@ export class RecordService {
             walletId: requestedWallet.id,
         });
 
-        await services.walletService.recalculateCurrentBalance(requestedWallet.id, username);
+        await services().walletService.recalculateCurrentBalance(requestedWallet.id, username);
 
         return createdRecord;
     }
@@ -68,7 +69,7 @@ export class RecordService {
         const from = calculateOffset(page || 1, itemsPerPage || 20);
         const recordsRepo = repositories.records();
 
-        const filterObject: FindConditions<Record> = this.buildFilterQuery(
+        const filterObject: FindOptionsWhere<Record> = this.buildFilterQuery(
             username,
             description,
             walletId,
@@ -94,7 +95,7 @@ export class RecordService {
         timestampFrom: string,
         timestampTo: string,
     ) {
-        const filterObject: FindConditions<Record & { timestampFrom: string; timestampTo: string }> = {
+        const filterObject: FindOptionsWhere<Record & { timestampFrom: string; timestampTo: string }> = {
             ownerUsername: username,
         };
 
@@ -109,11 +110,11 @@ export class RecordService {
         }
 
         if (timestampFrom && timestampTo) {
-            filterObject.timestamp = Between(timestampFrom, timestampTo);
+            filterObject.timestamp = dayjs(Between(timestampFrom, timestampTo).value).toDate();
         } else if (timestampFrom) {
-            filterObject.timestamp = MoreThanOrEqual(timestampFrom);
+            filterObject.timestamp = dayjs(MoreThanOrEqual(timestampFrom).value).toDate();
         } else if (timestampTo) {
-            filterObject.timestamp = LessThanOrEqual(timestampTo);
+            filterObject.timestamp = dayjs(LessThanOrEqual(timestampTo).value).toDate();
         }
 
         return filterObject;
@@ -121,7 +122,7 @@ export class RecordService {
 
     getAllRecordsCount(username: User['username']) {
         const recordsRepo = repositories.records();
-        return recordsRepo.count({ ownerUsername: username });
+        return recordsRepo.countBy({ ownerUsername: username });
     }
 
     getRecordsCountByQuery(searchQuery: SearchQuery, username: User['username']) {
@@ -129,7 +130,7 @@ export class RecordService {
             filterBy: { categoryId, description, walletId, timestampFrom, timestampTo },
         } = searchQuery;
         const recordsRepo = repositories.records();
-        const filterObject: FindConditions<Record> = this.buildFilterQuery(
+        const filterObject: FindOptionsWhere<Record> = this.buildFilterQuery(
             username,
             description,
             walletId,
@@ -145,13 +146,13 @@ export class RecordService {
         const recordToDelete = await this.getById(id, username);
         const deletedRecord = await recordRepo.remove(recordToDelete);
 
-        await services.walletService.recalculateCurrentBalance(recordToDelete.walletId, username);
+        await services().walletService.recalculateCurrentBalance(recordToDelete.walletId, username);
         return deletedRecord;
     }
 
     async getById(id: Record['id'], username: User['username']) {
         const recordRepo = repositories.records();
-        const record = await recordRepo.findOne(id);
+        const record = await recordRepo.findOneBy({ id });
         if (!record) {
             throw new RecordNotFound();
         }
@@ -164,7 +165,7 @@ export class RecordService {
     }
 
     async getByWallet(walletId: Wallet['id'], username: User['username']) {
-        return repositories.records().find({
+        return repositories.records().findBy({
             walletId: walletId,
             ownerUsername: username,
         });
@@ -175,7 +176,7 @@ export class RecordService {
         username: User['username'],
         description?: Record['description'],
         value?: Record['value'],
-        timestamp?: Record['timestamp'],
+        timestamp?: string,
         walletId?: Wallet['id'],
         categoryId?: Category['id'],
     ) {
@@ -183,9 +184,9 @@ export class RecordService {
 
         const originalRecord = await this.getById(id, username);
 
-        const categoryOfRecord = await services.categoryService.getById(categoryId, username);
+        const categoryOfRecord = await services().categoryService.getById(categoryId, username);
 
-        const walletOfRecord = await services.walletService.getById(walletId, username);
+        const walletOfRecord = await services().walletService.getById(walletId, username);
 
         const updatedRecord = await recordRepo.save({
             id,
@@ -198,9 +199,9 @@ export class RecordService {
         });
 
         if (originalRecord.value !== value || originalRecord.walletId !== walletOfRecord.id) {
-            await services.walletService.recalculateCurrentBalance(walletOfRecord.id, username);
+            await services().walletService.recalculateCurrentBalance(walletOfRecord.id, username);
             if (originalRecord.walletId !== walletOfRecord.id) {
-                await services.walletService.recalculateCurrentBalance(originalRecord.walletId, username);
+                await services().walletService.recalculateCurrentBalance(originalRecord.walletId, username);
             }
         }
 

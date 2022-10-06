@@ -1,18 +1,22 @@
-import { createConnection, getCustomRepository, getRepository } from 'typeorm';
-import { RecordRepository } from '../../record/repositories/RecordRepository';
-import { User } from '../../entity/User';
-import { CategoryRepository } from '../../category/repositories/CategoryRepository';
-import { WalletRepository } from '../../wallet/repositories/WalletRepository';
-import { RecurrentRecord } from '../../entity/RecurrentRecord';
+import { DataSource } from 'typeorm';
+import ormconfig from '../../../ormconfig.json';
+import { Category } from '../../entity/Category';
 import { DashboardSettings } from '../../entity/DashboardSettings';
+import { Record } from '../../entity/Record';
+import { RecurrentRecord } from '../../entity/RecurrentRecord';
+import { User } from '../../entity/User';
+import { Wallet } from '../../entity/Wallet';
 
-export const connection = createConnection();
+export const dataSource = new DataSource({
+    ...ormconfig,
+    type: 'mysql',
+});
 
 export const repositories = {
-    records: () => getCustomRepository(RecordRepository),
-    wallets: () => getCustomRepository(WalletRepository),
-    categories: () => getCustomRepository(CategoryRepository),
-    users: () => getRepository(User),
-    recurrentRecords: () => getRepository(RecurrentRecord),
-    settings: () => getRepository(DashboardSettings),
+    records: () => dataSource.getRepository(Record),
+    wallets: () => dataSource.getRepository(Wallet),
+    categories: () => dataSource.getRepository(Category),
+    users: () => dataSource.getRepository(User),
+    recurrentRecords: () => dataSource.getRepository(RecurrentRecord),
+    settings: () => dataSource.getRepository(DashboardSettings),
 };

@@ -17,8 +17,8 @@ passport.serializeUser((username, done) => {
     done(null, username);
 });
 
-passport.deserializeUser(async (username, done) => {
-    const user = await repositories.users().findOne(username);
+passport.deserializeUser(async (username: string, done) => {
+    const user = await repositories.users().findOneBy({ username });
     done(null, { username: user.username });
 });
 
@@ -34,7 +34,7 @@ passport.use(
         if (passwordError) {
             done(null, null, new BadRequest(passwordError));
         }
-        const userToLogin = await repositories.users().findOne(sanitizedUsername);
+        const userToLogin = await repositories.users().findOneBy({ username: sanitizedUsername });
         if (!userToLogin) {
             return done(null, false, new InvalidCredentials());
         }
@@ -42,7 +42,7 @@ passport.use(
         const privateKey = userToLogin.private_key;
         const dbPassword = userToLogin.password;
 
-        const passwordDecryptedString = services.authenticationService.decodePassword(dbPassword, privateKey);
+        const passwordDecryptedString = services().authenticationService.decodePassword(dbPassword, privateKey);
 
         if (sanitizedPassword === passwordDecryptedString) {
             return done(null, userToLogin);
@@ -78,10 +78,10 @@ export const register = async (username: string, password: string, email: string
     if (existingUser) {
         throw new DuplicatedUser();
     }
-    const { encryptedPassword, privateKey } = services.authenticationService.encodePassword(password);
+    const { encryptedPassword, privateKey } = services().authenticationService.encodePassword(password);
     const newUser = await repositories
         .users()
         .save({ username, password: encryptedPassword, private_key: privateKey, email });
-    await services.settingsService.updateWidgets(newUser.username, DEFAULT_WIDGETS);
+    await services().settingsService.updateWidgets(newUser.username, DEFAULT_WIDGETS);
     return { username: newUser.username, email: newUser.email };
 };

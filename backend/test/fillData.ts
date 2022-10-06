@@ -11,14 +11,14 @@ const createUser = async () => {
 };
 
 const createWallet = async () => {
-    const createdWallet = await services.walletService.createWallet('Konto', 0, username);
+    const createdWallet = await services().walletService.createWallet('Konto', 0, username);
     console.log('created', createdWallet);
     return createdWallet;
 };
 
 const createRecords = async (walletId: string, categoryId: string) => {
     for (let i = 1; i < 1000; i++) {
-        const record = await services.recordService.createRecord(
+        const record = await services().recordService.createRecord(
             `Test record nr. ${i}`,
             12,
             new Date(2020, 12, i, 11, 12, 0),
@@ -31,7 +31,7 @@ const createRecords = async (walletId: string, categoryId: string) => {
 };
 
 const createCategory = async () => {
-    const category = await services.categoryService.createCategory('other', username);
+    const category = await services().categoryService.createCategory('other', username);
     console.log('created', category);
     return category;
 };

@@ -3,5 +3,5 @@ import { UserSettings } from './Settings';
 
 export interface SettingsController {
     getUserSettings: ControllerFunction<UserSettings>;
-    updateSettings: ControllerFunction<UserSettings>;
+    updateSettings: ControllerFunction<UserSettings, { widgets: UserSettings['widgets'] }>;
 }

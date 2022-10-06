@@ -21,7 +21,11 @@ const StatisticsControllerImpl: StatisticsController = {
             if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
-            const dailyData: DailyData[] = await services.statisticsService.getDailyDataForMonth(username, month, year);
+            const dailyData: DailyData[] = await services().statisticsService.getDailyDataForMonth(
+                username,
+                month,
+                year,
+            );
             const dailyDataResult: DailyStatisticsResult = { type: StatisticsType.DAILY, month, data: dailyData };
             return { status: 200, data: dailyDataResult };
         }
@@ -29,7 +33,7 @@ const StatisticsControllerImpl: StatisticsController = {
             if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
-            const monthlyData = await services.statisticsService.getMonthlyDataForYear(username, year);
+            const monthlyData = await services().statisticsService.getMonthlyDataForYear(username, year);
             const monthlyDataResult = { type: StatisticsType.MONTHLY, data: monthlyData };
             return { status: 200, data: monthlyDataResult };
         }
@@ -46,7 +50,7 @@ const StatisticsControllerImpl: StatisticsController = {
             if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
-            const monthlyCategoryData = await services.statisticsService.getMonthCategoryData(username, month, year);
+            const monthlyCategoryData = await services().statisticsService.getMonthCategoryData(username, month, year);
             const monthlyCategoryDataResult = { type: StatisticsType.CATEGORY_MONTHLY, data: monthlyCategoryData };
             return { status: 200, data: monthlyCategoryDataResult };
         }
@@ -63,7 +67,7 @@ const StatisticsControllerImpl: StatisticsController = {
             if (Number.isNaN(year)) {
                 throw new MissingProperty(['year']);
             }
-            const monthlyStatusData = await services.statisticsService.getMonthStatusData(username, month, year);
+            const monthlyStatusData = await services().statisticsService.getMonthStatusData(username, month, year);
             const monthlyStatusDataResult = { type: StatisticsType.MONTH_STATUS, month, data: monthlyStatusData };
             return { status: 200, data: monthlyStatusDataResult };
         }

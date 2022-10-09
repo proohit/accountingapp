@@ -13,7 +13,7 @@ export class StatisticsService {
 
         const recordsUntilMonth = await recordsRepo.find({
             where: {
-                timestamp: dayjs(LessThan(dayjs().date(1).year(year).month(month).toISOString()).value).toDate(),
+                timestamp: LessThan(dayjs().date(1).year(year).month(month).toISOString()),
                 ownerUsername: username,
             },
             order: { timestamp: 'DESC' },
@@ -78,7 +78,7 @@ export class StatisticsService {
         const endOfYear = dayjs().year(year).endOf('year');
         const recordsUntilYear = await recordsRepo.find({
             where: {
-                timestamp: dayjs(LessThan(endOfYear.toISOString()).value).toDate(),
+                timestamp: LessThan(endOfYear.toISOString()),
                 ownerUsername: username,
             },
             order: { timestamp: 'DESC' },
@@ -118,7 +118,7 @@ export class StatisticsService {
         const untilDay = dayjs().year(year).month(month).endOf('month');
         const recordsForMonth = await recordsRepo.find({
             where: {
-                timestamp: dayjs(Between(fromDay.toISOString(), untilDay.toISOString()).value).toDate(),
+                timestamp: Between(fromDay.toISOString(), untilDay.toISOString()),
                 ownerUsername: username,
             },
             order: { timestamp: 'DESC' },
@@ -141,7 +141,7 @@ export class StatisticsService {
         const untilDay = dayjs().year(year).month(month).endOf('month');
         const recordsForMonth = await recordsRepo.find({
             where: {
-                timestamp: dayjs(Between(fromDay.toISOString(), untilDay.toISOString()).value).toDate(),
+                timestamp: Between(fromDay.toISOString(), untilDay.toISOString()),
                 ownerUsername: username,
             },
             order: { timestamp: 'DESC' },

@@ -110,11 +110,11 @@ export class RecordService {
         }
 
         if (timestampFrom && timestampTo) {
-            filterObject.timestamp = dayjs(Between(timestampFrom, timestampTo).value).toDate();
+            filterObject.timestamp = Between(timestampFrom, timestampTo).value;
         } else if (timestampFrom) {
-            filterObject.timestamp = dayjs(MoreThanOrEqual(timestampFrom).value).toDate();
+            filterObject.timestamp = MoreThanOrEqual(timestampFrom).value;
         } else if (timestampTo) {
-            filterObject.timestamp = dayjs(LessThanOrEqual(timestampTo).value).toDate();
+            filterObject.timestamp = LessThanOrEqual(timestampTo).value;
         }
 
         return filterObject;

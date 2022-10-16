@@ -1,16 +1,10 @@
-import { DataSource } from 'typeorm';
-import ormconfig from '../../../ormconfig.json';
 import { Category } from '../../entity/Category';
 import { DashboardSettings } from '../../entity/DashboardSettings';
 import { Record } from '../../entity/Record';
 import { RecurrentRecord } from '../../entity/RecurrentRecord';
 import { User } from '../../entity/User';
 import { Wallet } from '../../entity/Wallet';
-
-export const dataSource = new DataSource({
-    ...ormconfig,
-    type: 'mysql',
-});
+import dataSource from './dataSource';
 
 export const repositories = {
     records: () => dataSource.getRepository(Record),

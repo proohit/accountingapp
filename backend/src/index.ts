@@ -28,8 +28,8 @@ app.use(session(app));
 
 import passport from 'koa-passport';
 import settingsRouter from './settings/services/settingsRouter';
-import { dataSource } from './shared/repositories/database';
 import { services } from './shared/services/services';
+import dataSource from './shared/repositories/dataSource';
 app.use(passport.initialize());
 app.use(passport.session());
 

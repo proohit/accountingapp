@@ -11,7 +11,7 @@ export class Record {
     value: number;
     @Column({ default: '' })
     description?: string;
-    @Column({ type: 'datetime', name: 'timestamp' })
+    @Column({ type: 'timestamp', name: 'timestamp' })
     timestamp: string;
     @Column()
     walletId: string;

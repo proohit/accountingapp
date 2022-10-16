@@ -19,6 +19,8 @@ export class Record {
     ownerUsername: string;
     @Column()
     categoryId: string;
+    @Column({ default: null })
+    externalReference?: string;
     @ManyToOne(() => Wallet, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'walletId' })
     wallet: Wallet;

@@ -9,6 +9,7 @@ export const recordsDialogsState = atom<RecordDialogs>({
     FILTER_RECORDS: { open: false },
     SORT_RECORDS: { open: false },
     EXPORT_RECORDS: { open: false },
+    IMPORT_RECORDS: { open: false },
   },
 });
 
@@ -82,6 +83,22 @@ export const exportRecordDialogState = selector<
       exportDialogState instanceof DefaultValue
         ? exportDialogState
         : { ...dialogsState, EXPORT_RECORDS: exportDialogState }
+    );
+  },
+});
+
+export const importRecordDialogState = selector<
+  RecordDialogs['IMPORT_RECORDS']
+>({
+  key: 'importRecordsDialogState',
+  get: ({ get }) => get(recordsDialogsState).IMPORT_RECORDS,
+  set: ({ get, set }, importDialogState) => {
+    const dialogsState = get(recordsDialogsState);
+    set(
+      recordsDialogsState,
+      importDialogState instanceof DefaultValue
+        ? importDialogState
+        : { ...dialogsState, IMPORT_RECORDS: importDialogState }
     );
   },
 });

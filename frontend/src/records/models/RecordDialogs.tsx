@@ -6,4 +6,5 @@ export interface RecordDialogs {
   FILTER_RECORDS: { open: boolean };
   SORT_RECORDS: { open: boolean };
   EXPORT_RECORDS: { open: boolean };
+  IMPORT_RECORDS: { open: boolean };
 }

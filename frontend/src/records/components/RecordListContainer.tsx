@@ -97,6 +97,10 @@ export const RecordListContainer: FunctionComponent = () => {
     setRecordsDialog({ ...recordsDialog, EXPORT_RECORDS: { open: true } });
   };
 
+  const openImportRecordsDialog = () => {
+    setRecordsDialog({ ...recordsDialog, IMPORT_RECORDS: { open: true } });
+  };
+
   const recordsPagination = (
     <TablePagination
       rowsPerPageOptions={[5, 10, 20]}
@@ -124,6 +128,7 @@ export const RecordListContainer: FunctionComponent = () => {
         onFilterClicked={openFilterRecordsDialog}
         onSortClicked={openSortRecordsDialog}
         onExportClicked={openExportRecordsDialog}
+        onImportClicked={openImportRecordsDialog}
       />
       <>
         <Hidden mdDown>

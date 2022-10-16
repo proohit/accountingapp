@@ -6,6 +6,7 @@ import { RecordAddDialog } from './RecordAddDialog';
 import { RecordEditDialog } from './RecordEditDialog';
 import RecordExportContainer from './RecordExportContainer';
 import { RecordFilterBarContainer } from './RecordFilterBarContainer';
+import RecordImportContainer from './RecordImportContainer';
 import RecordSortContainer from './RecordSortContainer';
 
 export const RecordDialogContainer = () => {
@@ -72,5 +73,23 @@ export const RecordDialogContainer = () => {
     );
   }
 
+  if (recordsDialog.IMPORT_RECORDS.open) {
+    return (
+      <Dialog
+        open={true}
+        onClose={() =>
+          setRecordsDialog({
+            ...recordsDialog,
+            IMPORT_RECORDS: { open: false },
+          })
+        }
+      >
+        <DialogTitle>Import Records</DialogTitle>
+        <DialogContent>
+          <RecordImportContainer />
+        </DialogContent>
+      </Dialog>
+    );
+  }
   return <Fragment />;
 };

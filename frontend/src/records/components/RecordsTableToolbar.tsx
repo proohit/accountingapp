@@ -4,6 +4,7 @@ import {
   GetApp,
   MoreVert,
   Sort,
+  Upload,
 } from '@mui/icons-material';
 import {
   Grid,
@@ -23,15 +24,24 @@ type RecordsTableToolbarProps = {
   onAddClicked: () => void;
   onSortClicked: () => void;
   onExportClicked: () => void;
+  onImportClicked: () => void;
 };
 
 export const RecordsTableToolbar: FunctionComponent<
   RecordsTableToolbarProps
 > = (props) => {
-  const { onAddClicked, onFilterClicked, onSortClicked, onExportClicked } =
-    props;
+  const {
+    onAddClicked,
+    onFilterClicked,
+    onSortClicked,
+    onExportClicked,
+    onImportClicked,
+  } = props;
   const shouldShowExtraIcons = useMediaQuery((theme: Theme) =>
     theme.breakpoints.down(450)
+  );
+  const shouldShowImport = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.up(450)
   );
   const shouldShowExport = useMediaQuery((theme: Theme) =>
     theme.breakpoints.up(450)
@@ -81,6 +91,17 @@ export const RecordsTableToolbar: FunctionComponent<
               <AddBox />
             </IconButton>
           </Tooltip>
+          {shouldShowImport && (
+            <Tooltip title="Import">
+              <IconButton
+                onClick={onImportClicked}
+                color="primary"
+                size="large"
+              >
+                <Upload />
+              </IconButton>
+            </Tooltip>
+          )}
           {shouldShowExport && (
             <Tooltip title="Export">
               <IconButton

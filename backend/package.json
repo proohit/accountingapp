@@ -51,7 +51,7 @@
         "@types/node": "^18.8.2",
         "@types/node-schedule": "^2.1.0",
         "@types/passport-local": "^1.0.34",
-        "@typescript-eslint/eslint-plugin": "^5.39.0",
+        "@typescript-eslint/eslint-plugin": "^5.40.1",
         "@typescript-eslint/parser": "^5.39.0",
         "eslint": "^8.24.0",
         "eslint-config-prettier": "^8.5.0",

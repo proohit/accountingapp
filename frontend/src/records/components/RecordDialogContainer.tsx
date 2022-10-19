@@ -77,6 +77,8 @@ export const RecordDialogContainer = () => {
     return (
       <Dialog
         open={true}
+        maxWidth="md"
+        fullWidth
         onClose={() =>
           setRecordsDialog({
             ...recordsDialog,

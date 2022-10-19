@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
+  LinearProgress,
   Radio,
   RadioGroup,
   TableBody,
@@ -12,16 +13,14 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import { useFormik } from 'formik';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
-import {
-  exportRecordDialogState,
-  importRecordDialogState,
-} from '../hooks/recordsDialogsState';
+import { importRecordDialogState } from '../hooks/recordsDialogsState';
 import { useCreateManyRecordsMutation } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
 import { createNewRecordsFromMt940File } from '../services/ImportService';
@@ -29,17 +28,30 @@ import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
+import { RecordSchema } from './RecordForm';
 import { RecordsTable } from './RecordsTable';
 import { RecordTableHeader } from './RecordTableHeader';
 import { WalletField } from './WalletField';
 
 const RecordImportContainer: React.FC = (props) => {
   const [importType, setImportType] = React.useState('mt940');
-  const [newRecords, setNewRecords] = React.useState<Record[]>([]);
   const { data: categories } = useCategoriesQuery();
   const { data: wallets } = useWalletsQuery();
-  const { mutateAsync: createManyRecords, isLoading } =
+  const { mutateAsync: createManyRecords, isLoading: importLoading } =
     useCreateManyRecordsMutation();
+  const { values, handleSubmit, handleChange, setValues } = useFormik<{
+    newRecords: Record[];
+  }>({
+    initialValues: {
+      newRecords: [],
+    },
+    validationSchema: RecordSchema(wallets?.map((wallet) => wallet.name)),
+    validateOnChange: true,
+    onSubmit: (submittedValues) => {
+      console.log(submittedValues);
+      importRecords(submittedValues.newRecords);
+    },
+  });
   const setNotificationState = useSetRecoilState(notificationState);
   const setImportRecordDialog = useSetRecoilState(importRecordDialogState);
 
@@ -51,7 +63,7 @@ const RecordImportContainer: React.FC = (props) => {
     setImportType((event.target as HTMLInputElement).value);
   };
 
-  const importRecords = async () => {
+  const importRecords = async (newRecords: Record[]) => {
     try {
       await createManyRecords(newRecords);
       setNotificationState({
@@ -86,7 +98,7 @@ const RecordImportContainer: React.FC = (props) => {
             (r) => r.externalReference === record.externalReference
           )
       );
-      setNewRecords(newRecords);
+      setValues({ newRecords });
       event.target.value = '';
       if (existingRecords.length > 0) {
         setNotificationState({
@@ -100,27 +112,27 @@ const RecordImportContainer: React.FC = (props) => {
   const updateNewRecordWithCategory = (categoryName: string, index: number) => {
     const category = getCategoryByName(categories, categoryName);
     if (category) {
-      const updatedRecords = [...newRecords];
+      const updatedRecords = [...values.newRecords];
       updatedRecords[index].categoryId = category.id;
-      setNewRecords(updatedRecords);
+      setValues({ newRecords: updatedRecords });
     }
   };
 
   const updateNewRecordWithWallet = (walletName: string, index: number) => {
     const wallet = WalletUtils.getWalletByName(wallets, walletName);
     if (wallet) {
-      const updatedRecords = [...newRecords];
+      const updatedRecords = [...values.newRecords];
       updatedRecords[index].walletId = wallet.id;
-      setNewRecords(updatedRecords);
+      setValues({ newRecords: updatedRecords });
     }
   };
 
-  const showNewRecords = newRecords.length > 0 && categories && wallets;
+  const showNewRecords = values.newRecords.length > 0 && categories && wallets;
 
   const removeRecord = (index) => {
-    const updatedRecords = [...newRecords];
+    const updatedRecords = [...values.newRecords];
     updatedRecords.splice(index, 1);
-    setNewRecords(updatedRecords);
+    setValues({ newRecords: updatedRecords });
   };
 
   return (
@@ -132,13 +144,13 @@ const RecordImportContainer: React.FC = (props) => {
           onChange={handleImportTypeChange}
         >
           <FormControlLabel
-            disabled={isLoading}
+            disabled={importLoading}
             value="mt940"
             control={<Radio />}
             label="MT940"
           />
         </RadioGroup>
-        <Button disabled={isLoading} variant="contained" component="label">
+        <Button disabled={importLoading} variant="contained" component="label">
           Upload File
           <input type="file" hidden onChange={handleFileUpload} />
         </Button>
@@ -146,66 +158,72 @@ const RecordImportContainer: React.FC = (props) => {
       <Grid item xs>
         <Typography variant="h6">Import editor</Typography>
         {showNewRecords && (
-          <RecordsTable>
-            <RecordTableHeader>
-              <TableCell key="actions" />
-            </RecordTableHeader>
-            <TableBody>
-              {newRecords.map((record, index) => (
-                <TableRow key={record.description}>
-                  <TableCell>
-                    <DescriptionField
-                      multiline
-                      description={record.description}
-                      onDescriptionChange={undefined}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <CategoryField
-                      categories={categories}
-                      categoryName={
-                        getCategoryById(categories, record.categoryId)?.name
-                      }
-                      withNew
-                      onCategoryChange={(categoryName) =>
-                        updateNewRecordWithCategory(categoryName, index)
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <WalletField
-                      wallets={wallets}
-                      walletName={
-                        WalletUtils.getWalletById(wallets, record.walletId)
-                          ?.name
-                      }
-                      onWalletChange={(event) =>
-                        updateNewRecordWithWallet(event.target.value, index)
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>{record.timestamp}</TableCell>
-                  <TableCell>{record.value}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => removeRecord(index)}>
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </RecordsTable>
+          <form onSubmit={handleSubmit} id="import-form">
+            <RecordsTable>
+              <RecordTableHeader>
+                <TableCell key="actions" />
+              </RecordTableHeader>
+              <TableBody>
+                {values.newRecords.map((record, index) => (
+                  <TableRow key={record.externalReference}>
+                    <TableCell>
+                      <DescriptionField
+                        multiline
+                        description={record.description}
+                        onDescriptionChange={handleChange}
+                        namePrefix={`newRecords[${index}].`}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <CategoryField
+                        categories={categories}
+                        categoryName={
+                          getCategoryById(categories, record.categoryId)?.name
+                        }
+                        onCategoryChange={(categoryName) =>
+                          updateNewRecordWithCategory(categoryName, index)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <WalletField
+                        wallets={wallets}
+                        walletName={
+                          WalletUtils.getWalletById(wallets, record.walletId)
+                            ?.name
+                        }
+                        onWalletChange={(event) =>
+                          updateNewRecordWithWallet(event.target.value, index)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>{record.timestamp}</TableCell>
+                    <TableCell>{record.value}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => removeRecord(index)}>
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </RecordsTable>
+          </form>
         )}
       </Grid>
       <Divider />
       <Grid item xs>
+        {importLoading && <LinearProgress />}
         <Button
-          disabled={isLoading}
+          disabled={importLoading}
           onClick={() => setImportRecordDialog({ open: false })}
         >
           Cancel
         </Button>
-        <Button disabled={isLoading} onClick={importRecords}>
+        <Button
+          disabled={importLoading}
+          onClick={() => importRecords(values.newRecords)}
+        >
           Import
         </Button>
       </Grid>

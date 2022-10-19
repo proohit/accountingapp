@@ -6,11 +6,13 @@ type DescriptionFieldProps = {
   onDescriptionChange: (event: ChangeEvent<HTMLInputElement>) => void;
   errorText?: string;
   multiline?: boolean;
+  namePrefix?: string;
 };
 export const DescriptionField: FunctionComponent<DescriptionFieldProps> = (
   props: DescriptionFieldProps
 ) => {
-  const { description, onDescriptionChange, errorText, multiline } = props;
+  const { description, onDescriptionChange, errorText, multiline, namePrefix } =
+    props;
   return (
     <TextField
       fullWidth
@@ -19,7 +21,7 @@ export const DescriptionField: FunctionComponent<DescriptionFieldProps> = (
       helperText={errorText}
       color="secondary"
       label="description"
-      name="description"
+      name={`${namePrefix ?? ''}description`}
       value={description}
       onChange={onDescriptionChange}
       multiline={multiline}

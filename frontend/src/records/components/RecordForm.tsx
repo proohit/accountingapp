@@ -23,9 +23,9 @@ interface RecordFormProps {
   withNewCategory?: boolean;
 }
 
-const schema = (walletNames: string[]) =>
+export const RecordSchema = (walletNames: string[]) =>
   yup.object().shape({
-    description: yup.string(),
+    description: yup.string().default(''),
     value: yup.number().required('Please provide a value'),
     walletName: yup
       .string()
@@ -68,7 +68,7 @@ export const RecordForm = (props: RecordFormProps) => {
         '',
       timestamp: dayjs(record?.timestamp).format(),
     },
-    validationSchema: schema(wallets?.map((wallet) => wallet.name)),
+    validationSchema: RecordSchema(wallets?.map((wallet) => wallet.name)),
     validateOnChange: false,
     onSubmit: (submittedValues) => {
       onSubmitRecord({
@@ -93,6 +93,7 @@ export const RecordForm = (props: RecordFormProps) => {
       <Grid container direction="column" spacing={2}>
         <Grid item>
           <DescriptionField
+            multiline
             description={formFields.description}
             onDescriptionChange={handleChange}
             errorText={formErrors.description}

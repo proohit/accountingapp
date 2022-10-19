@@ -2,17 +2,12 @@ import {
   Button,
   FormControlLabel,
   Grid,
-  Paper,
   Radio,
   RadioGroup,
-  Table,
   TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
 } from '@mui/material';
-import dayjs from 'dayjs';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
@@ -20,6 +15,7 @@ import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { exportRecordDialogState } from '../hooks/recordsDialogsState';
 import { Record } from '../models/Record';
+import { createNewRecordsFromMt940File } from '../services/ImportService';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
@@ -47,26 +43,14 @@ const RecordImportContainer: React.FC = (props) => {
   ): Promise<void> => {
     const file = event.target.files?.[0];
     if (file) {
-      createNewRecordsFromFile(file);
+      const recordsFromFile = await createNewRecordsFromMt940File(
+        file,
+        wallets[0].id,
+        categories[0].id
+      );
+      console.log(recordsFromFile);
+      setNewRecords(recordsFromFile);
     }
-  };
-
-  const createNewRecordsFromFile = async (file: File) => {
-    const mt940 = await import('mt940js');
-    const parser = new mt940.Parser();
-    const fileContent = await file.text();
-    const statements = parser.parse(fileContent);
-    const transactions = statements
-      ?.map?.((statement) => statement.transactions)
-      ?.flat();
-    const newRecords = transactions?.map?.((transaction) => ({
-      description: transaction.details,
-      timestamp: dayjs(transaction.date).toISOString(),
-      value: transaction.amount,
-      categoryId: '',
-      walletId: '',
-    }));
-    setNewRecords(newRecords);
   };
 
   const updateNewRecordWithCategory = (categoryName: string, index: number) => {
@@ -109,7 +93,7 @@ const RecordImportContainer: React.FC = (props) => {
             <RecordTableHeader />
             <TableBody>
               {newRecords.map((record, index) => (
-                <TableRow key={record.timestamp}>
+                <TableRow key={record.description}>
                   <TableCell>
                     <DescriptionField
                       description={record.description}
@@ -120,8 +104,7 @@ const RecordImportContainer: React.FC = (props) => {
                     <CategoryField
                       categories={categories}
                       categoryName={
-                        getCategoryById(categories, record.categoryId)?.name ||
-                        categories[0].name
+                        getCategoryById(categories, record.categoryId)?.name
                       }
                       withNew
                       onCategoryChange={(categoryName) =>
@@ -134,7 +117,7 @@ const RecordImportContainer: React.FC = (props) => {
                       wallets={wallets}
                       walletName={
                         WalletUtils.getWalletById(wallets, record.walletId)
-                          ?.name || wallets[0].name
+                          ?.name
                       }
                       onWalletChange={(event) =>
                         updateNewRecordWithWallet(event.target.value, index)

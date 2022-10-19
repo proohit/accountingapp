@@ -3,6 +3,7 @@ export interface Record {
   value: number;
   description: string;
   timestamp: string;
+  externalReference?: string;
   ownerUsername: string;
   walletId: string;
   categoryId: string;

@@ -57,6 +57,18 @@ export const useDeleteRecordMutation = () => {
   );
 };
 
+export const useCreateManyRecordsMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (recordsToAdd: Record[]) => recordsApi.createManyRecords(recordsToAdd),
+    {
+      onSuccess: () => {
+        invalidateQueries(queryClient);
+      },
+    }
+  );
+};
+
 const invalidateQueries = (queryClient: QueryClient) => {
   queryClient.invalidateQueries('getRecord');
   queryClient.invalidateQueries('getMonthlyCategoryData');

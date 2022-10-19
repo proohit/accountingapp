@@ -1,5 +1,4 @@
-import dayjs from 'dayjs';
-import { Between, FindOptionsWhere, LessThanOrEqual, Like, MoreThanOrEqual } from 'typeorm';
+import { Between, FindOptionsWhere, In, LessThanOrEqual, Like, MoreThanOrEqual } from 'typeorm';
 import { Category } from '../../entity/Category';
 import { Record } from '../../entity/Record';
 import { User } from '../../entity/User';
@@ -206,5 +205,41 @@ export class RecordService {
         }
 
         return updatedRecord;
+    }
+
+    async checkIfExternalReferencesExist(records: Record[], username: User['username']) {
+        const existingRecordsWithExternalReferences = await repositories.records().find({
+            where: {
+                externalReference: In(records.map((record) => record.externalReference)),
+                ownerUsername: username,
+            },
+        });
+
+        const existingExternalReferences = existingRecordsWithExternalReferences.map(
+            (record) => record.externalReference,
+        );
+
+        const recordsWithExistingExternalReferences = records.filter((record) =>
+            existingExternalReferences.includes(record.externalReference),
+        );
+
+        return recordsWithExistingExternalReferences;
+    }
+
+    async createManyRecords(records: Record[], username: User['username']) {
+        const recordsRepo = repositories.records();
+
+        const createdRecords = await recordsRepo.save(
+            records.map((record) => ({ ...record, ownerUsername: username })),
+        );
+
+        const walletsToUpdate = createdRecords.map((record) => record.walletId);
+        const uniqueWalletsToUpdate = [...new Set(walletsToUpdate)];
+
+        for (const walletId of uniqueWalletsToUpdate) {
+            await services().walletService.recalculateCurrentBalance(walletId, username);
+        }
+
+        return createdRecords;
     }
 }

@@ -6,6 +6,10 @@ const router = new Router();
 
 router.post('/', RecordControllerImpl.createNewRecord);
 
+router.post('/bulkCreate', RecordControllerImpl.createManyRecords);
+
+router.post('/existingExternalReferences', RecordControllerImpl.checkIfExternalReferencesExist);
+
 router.get('/', RecordControllerImpl.getByUser);
 
 router.use('/recurrentRecords', recurrentRecordRouter);

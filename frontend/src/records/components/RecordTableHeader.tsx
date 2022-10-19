@@ -1,9 +1,9 @@
 import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, PropsWithChildren } from 'react';
 import { HeadCell } from '../../shared/models/HeadCell';
 import { Record } from '../models/Record';
 
-type RecordTableHeaderProps = {
+type RecordTableHeaderProps = PropsWithChildren & {
   sortDirection?: 'asc' | 'desc';
   sortBy?: keyof Record;
   sortClicked?: (newOrderKey: keyof Record) => void;
@@ -11,7 +11,7 @@ type RecordTableHeaderProps = {
 export const RecordTableHeader: FunctionComponent<RecordTableHeaderProps> = (
   props
 ) => {
-  const { sortClicked, sortBy, sortDirection } = props;
+  const { sortClicked, sortBy, sortDirection, children } = props;
 
   const headers: HeadCell<Record>[] = [
     { key: 'description', label: 'description' },
@@ -34,6 +34,7 @@ export const RecordTableHeader: FunctionComponent<RecordTableHeaderProps> = (
             </TableSortLabel>
           </TableCell>
         ))}
+        {children}
       </TableRow>
     </TableHead>
   );

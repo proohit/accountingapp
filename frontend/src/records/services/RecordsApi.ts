@@ -47,4 +47,18 @@ export class RecordsApiService implements RecordsApi {
       ],
     ]);
   }
+
+  checkIfExternalReferencesExist(records: Record[]): Promise<Record[]> {
+    return BASE_API.post<Record[], Record[]>(
+      API_ROUTES.RECORDS_CHECK_EXTERNAL_REFERENCES,
+      records
+    );
+  }
+
+  createManyRecords(records: Record[]): Promise<Record[]> {
+    return BASE_API.post<Record[], Record[]>(
+      API_ROUTES.RECORDS_BULK_CREATE,
+      records
+    );
+  }
 }

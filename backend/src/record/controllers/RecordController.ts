@@ -98,6 +98,23 @@ const RecordControllerImpl: RecordController = {
 
         return { status: 200, data: updatedRecord };
     },
+    checkIfExternalReferencesExist: async (ctx) => {
+        const { username } = ctx.state.user;
+        const records = ctx.request.body;
+
+        const existingRecords = await services().recordService.checkIfExternalReferencesExist(records, username);
+
+        return { status: 200, data: existingRecords };
+    },
+
+    createManyRecords: async (ctx) => {
+        const { username } = ctx.state.user;
+        const records = ctx.request.body;
+
+        const createdRecords = await services().recordService.createManyRecords(records, username);
+
+        return { status: 201, data: createdRecords };
+    },
 };
 
 export default RecordControllerImpl;

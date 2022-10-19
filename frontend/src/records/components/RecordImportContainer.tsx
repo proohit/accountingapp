@@ -1,21 +1,31 @@
+import { Delete, Remove } from '@mui/icons-material';
 import {
   Button,
+  Divider,
   FormControlLabel,
   Grid,
+  IconButton,
   Radio,
   RadioGroup,
   TableBody,
   TableCell,
   TableRow,
+  Typography,
 } from '@mui/material';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
+import { notificationState } from '../../shared/hooks/notificationState';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
-import { exportRecordDialogState } from '../hooks/recordsDialogsState';
+import {
+  exportRecordDialogState,
+  importRecordDialogState,
+} from '../hooks/recordsDialogsState';
+import { useCreateManyRecordsMutation } from '../hooks/recordsQueries';
 import { Record } from '../models/Record';
 import { createNewRecordsFromMt940File } from '../services/ImportService';
+import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
@@ -28,7 +38,13 @@ const RecordImportContainer: React.FC = (props) => {
   const [newRecords, setNewRecords] = React.useState<Record[]>([]);
   const { data: categories } = useCategoriesQuery();
   const { data: wallets } = useWalletsQuery();
+  const { mutateAsync: createManyRecords, isLoading } =
+    useCreateManyRecordsMutation();
+  const setNotificationState = useSetRecoilState(notificationState);
   const setExportRecordDialog = useSetRecoilState(exportRecordDialogState);
+  const setImportRecordDialog = useSetRecoilState(importRecordDialogState);
+
+  const api = new RecordsApiService();
 
   const handleImportTypeChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -36,11 +52,25 @@ const RecordImportContainer: React.FC = (props) => {
     setImportType((event.target as HTMLInputElement).value);
   };
 
-  const importRecords = async () => {};
+  const importRecords = async () => {
+    try {
+      await createManyRecords(newRecords);
+      setNotificationState({
+        content: 'Records imported successfully',
+        severity: 'success',
+      });
+      setImportRecordDialog({ open: false });
+    } catch (error) {
+      setNotificationState({
+        content: 'Error while importing records',
+        severity: 'error',
+      });
+    }
+  };
 
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
-  ): Promise<void> => {
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       const recordsFromFile = await createNewRecordsFromMt940File(
@@ -48,8 +78,23 @@ const RecordImportContainer: React.FC = (props) => {
         wallets[0].id,
         categories[0].id
       );
-      console.log(recordsFromFile);
-      setNewRecords(recordsFromFile);
+      const existingRecords = await api.checkIfExternalReferencesExist(
+        recordsFromFile
+      );
+      const newRecords = recordsFromFile.filter(
+        (record) =>
+          !existingRecords.some(
+            (r) => r.externalReference === record.externalReference
+          )
+      );
+      setNewRecords(newRecords);
+      event.target.value = '';
+      if (existingRecords.length > 0) {
+        setNotificationState({
+          content: `Some records have already been imported. They will not be imported again.`,
+          severity: 'info',
+        });
+      }
     }
   };
 
@@ -73,24 +118,39 @@ const RecordImportContainer: React.FC = (props) => {
 
   const showNewRecords = newRecords.length > 0 && categories && wallets;
 
+  const removeRecord = (index) => {
+    const updatedRecords = [...newRecords];
+    updatedRecords.splice(index, 1);
+    setNewRecords(updatedRecords);
+  };
+
   return (
     <Grid container spacing={2} direction="column">
-      <Grid item xs>
+      <Grid item container direction="row" xs>
         <RadioGroup
           aria-label="import-choice"
           value={importType}
           onChange={handleImportTypeChange}
         >
-          <FormControlLabel value="mt940" control={<Radio />} label="MT940" />
+          <FormControlLabel
+            disabled={isLoading}
+            value="mt940"
+            control={<Radio />}
+            label="MT940"
+          />
         </RadioGroup>
-
-        <Button variant="contained" component="label">
+        <Button disabled={isLoading} variant="contained" component="label">
           Upload File
           <input type="file" hidden onChange={handleFileUpload} />
         </Button>
+      </Grid>
+      <Grid item xs>
+        <Typography variant="h6">Import editor</Typography>
         {showNewRecords && (
           <RecordsTable>
-            <RecordTableHeader />
+            <RecordTableHeader>
+              <TableCell key="actions" />
+            </RecordTableHeader>
             <TableBody>
               {newRecords.map((record, index) => (
                 <TableRow key={record.description}>
@@ -127,17 +187,28 @@ const RecordImportContainer: React.FC = (props) => {
                   </TableCell>
                   <TableCell>{record.timestamp}</TableCell>
                   <TableCell>{record.value}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => removeRecord(index)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </RecordsTable>
         )}
       </Grid>
+      <Divider />
       <Grid item xs>
-        <Button onClick={() => setExportRecordDialog({ open: false })}>
+        <Button
+          disabled={isLoading}
+          onClick={() => setExportRecordDialog({ open: false })}
+        >
           Cancel
         </Button>
-        <Button onClick={importRecords}>Import</Button>
+        <Button disabled={isLoading} onClick={importRecords}>
+          Import
+        </Button>
       </Grid>
     </Grid>
   );

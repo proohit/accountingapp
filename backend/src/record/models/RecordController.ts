@@ -18,4 +18,6 @@ export interface RecordController {
     getById: ControllerFunction<Record>;
     getByWallet: ControllerFunction<Record[]>;
     updateById: ControllerFunction<Record, ManipulateRecord>;
+    checkIfExternalReferencesExist: ControllerFunction<Record[], Record[]>;
+    createManyRecords: ControllerFunction<Record[], Record[]>;
 }

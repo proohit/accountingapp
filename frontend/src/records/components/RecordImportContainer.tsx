@@ -41,7 +41,6 @@ const RecordImportContainer: React.FC = (props) => {
   const { mutateAsync: createManyRecords, isLoading } =
     useCreateManyRecordsMutation();
   const setNotificationState = useSetRecoilState(notificationState);
-  const setExportRecordDialog = useSetRecoilState(exportRecordDialogState);
   const setImportRecordDialog = useSetRecoilState(importRecordDialogState);
 
   const api = new RecordsApiService();
@@ -202,7 +201,7 @@ const RecordImportContainer: React.FC = (props) => {
       <Grid item xs>
         <Button
           disabled={isLoading}
-          onClick={() => setExportRecordDialog({ open: false })}
+          onClick={() => setImportRecordDialog({ open: false })}
         >
           Cancel
         </Button>

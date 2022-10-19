@@ -7,7 +7,7 @@
         "start": "npm run doc:dev && ts-node src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1",
         "setup": "ts-node test/fillData.ts",
-        "cli:migration:generate": "npm run typeorm migration:generate",
+        "cli:migration:generate": "npm run typeorm migration:generate -- -d src/shared/repositories/dataSource.ts",
         "typeorm": "typeorm-ts-node-commonjs",
         "dev": "nodemon",
         "lint": "eslint --ext .ts,.js src",

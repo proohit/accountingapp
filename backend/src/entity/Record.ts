@@ -9,7 +9,7 @@ export class Record {
     id: string;
     @Column({ default: 0, type: 'float' })
     value: number;
-    @Column({ default: '' })
+    @Column({ default: '', type: 'text' })
     description?: string;
     @Column({ type: 'timestamp', name: 'timestamp' })
     timestamp: string;

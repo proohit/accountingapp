@@ -143,6 +143,14 @@ export const RecordsTableToolbar: FunctionComponent<
                     <Typography>Export</Typography>
                   </MenuItem>
                 )}
+                {!shouldShowImport && (
+                  <MenuItem onClick={onImportClicked}>
+                    <ListItemIcon>
+                      <Upload />
+                    </ListItemIcon>
+                    <Typography>Import</Typography>
+                  </MenuItem>
+                )}
               </Menu>
             </>
           )}

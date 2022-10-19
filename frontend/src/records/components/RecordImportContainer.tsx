@@ -96,6 +96,7 @@ const RecordImportContainer: React.FC = (props) => {
                 <TableRow key={record.description}>
                   <TableCell>
                     <DescriptionField
+                      multiline
                       description={record.description}
                       onDescriptionChange={undefined}
                     />

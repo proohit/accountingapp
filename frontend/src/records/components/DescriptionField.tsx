@@ -5,11 +5,12 @@ type DescriptionFieldProps = {
   description: string;
   onDescriptionChange: (event: ChangeEvent<HTMLInputElement>) => void;
   errorText?: string;
+  multiline?: boolean;
 };
 export const DescriptionField: FunctionComponent<DescriptionFieldProps> = (
   props: DescriptionFieldProps
 ) => {
-  const { description, onDescriptionChange, errorText } = props;
+  const { description, onDescriptionChange, errorText, multiline } = props;
   return (
     <TextField
       fullWidth
@@ -21,6 +22,8 @@ export const DescriptionField: FunctionComponent<DescriptionFieldProps> = (
       name="description"
       value={description}
       onChange={onDescriptionChange}
+      multiline={multiline}
+      maxRows={multiline ? 6 : 1}
     />
   );
 };

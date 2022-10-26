@@ -25,45 +25,32 @@ export const MonthPickerWidget: FunctionComponent<
 
   return (
     <Widget {...rest} xs={6}>
-      <Grid container alignItems="center">
+      <Grid container alignItems="center"><Tooltip title="Previous month">
+        <IconButton
+          onClick={() => {
+            updateDate(selectedDate.subtract(1, 'month'));
+          }}
+        >
+          <ArrowLeft />
+        </IconButton>
+      </Tooltip>
         <DatePicker
-          renderInput={(inputProps) => (
-            <TextField
-              {...inputProps}
-              InputProps={{
-                ...inputProps.InputProps,
-                endAdornment: (
-                  <>
-                    <Tooltip title="Previous month">
-                      <IconButton
-                        onClick={() => {
-                          updateDate(selectedDate.subtract(1, 'month'));
-                        }}
-                      >
-                        <ArrowLeft />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Next month">
-                      <IconButton
-                        onClick={() => {
-                          updateDate(selectedDate.add(1, 'month'));
-                        }}
-                      >
-                        <ArrowRight />
-                      </IconButton>
-                    </Tooltip>
-                    {inputProps.InputProps.endAdornment}
-                  </>
-                ),
-              }}
-            />
-          )}
+          renderInput={(inputProps) => <TextField {...inputProps} />}
           views={['year', 'month']}
           onChange={updateDate}
           openTo="month"
           value={selectedDate}
           label="Month"
-        />
+        /> 
+      <Tooltip title="Next month">
+        <IconButton
+          onClick={() => {
+            updateDate(selectedDate.add(1, 'month'));
+          }}
+        >
+          <ArrowRight />
+        </IconButton>
+      </Tooltip>
       </Grid>
     </Widget>
   );

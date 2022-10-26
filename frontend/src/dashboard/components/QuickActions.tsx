@@ -1,12 +1,16 @@
+import { AddBox, Upload } from '@mui/icons-material';
 import { Button, Grid } from '@mui/material';
-import { AddBox } from '@mui/icons-material';
-import { useRecoilState } from 'recoil';
-import { addRecordDialogState } from '../../records/hooks/recordsDialogsState';
+import { useSetRecoilState } from 'recoil';
+import {
+  addRecordDialogState,
+  importRecordDialogState,
+} from '../../records/hooks/recordsDialogsState';
 import { addWalletDialogState } from '../../wallets/hooks/walletDialogsState';
 
 export const QuickActions = () => {
-  const [, setAddRecordsDialog] = useRecoilState(addRecordDialogState);
-  const [, setAddWalletDialog] = useRecoilState(addWalletDialogState);
+  const setAddRecordsDialog = useSetRecoilState(addRecordDialogState);
+  const setImportRecordDialog = useSetRecoilState(importRecordDialogState);
+  const setAddWalletDialog = useSetRecoilState(addWalletDialogState);
   return (
     <Grid container direction="row">
       <Button
@@ -16,6 +20,14 @@ export const QuickActions = () => {
       >
         Add Record
       </Button>
+      <Button
+        color="primary"
+        startIcon={<Upload />}
+        onClick={() => setImportRecordDialog({ open: true })}
+      >
+        Import Records
+      </Button>
+
       <Button
         color="primary"
         startIcon={<AddBox />}

@@ -15,13 +15,13 @@ export interface AuthenticationApi {
 
 export const AUTHENTICATION_API: AuthenticationApi = {
   login: async (username, password) => {
-    return await BASE_API.post<LoginRequest, LoginResponse>(
+    return BASE_API.post<LoginRequest, LoginResponse>(
       API_ROUTES.AUTHENTICATION_LOGIN,
       { username, password }
     );
   },
   register: async (username, password, email) => {
-    return await BASE_API.post<RegisterRequest, RegisterResponse>(
+    return BASE_API.post<RegisterRequest, RegisterResponse>(
       API_ROUTES.AUTHENTICATION_REGISTER,
       { username, password, email }
     );

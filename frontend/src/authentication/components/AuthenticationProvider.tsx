@@ -37,8 +37,7 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
       setAuthenticated(true);
       return loggedInUser;
     } catch (err) {
-      const error: Error = err;
-      setNotification({ severity: 'error', content: error.message });
+      handleAuthenticationError(err);
     } finally {
       setIsLoading(false);
     }
@@ -52,11 +51,20 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
   };
 
   const logout = async () => {
-    setUsername('');
-    setUser(null);
-    setAuthenticated(false);
-    setIsLoading(false);
-    await AUTHENTICATION_API.logout();
+    try {
+      setUsername('');
+      setUser(null);
+      setAuthenticated(false);
+      setIsLoading(false);
+      await AUTHENTICATION_API.logout();
+    } catch (e) {
+      handleAuthenticationError(e);
+    }
+  };
+
+  const handleAuthenticationError = (err: any) => {
+    const error: Error = err;
+    setNotification({ severity: 'error', content: error.message });
   };
 
   const loginFromLocalStorage = async () => {
@@ -68,7 +76,7 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
       currentUser = await USER_API_SERVICE.getCurrentUser();
     } catch (e) {
       if (!isAuthenticationRoute(router.route)) {
-        setNotification({ severity: 'error', content: e?.message });
+        handleAuthenticationError(e);
       }
     }
 

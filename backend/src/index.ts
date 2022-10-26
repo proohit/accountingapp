@@ -24,7 +24,7 @@ app.use(cors({ credentials: true }));
 router.use('/docs', documentationRouter);
 import session from 'koa-session';
 app.keys = [config.secret];
-app.use(session(app));
+app.use(session({ maxAge: 1000 * 60 * 60 * 24 * 30 /* 30 days */ }, app));
 
 import passport from 'koa-passport';
 import settingsRouter from './settings/services/settingsRouter';

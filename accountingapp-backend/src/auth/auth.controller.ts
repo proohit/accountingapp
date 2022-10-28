@@ -15,8 +15,24 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() user: User) {
-    return this.authService.register(user.username, user.password, user.email);
+  async register(@Request() req, @Body() user: User) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const newUser = await this.authService.register(
+          user.username,
+          user.password,
+          user.email,
+        );
+        req.login(newUser, (err) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(newUser);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
   @UseGuards(AuthenticatedGuard)

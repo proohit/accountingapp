@@ -14,13 +14,21 @@ async function bootstrap() {
       secret: config.get(EnvironmentVariables.SESSION_SECRET),
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: config.get(
+          EnvironmentVariables.SESSION_MAX_AGE,
+          1000 * 60 * 60 * 24 * 30,
+        ),
+      },
     }),
   );
   app.use(passport.initialize());
   app.use(passport.session());
   app.setGlobalPrefix('api');
 
-  const port = config.get(EnvironmentVariables.PORT) || 3002;
+  const port = config.get(EnvironmentVariables.PORT, 3002);
   await app.listen(port);
   Logger.log(`Listening on port ${port}`);
 }

@@ -11,7 +11,7 @@
     "useUtc": true,
     "timezone": "Z",
     "entities": [
-        "src/**/entities/*{.ts,.js}"
+        "dist/src/**/entities/*{.ts,.js}"
     ],
     "migrations": [
         "src/migration/**/*{.ts,.js}"
@@ -20,7 +20,7 @@
         "src/subscriber/**/*{.ts,.js}"
     ],
     "cli": {
-        "entitiesDir": "src/**/entities/*{.ts,.js}",
+        "entitiesDir": "dist/src/**/entities/*{.ts,.js}",
         "migrationsDir": "src/migration",
         "subscribersDir": "src/subscriber"
     }

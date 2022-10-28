@@ -1,4 +1,4 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "/accountingapp-backend/src"
+  "sourceRoot": "src"
 }

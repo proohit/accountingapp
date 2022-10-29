@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { LoggedInUser } from '../auth/user.decorator';
 import { SecureUser } from '../users/entities/secure-user';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { SettingsService } from './settings.service';
 
+@UseGuards(AuthenticatedGuard)
 @Controller('settings')
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}

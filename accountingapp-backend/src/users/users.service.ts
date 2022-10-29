@@ -15,20 +15,12 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
-
   async getByUsername(username: string): Promise<User> {
     const foundUser = await this.usersRepository.findOneBy({ username });
     if (!foundUser) {
       throw new NotFoundException();
     }
     return foundUser;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 
   async create(username: string, password: string, email: string) {
@@ -43,5 +35,10 @@ export class UsersService {
     user.email = email;
     user.password = password;
     return this.usersRepository.save(user);
+  }
+
+  async changePassword(username: string, password: string) {
+    const user = await this.getByUsername(username);
+    return this.usersRepository.save({ ...user, password });
   }
 }

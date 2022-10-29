@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { RecordModule } from './record/record.module';
 import { SettingsModule } from './settings/settings.module';
@@ -12,6 +13,7 @@ import { WalletModule } from './wallet/wallet.module';
   imports: [
     ConfigModule,
     UsersModule,
+    AuthModule,
     TypeOrmModule.forRootAsync({
       useFactory: () => ({}),
       dataSourceFactory: async () => {

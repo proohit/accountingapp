@@ -27,7 +27,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const port = config.get(EnvironmentVariables.PORT, 3002);
   await app.listen(port);
   Logger.log(`Listening on port ${port}`);

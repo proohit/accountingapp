@@ -1,9 +1,9 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
 import passport from 'passport';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
 import { EnvironmentVariables } from './EnvirontmentVariables';
 
 async function bootstrap() {
@@ -27,7 +27,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.setGlobalPrefix('api');
-
+  app.useGlobalPipes(new ValidationPipe());
   const port = config.get(EnvironmentVariables.PORT, 3002);
   await app.listen(port);
   Logger.log(`Listening on port ${port}`);

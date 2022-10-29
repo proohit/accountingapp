@@ -1,8 +1,8 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { SecureUser } from '../users/entities/secure-user';
-import { User } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
+import CreateUserDto from './dtos/create-user.dto';
 import { LocalAuthGuard } from './local.guard';
 import { LoggedInUser } from './user.decorator';
 
@@ -17,7 +17,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Request() req, @Body() user: User) {
+  async register(@Request() req, @Body() user: CreateUserDto) {
     return new Promise(async (resolve, reject) => {
       try {
         const newUser = await this.authService.register(

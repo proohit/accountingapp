@@ -1,8 +1,10 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { SecureUser } from '../users/entities/secure-user';
 import { User } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
 import { LocalAuthGuard } from './local.guard';
+import { LoggedInUser } from './user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -10,8 +12,8 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return req.user;
+  async login(@LoggedInUser() user: SecureUser) {
+    return user;
   }
 
   @Post('register')

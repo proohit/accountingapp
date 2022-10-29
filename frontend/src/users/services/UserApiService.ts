@@ -8,7 +8,7 @@ interface UserApiService {
 
 const USER_API_SERVICE: UserApiService = {
   getCurrentUser: async () => {
-    return BASE_API.get<User>(API_ROUTES.USERS_ME);
+    return BASE_API.get<User>(API_ROUTES.AUTHENTICATION_ME);
   },
 };
 

@@ -8,7 +8,7 @@ export interface SettingsApi {
 
 export class SettingsApiService implements SettingsApi {
   changePassword(oldPassword: string, newPassword: string): Promise<string> {
-    return BASE_API.put(API_ROUTES.USERS_CHANGE_PASSWORD, {
+    return BASE_API.put(API_ROUTES.AUTHENTICATION_CHANGE_PASSWORD, {
       password: oldPassword,
       newPassword,
     });

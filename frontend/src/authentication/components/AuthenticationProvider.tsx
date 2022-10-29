@@ -1,5 +1,5 @@
 import { useRouter } from 'next/dist/client/router';
-import React, {
+import {
   FunctionComponent,
   PropsWithChildren,
   useEffect,
@@ -8,7 +8,6 @@ import React, {
 import { useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { User } from '../../users/models/User';
-import USER_API_SERVICE from '../../users/services/UserApiService';
 import { AuthenticationContext } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
 import { isAuthenticationRoute } from '../services/RoutingService';
@@ -27,7 +26,7 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
     setIsLoading(true);
     try {
       await AUTHENTICATION_API.login(usernameForLogin, password);
-      const loggedInUser = await USER_API_SERVICE.getCurrentUser();
+      const loggedInUser = await AUTHENTICATION_API.getCurrentUser();
       setNotification({
         severity: 'success',
         content: 'Login successful',
@@ -73,7 +72,7 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
     let currentUser: User;
 
     try {
-      currentUser = await USER_API_SERVICE.getCurrentUser();
+      currentUser = await AUTHENTICATION_API.getCurrentUser();
     } catch (e) {
       if (!isAuthenticationRoute(router.route)) {
         handleAuthenticationError(e);

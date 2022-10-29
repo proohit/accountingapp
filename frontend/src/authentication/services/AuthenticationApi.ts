@@ -11,6 +11,7 @@ export interface AuthenticationApi {
     email: string
   ) => Promise<RegisterResponse>;
   logout: () => Promise<void>;
+  getCurrentUser: () => Promise<LoginResponse>;
 }
 
 export const AUTHENTICATION_API: AuthenticationApi = {
@@ -28,5 +29,8 @@ export const AUTHENTICATION_API: AuthenticationApi = {
   },
   logout: () => {
     return BASE_API.post(API_ROUTES.AUTHENTICATION_LOGOUT, {});
+  },
+  getCurrentUser: () => {
+    return BASE_API.get(API_ROUTES.AUTHENTICATION_ME);
   },
 };

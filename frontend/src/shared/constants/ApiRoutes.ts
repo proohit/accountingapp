@@ -9,9 +9,8 @@ export class API_ROUTES {
   static readonly AUTHENTICATION_REGISTER = `${API_ROUTES.AUTHENTICATION}/register`;
   static readonly AUTHENTICATION_LOGIN = `${API_ROUTES.AUTHENTICATION}/login`;
   static readonly AUTHENTICATION_LOGOUT = `${API_ROUTES.AUTHENTICATION}/logout`;
-  static readonly USERS = `${API_ROUTES.BASE_ROUTE}/users`;
-  static readonly USERS_ME = `${API_ROUTES.USERS}/me`;
-  static readonly USERS_CHANGE_PASSWORD = `${API_ROUTES.USERS}/password-change`;
+  static readonly AUTHENTICATION_ME = `${API_ROUTES.AUTHENTICATION}/me`;
+  static readonly AUTHENTICATION_CHANGE_PASSWORD = `${API_ROUTES.AUTHENTICATION}/password-change`;
   static readonly RECORDS = `${API_ROUTES.BASE_ROUTE}/records`;
   static readonly RECORDS_CHECK_EXTERNAL_REFERENCES = `${API_ROUTES.RECORDS}/existingExternalReferences`;
   static readonly RECORDS_BULK_CREATE = `${API_ROUTES.RECORDS}/bulkCreate`;

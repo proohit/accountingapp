@@ -1,7 +1,16 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { SecureUser } from '../users/entities/secure-user';
 import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
+import ChangePasswordDto from './dtos/change-password.dto';
 import CreateUserDto from './dtos/create-user.dto';
 import { LocalAuthGuard } from './local.guard';
 import { LoggedInUser } from './user.decorator';
@@ -13,6 +22,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@LoggedInUser() user: SecureUser) {
+    return user;
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get('me')
+  async me(@LoggedInUser() user: SecureUser) {
     return user;
   }
 
@@ -41,5 +56,31 @@ export class AuthController {
   @Post('logout')
   async logout(@Request() req) {
     await req.session.destroy();
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Put('password-change')
+  async changePassword(
+    @Request() req,
+    @Body() body: ChangePasswordDto,
+    @LoggedInUser() user: SecureUser,
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const newUser = await this.authService.changePassword(
+          user.username,
+          body.password,
+          body.newPassword,
+        );
+        req.login(newUser, (err) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(newUser);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 }

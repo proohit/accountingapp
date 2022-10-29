@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { randomBytes, scrypt } from 'crypto';
+import { Repository } from 'typeorm';
 import { SecureUser } from '../users/entities/secure-user';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -8,10 +10,14 @@ import InvalidCredentialsException from './errors/InvalidCredentialsException';
 @Injectable()
 export class AuthService {
   private readonly HASH_LENGTH = 32;
-  constructor(private usersService: UsersService) {}
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    private usersService: UsersService,
+  ) {}
 
   async validateUser(username: string, pass: string): Promise<SecureUser> {
-    const user = await this.usersService.getByUsername(username);
+    const user = await this.usersRepository.findOneBy({ username });
     if (!user) throw new InvalidCredentialsException();
     if (await this.checkPassword(pass, user.password)) {
       return this.getSecureUser(user);
@@ -29,7 +35,7 @@ export class AuthService {
     return this.getSecureUser(newUser);
   }
 
-  private hashPassword(password: string): Promise<string> {
+  public hashPassword(password: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const salt = randomBytes(64).toString('hex');
       scrypt(password, salt, this.HASH_LENGTH, (err, derivedKey) => {
@@ -37,6 +43,23 @@ export class AuthService {
         resolve(this.getEncodedHash(derivedKey.toString('hex'), salt));
       });
     });
+  }
+
+  public async changePassword(
+    username: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.usersRepository.findOneBy({ username });
+    if (!user) throw new InvalidCredentialsException();
+    if (await this.checkPassword(oldPassword, user.password)) {
+      const newPasswordHash = await this.hashPassword(newPassword);
+      const updatedUser = await this.usersService.changePassword(
+        username,
+        newPasswordHash,
+      );
+      return this.getSecureUser(updatedUser);
+    }
   }
 
   private async checkPassword(password: string, encodedHash: string) {

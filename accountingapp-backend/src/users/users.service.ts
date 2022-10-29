@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -14,8 +19,12 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  getByUsername(username: string): Promise<User> {
-    return this.usersRepository.findOneBy({ username });
+  async getByUsername(username: string): Promise<User> {
+    const foundUser = await this.usersRepository.findOneBy({ username });
+    if (!foundUser) {
+      throw new NotFoundException();
+    }
+    return foundUser;
   }
 
   remove(id: number) {

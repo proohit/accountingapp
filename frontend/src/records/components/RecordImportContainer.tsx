@@ -1,4 +1,4 @@
-import { Delete, Remove } from '@mui/icons-material';
+import { Delete } from '@mui/icons-material';
 import {
   Button,
   Divider,
@@ -89,18 +89,15 @@ const RecordImportContainer: React.FC = (props) => {
         wallets[0].id,
         categories[0].id
       );
-      const existingRecords = await api.checkIfExternalReferencesExist(
-        recordsFromFile
+      const existingReferences = await api.checkIfExternalReferencesExist(
+        recordsFromFile?.map((record) => record.externalReference)
       );
       const newRecords = recordsFromFile.filter(
-        (record) =>
-          !existingRecords.some(
-            (r) => r.externalReference === record.externalReference
-          )
+        (record) => !existingReferences.includes(record.externalReference)
       );
       setValues({ newRecords });
       event.target.value = '';
-      if (existingRecords.length > 0) {
+      if (existingReferences.length > 0) {
         setNotificationState({
           content: `Some records have already been imported. They will not be imported again.`,
           severity: 'info',

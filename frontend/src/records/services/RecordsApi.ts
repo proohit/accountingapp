@@ -48,10 +48,10 @@ export class RecordsApiService implements RecordsApi {
     ]);
   }
 
-  checkIfExternalReferencesExist(records: Record[]): Promise<Record[]> {
-    return BASE_API.post<Record[], Record[]>(
+  checkIfExternalReferencesExist(references: string[]): Promise<string[]> {
+    return BASE_API.post<{ references: string[] }, string[]>(
       API_ROUTES.RECORDS_CHECK_EXTERNAL_REFERENCES,
-      records
+      { references }
     );
   }
 

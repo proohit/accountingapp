@@ -19,6 +19,8 @@ import { CategoryModule } from './category/category.module';
       },
     }),
     CategoryModule,
+    RecordModule,
+    WalletModule,
   ],
   providers: [ConfigService],
 })

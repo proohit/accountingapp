@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import Record from '../record/entities/record.entity';
 import { User } from '../users/entities/user.entity';
 import { Wallet } from './entities/wallet.entity';
 import DuplicateWalletException from './errors/duplicate-wallet.error';
@@ -10,6 +11,8 @@ export class WalletService {
   constructor(
     @InjectRepository(Wallet)
     private readonly walletRepository: Repository<Wallet>,
+    @InjectRepository(Record)
+    private readonly recordRepository: Repository<Record>,
   ) {}
 
   async create(
@@ -71,15 +74,15 @@ export class WalletService {
       throw new DuplicateWalletException();
     }
 
-    const recalculatedBalance = updatedBalance;
+    let recalculatedBalance = updatedBalance;
 
-    // if (!updatedBalance && updatedBalance !== 0) {
-    //   recalculatedBalance = await this.getCalculatedBalance(
-    //     id,
-    //     username,
-    //     initialBalance,
-    //   );
-    // }
+    if (!updatedBalance && updatedBalance !== 0) {
+      recalculatedBalance = await this.getCalculatedBalance(
+        id,
+        username,
+        initialBalance,
+      );
+    }
 
     return this.walletRepository.save({
       id,
@@ -90,41 +93,40 @@ export class WalletService {
     });
   }
 
-  //   async recalculateCurrentBalance(
-  //     id: Wallet['id'],
-  //     username: User['username'],
-  //   ) {
-  //     const walletToUpdate = await this.getById(id, username);
-  //     const recalculatedBalance = await this.getCalculatedBalance(id, username);
+  async recalculateCurrentBalance(
+    id: Wallet['id'],
+    username: User['username'],
+  ) {
+    const walletToUpdate = await this.getById(id, username);
+    const recalculatedBalance = await this.getCalculatedBalance(id, username);
 
-  //     const updatedWallet = await this.updateById(
-  //       id,
-  //       walletToUpdate.name,
-  //       walletToUpdate.balance,
-  //       username,
-  //       recalculatedBalance,
-  //     );
+    const updatedWallet = await this.updateById(
+      id,
+      walletToUpdate.name,
+      walletToUpdate.balance,
+      username,
+      recalculatedBalance,
+    );
 
-  //     return updatedWallet;
-  //   }
+    return updatedWallet;
+  }
 
-  //   private async getCalculatedBalance(
-  //     id: Wallet['id'],
-  //     username: User['username'],
-  //     initialBalance?: Wallet['balance'],
-  //   ) {
-  //     const recordsRepo = repositories.records();
-  //     const walletToUpdate = await this.getById(id, username);
-  //     const recordsSumByWallet = await recordsRepo
-  //       .createQueryBuilder()
-  //       .select(['COALESCE(SUM(value),0) as balanceByValue'])
-  //       .where({ walletId: id })
-  //       .getRawOne();
-  //     const sanitizedInitialBalance = isNaN(initialBalance)
-  //       ? walletToUpdate.balance
-  //       : initialBalance;
-  //     const newBalance =
-  //       recordsSumByWallet.balanceByValue + sanitizedInitialBalance;
-  //     return newBalance;
-  //   }
+  private async getCalculatedBalance(
+    id: Wallet['id'],
+    username: User['username'],
+    initialBalance?: Wallet['balance'],
+  ) {
+    const walletToUpdate = await this.getById(id, username);
+    const recordsSumByWallet = await this.recordRepository
+      .createQueryBuilder()
+      .select(['COALESCE(SUM(value),0) as balanceByValue'])
+      .where({ walletId: id })
+      .getRawOne();
+    const sanitizedInitialBalance = isNaN(initialBalance)
+      ? walletToUpdate.balance
+      : initialBalance;
+    const newBalance =
+      recordsSumByWallet.balanceByValue + sanitizedInitialBalance;
+    return newBalance;
+  }
 }

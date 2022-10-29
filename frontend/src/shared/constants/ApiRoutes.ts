@@ -14,7 +14,7 @@ export class API_ROUTES {
   static readonly RECORDS = `${API_ROUTES.BASE_ROUTE}/records`;
   static readonly RECORDS_CHECK_EXTERNAL_REFERENCES = `${API_ROUTES.RECORDS}/existingExternalReferences`;
   static readonly RECORDS_BULK_CREATE = `${API_ROUTES.RECORDS}/bulkCreate`;
-  static readonly RECURRENT_RECORDS = `${API_ROUTES.RECORDS}/recurrentRecords`;
+  static readonly RECURRENT_RECORDS = `${API_ROUTES.RECORDS}/recurrent-records`;
   static readonly WALLETS = `${API_ROUTES.BASE_ROUTE}/wallets`;
   static readonly CATEGORIES = `${API_ROUTES.BASE_ROUTE}/categories`;
   static readonly STATISTICS = `${API_ROUTES.BASE_ROUTE}/statistics`;

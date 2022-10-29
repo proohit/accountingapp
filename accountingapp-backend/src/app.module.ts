@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { RecordModule } from './record/record.module';
+import { RecurrentRecordModule } from './record/recurrent-record/recurrent-record.module';
 import { SettingsModule } from './settings/settings.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { UsersModule } from './users/users.module';
@@ -27,6 +28,7 @@ import { WalletModule } from './wallet/wallet.module';
     RecordModule,
     WalletModule,
     StatisticsModule,
+    RecurrentRecordModule,
   ],
   providers: [ConfigService],
 })

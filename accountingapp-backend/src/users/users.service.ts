@@ -33,7 +33,6 @@ export class UsersService {
     user.username = username;
     user.email = email;
     user.password = password;
-    user.private_key = '';
     return this.usersRepository.save(user);
   }
 }

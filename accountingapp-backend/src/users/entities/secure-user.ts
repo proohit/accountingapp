@@ -5,7 +5,7 @@ export class SecureUser {
   email: string;
 
   static fromUser(user: User) {
-    const { password, private_key, ...secureUser } = user;
+    const { password, ...secureUser } = user;
     return secureUser;
   }
 }

@@ -33,7 +33,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@types/node": "^18.8.2",
+    "@types/node": "^18.11.9",
     "@types/react": "^18.0.21",
     "eslint": "^8.24.0",
     "eslint-config-next": "^12.3.1",

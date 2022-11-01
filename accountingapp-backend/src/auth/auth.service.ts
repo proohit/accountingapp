@@ -52,13 +52,19 @@ export class AuthService {
   ) {
     const user = await this.usersRepository.findOneBy({ username });
     if (!user) throw new InvalidCredentialsException();
-    if (await this.checkPassword(oldPassword, user.password)) {
+    const passwordCorrect = await this.checkPassword(
+      oldPassword,
+      user.password,
+    );
+    if (passwordCorrect) {
       const newPasswordHash = await this.hashPassword(newPassword);
       const updatedUser = await this.usersService.changePassword(
         username,
         newPasswordHash,
       );
       return this.getSecureUser(updatedUser);
+    } else {
+      throw new InvalidCredentialsException();
     }
   }
 

@@ -1,0 +1,6 @@
+{
+    "name": "@accoutingapp/shared",
+    "main": "./index.ts",
+    "types": "./index.ts",
+    "version": "0.14.1"
+}

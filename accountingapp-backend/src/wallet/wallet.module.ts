@@ -10,5 +10,6 @@ import { WalletService } from './wallet.service';
   imports: [UseRepositories([User, Wallet, Record])],
   controllers: [WalletController],
   providers: [WalletService],
+  exports: [WalletService],
 })
 export class WalletModule {}

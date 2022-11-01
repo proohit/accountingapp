@@ -3,7 +3,6 @@ import { PassportModule } from '@nestjs/passport';
 import UseRepositories from '../use-repositories';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
-import { UsersService } from '../users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
@@ -15,7 +14,7 @@ import { SessionSerializer } from './session.serializer';
     UsersModule,
     PassportModule.register({ session: true }),
   ],
-  providers: [AuthService, LocalStrategy, SessionSerializer, UsersService],
+  providers: [AuthService, LocalStrategy, SessionSerializer],
   exports: [AuthService, SessionSerializer],
   controllers: [AuthController],
 })

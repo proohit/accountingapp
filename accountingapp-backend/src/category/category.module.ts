@@ -7,6 +7,7 @@ import { Category } from './entities/category.entity';
 @Module({
   imports: [UseRepositories([Category])],
   providers: [CategoryService],
+  exports: [CategoryService],
   controllers: [CategoryController],
 })
 export class CategoryModule {}

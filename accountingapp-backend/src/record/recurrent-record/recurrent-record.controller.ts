@@ -18,7 +18,7 @@ import { RecurrentRecord } from './entities/recurrent-record.entity';
 import { RecurrentRecordService } from './recurrent-record.service';
 
 @UseGuards(AuthenticatedGuard)
-@Controller('records/recurrent-records')
+@Controller('recurrent-records')
 export class RecurrentRecordController {
   constructor(
     private readonly recurrentRecordService: RecurrentRecordService,

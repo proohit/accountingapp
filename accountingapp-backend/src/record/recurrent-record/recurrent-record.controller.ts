@@ -52,9 +52,9 @@ export class RecurrentRecordController {
     recurrentRecord.walletId = walletId;
     recurrentRecord.description = description;
     recurrentRecord.value = value;
-    recurrentRecord.endDate = dayjs(endDate).toDate();
+    recurrentRecord.endDate = endDate;
     recurrentRecord.periodicity = periodicity;
-    recurrentRecord.startDate = dayjs(startDate).toDate();
+    recurrentRecord.startDate = startDate;
     recurrentRecord.ownerUsername = username;
 
     return this.recurrentRecordService.createRecurrentRecord(

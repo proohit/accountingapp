@@ -7,24 +7,9 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
-    env:
-      working-dir: ./backend
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "14"
       - name: Deploy
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSHUSERNAME }}
-          password: ${{ secrets.SSHPASSWORD }}
-          source: "backend/dist/*"
-          target: ${{ secrets.BACKEND_DESTINATION }}
-          strip_components: 2
-          rm: true
-      - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}

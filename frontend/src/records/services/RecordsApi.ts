@@ -56,9 +56,11 @@ export class RecordsApiService implements RecordsApi {
   }
 
   createManyRecords(records: Record[]): Promise<Record[]> {
-    return BASE_API.post<Record[], Record[]>(
+    return BASE_API.post<{ records: Record[] }, Record[]>(
       API_ROUTES.RECORDS_BULK_CREATE,
-      records
+      {
+        records,
+      }
     );
   }
 }

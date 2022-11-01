@@ -2,7 +2,7 @@
 VERSION=$1
 cd frontend
 npm --no-git-tag-version version $VERSION
-cd ../backend
+cd ../accountingapp-backend
 npm --no-git-tag-version version $VERSION
 cd ..
 git add .

@@ -13,6 +13,7 @@ import { AuthenticationProvider } from '../../authentication/components/Authenti
 import { AccTheme } from '../globals/styles/AccTheme';
 import { useCustomQueryClient } from '../hooks/useCustomQueryClient';
 import DialogsProvider from './DialogsProvider';
+import { GlobalErrorBoundary } from './GlobalErrorBoundary';
 import NotificationBar from './NotificationBar';
 
 declare module '@mui/material/styles' {
@@ -26,16 +27,18 @@ const Providers: FunctionComponent<PropsWithChildren> = (props) => {
       <ThemeProvider theme={AccTheme}>
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <QueryClientProvider client={useCustomQueryClient()}>
-            <DndProvider backend={HTML5Backend}>
-              <AuthenticationProvider>
-                <DialogsProvider>
-                  <NotificationBar />
-                  {props.children}
-                </DialogsProvider>
-              </AuthenticationProvider>
-            </DndProvider>
-          </QueryClientProvider>
+          <GlobalErrorBoundary>
+            <QueryClientProvider client={useCustomQueryClient()}>
+              <DndProvider backend={HTML5Backend}>
+                <AuthenticationProvider>
+                  <DialogsProvider>
+                    <NotificationBar />
+                    {props.children}
+                  </DialogsProvider>
+                </AuthenticationProvider>
+              </DndProvider>
+            </QueryClientProvider>
+          </GlobalErrorBoundary>
         </LocalizationProvider>
       </ThemeProvider>
     </StyledEngineProvider>

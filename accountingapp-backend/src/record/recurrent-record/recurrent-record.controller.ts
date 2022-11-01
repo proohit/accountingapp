@@ -24,7 +24,7 @@ export class RecurrentRecordController {
     private readonly recurrentRecordService: RecurrentRecordService,
   ) {}
 
-  @Get('/')
+  @Get()
   async getByUser(@LoggedInUser() user: SecureUser) {
     const { username } = user;
 

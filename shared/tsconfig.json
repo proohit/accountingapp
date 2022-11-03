@@ -3,6 +3,8 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "target": "ESNext",
+    "moduleResolution": "Node"
   }
 }

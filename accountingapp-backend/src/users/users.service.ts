@@ -24,7 +24,7 @@ export class UsersService {
   }
 
   async create(username: string, password: string, email: string) {
-    if (await this.getByUsername(username)) {
+    if (await this.usersRepository.findOneBy({ username })) {
       throw new HttpException(
         'Username already exists',
         HttpStatus.BAD_REQUEST,

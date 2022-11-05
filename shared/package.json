@@ -1,5 +1,5 @@
 {
-    "name": "@accoutingapp/shared",
+    "name": "@accountingapp/shared",
     "scripts": {
         "build": "tsc -p tsconfig.json"
     },

@@ -1,6 +1,15 @@
 {
     "name": "@accoutingapp/shared",
+    "scripts": {
+        "build": "tsc -p tsconfig.json"
+    },
+    "files": [
+        "dist/**/*"
+    ],
     "main": "./src/index.ts",
     "types": "./src/index.ts",
-    "version": "0.14.1"
+    "version": "0.14.1",
+    "dependencies": {
+        "typescript": "^4.8.4"
+    }
 }

@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@accountingapp/shared": "file:../shared",
     "@date-io/dayjs": "^2.16.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",

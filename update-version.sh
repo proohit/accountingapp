@@ -1,11 +1,5 @@
 #!/bin/bash
-VERSION=$1
-cd frontend
-npm --no-git-tag-version version $VERSION
-cd ../accountingapp-backend
-npm --no-git-tag-version version $VERSION
-cd ../shared
-npm --no-git-tag-version version $VERSION
-cd ..
+npm --no-git-tag-version version $1
+npm --workspaces --no-git-tag-version version $1
 git add .
 git commit -m "Bump version $1"

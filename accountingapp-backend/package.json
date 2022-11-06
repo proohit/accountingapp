@@ -23,7 +23,6 @@
     "typeorm": "typeorm-ts-node-commonjs"
   },
   "dependencies": {
-    "@accountingapp/shared": "file:../shared",
     "@nestjs/common": "^9.1.6",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.1.6",

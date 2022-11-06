@@ -1,0 +1,35 @@
+{
+  "name": "accountingapp",
+  "version": "0.14.1",
+  "description": "Accounting App is a project which helps to keep an overview of balances of personal wallets.",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "npm run build:shared",
+    "start:dev:backend": "npm run -w accountingapp-backend start:dev",
+    "start:dev:frontend": "npm run -w frontend start:dev",
+    "build:backend": "npm run -w accountingapp-backend",
+    "build:frontend": "npm run -w frontend build:static",
+    "build:shared": "npm run -w shared"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/proohit/accountingapp.git"
+  },
+  "keywords": [
+    "accounting",
+    "nestjs",
+    "nextjs",
+    "mui"
+  ],
+  "author": "proohit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/proohit/accountingapp/issues"
+  },
+  "homepage": "https://github.com/proohit/accountingapp#readme",
+  "workspaces": [
+    "accountingapp-backend",
+    "frontend",
+    "shared"
+  ]
+}

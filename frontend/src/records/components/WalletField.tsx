@@ -1,3 +1,4 @@
+import { WalletDto } from '@accountingapp/shared';
 import {
   FormControl,
   FormControlProps,
@@ -7,13 +8,12 @@ import {
   Select,
   SelectChangeEvent,
 } from '@mui/material';
-import React, { FunctionComponent } from 'react';
-import { Wallet } from '../../wallets/models/Wallet';
+import { FunctionComponent } from 'react';
 
 type WalletFieldProps = {
   walletName: string;
   onWalletChange: (event: SelectChangeEvent<string>) => void;
-  wallets: Wallet[];
+  wallets: WalletDto[];
   withAll?: boolean;
   errorText?: string;
   variant?: FormControlProps['variant'];

@@ -3,11 +3,11 @@
   "version": "0.14.2",
   "private": true,
   "scripts": {
-    "dev": "next dev",
     "lint": "next lint",
     "build": "next build",
     "build:static": "next build && next export",
-    "start": "next start"
+    "start": "next start",
+    "start:dev": "next dev"
   },
   "dependencies": {
     "@date-io/dayjs": "^2.16.0",

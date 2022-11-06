@@ -1,3 +1,4 @@
+import { PaginatedResultDto } from '@accountingapp/shared';
 import {
   Button,
   FormControlLabel,
@@ -13,7 +14,6 @@ import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { currentQuery } from '../hooks/currentQueryState';
 import { exportRecordDialogState } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
-import { PaginatedResult } from '../models/PaginatedResult';
 import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById } from '../utils/categoryUtils';
 
@@ -38,7 +38,7 @@ const RecordExportContainer: React.FC = (props) => {
     setExportType((event.target as HTMLInputElement).value);
   };
 
-  const prepareRecordsForExport = (recordsToExport: PaginatedResult) => {
+  const prepareRecordsForExport = (recordsToExport: PaginatedResultDto) => {
     return recordsToExport?.data.map((record) => ({
       ...record,
       category: getCategoryById(categories, record?.categoryId)?.name,

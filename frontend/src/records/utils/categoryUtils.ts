@@ -1,4 +1,4 @@
-import { Category } from '../models/Category';
+import { CategoryDto as Category } from '@accountingapp/shared';
 
 export const getCategoryByName = (
   categories: Category[],

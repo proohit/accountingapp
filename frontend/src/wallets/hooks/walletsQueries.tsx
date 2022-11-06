@@ -1,11 +1,11 @@
+import { WalletDto } from '@accountingapp/shared';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Wallet } from '../models/Wallet';
 import { WalletsApiService } from '../services/WalletsApi';
 
 const walletApi = new WalletsApiService();
 
 export const useWalletsQuery = () => {
-  return useQuery<Wallet[]>(
+  return useQuery<WalletDto[]>(
     ['getWallets'],
     () => walletApi.getWalletsByUser(),
     {
@@ -16,7 +16,7 @@ export const useWalletsQuery = () => {
 export const useCreateWalletMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (walletToAdd: Wallet) => walletApi.createWallet(walletToAdd),
+    (walletToAdd: WalletDto) => walletApi.createWallet(walletToAdd),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getWallets');
@@ -28,7 +28,7 @@ export const useCreateWalletMutation = () => {
 export const useEditWalletMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (editedWallet: Wallet) => walletApi.editWallet(editedWallet),
+    (editedWallet: WalletDto) => walletApi.editWallet(editedWallet),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getWallets');
@@ -40,7 +40,7 @@ export const useEditWalletMutation = () => {
 export const useDeleteWalletMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (walletToDelete: Wallet) => walletApi.deleteWallet(walletToDelete.id),
+    (walletToDelete: WalletDto) => walletApi.deleteWallet(walletToDelete.id),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('getWallets');

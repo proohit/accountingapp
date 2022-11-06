@@ -1,11 +1,6 @@
-import {
-  TextField,
-  Autocomplete,
-  createFilterOptions,
-  MenuItem,
-} from '@mui/material';
-import React, { FunctionComponent } from 'react';
-import { Category } from '../models/Category';
+import { CategoryDto as Category } from '@accountingapp/shared';
+import { Autocomplete, createFilterOptions, TextField } from '@mui/material';
+import { FunctionComponent } from 'react';
 
 type CategoryFieldProps = {
   categoryName: string;

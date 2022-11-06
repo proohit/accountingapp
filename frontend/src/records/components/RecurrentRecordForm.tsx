@@ -1,12 +1,10 @@
+import { CategoryDto as Category, WalletDto } from '@accountingapp/shared';
 import { Grid, TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
-import React from 'react';
 import * as yup from 'yup';
-import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
-import { Category } from '../models/Category';
 import { Periodicity, RecurrentRecord } from '../models/RecurrentRecord';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
@@ -40,7 +38,7 @@ const schema = (walletNames: string[]) =>
 
 interface Props {
   recurrentRecord?: RecurrentRecord;
-  wallets: Wallet[];
+  wallets: WalletDto[];
   categories: Category[];
   onAddRecurrentRecord: (recurrentRecord: RecurrentRecord) => void;
   username: string;

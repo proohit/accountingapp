@@ -1,6 +1,5 @@
-import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import { ApiRoutes, UserSettingsDto } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
-import { UserSettings } from '../models/UserSettings';
 
 export interface SettingsApi {
   changePassword(oldPassword: string, newPassword: string): Promise<string>;
@@ -8,15 +7,15 @@ export interface SettingsApi {
 
 export class SettingsApiService implements SettingsApi {
   changePassword(oldPassword: string, newPassword: string): Promise<string> {
-    return BASE_API.put(API_ROUTES.AUTHENTICATION_CHANGE_PASSWORD, {
+    return BASE_API.put(ApiRoutes.AUTHENTICATION_CHANGE_PASSWORD, {
       password: oldPassword,
       newPassword,
     });
   }
-  getUserSettings(): Promise<UserSettings> {
-    return BASE_API.get(API_ROUTES.SETTINGS);
+  getUserSettings(): Promise<UserSettingsDto> {
+    return BASE_API.get(ApiRoutes.SETTINGS);
   }
-  updateSettings(settings: UserSettings): Promise<UserSettings> {
-    return BASE_API.put(API_ROUTES.SETTINGS, settings);
+  updateSettings(settings: UserSettingsDto): Promise<UserSettingsDto> {
+    return BASE_API.put(ApiRoutes.SETTINGS, settings);
   }
 }

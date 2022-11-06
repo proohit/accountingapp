@@ -1,29 +1,28 @@
-import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import { ApiRoutes, WalletDto } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
-import { Wallet } from '../models/Wallet';
 
 export interface WalletsApi {
-  getWalletsByUser(): Promise<Wallet[]>;
-  createWallet(wallet: Wallet): Promise<Wallet>;
-  editWallet(wallet: Wallet): Promise<Wallet>;
-  deleteWallet(walletId: Wallet['id']): Promise<string>;
+  getWalletsByUser(): Promise<WalletDto[]>;
+  createWallet(wallet: WalletDto): Promise<WalletDto>;
+  editWallet(wallet: WalletDto): Promise<WalletDto>;
+  deleteWallet(walletId: WalletDto['id']): Promise<string>;
 }
 
 export class WalletsApiService implements WalletsApi {
-  createWallet(wallet: Wallet): Promise<Wallet> {
-    return BASE_API.post<Wallet, Wallet>(`${API_ROUTES.WALLETS}`, wallet);
+  createWallet(wallet: WalletDto): Promise<WalletDto> {
+    return BASE_API.post<WalletDto, WalletDto>(`${ApiRoutes.WALLETS}`, wallet);
   }
-  editWallet(wallet: Wallet): Promise<Wallet> {
-    return BASE_API.put<Wallet, Wallet>(
-      `${API_ROUTES.WALLETS}/${wallet.id}`,
+  editWallet(wallet: WalletDto): Promise<WalletDto> {
+    return BASE_API.put<WalletDto, WalletDto>(
+      `${ApiRoutes.WALLETS}/${wallet.id}`,
       wallet
     );
   }
   deleteWallet(walletId: string): Promise<string> {
-    return BASE_API.delete<string>(`${API_ROUTES.WALLETS}/${walletId}`);
+    return BASE_API.delete<string>(`${ApiRoutes.WALLETS}/${walletId}`);
   }
-  async getWalletsByUser(): Promise<Wallet[]> {
-    const wallets = await BASE_API.get<Wallet[]>(API_ROUTES.WALLETS);
+  async getWalletsByUser(): Promise<WalletDto[]> {
+    const wallets = await BASE_API.get<WalletDto[]>(ApiRoutes.WALLETS);
     return wallets;
   }
 }

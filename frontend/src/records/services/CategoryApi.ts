@@ -1,20 +1,24 @@
-import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import { ApiRoutes, CategoryDto } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
-import { Category } from '../models/Category';
 
 export interface CategoryApi {
-  getCategoriesByUser(): Promise<Category[]>;
+  getCategoriesByUser(): Promise<CategoryDto[]>;
 }
 
 export class CategoryApiService implements CategoryApi {
-  async getCategoriesByUser(): Promise<Category[]> {
-    const categories = await BASE_API.get<Category[]>(API_ROUTES.CATEGORIES);
+  async getCategoriesByUser(): Promise<CategoryDto[]> {
+    const categories = await BASE_API.get<CategoryDto[]>(ApiRoutes.CATEGORIES);
     return categories;
   }
 
-  async createCategory(categoryName: Category['name']): Promise<Category> {
-    return BASE_API.post<Partial<Category>, Category>(API_ROUTES.CATEGORIES, {
-      name: categoryName,
-    });
+  async createCategory(
+    categoryName: CategoryDto['name']
+  ): Promise<CategoryDto> {
+    return BASE_API.post<Partial<CategoryDto>, CategoryDto>(
+      ApiRoutes.CATEGORIES,
+      {
+        name: categoryName,
+      }
+    );
   }
 }

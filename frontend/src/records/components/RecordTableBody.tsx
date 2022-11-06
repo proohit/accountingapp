@@ -1,18 +1,16 @@
+import { CategoryDto, RecordDto, WalletDto } from '@accountingapp/shared';
 import { TableBody, TableCell, TableRow } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { FunctionComponent } from 'react';
-import { Wallet } from '../../wallets/models/Wallet';
+import { FunctionComponent } from 'react';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { Format } from '../models/Format';
-import { Category } from '../models/Category';
-import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';
 
 type RecordTableBodyProps = {
-  records: Record[];
-  onRecordClicked: (record: Record) => void;
-  categories: Category[];
-  wallets: Wallet[];
+  records: RecordDto[];
+  onRecordClicked: (record: RecordDto) => void;
+  categories: CategoryDto[];
+  wallets: WalletDto[];
   noRecords?: boolean;
   noRecordsText?: string;
   format: Format;

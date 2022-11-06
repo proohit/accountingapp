@@ -1,3 +1,4 @@
+import { RecordDto as Record } from '@accountingapp/shared';
 import { Delete } from '@mui/icons-material';
 import {
   Button,
@@ -22,7 +23,6 @@ import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { importRecordDialogState } from '../hooks/recordsDialogsState';
 import { useCreateManyRecordsMutation } from '../hooks/recordsQueries';
-import { Record } from '../models/Record';
 import { createNewRecordsFromMt940File } from '../services/ImportService';
 import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';

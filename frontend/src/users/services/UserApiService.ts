@@ -1,14 +1,13 @@
-import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import { ApiRoutes, UserDto } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
-import { User } from '../models/User';
 
 interface UserApiService {
-  getCurrentUser: () => Promise<User>;
+  getCurrentUser: () => Promise<UserDto>;
 }
 
 const USER_API_SERVICE: UserApiService = {
   getCurrentUser: async () => {
-    return BASE_API.get<User>(API_ROUTES.AUTHENTICATION_ME);
+    return BASE_API.get<UserDto>(ApiRoutes.AUTHENTICATION_ME);
   },
 };
 

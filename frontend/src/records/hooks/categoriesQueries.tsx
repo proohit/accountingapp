@@ -1,5 +1,5 @@
+import { CategoryDto as Category } from '@accountingapp/shared';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Category } from '../models/Category';
 import { CategoryApiService } from '../services/CategoryApi';
 
 const categoryApi = new CategoryApiService();

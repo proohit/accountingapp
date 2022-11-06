@@ -1,16 +1,15 @@
+import { RecordDto, SearchQueryDto } from '@accountingapp/shared';
 import {
   QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
 } from 'react-query';
-import { Record } from '../models/Record';
-import { SearchQuery } from '../models/SearchQuery';
 import { RecordsApiService } from '../services/RecordsApi';
 
 const recordsApi = new RecordsApiService();
 
-export const useRecordsQuery = (query: SearchQuery) => {
+export const useRecordsQuery = (query: SearchQueryDto) => {
   return useQuery(
     ['getRecord', query],
     () => recordsApi.getRecordsByUser(query),
@@ -24,7 +23,7 @@ export const useRecordsQuery = (query: SearchQuery) => {
 export const useCreateRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (recordToAdd: Record) => recordsApi.createRecord(recordToAdd),
+    (recordToAdd: RecordDto) => recordsApi.createRecord(recordToAdd),
     {
       onSuccess: () => {
         invalidateQueries(queryClient);
@@ -36,7 +35,7 @@ export const useCreateRecordMutation = () => {
 export const useEditRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (editedRecord: Record) => recordsApi.editRecord(editedRecord),
+    (editedRecord: RecordDto) => recordsApi.editRecord(editedRecord),
     {
       onSuccess: () => {
         invalidateQueries(queryClient);
@@ -48,7 +47,7 @@ export const useEditRecordMutation = () => {
 export const useDeleteRecordMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (recordToDelete: Record) => recordsApi.deleteRecord(recordToDelete.id),
+    (recordToDelete: RecordDto) => recordsApi.deleteRecord(recordToDelete.id),
     {
       onSuccess: () => {
         invalidateQueries(queryClient);
@@ -60,7 +59,7 @@ export const useDeleteRecordMutation = () => {
 export const useCreateManyRecordsMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (recordsToAdd: Record[]) => recordsApi.createManyRecords(recordsToAdd),
+    (recordsToAdd: RecordDto[]) => recordsApi.createManyRecords(recordsToAdd),
     {
       onSuccess: () => {
         invalidateQueries(queryClient);

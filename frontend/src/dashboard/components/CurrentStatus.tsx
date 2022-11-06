@@ -1,3 +1,4 @@
+import { WalletDto } from '@accountingapp/shared';
 import { useTheme } from '@mui/material';
 import * as React from 'react';
 import {
@@ -10,13 +11,12 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Wallet } from '../../wallets/models/Wallet';
 
 interface ICurrentStatusProps {
-  wallets: Wallet[];
+  wallets: WalletDto[];
 }
 
-const sortWalletsByBalance = (walleta: Wallet, walletb: Wallet): 1 | -1 =>
+const sortWalletsByBalance = (walleta: WalletDto, walletb: WalletDto): 1 | -1 =>
   walleta.currentBalance > walletb.currentBalance ? -1 : 1;
 
 const CurrentStatus: React.FunctionComponent<ICurrentStatusProps> = (props) => {

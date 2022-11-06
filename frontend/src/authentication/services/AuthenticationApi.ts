@@ -1,4 +1,4 @@
-import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import { ApiRoutes } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
 import { LoginRequest, RegisterRequest } from '../models/Requests';
 import { LoginResponse, RegisterResponse } from '../models/Responses';
@@ -17,20 +17,20 @@ export interface AuthenticationApi {
 export const AUTHENTICATION_API: AuthenticationApi = {
   login: async (username, password) => {
     return BASE_API.post<LoginRequest, LoginResponse>(
-      API_ROUTES.AUTHENTICATION_LOGIN,
+      ApiRoutes.AUTHENTICATION_LOGIN,
       { username, password }
     );
   },
   register: async (username, password, email) => {
     return BASE_API.post<RegisterRequest, RegisterResponse>(
-      API_ROUTES.AUTHENTICATION_REGISTER,
+      ApiRoutes.AUTHENTICATION_REGISTER,
       { username, password, email }
     );
   },
   logout: () => {
-    return BASE_API.post(API_ROUTES.AUTHENTICATION_LOGOUT, {});
+    return BASE_API.post(ApiRoutes.AUTHENTICATION_LOGOUT, {});
   },
   getCurrentUser: () => {
-    return BASE_API.get(API_ROUTES.AUTHENTICATION_ME);
+    return BASE_API.get(ApiRoutes.AUTHENTICATION_ME);
   },
 };

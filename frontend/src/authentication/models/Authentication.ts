@@ -1,11 +1,11 @@
-import { User } from '../../users/models/User';
+import { UserDto } from '@accountingapp/shared';
 
 export interface Authentication {
   authenticated: boolean;
   username: string;
-  user: User;
-  login: (username: string, password: string) => Promise<User>;
-  offlineLogin: (user: User) => void;
+  user: UserDto;
+  login: (username: string, password: string) => Promise<UserDto>;
+  offlineLogin: (user: UserDto) => void;
   logout: () => void;
   isLoginLoading: boolean;
 }

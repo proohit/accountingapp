@@ -1,63 +1,56 @@
-import { API_ROUTES } from '../../shared/constants/ApiRoutes';
+import {
+  ApiRoutes,
+  PaginatedResultDto,
+  RecordDto,
+  SearchQueryDto,
+} from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
-import { PaginatedResult } from '../models/PaginatedResult';
-import { Record } from '../models/Record';
-import { SearchQuery } from '../models/SearchQuery';
 
 export interface RecordsApi {
-  getRecordsByUser(query?: SearchQuery): Promise<PaginatedResult>;
-  createRecord(record: Record): Promise<Record>;
-  editRecord(record: Record): Promise<Record>;
-  deleteRecord(recordId: Record['id']): Promise<string>;
+  getRecordsByUser(query?: SearchQueryDto): Promise<PaginatedResultDto>;
+  createRecord(record: RecordDto): Promise<RecordDto>;
+  editRecord(record: RecordDto): Promise<RecordDto>;
+  deleteRecord(recordId: RecordDto['id']): Promise<string>;
 }
 
 export class RecordsApiService implements RecordsApi {
-  deleteRecord(recordId: number): Promise<string> {
-    return BASE_API.delete(`${API_ROUTES.RECORDS}/${recordId}`);
+  deleteRecord(recordId: string): Promise<string> {
+    return BASE_API.delete(`${ApiRoutes.RECORDS}/${recordId}`);
   }
-  editRecord(record: Record): Promise<Record> {
-    return BASE_API.put<Record, Record>(
-      `${API_ROUTES.RECORDS}/${record.id}`,
+  editRecord(record: RecordDto): Promise<RecordDto> {
+    return BASE_API.put<RecordDto, RecordDto>(
+      `${ApiRoutes.RECORDS}/${record.id}`,
       record
     );
   }
-  createRecord(record: Record): Promise<Record> {
-    return BASE_API.post<Record, Record>(API_ROUTES.RECORDS, record);
+  createRecord(record: RecordDto): Promise<RecordDto> {
+    return BASE_API.post<RecordDto, RecordDto>(ApiRoutes.RECORDS, record);
   }
 
-  getRecordsByUser(query?: SearchQuery): Promise<PaginatedResult> {
-    return BASE_API.get<PaginatedResult>(API_ROUTES.RECORDS, [
+  getRecordsByUser(query?: SearchQueryDto): Promise<PaginatedResultDto> {
+    return BASE_API.get<PaginatedResultDto>(ApiRoutes.RECORDS, [
       query.page >= 0 && ['page', query.page.toString()],
       query.itemsPerPage && ['itemsPerPage', query.itemsPerPage.toString()],
       query.sortBy && ['sortBy', query.sortBy],
       query.sortDirection && ['sortDirection', query.sortDirection],
-      query.filterBy?.categoryId && ['categoryId', query.filterBy.categoryId],
-      query.filterBy?.walletId && ['walletId', query.filterBy.walletId],
-      query.filterBy?.description && [
-        'description',
-        query.filterBy.description,
-      ],
-      query.filterBy?.timestampFrom && [
-        'timestampFrom',
-        query.filterBy.timestampFrom,
-      ],
-      query.filterBy?.timestampTo && [
-        'timestampTo',
-        query.filterBy.timestampTo,
-      ],
+      query.categoryId && ['categoryId', query.categoryId],
+      query.walletId && ['walletId', query.walletId],
+      query.description && ['description', query.description],
+      query.timestampFrom && ['timestampFrom', query.timestampFrom],
+      query.timestampTo && ['timestampTo', query.timestampTo],
     ]);
   }
 
   checkIfExternalReferencesExist(references: string[]): Promise<string[]> {
     return BASE_API.post<{ references: string[] }, string[]>(
-      API_ROUTES.RECORDS_CHECK_EXTERNAL_REFERENCES,
+      ApiRoutes.RECORDS_CHECK_EXTERNAL_REFERENCES,
       { references }
     );
   }
 
-  createManyRecords(records: Record[]): Promise<Record[]> {
-    return BASE_API.post<{ records: Record[] }, Record[]>(
-      API_ROUTES.RECORDS_BULK_CREATE,
+  createManyRecords(records: RecordDto[]): Promise<RecordDto[]> {
+    return BASE_API.post<{ records: RecordDto[] }, RecordDto[]>(
+      ApiRoutes.RECORDS_BULK_CREATE,
       {
         records,
       }

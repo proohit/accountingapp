@@ -1,4 +1,4 @@
-import { Record } from '../models/Record';
+import { RecordDto as Record } from '@accountingapp/shared';
 
 export const validateRecordField = (
   field: string,

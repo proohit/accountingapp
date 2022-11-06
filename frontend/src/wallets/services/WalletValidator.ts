@@ -1,8 +1,8 @@
-import { Wallet } from '../models/Wallet';
+import { WalletDto } from '@accountingapp/shared';
 
 export const validateWalletField = (
-  field: keyof Wallet,
-  value: Wallet[keyof Wallet]
+  field: keyof WalletDto,
+  value: WalletDto[keyof WalletDto]
 ): string => {
   switch (field) {
     case 'name':

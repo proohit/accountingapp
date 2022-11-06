@@ -1,10 +1,9 @@
-import { Record } from './Record';
-import { SearchQuery } from './SearchQuery';
+import { RecordDto, SearchQueryDto } from '@accountingapp/shared';
 
 export interface RecordContextModel {
-  records: Record[];
+  records: RecordDto[];
   totalRecords: number;
-  setRecords: (records: Record[]) => void;
+  setRecords: (records: RecordDto[]) => void;
   refreshRecords: () => void;
-  getRecords(query: SearchQuery): void;
+  getRecords(query: SearchQueryDto): void;
 }

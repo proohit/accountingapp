@@ -1,17 +1,16 @@
+import { RecordDto, WalletDto } from '@accountingapp/shared';
 import { ListItem, ListItemText, Typography } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { FunctionComponent } from 'react';
-import { Wallet } from '../../wallets/models/Wallet';
+import { FunctionComponent } from 'react';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { Format } from '../models/Format';
-import { Record } from '../models/Record';
 import { getCategoryById } from '../utils/categoryUtils';
 
 type MobileRecordItemProps = {
-  record: Record;
-  onRecordClick: (record: Record) => void;
+  record: RecordDto;
+  onRecordClick: (record: RecordDto) => void;
   categories: any[];
-  wallets: Wallet[];
+  wallets: WalletDto[];
   format: Format;
 };
 

@@ -1,4 +1,8 @@
 import {
+  AvailableWidgets,
+  getHeaderWidgetOfWidget,
+} from '@accountingapp/shared';
+import {
   Block,
   Close,
   DragIndicator,
@@ -19,8 +23,6 @@ import {
 } from '@mui/material';
 import { FunctionComponent, PropsWithChildren, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { getHeaderWidgetOfWidget } from '../constants/widgets';
-import { AvailableWidgets } from '../models/AvailableWidgets';
 import { DragIcon } from './DragIcon';
 
 export interface WidgetProps {

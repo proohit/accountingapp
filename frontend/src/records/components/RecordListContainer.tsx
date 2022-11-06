@@ -1,3 +1,4 @@
+import { RecordDto as Record } from '@accountingapp/shared';
 import {
   Divider,
   Hidden,
@@ -16,10 +17,9 @@ import {
   currentPageState,
   currentSortState,
 } from '../hooks/currentQueryState';
-import { useFormatState } from '../hooks/useFormatState';
 import { recordsDialogsState } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
-import { Record } from '../models/Record';
+import { useFormatState } from '../hooks/useFormatState';
 import { MobileRecordItem } from './MobileRecordItem';
 import { RecordsTable } from './RecordsTable';
 import { RecordsTableToolbar } from './RecordsTableToolbar';
@@ -34,11 +34,15 @@ export const RecordListContainer: FunctionComponent = () => {
   const { data: format, isLoading: formatLoading } = useFormatState();
   const { data: paginatedResult, isFetching: recordsLoading } = useRecordsQuery(
     {
-      filterBy: currentFilter,
       itemsPerPage: currentPage.itemsPerPage,
       page: currentPage.page,
       sortBy: currentSort.sortBy,
       sortDirection: currentSort.sortDirection,
+      categoryId: currentFilter.categoryId,
+      walletId: currentFilter.walletId,
+      description: currentFilter.description,
+      timestampFrom: currentFilter.timestampFrom,
+      timestampTo: currentFilter.timestampTo,
     }
   );
   const { data: categories, isFetching: categoriesLoading } =

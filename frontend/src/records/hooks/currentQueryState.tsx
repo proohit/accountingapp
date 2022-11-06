@@ -1,26 +1,24 @@
+import { SearchQueryDto } from '@accountingapp/shared';
 import { atom, DefaultValue, selector } from 'recoil';
-import { SearchQuery } from '../models/SearchQuery';
 
-export const currentQuery = atom<SearchQuery>({
+export const currentQuery = atom<SearchQueryDto>({
   key: 'currentQuery',
   default: {
     itemsPerPage: 5,
     page: 1,
     sortBy: 'timestamp',
     sortDirection: 'desc',
-    filterBy: {
-      categoryId: undefined,
-      description: undefined,
-      walletId: undefined,
-      timestampFrom: null,
-      timestampTo: null,
-    },
+    categoryId: undefined,
+    description: undefined,
+    walletId: undefined,
+    timestampFrom: null,
+    timestampTo: null,
   },
 });
 
 export const currentPageState = selector<{
-  page: SearchQuery['page'];
-  itemsPerPage: SearchQuery['itemsPerPage'];
+  page: SearchQueryDto['page'];
+  itemsPerPage: SearchQueryDto['itemsPerPage'];
 }>({
   key: 'currentQueryPage',
   get: ({ get }) => ({
@@ -43,8 +41,8 @@ export const currentPageState = selector<{
 });
 
 export const currentSortState = selector<{
-  sortBy: SearchQuery['sortBy'];
-  sortDirection: SearchQuery['sortDirection'];
+  sortBy: SearchQueryDto['sortBy'];
+  sortDirection: SearchQueryDto['sortDirection'];
 }>({
   key: 'currentQuerySort',
   get: ({ get }) => ({
@@ -66,10 +64,19 @@ export const currentSortState = selector<{
   },
 });
 
-export const currentFilterState = selector<SearchQuery['filterBy']>({
+export const currentFilterState = selector<
+  Pick<
+    SearchQueryDto,
+    'categoryId' | 'description' | 'walletId' | 'timestampFrom' | 'timestampTo'
+  >
+>({
   key: 'currentQueryFilter',
   get: ({ get }) => ({
-    ...get(currentQuery).filterBy,
+    categoryId: get(currentQuery).categoryId,
+    description: get(currentQuery).description,
+    walletId: get(currentQuery).walletId,
+    timestampFrom: get(currentQuery).timestampFrom,
+    timestampTo: get(currentQuery).timestampTo,
   }),
   set: ({ get, set }, currentFilter) => {
     const currentQueryState = get(currentQuery);
@@ -79,7 +86,7 @@ export const currentFilterState = selector<SearchQuery['filterBy']>({
         ? currentFilter
         : {
             ...currentQueryState,
-            filterBy: currentFilter,
+            ...currentFilter,
           }
     );
   },

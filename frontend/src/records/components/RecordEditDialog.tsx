@@ -1,3 +1,5 @@
+import { RecordDto } from '@accountingapp/shared';
+import { Close, Delete } from '@mui/icons-material';
 import {
   Button,
   Dialog,
@@ -8,8 +10,6 @@ import {
   IconButton,
   LinearProgress,
 } from '@mui/material';
-import { Close, Delete } from '@mui/icons-material';
-import React from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
@@ -22,7 +22,6 @@ import {
   useDeleteRecordMutation,
   useEditRecordMutation,
 } from '../hooks/recordsQueries';
-import { Record } from '../models/Record';
 import { getCategoryByIdOrName } from '../utils/categoryUtils';
 import { RecordForm } from './RecordForm';
 
@@ -48,7 +47,7 @@ export const RecordEditDialog = () => {
     });
   };
 
-  const editRecord = async (record: Record) => {
+  const editRecord = async (record: RecordDto) => {
     const updatedRecordToEdit = { ...record };
     let category = getCategoryByIdOrName(categories, record.categoryId);
     if (!category) {
@@ -59,7 +58,7 @@ export const RecordEditDialog = () => {
     closeDialog();
   };
 
-  const onDeleteRecord = async (recordToDelete: Record) => {
+  const onDeleteRecord = async (recordToDelete: RecordDto) => {
     await deleteMutation(recordToDelete);
     closeDialog();
   };
@@ -75,7 +74,8 @@ export const RecordEditDialog = () => {
             <IconButton
               color="primary"
               onClick={() => onDeleteRecord(dialogs.EDIT_RECORD.recordToEdit)}
-              size="large">
+              size="large"
+            >
               <Delete />
             </IconButton>
           </Grid>

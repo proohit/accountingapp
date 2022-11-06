@@ -1,3 +1,9 @@
+import {
+  AvailableWidgets,
+  getHeaderWidgetOfWidget,
+  headerWidgetMapping,
+  widgetLabels,
+} from '@accountingapp/shared';
 import { Grid } from '@mui/material';
 import dayjs from 'dayjs';
 import { FunctionComponent, useState } from 'react';
@@ -6,12 +12,6 @@ import {
   useUserSettingsQuery,
 } from '../../settings/hooks/useSettingsQuery';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
-import {
-  getHeaderWidgetOfWidget,
-  headerWidgetMapping,
-  widgetLabels,
-} from '../constants/widgets';
-import { AvailableWidgets } from '../models/AvailableWidgets';
 import { CategoryDataWidget } from './CategoryDataWidget';
 import { CurrentStatusWidget } from './CurrentStatusWidget';
 import { DailyDataWidget } from './DailyDataWidget';

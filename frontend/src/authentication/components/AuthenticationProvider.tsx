@@ -1,3 +1,4 @@
+import { UserDto } from '@accountingapp/shared';
 import { useRouter } from 'next/dist/client/router';
 import {
   FunctionComponent,
@@ -7,7 +8,6 @@ import {
 } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { notificationState } from '../../shared/hooks/notificationState';
-import { User } from '../../users/models/User';
 import { AuthenticationContext } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
 import { isAuthenticationRoute } from '../services/RoutingService';
@@ -42,7 +42,7 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
     }
   };
 
-  const offlineLogin = (loggedInUser: User) => {
+  const offlineLogin = (loggedInUser: UserDto) => {
     setUsername(loggedInUser.username);
     setUser(loggedInUser);
     setAuthenticated(true);
@@ -69,7 +69,7 @@ export const AuthenticationProvider: FunctionComponent<PropsWithChildren> = (
   const loginFromLocalStorage = async () => {
     setIsLoading(true);
 
-    let currentUser: User;
+    let currentUser: UserDto;
 
     try {
       currentUser = await AUTHENTICATION_API.getCurrentUser();

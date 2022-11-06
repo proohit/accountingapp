@@ -1,9 +1,9 @@
-import { Wallet } from './Wallet';
+import { WalletDto } from '@accountingapp/shared';
 
 export type WalletDialogs = {
   editWallet: {
     open: boolean;
-    walletToEdit: Wallet;
+    walletToEdit: WalletDto;
   };
   addWallet: {
     open: boolean;

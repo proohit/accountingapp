@@ -1,3 +1,8 @@
+import {
+  AvailableWidgets,
+  isHeaderWidget,
+  widgetLabels,
+} from '@accountingapp/shared';
 import { AddBox, DragIndicator } from '@mui/icons-material';
 import {
   AppBar,
@@ -16,8 +21,6 @@ import {
   useState,
 } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { isHeaderWidget, widgetLabels } from '../constants/widgets';
-import { AvailableWidgets } from '../models/AvailableWidgets';
 import { DragIcon } from './DragIcon';
 import { WidgetProps } from './Widget';
 

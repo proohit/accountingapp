@@ -1,11 +1,11 @@
+import { UserSettingsDto } from '@accountingapp/shared';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { UserSettings } from '../models/UserSettings';
 import { SettingsApiService } from '../services/SettingsApi';
 
 const settingsApi = new SettingsApiService();
 
 export const useUserSettingsQuery = () => {
-  return useQuery<UserSettings>(
+  return useQuery<UserSettingsDto>(
     ['getUserSettings'],
     () => settingsApi.getUserSettings(),
     { staleTime: 15000 }
@@ -15,7 +15,7 @@ export const useUserSettingsQuery = () => {
 export const useUpdateUserSettingsMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    (settings: UserSettings) => settingsApi.updateSettings(settings),
+    (settings: UserSettingsDto) => settingsApi.updateSettings(settings),
     { onSuccess: () => queryClient.invalidateQueries('getUserSettings') }
   );
 };

@@ -1,3 +1,4 @@
+import { WalletDto } from '@accountingapp/shared';
 import { AccountBalance, AddBox } from '@mui/icons-material';
 import { Grid, IconButton, LinearProgress, Typography } from '@mui/material';
 import Head from 'next/head';
@@ -11,7 +12,6 @@ import {
   editWalletDialogState,
 } from '../../src/wallets/hooks/walletDialogsState';
 import { useWalletsQuery } from '../../src/wallets/hooks/walletsQueries';
-import { Wallet } from '../../src/wallets/models/Wallet';
 
 const walletPageStyles = makeStyles()((theme) => ({
   walletContainer: {
@@ -25,7 +25,7 @@ const WalletPage: React.FunctionComponent = (props) => {
   const setAddWalletDialog = useSetRecoilState(addWalletDialogState);
   const setEditWalletDialog = useSetRecoilState(editWalletDialogState);
 
-  const openEditDialog = (wallet: Wallet) => {
+  const openEditDialog = (wallet: WalletDto) => {
     setEditWalletDialog({ open: true, walletToEdit: wallet });
   };
 

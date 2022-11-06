@@ -1,3 +1,4 @@
+import { DailyStatisticsResultDto } from '@accountingapp/shared';
 import { LinearProgress, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
 import * as React from 'react';
@@ -13,7 +14,6 @@ import {
   YAxis,
 } from 'recharts';
 import { useDailyStatisticsQuery } from '../hooks/monthQuery';
-import { DailyStatisticsData } from '../models/DailyData';
 import { DateableWidget } from '../models/DateableWidget';
 
 type ThisMonthProps = DateableWidget & {
@@ -41,7 +41,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
   }
 
   const getDataWithFilteredWallets = (
-    dailyData: DailyStatisticsData,
+    dailyData: DailyStatisticsResultDto,
     walletNameToFilter: string
   ) => {
     return dailyData?.data?.find(
@@ -49,7 +49,7 @@ const ThisMonth: React.FunctionComponent<ThisMonthProps> = (props) => {
     );
   };
 
-  const getDataWithFormattedDate = (dailyData: DailyStatisticsData) => {
+  const getDataWithFormattedDate = (dailyData: DailyStatisticsResultDto) => {
     return dailyData?.data?.map((walletData) => ({
       ...walletData,
       data: walletData.data.map((singleWalletData) => ({

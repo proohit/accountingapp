@@ -1,3 +1,4 @@
+import { RecordDto as Record } from '@accountingapp/shared';
 import {
   Button,
   Dialog,
@@ -6,7 +7,6 @@ import {
   DialogTitle,
   LinearProgress,
 } from '@mui/material';
-import React from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
@@ -16,7 +16,6 @@ import {
 } from '../hooks/categoriesQueries';
 import { recordsDialogsState } from '../hooks/recordsDialogsState';
 import { useCreateRecordMutation } from '../hooks/recordsQueries';
-import { Record } from '../models/Record';
 import { getCategoryByIdOrName } from '../utils/categoryUtils';
 import { RecordForm } from './RecordForm';
 

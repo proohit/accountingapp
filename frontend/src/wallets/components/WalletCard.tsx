@@ -1,3 +1,5 @@
+import { WalletDto as Wallet } from '@accountingapp/shared';
+import { Payment } from '@mui/icons-material';
 import {
   Card,
   CardActionArea,
@@ -5,10 +7,8 @@ import {
   CardHeader,
   Typography,
 } from '@mui/material';
+import { FunctionComponent } from 'react';
 import { makeStyles } from 'tss-react/mui';
-import { Payment } from '@mui/icons-material';
-import React, { FunctionComponent } from 'react';
-import { Wallet } from '../models/Wallet';
 
 const walletCardStyles = makeStyles()((theme) => ({
   cardTitle: {

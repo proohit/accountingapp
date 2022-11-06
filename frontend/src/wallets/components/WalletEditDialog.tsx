@@ -1,3 +1,5 @@
+import { WalletDto } from '@accountingapp/shared';
+import { Close, Delete } from '@mui/icons-material';
 import {
   Button,
   Dialog,
@@ -8,17 +10,15 @@ import {
   IconButton,
   LinearProgress,
 } from '@mui/material';
-import { Close, Delete } from '@mui/icons-material';
-import React, { useState } from 'react';
-import { Wallet } from '../../wallets/models/Wallet';
+import { useState } from 'react';
 import { WalletForm } from './WalletForm';
 
 interface WalletEditDialogProps {
   onDialogClose(): void;
-  onEditWallet(editedWallet: Wallet): void;
-  onDeleteWallet(walletToDelete: Wallet): void;
+  onEditWallet(editedWallet: WalletDto): void;
+  onDeleteWallet(walletToDelete: WalletDto): void;
   owner: string;
-  wallet: Wallet;
+  wallet: WalletDto;
   isLoading?: boolean;
 }
 
@@ -32,7 +32,7 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
     isLoading,
   } = props;
 
-  const [editedWallet, setEditedWallet] = useState<Wallet>(null);
+  const [editedWallet, setEditedWallet] = useState<WalletDto>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
   return (
@@ -43,7 +43,11 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
             Edit Wallet
           </Grid>
           <Grid item xs={2}>
-            <IconButton color="primary" onClick={() => onDeleteRecord(wallet)} size="large">
+            <IconButton
+              color="primary"
+              onClick={() => onDeleteRecord(wallet)}
+              size="large"
+            >
               <Delete />
             </IconButton>
           </Grid>

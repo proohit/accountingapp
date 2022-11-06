@@ -1,3 +1,4 @@
+import { WalletDto } from '@accountingapp/shared';
 import {
   Button,
   Dialog,
@@ -7,19 +8,18 @@ import {
   LinearProgress,
 } from '@mui/material';
 import React, { useState } from 'react';
-import { Wallet } from '../../wallets/models/Wallet';
 import { WalletForm } from './WalletForm';
 
 interface WalletAddDialogProps {
   onDialogClose(): void;
-  onAddWallet(walletToAdd: Wallet): void;
+  onAddWallet(walletToAdd: WalletDto): void;
   owner: string;
   isLoading?: boolean;
 }
 
 export const WalletAddDialog = (props: WalletAddDialogProps) => {
   const { onDialogClose, onAddWallet, owner, isLoading } = props;
-  const [walletToAdd, setWalletToAdd] = useState<Wallet>(null);
+  const [walletToAdd, setWalletToAdd] = useState<WalletDto>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
   return (

@@ -1,7 +1,7 @@
-import { Category } from './Category';
+import { CategoryDto } from '@accountingapp/shared';
 
 export interface CategoryContextModel {
-  categories: Category[];
-  setCategories: (categories: Category[]) => void;
+  categories: CategoryDto[];
+  setCategories: (categories: CategoryDto[]) => void;
   getCategories(): void;
 }

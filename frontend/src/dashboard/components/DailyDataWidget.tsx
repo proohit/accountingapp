@@ -1,5 +1,5 @@
+import { WalletDto } from '@accountingapp/shared';
 import { WalletField } from '../../records/components/WalletField';
-import { Wallet } from '../../wallets/models/Wallet';
 import { DateableWidget } from '../models/DateableWidget';
 import { EditableWidgetProps } from '../models/EditableWidgetProps';
 import ThisMonth from './ThisMonth';
@@ -9,7 +9,7 @@ export const DailyDataWidget: React.FC<
   EditableWidgetProps &
     DateableWidget & {
       selectedWallet: string;
-      wallets: Wallet[];
+      wallets: WalletDto[];
       setSelectedWallet: (wallet: string) => void;
     }
 > = (props) => {

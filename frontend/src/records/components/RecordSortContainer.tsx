@@ -1,3 +1,4 @@
+import { RecordDto as Record } from '@accountingapp/shared';
 import {
   Button,
   FormControl,
@@ -12,7 +13,6 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { Order } from '../../shared/models/SortOrder';
 import { currentSortState } from '../hooks/currentQueryState';
 import { sortRecordDialogState } from '../hooks/recordsDialogsState';
-import { Record } from '../models/Record';
 
 const RecordSortContainer: React.FunctionComponent = (props) => {
   const [currentSort, setCurrentSort] = useRecoilState(currentSortState);

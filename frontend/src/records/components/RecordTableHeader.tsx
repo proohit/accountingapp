@@ -1,19 +1,19 @@
+import { RecordDto } from '@accountingapp/shared';
 import { TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
-import React, { FunctionComponent, PropsWithChildren } from 'react';
+import { FunctionComponent, PropsWithChildren } from 'react';
 import { HeadCell } from '../../shared/models/HeadCell';
-import { Record } from '../models/Record';
 
 type RecordTableHeaderProps = PropsWithChildren & {
   sortDirection?: 'asc' | 'desc';
-  sortBy?: keyof Record;
-  sortClicked?: (newOrderKey: keyof Record) => void;
+  sortBy?: keyof RecordDto;
+  sortClicked?: (newOrderKey: keyof RecordDto) => void;
 };
 export const RecordTableHeader: FunctionComponent<RecordTableHeaderProps> = (
   props
 ) => {
   const { sortClicked, sortBy, sortDirection, children } = props;
 
-  const headers: HeadCell<Record>[] = [
+  const headers: HeadCell<RecordDto>[] = [
     { key: 'description', label: 'description' },
     { key: 'categoryId', label: 'category' },
     { key: 'walletId', label: 'wallet' },

@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  LinearProgress,
-  Typography,
-} from '@mui/material';
+import { Grid, LinearProgress, Typography } from '@mui/material';
 import React from 'react';
 import { useMonthStatusStatisticsQuery } from '../hooks/monthQuery';
 import { DateableWidget } from '../models/DateableWidget';

@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react';
+import { WalletDto as Wallet } from '@accountingapp/shared';
+import { Fragment } from 'react';
 import { useRecoilState } from 'recoil';
 import { useAuthentication } from '../../authentication/hooks/useAuthentication';
 import {
@@ -10,16 +11,14 @@ import {
   useDeleteWalletMutation,
   useEditWalletMutation,
 } from '../hooks/walletsQueries';
-import { Wallet } from '../models/Wallet';
 import { WalletAddDialog } from './WalletAddDialog';
 import { WalletEditDialog } from './WalletEditDialog';
 
 export const WalletDialogContainer = () => {
   const { username } = useAuthentication();
 
-  const [addWalletDialog, setAddWalletDialog] = useRecoilState(
-    addWalletDialogState
-  );
+  const [addWalletDialog, setAddWalletDialog] =
+    useRecoilState(addWalletDialogState);
   const [editWalletDialog, setEditWalletDialog] = useRecoilState(
     editWalletDialogState
   );

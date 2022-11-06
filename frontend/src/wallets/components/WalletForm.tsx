@@ -1,36 +1,33 @@
+import { WalletDto } from '@accountingapp/shared';
 import { Grid, TextField } from '@mui/material';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from '../../shared/hooks/useForm';
-import { Wallet } from '../models/Wallet';
 import { validateWalletField } from '../services/WalletValidator';
 
 interface WalletFormProps {
-  onWalletChange(wallet: Wallet): void;
+  onWalletChange(wallet: WalletDto): void;
   onFormValidChanged(isFormValid: boolean): void;
   owner: string;
-  wallet?: Wallet;
+  wallet?: WalletDto;
 }
 
 export const WalletForm = (props: WalletFormProps) => {
   const { onWalletChange, onFormValidChanged, owner, wallet } = props;
 
-  const [
-    formFields,
-    handleFormFieldChange,
-    [formErrors, , isFormValid],
-  ] = useForm<Partial<Wallet>>(
-    {
-      id: wallet?.id || null,
-      name: wallet?.name || '',
-      balance: wallet?.balance.toString() || '0.00',
-    },
-    {
-      validation: {
-        validationFunction: validateWalletField,
-        initialValidation: true,
+  const [formFields, handleFormFieldChange, [formErrors, , isFormValid]] =
+    useForm<Partial<WalletDto>>(
+      {
+        id: wallet?.id || null,
+        name: wallet?.name || '',
+        balance: wallet?.balance.toString() || '0.00',
       },
-    }
-  );
+      {
+        validation: {
+          validationFunction: validateWalletField,
+          initialValidation: true,
+        },
+      }
+    );
 
   useEffect(() => {
     onWalletChange({

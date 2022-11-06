@@ -1,13 +1,10 @@
+import { CategoryDto, RecordDto, WalletDto } from '@accountingapp/shared';
 import { Grid, TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
-import React from 'react';
 import * as yup from 'yup';
-import { Wallet } from '../../wallets/models/Wallet';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
-import { Category } from '../models/Category';
-import { Record } from '../models/Record';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
@@ -15,11 +12,11 @@ import { ValueField } from './ValueField';
 import { WalletField } from './WalletField';
 
 interface RecordFormProps {
-  onSubmitRecord: (record: Record) => void;
-  wallets: Wallet[];
-  categories: Category[];
+  onSubmitRecord: (record: RecordDto) => void;
+  wallets: WalletDto[];
+  categories: CategoryDto[];
   owner: string;
-  record?: Record;
+  record?: RecordDto;
   withNewCategory?: boolean;
 }
 
@@ -111,7 +108,7 @@ export const RecordForm = (props: RecordFormProps) => {
             onWalletChange={handleChange}
             walletName={formFields.walletName}
             wallets={wallets}
-            errorText={formErrors.walletName}
+            errorText={formErrors.walletName as string}
           />
         </Grid>
         <Grid item>

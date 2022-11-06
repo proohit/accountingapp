@@ -1,3 +1,4 @@
+import { SearchQuery } from '@accountingapp/shared';
 import {
   Body,
   Controller,
@@ -16,7 +17,6 @@ import CheckExternalReferencesDto from './dtos/check-external-references.dto';
 import CreateManyRecordsDto from './dtos/create-many-records.dto';
 import CreateRecordDto from './dtos/create-record.dto';
 import UpdateRecordDto from './dtos/update-record.dto';
-import { SearchQuery } from './models/search-query.model';
 import { RecordService } from './record.service';
 
 @UseGuards(AuthenticatedGuard)

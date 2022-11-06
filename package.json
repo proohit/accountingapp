@@ -4,12 +4,12 @@
   "description": "Accounting App is a project which helps to keep an overview of balances of personal wallets.",
   "main": "index.js",
   "scripts": {
-    "prebuild": "npm run build:shared",
-    "start:dev:backend": "npm run -w accountingapp-backend start:dev",
+    "build": "npm run build:shared && npm run build:backend && npm run build:frontend",
+    "start:dev:backend": "npm run -w backend start:dev",
     "start:dev:frontend": "npm run -w frontend start:dev",
-    "build:backend": "npm run -w accountingapp-backend",
+    "build:backend": "npm run -w backend build",
     "build:frontend": "npm run -w frontend build:static",
-    "build:shared": "npm run -w shared"
+    "build:shared": "npm run -w shared build"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/proohit/accountingapp#readme",
   "workspaces": [
-    "accountingapp-backend",
+    "backend",
     "frontend",
     "shared"
   ]

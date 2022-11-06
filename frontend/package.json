@@ -1,5 +1,5 @@
 {
-  "name": "accountingapp-web",
+  "name": "@accountingapp/web",
   "version": "0.14.1",
   "private": true,
   "scripts": {

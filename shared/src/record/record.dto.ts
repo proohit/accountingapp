@@ -1,7 +1,7 @@
-export interface Record {
-  id?: number;
+export class RecordDto {
+  id?: string;
   value: number;
-  description: string;
+  description?: string;
   timestamp: string;
   externalReference?: string;
   ownerUsername: string;

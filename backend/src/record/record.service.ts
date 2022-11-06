@@ -1,3 +1,4 @@
+import { SearchQueryDto } from '@accountingapp/shared';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -17,7 +18,6 @@ import { Wallet } from '../wallet/entities/wallet.entity';
 import { WalletService } from '../wallet/wallet.service';
 import CreateRecordDto from './dtos/create-record.dto';
 import Record from './entities/record.entity';
-import { SearchQuery } from './models/search-query.model';
 
 @Injectable()
 export class RecordService {
@@ -71,7 +71,7 @@ export class RecordService {
     return createdRecord;
   }
 
-  async getByQuery(searchQuery: SearchQuery, username: User['username']) {
+  async getByQuery(searchQuery: SearchQueryDto, username: User['username']) {
     const {
       page,
       itemsPerPage,
@@ -145,7 +145,10 @@ export class RecordService {
     return recordsRepo.countBy({ ownerUsername: username });
   }
 
-  getRecordsCountByQuery(searchQuery: SearchQuery, username: User['username']) {
+  getRecordsCountByQuery(
+    searchQuery: SearchQueryDto,
+    username: User['username'],
+  ) {
     const { categoryId, description, walletId, timestampFrom, timestampTo } =
       searchQuery;
     const recordsRepo = this.recordRepository;

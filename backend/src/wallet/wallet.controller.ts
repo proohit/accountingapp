@@ -1,3 +1,4 @@
+import { WalletDto } from '@accountingapp/shared';
 import {
   Body,
   Controller,
@@ -24,7 +25,7 @@ export class WalletController {
   async createWallet(
     @Body() wallet: CreateWalletDto,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<WalletDto> {
     return this.walletService.create(
       wallet.name,
       wallet.balance,
@@ -33,12 +34,18 @@ export class WalletController {
   }
 
   @Get()
-  async getByUser(@Param('id') id: string, @LoggedInUser() user: SecureUser) {
+  async getByUser(
+    @Param('id') id: string,
+    @LoggedInUser() user: SecureUser,
+  ): Promise<WalletDto[]> {
     return this.walletService.getByUser(user.username);
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string, @LoggedInUser() user: SecureUser) {
+  async getById(
+    @Param('id') id: string,
+    @LoggedInUser() user: SecureUser,
+  ): Promise<WalletDto> {
     return this.walletService.getById(id, user.username);
   }
 
@@ -52,7 +59,7 @@ export class WalletController {
     @Param('id') id: string,
     @LoggedInUser() user: SecureUser,
     @Body() updatedWallet: UpdateWalletDto,
-  ) {
+  ): Promise<WalletDto> {
     return this.walletService.updateById(
       id,
       updatedWallet.name,
@@ -65,7 +72,7 @@ export class WalletController {
   async updateBalance(
     @Param('id') id: string,
     @LoggedInUser() user: SecureUser,
-  ) {
-    // return this.walletService.recalculateCurrentBalance(id, user.username);
+  ): Promise<WalletDto> {
+    return this.walletService.recalculateCurrentBalance(id, user.username);
   }
 }

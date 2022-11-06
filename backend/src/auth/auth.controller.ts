@@ -1,3 +1,4 @@
+import { UserDto } from '@accountingapp/shared';
 import {
   Body,
   Controller,
@@ -21,18 +22,21 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@LoggedInUser() user: SecureUser) {
+  async login(@LoggedInUser() user: SecureUser): Promise<UserDto> {
     return user;
   }
 
   @UseGuards(AuthenticatedGuard)
   @Get('me')
-  async me(@LoggedInUser() user: SecureUser) {
+  async me(@LoggedInUser() user: SecureUser): Promise<UserDto> {
     return user;
   }
 
   @Post('register')
-  async register(@Request() req, @Body() user: CreateUserDto) {
+  async register(
+    @Request() req,
+    @Body() user: CreateUserDto,
+  ): Promise<UserDto> {
     return new Promise(async (resolve, reject) => {
       try {
         const newUser = await this.authService.register(
@@ -64,7 +68,7 @@ export class AuthController {
     @Request() req,
     @Body() body: ChangePasswordDto,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<UserDto> {
     return new Promise(async (resolve, reject) => {
       try {
         const newUser = await this.authService.changePassword(

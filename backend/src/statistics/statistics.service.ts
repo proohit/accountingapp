@@ -1,3 +1,9 @@
+import {
+  CategoryBalanceDataDto,
+  DailyDataDto,
+  MonthlyDataDto,
+  MonthStatusDataDto,
+} from '@accountingapp/shared';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
@@ -5,10 +11,6 @@ import isBetween from 'dayjs/plugin/isBetween';
 import { Between, LessThan, Repository } from 'typeorm';
 import Record from '../record/entities/record.entity';
 import { WalletService } from '../wallet/wallet.service';
-import { CategoryBalanceData } from './models/category-balance-data.model';
-import { DailyData } from './models/daily-data.model';
-import { MonthStatusData } from './models/month-status-data.model';
-import { MonthlyData } from './models/monthly-data.model';
 dayjs.extend(isBetween);
 
 @Injectable()
@@ -23,7 +25,7 @@ export class StatisticsService {
     username: string,
     month: number,
     year: number,
-  ): Promise<DailyData[]> {
+  ): Promise<DailyDataDto[]> {
     const recordsRepo = this.recordsRepository;
     const walletsService = this.walletService;
 
@@ -68,7 +70,7 @@ export class StatisticsService {
 
     const walletsDayData = [];
     for (const wallet of walletsOfUser) {
-      const walletData: DailyData = {
+      const walletData: DailyDataDto = {
         walletName: wallet.name,
         data: [],
       };
@@ -100,7 +102,7 @@ export class StatisticsService {
   async getMonthlyDataForYear(
     username: string,
     year: number,
-  ): Promise<MonthlyData[]> {
+  ): Promise<MonthlyDataDto[]> {
     const recordsRepo = this.recordsRepository;
     const endOfYear = dayjs().year(year).endOf('year');
     const recordsUntilYear = await recordsRepo.find({
@@ -124,7 +126,7 @@ export class StatisticsService {
       initialWalletBalances,
     );
 
-    const monthlyData: MonthlyData[] = [];
+    const monthlyData: MonthlyDataDto[] = [];
 
     const months = 12;
     for (let month = 1; month <= months; month++) {
@@ -147,7 +149,7 @@ export class StatisticsService {
     username: string,
     month: number,
     year: number,
-  ): Promise<CategoryBalanceData[]> {
+  ): Promise<CategoryBalanceDataDto[]> {
     const recordsRepo = this.recordsRepository;
     const fromDay = dayjs().year(year).month(month).startOf('month');
     const untilDay = dayjs().year(year).month(month).endOf('month');
@@ -163,7 +165,7 @@ export class StatisticsService {
       ...new Set(recordsForMonth.map((record) => record.categoryId)),
     ];
 
-    const monthlyCategoryData: CategoryBalanceData[] = [];
+    const monthlyCategoryData: CategoryBalanceDataDto[] = [];
     for (const categoryId of categoryIdsForMonth) {
       const recordsForCategory = recordsForMonth.filter(
         (record) => record.categoryId === categoryId,
@@ -184,7 +186,7 @@ export class StatisticsService {
     username: string,
     month: number,
     year: number,
-  ): Promise<MonthStatusData> {
+  ): Promise<MonthStatusDataDto> {
     const recordsRepo = this.recordsRepository;
     const fromDay = dayjs().year(year).month(month).startOf('month');
     const untilDay = dayjs().year(year).month(month).endOf('month');

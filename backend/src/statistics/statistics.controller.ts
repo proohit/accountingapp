@@ -1,10 +1,15 @@
+import {
+  DailyDataDto,
+  DailyStatisticsResultDto,
+  MonthlyStatisticsResultDto,
+  MonthStatusStatisticsResultDto,
+  StatisticsType,
+} from '@accountingapp/shared';
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { LoggedInUser } from '../auth/user.decorator';
 import { SecureUser } from '../users/entities/secure-user';
 import GetStatisticsQueryDto from './dtos/get-statistics-query.dto';
-import { DailyData, DailyStatisticsResult } from './models/daily-data.model';
-import { StatisticsType } from './models/statistics-type.model';
 import { StatisticsService } from './statistics.service';
 
 @UseGuards(AuthenticatedGuard)
@@ -16,18 +21,18 @@ export class StatisticsController {
   async getStatistics(
     @Query() query: GetStatisticsQueryDto,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<MonthlyStatisticsResultDto | DailyStatisticsResultDto> {
     const username = user.username;
     const { type: requestedType, month, year } = query;
 
     if (requestedType === StatisticsType.DAILY) {
-      const dailyData: DailyData[] =
+      const dailyData: DailyDataDto[] =
         await this.statisticsService.getDailyDataForMonth(
           username,
           month,
           year,
         );
-      const dailyDataResult: DailyStatisticsResult = {
+      const dailyDataResult: DailyStatisticsResultDto = {
         type: StatisticsType.DAILY,
         month,
         data: dailyData,
@@ -40,9 +45,10 @@ export class StatisticsController {
         username,
         year,
       );
-      const monthlyDataResult = {
+      const monthlyDataResult: MonthlyStatisticsResultDto = {
         type: StatisticsType.MONTHLY,
         data: monthlyData,
+        year,
       };
       return monthlyDataResult;
     }
@@ -75,7 +81,7 @@ export class StatisticsController {
   async getMonthStatus(
     @LoggedInUser() user: SecureUser,
     @Query() query: GetStatisticsQueryDto,
-  ) {
+  ): Promise<MonthStatusStatisticsResultDto> {
     const username = user.username;
     const { type: requestedType, month, year } = query;
     if (requestedType === StatisticsType.MONTH_STATUS) {
@@ -84,7 +90,7 @@ export class StatisticsController {
         month,
         year,
       );
-      const monthlyStatusDataResult = {
+      const monthlyStatusDataResult: MonthStatusStatisticsResultDto = {
         type: StatisticsType.MONTH_STATUS,
         month,
         data: monthlyStatusData,

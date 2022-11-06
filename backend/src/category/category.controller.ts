@@ -1,3 +1,4 @@
+import { CategoryDto } from '@accountingapp/shared';
 import {
   Body,
   Controller,
@@ -20,7 +21,9 @@ export class CategoryController {
 
   @UseGuards(AuthenticatedGuard)
   @Get()
-  getCategoriesByUser(@LoggedInUser() user: SecureUser) {
+  getCategoriesByUser(
+    @LoggedInUser() user: SecureUser,
+  ): Promise<CategoryDto[]> {
     return this.categoryService.getByUser(user.username);
   }
 
@@ -29,7 +32,7 @@ export class CategoryController {
   createCategory(
     @LoggedInUser() user: SecureUser,
     @Body() category: ManipulateCategoryDto,
-  ) {
+  ): Promise<CategoryDto> {
     return this.categoryService.create(category.name, user.username);
   }
 
@@ -45,13 +48,16 @@ export class CategoryController {
     @Param('id') id: string,
     @Body() category: ManipulateCategoryDto,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<CategoryDto> {
     return this.categoryService.updateById(id, category.name, user.username);
   }
 
   @UseGuards(AuthenticatedGuard)
   @Get(':id')
-  getCategoryById(@Param('id') id: string, @LoggedInUser() user: SecureUser) {
+  getCategoryById(
+    @Param('id') id: string,
+    @LoggedInUser() user: SecureUser,
+  ): Promise<CategoryDto> {
     return this.categoryService.getById(id, user.username);
   }
 }

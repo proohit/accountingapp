@@ -1,5 +1,5 @@
+import { AvailableWidgets } from '@accountingapp/shared';
 import { ArrayUnique, IsArray } from 'class-validator';
-import { AvailableWidgets } from '../widgets';
 
 export class UpdateSettingDto {
   @IsArray()

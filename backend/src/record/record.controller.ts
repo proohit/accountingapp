@@ -1,4 +1,8 @@
-import { SearchQuery } from '@accountingapp/shared';
+import {
+  PaginatedResultDto,
+  RecordDto,
+  SearchQueryDto,
+} from '@accountingapp/shared';
 import {
   Body,
   Controller,
@@ -53,8 +57,8 @@ export class RecordController {
   @Get()
   async getByUser(
     @LoggedInUser() user: SecureUser,
-    @Query() query: SearchQuery,
-  ) {
+    @Query() query: SearchQueryDto,
+  ): Promise<PaginatedResultDto> {
     const { username } = user;
     const {
       sortBy,
@@ -104,7 +108,10 @@ export class RecordController {
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string, @LoggedInUser() user: SecureUser) {
+  async getById(
+    @Param('id') id: string,
+    @LoggedInUser() user: SecureUser,
+  ): Promise<RecordDto> {
     const { username } = user;
 
     return this.recordService.getById(id, username);
@@ -114,7 +121,7 @@ export class RecordController {
   async getByWallet(
     @Param('walletId') walletId: string,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<RecordDto[]> {
     const { username } = user;
 
     return this.recordService.getByWallet(walletId, username);
@@ -125,7 +132,7 @@ export class RecordController {
     @Param('id') id: string,
     @Body() record: UpdateRecordDto,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<RecordDto> {
     const { username } = user;
     const { description, value, walletId, timestamp, categoryId } = record;
 
@@ -157,7 +164,7 @@ export class RecordController {
   async createManyRecords(
     @Body() body: CreateManyRecordsDto,
     @LoggedInUser() user: SecureUser,
-  ) {
+  ): Promise<RecordDto[]> {
     const { username } = user;
     const records = body.records;
 

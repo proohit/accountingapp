@@ -1,3 +1,4 @@
+import { StatisticsType } from '@accountingapp/shared';
 import {
   IsEnum,
   IsNotEmpty,
@@ -5,7 +6,6 @@ import {
   IsOptional,
   ValidateIf,
 } from 'class-validator';
-import { StatisticsType } from '../models/statistics-type.model';
 
 export default class GetStatisticsQueryDto {
   @IsEnum(StatisticsType)

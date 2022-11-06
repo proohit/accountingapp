@@ -1,9 +1,9 @@
+import { AvailableWidgets } from '@accountingapp/shared';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { DashboardSettings } from './entities/dashboard-settings.entity';
-import { AvailableWidgets } from './widgets';
 
 @Injectable()
 export class SettingsService {

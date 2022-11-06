@@ -5,6 +5,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "declaration": true,
+    "declarationMap": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "isolatedModules": true

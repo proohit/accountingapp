@@ -1,6 +1,5 @@
-import { Logger } from '@nestjs/common';
+import { DEFAULT_WIDGETS } from '@accountingapp/shared';
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { DEFAULT_WIDGETS } from '../settings/widgets';
 
 export class DashboardSettings1648214448116 implements MigrationInterface {
   name = 'DashboardSettings1648214448116';

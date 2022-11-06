@@ -1,3 +1,3 @@
-export * from './paginated-result.model';
-export * from './record.model';
-export * from './search-query.model';
+export * from './paginated-result.dto';
+export * from './record.dto';
+export * from './search-query.dto';

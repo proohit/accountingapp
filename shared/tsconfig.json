@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
     "declaration": true,
-    "declarationMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "target": "ESNext",
-    "moduleResolution": "Node"
-  }
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "isolatedModules": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

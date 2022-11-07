@@ -1,6 +1,6 @@
 {
     "name": "@accountingapp/shared",
-    "version": "0.14.2",
+    "version": "0.15.0",
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "npm run build:esm && npm run build:cjs",

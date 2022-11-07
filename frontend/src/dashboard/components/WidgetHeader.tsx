@@ -104,13 +104,15 @@ export const WidgetHeader: FunctionComponent<HeaderWidgetProps> = (props) => {
               <DragIndicator />
             </DragIcon>
             <Tooltip title="Add Widget">
-              <IconButton
-                disabled={addableWidgets?.length <= 0}
-                color="secondary"
-                onClick={openMenu}
-              >
-                <AddBox />
-              </IconButton>
+              <span>
+                <IconButton
+                  disabled={addableWidgets?.length > 0}
+                  color="secondary"
+                  onClick={openMenu}
+                >
+                  <AddBox />
+                </IconButton>
+              </span>
             </Tooltip>
             <Menu
               anchorEl={menuAnchor}

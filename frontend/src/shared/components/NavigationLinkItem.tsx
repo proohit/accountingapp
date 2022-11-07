@@ -1,3 +1,4 @@
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import {
   Collapse,
   IconButton,
@@ -5,7 +6,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Link from 'next/link';
 import React, { PropsWithChildren, useState } from 'react';
 import Routes from '../constants/Routes';
@@ -34,13 +34,8 @@ const NavigationLinkItem: React.FunctionComponent<
 
   return (
     <>
-      <Link href={link} passHref>
-        <ListItem
-          button
-          selected={active}
-          component="a"
-          onClick={() => onClick(link)}
-        >
+      <Link href={link} passHref style={{ textDecoration: 'none' }}>
+        <ListItem button selected={active} onClick={() => onClick(link)}>
           <ListItemIcon>{icon}</ListItemIcon>
           <ListItemText primary={text} />
           {children && (

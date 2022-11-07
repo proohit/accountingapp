@@ -52,12 +52,8 @@ export const AppToolbar: FunctionComponent = () => {
                     <ExitToApp />
                   </IconButton>
                 ) : (
-                  <Link href="/login" passHref>
-                    <Button
-                      color="secondary"
-                      component="a"
-                      startIcon={<AccountBox />}
-                    >
+                  <Link href="/login">
+                    <Button color="secondary" startIcon={<AccountBox />}>
                       Login
                     </Button>
                   </Link>

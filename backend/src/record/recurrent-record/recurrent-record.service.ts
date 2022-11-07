@@ -1,3 +1,4 @@
+import { Periodicity, PlannedRecurrentRecordDto } from '@accountingapp/shared';
 import {
   BadRequestException,
   forwardRef,
@@ -13,7 +14,6 @@ import { User } from '../../users/entities/user.entity';
 import { WalletService } from '../../wallet/wallet.service';
 import { RecordService } from '../record.service';
 import { RecurrentRecord } from './entities/recurrent-record.entity';
-import PlannedRecurrentRecord from './models/planned-recurrent-record.model';
 import { RecurrentRecordSchedulerService } from './recurrent-record-scheduler.service';
 
 @Injectable()
@@ -138,11 +138,9 @@ export class RecurrentRecordService {
 
     const walletOfRecord = await this.walletService.getById(walletId, username);
 
-    let newEndDate: Dayjs | string = dayjs(endDate);
+    let newEndDate: Dayjs = dayjs(endDate);
     if (!newEndDate.isValid()) {
       newEndDate = null;
-    } else {
-      newEndDate = newEndDate.toISOString();
     }
 
     const updatedRecord = await recurrentRecordRepo.save({
@@ -150,7 +148,7 @@ export class RecurrentRecordService {
       description:
         description === '' ? '' : description || recurrentRecord.description,
       value: Number.isNaN(value) ? recurrentRecord.value : value,
-      endDate: newEndDate,
+      endDate: newEndDate?.toISOString(),
       startDate: dayjs(startDate).toISOString() || recurrentRecord.startDate,
       periodicity: periodicity || recurrentRecord.periodicity,
       ownerUsername: username,
@@ -163,21 +161,23 @@ export class RecurrentRecordService {
 
   async getByUser(
     username: User['username'],
-  ): Promise<PlannedRecurrentRecord[]> {
+  ): Promise<PlannedRecurrentRecordDto[]> {
     const records: RecurrentRecord[] =
       await this.recurrentRecordRepository.findBy({ ownerUsername: username });
     const nextInvocations =
       this.recurrentRecordSchedulerService.getNextInvocations(records);
 
-    const plannedRecurrentRecords: PlannedRecurrentRecord[] = [];
+    const plannedRecurrentRecords: PlannedRecurrentRecordDto[] = [];
     if (Array.isArray(nextInvocations)) {
       nextInvocations.forEach((nextInvocation) => {
         const idx = records.findIndex(
           (record) => record.id === nextInvocation.id,
         );
+        const record = records[idx];
         if (idx >= 0) {
           plannedRecurrentRecords.push({
-            ...records[idx],
+            ...record,
+            periodicity: record.periodicity as Periodicity,
             nextInvocation: nextInvocation.nextInvocation,
           });
         }

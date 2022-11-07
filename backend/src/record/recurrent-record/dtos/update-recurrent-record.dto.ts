@@ -1,3 +1,4 @@
+import { Periodicity } from '@accountingapp/shared';
 import {
   IsDateString,
   IsEnum,
@@ -6,8 +7,9 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Validate,
 } from 'class-validator';
-import Periodicity from '../models/periodicity.model';
+import { DateValidator } from '../../../shared/dtos/date-validator.dto';
 
 export default class UpdateRecurrentRecordDto {
   @IsNumber()
@@ -24,12 +26,14 @@ export default class UpdateRecurrentRecordDto {
   periodicity: string;
 
   @IsDateString()
+  @Validate(DateValidator)
   @IsOptional()
-  startDate: Date;
+  startDate: string;
 
   @IsDateString()
+  @Validate(DateValidator)
   @IsOptional()
-  endDate?: Date;
+  endDate?: string;
 
   @IsUUID()
   @IsOptional()

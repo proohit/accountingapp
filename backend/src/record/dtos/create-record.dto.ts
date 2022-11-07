@@ -6,7 +6,9 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Validate,
 } from 'class-validator';
+import { DateValidator } from '../../shared/dtos/date-validator.dto';
 
 export default class CreateRecordDto {
   @IsDefined()
@@ -24,6 +26,7 @@ export default class CreateRecordDto {
 
   @IsNotEmpty()
   @IsDateString()
+  @Validate(DateValidator)
   timestamp: string;
 
   @IsNotEmpty()

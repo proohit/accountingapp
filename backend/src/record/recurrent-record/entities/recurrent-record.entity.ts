@@ -19,10 +19,10 @@ export class RecurrentRecord {
   description?: string;
   @Column()
   periodicity: string;
-  @Column()
-  startDate: Date;
-  @Column({ nullable: true })
-  endDate?: Date;
+  @Column({ type: 'datetime' })
+  startDate: string;
+  @Column({ type: 'datetime', nullable: true })
+  endDate?: string;
   @Column()
   walletId: string;
   @Column()

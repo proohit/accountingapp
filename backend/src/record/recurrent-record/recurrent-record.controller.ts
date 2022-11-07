@@ -1,4 +1,9 @@
 import {
+  Periodicity,
+  PlannedRecurrentRecordDto,
+  RecurrentRecordDto,
+} from '@accountingapp/shared';
+import {
   Body,
   Controller,
   Delete,
@@ -25,7 +30,9 @@ export class RecurrentRecordController {
   ) {}
 
   @Get()
-  async getByUser(@LoggedInUser() user: SecureUser) {
+  async getByUser(
+    @LoggedInUser() user: SecureUser,
+  ): Promise<PlannedRecurrentRecordDto[]> {
     const { username } = user;
 
     return this.recurrentRecordService.getByUser(username);
@@ -35,7 +42,7 @@ export class RecurrentRecordController {
   async createNewRecurrentRecord(
     @LoggedInUser() user: SecureUser,
     @Body() body: CreateRecurrentRecordDto,
-  ) {
+  ): Promise<RecurrentRecordDto> {
     const { username } = user;
     const {
       description,
@@ -57,10 +64,15 @@ export class RecurrentRecordController {
     recurrentRecord.startDate = startDate;
     recurrentRecord.ownerUsername = username;
 
-    return this.recurrentRecordService.createRecurrentRecord(
-      recurrentRecord,
-      username,
-    );
+    const newRecurrentRecord =
+      await this.recurrentRecordService.createRecurrentRecord(
+        recurrentRecord,
+        username,
+      );
+    return {
+      ...newRecurrentRecord,
+      periodicity: newRecurrentRecord.periodicity as Periodicity,
+    };
   }
 
   @Delete(':id')
@@ -102,8 +114,10 @@ export class RecurrentRecordController {
     recurrentRecord.walletId = updatedWalletId;
     recurrentRecord.description = updatedDescription;
     recurrentRecord.value = updatedValue;
-    recurrentRecord.endDate = dayjs(updatedEndDate).toDate();
-    recurrentRecord.startDate = dayjs(updatedStartDate).toDate();
+    recurrentRecord.endDate = updatedEndDate
+      ? dayjs(updatedEndDate).toISOString()
+      : null;
+    recurrentRecord.startDate = dayjs(updatedStartDate).toISOString();
     recurrentRecord.periodicity = updatedPeriodicity;
     recurrentRecord.ownerUsername = username;
 

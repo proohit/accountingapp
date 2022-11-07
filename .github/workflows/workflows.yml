@@ -31,6 +31,7 @@ jobs:
           npm run build:shared
       - name: Build Frontend
         run: |
+          echo ${{ secrets.FRONTEND_ENV }} > frontend/.env
           npm run build:frontend
       - name: Deploy
         uses: appleboy/scp-action@master

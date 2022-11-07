@@ -1,5 +1,6 @@
 import { AccHeaderBuilder } from '../services/AccHeaderBuilder';
 import { Error } from './Error';
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_HOST;
 
 export interface HttpService {
   get<R>(url: string, query?: string[][]): Promise<R>;
@@ -30,7 +31,7 @@ class BaseApi implements HttpService {
           .map((singleQuery) => `${singleQuery[0]}=${singleQuery[1]}`)
           .join('&')}`
       : '';
-    const finalUrl = `${url}${httpQuery}`;
+    const finalUrl = `${BASE_URL}${url}${httpQuery}`;
     return this.tryFetch<R>(finalUrl, {
       method: 'GET',
       headers: headerBuilder.getHeader(),
@@ -45,11 +46,11 @@ class BaseApi implements HttpService {
       headers: headerBuilder.getHeader(),
       credentials: 'include',
     };
-    return this.tryFetch<R>(`${url}`, fetchConfig);
+    return this.tryFetch<R>(`${BASE_URL}${url}`, fetchConfig);
   }
   async put<C, R>(url: string, body: C): Promise<R> {
     const headerBuilder = new AccHeaderBuilder();
-    return this.tryFetch<R>(`${url}`, {
+    return this.tryFetch<R>(`${BASE_URL}${url}`, {
       method: 'PUT',
       headers: headerBuilder.getHeader(),
       body: JSON.stringify(body),
@@ -58,7 +59,7 @@ class BaseApi implements HttpService {
   }
   async delete<R>(url: string): Promise<R> {
     const headerBuilder = new AccHeaderBuilder();
-    return this.tryFetch<R>(`${url}`, {
+    return this.tryFetch<R>(`${BASE_URL}${url}`, {
       method: 'DELETE',
       headers: headerBuilder.getHeader(),
       credentials: 'include',

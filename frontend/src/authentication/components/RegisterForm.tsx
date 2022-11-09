@@ -15,9 +15,9 @@ import { FunctionComponent, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import * as yup from 'yup';
 import { notificationState } from '../../shared/hooks/notificationState';
+import { registerGreetingState } from '../hooks/registerGreetingState';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
-import { registerGreetingState } from './registerGreetingState';
 
 export const RegisterForm: FunctionComponent = () => {
   const [registerGreeting, setRegisterGreeting] = useRecoilState(

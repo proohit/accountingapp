@@ -2,12 +2,12 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import { useRouter } from 'next/dist/client/router';
 import React, { Fragment, PropsWithChildren, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
+import { registerGreetingState } from '../hooks/registerGreetingState';
 import { useAuthentication } from '../hooks/useAuthentication';
 import {
   isAuthenticationRoute,
   isOfflineRoute,
 } from '../services/RoutingService';
-import { registerGreetingState } from './registerGreetingState';
 
 const Authenticated: React.FunctionComponent<PropsWithChildren> = (props) => {
   const router = useRouter();

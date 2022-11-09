@@ -9,81 +9,56 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { useFormik } from 'formik';
 import Link from 'next/link';
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import * as yup from 'yup';
 import { notificationState } from '../../shared/hooks/notificationState';
 import { useAuthentication } from '../hooks/useAuthentication';
 import { AUTHENTICATION_API } from '../services/AuthenticationApi';
-import {
-  getEmailValidationError,
-  getPasswordValidationError,
-  getUsernameValidationError,
-} from '../services/AuthenticationValidator';
 import { registerGreetingState } from './registerGreetingState';
 
-const useStyles = makeStyles()((theme) => ({
-  paper: {
-    marginTop: theme.spacing(10),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
-
 export const RegisterForm: FunctionComponent = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [isValid, setIsValid] = useState(false);
-
   const [registerGreeting, setRegisterGreeting] = useRecoilState(
     registerGreetingState
   );
   const setNotification = useSetRecoilState(notificationState);
   const [registerLoading, setRegisterLoading] = useState(false);
-  const { classes } = useStyles();
+
   const {
     offlineLogin,
     isLoginLoading,
     username: loggedInUsername,
   } = useAuthentication();
 
-  const validateUsername = () => {
-    let error = getUsernameValidationError(username);
-    setUsernameError(error);
-    setIsValid(
-      !getPasswordValidationError(password) &&
-        !getEmailValidationError(email) &&
-        !error
-    );
-  };
+  const { errors, handleSubmit, handleChange } = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+      passwordConfirmation: '',
+      email: '',
+    },
+    validateOnChange: false,
+    validationSchema: yup.object().shape({
+      username: yup.string().required('Please enter your username'),
+      password: yup.string().required('Please enter your password'),
+      passwordConfirmation: yup
+        .string()
+        .required('Please confirm your password')
+        .oneOf([yup.ref('password'), null], 'Passwords must match'),
+      email: yup.string().email('Please enter a valid email address'),
+    }),
+    onSubmit: (values) => {
+      attemptRegister(values.username, values.password, values.email);
+    },
+  });
 
-  const validatePassword = () => {
-    let error = getPasswordValidationError(password);
-    setPasswordError(error);
-    setIsValid(
-      !getUsernameValidationError(username) &&
-        !getEmailValidationError(email) &&
-        !error
-    );
-  };
-
-  const validateEmail = () => {
-    let error = getEmailValidationError(email);
-    setEmailError(error);
-    setIsValid(
-      !getUsernameValidationError(username) &&
-        !getPasswordValidationError(password) &&
-        !error
-    );
-  };
-
-  const handleSubmit = async () => {
+  const attemptRegister = async (
+    username: string,
+    password: string,
+    email: string
+  ) => {
     setRegisterLoading(true);
     try {
       const createdUser = await AUTHENTICATION_API.register(
@@ -97,14 +72,6 @@ export const RegisterForm: FunctionComponent = () => {
       setNotification({ severity: 'error', content: err?.message });
     } finally {
       setRegisterLoading(false);
-    }
-  };
-
-  const handleEnterPress = (
-    event: React.KeyboardEvent<HTMLDivElement>
-  ): void => {
-    if (event.key === 'Enter' && isValid) {
-      handleSubmit();
     }
   };
 
@@ -141,71 +108,84 @@ export const RegisterForm: FunctionComponent = () => {
           container
           direction="row"
           justifyContent="center"
-          className={classes.paper}
+          sx={{
+            mt: 10,
+          }}
         >
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-            autoFocus
-            error={!!usernameError}
-            helperText={usernameError}
-            onBlur={() => validateUsername()}
-            onKeyPress={handleEnterPress}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            error={!!emailError}
-            helperText={emailError}
-            onBlur={() => validateEmail()}
-            onKeyPress={handleEnterPress}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            error={!!passwordError}
-            helperText={passwordError}
-            onBlur={() => validatePassword()}
-            onKeyPress={handleEnterPress}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          {(isLoginLoading || registerLoading) && <LinearProgress />}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            disabled={!isValid}
-            onClick={handleSubmit}
-          >
-            Register
-          </Button>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              autoFocus
+              error={!!errors.username}
+              helperText={errors.username}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              error={!!errors.email}
+              helperText={errors.email}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              error={!!errors.password}
+              helperText={errors.password}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="passwordConfirmation"
+              label="Confirm Password"
+              type="password"
+              id="passwordConfirmation"
+              autoComplete="current-password"
+              error={!!errors.passwordConfirmation}
+              helperText={errors.passwordConfirmation}
+              onChange={handleChange}
+            />
+            {(isLoginLoading || registerLoading) && <LinearProgress />}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{
+                mt: 3,
+                mb: 2,
+              }}
+            >
+              Register
+            </Button>
+          </form>
           <Typography variant="body2">
             Or{' '}
             <Link href="/login" passHref>

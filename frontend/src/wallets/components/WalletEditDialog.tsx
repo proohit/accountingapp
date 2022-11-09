@@ -10,7 +10,7 @@ import {
   IconButton,
   LinearProgress,
 } from '@mui/material';
-import { useState } from 'react';
+import { useWalletForm } from '../hooks/useWalletForm';
 import { WalletForm } from './WalletForm';
 
 interface WalletEditDialogProps {
@@ -32,8 +32,20 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
     isLoading,
   } = props;
 
-  const [editedWallet, setEditedWallet] = useState<WalletDto>(null);
-  const [isFormValid, setIsFormValid] = useState(false);
+  const walletForm = useWalletForm(
+    {
+      onSubmit: (values) => {
+        onEditRecord({
+          ...wallet,
+          name: values.name,
+          balance: Number(values.balance),
+          ownerUsername: owner,
+        });
+      },
+      validateOnChange: false,
+    },
+    { balance: wallet.balance.toString(), name: wallet.name }
+  );
 
   return (
     <Dialog open={true} onClose={onDialogClose}>
@@ -59,12 +71,7 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <WalletForm
-          owner={owner}
-          wallet={wallet}
-          onFormValidChanged={setIsFormValid}
-          onWalletChange={setEditedWallet}
-        />
+        <WalletForm walletForm={walletForm} />
         {isLoading && <LinearProgress />}
       </DialogContent>
       <DialogActions>
@@ -73,9 +80,11 @@ export const WalletEditDialog = (props: WalletEditDialogProps) => {
         </Button>
         <Button
           color="primary"
-          onClick={() => onEditRecord(editedWallet)}
           variant="contained"
-          disabled={!isFormValid}
+          type="submit"
+          form="walletForm"
+          onClick={() => walletForm.submitForm()}
+          disabled={isLoading}
         >
           Submit
         </Button>

@@ -7,7 +7,7 @@ import {
   DialogTitle,
   LinearProgress,
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useWalletForm } from '../hooks/useWalletForm';
 import { WalletForm } from './WalletForm';
 
 interface WalletAddDialogProps {
@@ -19,18 +19,25 @@ interface WalletAddDialogProps {
 
 export const WalletAddDialog = (props: WalletAddDialogProps) => {
   const { onDialogClose, onAddWallet, owner, isLoading } = props;
-  const [walletToAdd, setWalletToAdd] = useState<WalletDto>(null);
-  const [isFormValid, setIsFormValid] = useState(false);
+
+  const walletForm = useWalletForm({
+    onSubmit: (values) => {
+      onAddWallet({
+        id: undefined,
+        currentBalance: undefined,
+        name: values.name,
+        balance: Number(values.balance),
+        ownerUsername: owner,
+      });
+    },
+    validateOnChange: false,
+  });
 
   return (
     <Dialog open={true} onClose={onDialogClose}>
       <DialogTitle>Add Wallet</DialogTitle>
       <DialogContent>
-        <WalletForm
-          onFormValidChanged={setIsFormValid}
-          onWalletChange={setWalletToAdd}
-          owner={owner}
-        />
+        <WalletForm walletForm={walletForm} />
         {isLoading && <LinearProgress />}
       </DialogContent>
       <DialogActions>
@@ -43,9 +50,10 @@ export const WalletAddDialog = (props: WalletAddDialogProps) => {
         </Button>
         <Button
           color="secondary"
-          onClick={() => onAddWallet(walletToAdd)}
+          onClick={() => walletForm.submitForm()}
           variant="contained"
-          disabled={!isFormValid}
+          type="submit"
+          form="wallet-form"
         >
           Submit
         </Button>

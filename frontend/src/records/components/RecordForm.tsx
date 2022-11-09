@@ -108,7 +108,7 @@ export const RecordForm = (props: RecordFormProps) => {
             onWalletChange={handleChange}
             walletName={formFields.walletName}
             wallets={wallets}
-            errorText={formErrors.walletName as string}
+            errorText={formErrors.walletName}
           />
         </Grid>
         <Grid item>

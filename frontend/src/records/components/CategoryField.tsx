@@ -76,7 +76,6 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
         if (option.inputValue) {
           return option.inputValue;
         }
-        return option.name;
       }}
       fullWidth
       renderOption={(optionProps, option) => (
@@ -86,7 +85,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="category"
+          label="Category"
           error={!!errorText}
           helperText={errorText}
           variant="outlined"

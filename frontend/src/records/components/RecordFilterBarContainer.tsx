@@ -6,20 +6,21 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { makeStyles } from 'tss-react/mui';
+import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
-import React, { FunctionComponent, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useFormik } from 'formik';
+import { FunctionComponent, useEffect } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { makeStyles } from 'tss-react/mui';
 import { useWalletsQuery } from '../../wallets/hooks/walletsQueries';
 import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { currentFilterState } from '../hooks/currentQueryState';
 import { filterRecordDialogState } from '../hooks/recordsDialogsState';
-import { getCategoryByName } from '../utils/categoryUtils';
+import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
 import { WalletField } from './WalletField';
-import { DatePicker } from '@mui/x-date-pickers';
 
 const styles = makeStyles()((theme) => ({
   filterBar: {
@@ -32,21 +33,61 @@ const styles = makeStyles()((theme) => ({
 }));
 
 export const RecordFilterBarContainer: FunctionComponent = (props) => {
-  const setCurrentFilters = useSetRecoilState(currentFilterState);
+  const [currentFilters, setCurrentFilters] =
+    useRecoilState(currentFilterState);
   const setFilterRecordsDialog = useSetRecoilState(filterRecordDialogState);
-  const [description, setDescription] = useState('');
-  const [categoryName, setCategoryName] = useState('all');
-  const [walletName, setWalletName] = useState('all');
-
-  const [timestampFrom, setTimestampFrom] = useState(null);
-  const [timestampTo, setTimestampTo] = useState(null);
   const { data: categories, isLoading: categoriesLoading } =
     useCategoriesQuery();
   const { data: wallets, isLoading: walletsLoading } = useWalletsQuery();
 
+  const {
+    handleSubmit,
+    values,
+    handleChange,
+    setFieldValue,
+    resetForm,
+    setValues,
+  } = useFormik({
+    initialValues: {
+      walletName: 'all',
+      categoryName: 'all',
+      description: '',
+      timestampFrom: null,
+      timestampTo: null,
+    },
+    onSubmit: (values) => {
+      applyFilter(
+        values.description,
+        values.walletName,
+        values.categoryName,
+        values.timestampFrom,
+        values.timestampTo
+      );
+    },
+  });
+
+  useEffect(() => {
+    setValues({
+      walletName:
+        WalletUtils.getWalletById(wallets, currentFilters.walletId)?.name ||
+        'all',
+      categoryName:
+        getCategoryById(categories, currentFilters.categoryId)?.name || 'all',
+      description: currentFilters.description || '',
+      timestampFrom: currentFilters.timestampFrom || null,
+      timestampTo: currentFilters.timestampTo || null,
+    });
+  }, [categories, wallets, currentFilters, setValues]);
+
   const { classes } = styles();
 
-  const applyFilter = () => {
+  const applyFilter = (
+    description: string,
+    walletName: string,
+    categoryName: string,
+    timestampFrom: string,
+    timestampTo: string
+  ) => {
     setCurrentFilters({
       description,
       categoryId: getCategoryByName(categories, categoryName)?.id,
@@ -60,18 +101,8 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
   };
 
   const resetFilter = () => {
-    setDescription('');
-    setWalletName('all');
-    setCategoryName('all');
-    setTimestampFrom(null);
-    setTimestampTo(null);
-    setCurrentFilters({
-      description: undefined,
-      categoryId: undefined,
-      timestampFrom: undefined,
-      timestampTo: undefined,
-      walletId: undefined,
-    });
+    resetForm();
+    applyFilter('', 'all', 'all', null, null);
   };
 
   if (categoriesLoading || walletsLoading) {
@@ -79,85 +110,86 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
   }
 
   return (
-    <Grid
-      container
-      direction="column"
-      className={classes.filterBar}
-      spacing={2}
-    >
-      <Grid item>
-        <Typography variant="h6" align="center">
-          Filter Records
-        </Typography>
+    <form onSubmit={handleSubmit}>
+      <Grid
+        container
+        direction="column"
+        className={classes.filterBar}
+        spacing={2}
+      >
+        <Grid item>
+          <Typography variant="h6" align="center">
+            Filter Records
+          </Typography>
+        </Grid>
+        <Divider />
+        <Grid item>
+          <DescriptionField
+            description={values.description}
+            onDescriptionChange={handleChange}
+          />
+        </Grid>
+        <Grid item>
+          <WalletField
+            withAll
+            walletName={values.walletName}
+            onWalletChange={handleChange}
+            wallets={wallets}
+          />
+        </Grid>
+        <Grid item>
+          <CategoryField
+            withAll
+            categoryName={values.categoryName}
+            onCategoryChange={(newCategoryName) =>
+              setFieldValue('categoryName', newCategoryName)
+            }
+            categories={categories}
+          />
+        </Grid>
+        <Grid item>
+          <DatePicker
+            renderInput={(inputProps) => (
+              <TextField
+                {...inputProps}
+                fullWidth
+                name="timestampFrom"
+                label="From Timestamp"
+                color="secondary"
+                variant="outlined"
+              />
+            )}
+            value={values.timestampFrom}
+            onChange={(date) => setFieldValue('timestampFrom', date)}
+            maxDate={dayjs(values.timestampTo)}
+          />
+        </Grid>
+        <Grid item>
+          <DatePicker
+            renderInput={(inputProps) => (
+              <TextField
+                {...inputProps}
+                fullWidth
+                name="timestampTo"
+                label="To Timestamp"
+                color="secondary"
+                variant="outlined"
+              />
+            )}
+            value={values.timestampTo}
+            onChange={(date) => setFieldValue('timestampTo', date)}
+            minDate={dayjs(values.timestampFrom)}
+          />
+        </Grid>
+        <Grid item xs container justifyContent="space-around">
+          <Button variant="outlined" color="primary" onClick={resetFilter}>
+            Reset
+          </Button>
+          <Button variant="contained" color="secondary" type="submit">
+            Filter
+          </Button>
+        </Grid>
       </Grid>
-      <Divider />
-      <Grid item>
-        <DescriptionField
-          description={description}
-          onDescriptionChange={(event) =>
-            setDescription(event.target.value || event.currentTarget.value)
-          }
-        />
-      </Grid>
-      <Grid item>
-        <WalletField
-          withAll
-          walletName={walletName}
-          onWalletChange={(event) => setWalletName(event.target.value)}
-          wallets={wallets}
-        />
-      </Grid>
-      <Grid item>
-        <CategoryField
-          withAll
-          categoryName={categoryName}
-          onCategoryChange={setCategoryName}
-          categories={categories}
-          withNew={false}
-        />
-      </Grid>
-      <Grid item>
-        <DatePicker
-          renderInput={(inputProps) => (
-            <TextField
-              {...inputProps}
-              fullWidth
-              name="timestampFrom"
-              label="From Timestamp"
-              color="secondary"
-              variant="outlined"
-            />
-          )}
-          value={timestampFrom}
-          onChange={setTimestampFrom}
-          maxDate={dayjs(timestampTo)}
-        />
-      </Grid>
-      <Grid item>
-        <DatePicker
-          renderInput={(inputProps) => (
-            <TextField
-              {...inputProps}
-              fullWidth
-              name="timestampTo"
-              label="To Timestamp"
-              color="secondary"
-              variant="outlined"
-            />
-          )}
-          value={timestampTo}
-          onChange={setTimestampTo}
-          minDate={dayjs(timestampFrom)}
-        />
-      </Grid>
-      <Grid item xs container justifyContent="space-around">
-        <Button variant="outlined" color="primary" onClick={resetFilter}>
-          Reset
-        </Button>
-        <Button variant="contained" color="secondary" onClick={applyFilter}>
-          Filter
-        </Button>
-      </Grid>
-    </Grid>
+    </form>
   );
 };

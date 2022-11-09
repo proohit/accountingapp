@@ -1,5 +1,4 @@
-import { Snackbar } from '@mui/material';
-import { Alert } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { notificationState } from '../hooks/notificationState';
 
@@ -15,6 +14,7 @@ const NotificationBar: React.FC = () => {
       open={!!notification}
       autoHideDuration={6000}
       onClose={resetNotification}
+      anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
     >
       {notification && (
         <Alert onClose={resetNotification} severity={notification.severity}>

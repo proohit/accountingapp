@@ -40,6 +40,7 @@ const RecordImportContainer: React.FC = (props) => {
   const { data: categories } = useCategoriesQuery();
   const { data: wallets } = useWalletsQuery();
   const { data: format } = useFormatState();
+  const [localImportLoading, setLocalImportLoading] = React.useState(false);
   const { mutateAsync: createManyRecords, isLoading: importLoading } =
     useCreateManyRecordsMutation();
   const { values, handleSubmit, handleChange, setValues } = useFormik<{
@@ -86,6 +87,7 @@ const RecordImportContainer: React.FC = (props) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
+    setLocalImportLoading(true);
     if (file) {
       const recordsFromFile = await createNewRecordsFromMt940File(
         file,
@@ -99,6 +101,7 @@ const RecordImportContainer: React.FC = (props) => {
         (record) => !existingReferences.includes(record.externalReference)
       );
       setValues({ newRecords });
+      setLocalImportLoading(false);
       event.target.value = '';
       if (existingReferences.length > 0) {
         setNotificationState({
@@ -157,6 +160,7 @@ const RecordImportContainer: React.FC = (props) => {
       </Grid>
       <Grid item xs>
         <Typography variant="h6">Import editor</Typography>
+        {localImportLoading && <LinearProgress />}
         {showNewRecords && (
           <form onSubmit={handleSubmit} id="import-form">
             <RecordsTable>

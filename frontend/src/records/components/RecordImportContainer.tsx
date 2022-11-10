@@ -14,6 +14,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
@@ -23,6 +24,7 @@ import { WalletUtils } from '../../wallets/utils/walletUtils';
 import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { importRecordDialogState } from '../hooks/recordsDialogsState';
 import { useCreateManyRecordsMutation } from '../hooks/recordsQueries';
+import { useFormatState } from '../hooks/useFormatState';
 import { createNewRecordsFromMt940File } from '../services/ImportService';
 import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
@@ -37,6 +39,7 @@ const RecordImportContainer: React.FC = (props) => {
   const [importType, setImportType] = React.useState('mt940');
   const { data: categories } = useCategoriesQuery();
   const { data: wallets } = useWalletsQuery();
+  const { data: format } = useFormatState();
   const { mutateAsync: createManyRecords, isLoading: importLoading } =
     useCreateManyRecordsMutation();
   const { values, handleSubmit, handleChange, setValues } = useFormik<{
@@ -126,7 +129,7 @@ const RecordImportContainer: React.FC = (props) => {
 
   const showNewRecords = values.newRecords.length > 0 && categories && wallets;
 
-  const removeRecord = (index) => {
+  const removeRecord = (index: number) => {
     const updatedRecords = [...values.newRecords];
     updatedRecords.splice(index, 1);
     setValues({ newRecords: updatedRecords });
@@ -194,7 +197,9 @@ const RecordImportContainer: React.FC = (props) => {
                         }
                       />
                     </TableCell>
-                    <TableCell>{record.timestamp}</TableCell>
+                    <TableCell>
+                      {dayjs(record.timestamp).format(format.dateTimeFormat)}
+                    </TableCell>
                     <TableCell>{record.value}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => removeRecord(index)}>

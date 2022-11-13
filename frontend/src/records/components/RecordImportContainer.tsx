@@ -93,8 +93,7 @@ const RecordImportContainer: React.FC = (props) => {
     setLocalImportLoading(true);
     if (files?.length) {
       let recordsFromFiles: RecordDto[] = [];
-      for (let fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
-        const file = files[fileIndex];
+      for (const file of files) {
         if (importType === 'mt940') {
           const newRecords = await MT940ImportService.createRecordsFromFile(
             file,

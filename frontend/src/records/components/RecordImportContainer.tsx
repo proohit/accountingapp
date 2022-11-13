@@ -26,8 +26,8 @@ import { importRecordDialogState } from '../hooks/recordsDialogsState';
 import { useCreateManyRecordsMutation } from '../hooks/recordsQueries';
 import { useFormatState } from '../hooks/useFormatState';
 import {
-  createNewRecordsFromCamt052File,
-  createNewRecordsFromMt940File,
+  Camt052ImportService,
+  MT940ImportService,
 } from '../services/ImportService';
 import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
@@ -96,7 +96,7 @@ const RecordImportContainer: React.FC = (props) => {
       for (let fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
         const file = files[fileIndex];
         if (importType === 'mt940') {
-          const newRecords = await createNewRecordsFromMt940File(
+          const newRecords = await MT940ImportService.createRecordsFromFile(
             file,
             wallets[0].id,
             categories[0].id
@@ -104,7 +104,7 @@ const RecordImportContainer: React.FC = (props) => {
           recordsFromFiles.push(...newRecords);
         }
         if (importType === 'camt052') {
-          const newRecords = await createNewRecordsFromCamt052File(
+          const newRecords = await Camt052ImportService.createRecordsFromFile(
             file,
             wallets[0].id,
             categories[0].id

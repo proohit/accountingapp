@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.12",
     "@mui/x-date-pickers": "^5.0.6",
+    "camtjs": "^0.0.4",
     "dayjs": "^1.11.6",
     "formik": "^2.2.9",
     "mt940js": "^1.3.5",

@@ -1,4 +1,4 @@
-import { RecordDto as Record } from '@accountingapp/shared';
+import { RecordDto as Record, RecordDto } from '@accountingapp/shared';
 import { Delete } from '@mui/icons-material';
 import {
   Button,
@@ -25,7 +25,10 @@ import { useCategoriesQuery } from '../hooks/categoriesQueries';
 import { importRecordDialogState } from '../hooks/recordsDialogsState';
 import { useCreateManyRecordsMutation } from '../hooks/recordsQueries';
 import { useFormatState } from '../hooks/useFormatState';
-import { createNewRecordsFromMt940File } from '../services/ImportService';
+import {
+  createNewRecordsFromCamt052File,
+  createNewRecordsFromMt940File,
+} from '../services/ImportService';
 import { RecordsApiService } from '../services/RecordsApi';
 import { getCategoryById, getCategoryByName } from '../utils/categoryUtils';
 import { CategoryField } from './CategoryField';
@@ -86,29 +89,46 @@ const RecordImportContainer: React.FC = (props) => {
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.target.files?.[0];
+    const files = event.target.files;
     setLocalImportLoading(true);
-    if (file) {
-      const recordsFromFile = await createNewRecordsFromMt940File(
-        file,
-        wallets[0].id,
-        categories[0].id
-      );
-      const existingReferences = await api.checkIfExternalReferencesExist(
-        recordsFromFile?.map((record) => record.externalReference)
-      );
-      const newRecords = recordsFromFile.filter(
-        (record) => !existingReferences.includes(record.externalReference)
-      );
-      setValues({ newRecords });
+    if (files?.length) {
+      let recordsFromFiles: RecordDto[] = [];
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+        const file = files[fileIndex];
+        if (importType === 'mt940') {
+          const newRecords = await createNewRecordsFromMt940File(
+            file,
+            wallets[0].id,
+            categories[0].id
+          );
+          recordsFromFiles.push(...newRecords);
+        }
+        if (importType === 'camt052') {
+          const newRecords = await createNewRecordsFromCamt052File(
+            file,
+            wallets[0].id,
+            categories[0].id
+          );
+          recordsFromFiles.push(...newRecords);
+        }
+      }
+      if (recordsFromFiles?.length) {
+        const existingReferences = await api.checkIfExternalReferencesExist(
+          recordsFromFiles?.map((record) => record.externalReference)
+        );
+        if (existingReferences.length > 0) {
+          setNotificationState({
+            content: `Some records have already been imported. They will not be imported again.`,
+            severity: 'info',
+          });
+        }
+        const newRecords = recordsFromFiles.filter(
+          (record) => !existingReferences.includes(record.externalReference)
+        );
+        setValues({ newRecords });
+      }
       setLocalImportLoading(false);
       event.target.value = '';
-      if (existingReferences.length > 0) {
-        setNotificationState({
-          content: `Some records have already been imported. They will not be imported again.`,
-          severity: 'info',
-        });
-      }
     }
   };
 
@@ -152,12 +172,18 @@ const RecordImportContainer: React.FC = (props) => {
             control={<Radio />}
             label="MT940"
           />
+          <FormControlLabel
+            disabled={importLoading}
+            value="camt052"
+            control={<Radio />}
+            label="Camt052"
+          />
         </RadioGroup>
-        <Button disabled={importLoading} variant="contained" component="label">
-          Upload File
-          <input type="file" hidden onChange={handleFileUpload} />
-        </Button>
       </Grid>
+      <Button disabled={importLoading} variant="contained" component="label">
+        Upload File
+        <input type="file" multiple hidden onChange={handleFileUpload} />
+      </Button>
       <Grid item xs>
         <Typography variant="h6">Import editor</Typography>
         {localImportLoading && <LinearProgress />}

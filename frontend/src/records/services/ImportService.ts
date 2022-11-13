@@ -1,6 +1,6 @@
 import { RecordDto } from '@accountingapp/shared';
+import { Entry } from 'camtjs';
 import dayjs from 'dayjs';
-import hash from 'object-hash';
 
 const createDescriptionFromTransaction = (transaction: any) => {
   const { structuredDetails, details } = transaction;
@@ -55,6 +55,8 @@ export const createNewRecordsFromMt940File = async (
   defaultCategoryId: RecordDto['categoryId']
 ) => {
   const mt940 = await import('mt940js');
+  const hash = await import('object-hash');
+
   const parser = new mt940.Parser();
   const fileContent = await file.text();
   const statements = parser.parse(fileContent);
@@ -69,6 +71,42 @@ export const createNewRecordsFromMt940File = async (
     categoryId: defaultCategoryId,
     walletId: defaultWalletId,
     externalReference: hash(transaction),
+  }));
+
+  return newRecords;
+};
+
+const createDescriptionFromCamtEntry = (entry: Entry) => {
+  const creditor =
+    entry.entryDetails.transactionDetails.relatedParties.creditor.party.name;
+  const details =
+    entry.entryDetails.transactionDetails.remittanceInformation.unstructured;
+
+  return `${creditor}\n${details}`;
+};
+
+export const createNewRecordsFromCamt052File = async (
+  file: File,
+  defaultWalletId: RecordDto['walletId'],
+  defaultCategoryId: RecordDto['categoryId']
+) => {
+  const { Camt052 } = await import('camtjs');
+  const fileContent = await file.text();
+  const camt052 = await Camt052.parseCamt(fileContent);
+  const entries = camt052.document.messageRoot.report.entry;
+  console.log(camt052.document);
+  console.log(entries);
+  const newRecords: RecordDto[] = entries?.map?.((entry) => ({
+    description: createDescriptionFromCamtEntry(entry) || 'No description',
+    timestamp: dayjs(entry.bookingDate.date).toISOString(),
+    value:
+      entry.creditDebitIndicator === 'DBIT'
+        ? -entry.amount.value
+        : entry.amount.value,
+    categoryId: defaultCategoryId,
+    walletId: defaultWalletId,
+    externalReference: entry.accountServicerReference,
+    ownerUsername: undefined,
   }));
 
   return newRecords;

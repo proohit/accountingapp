@@ -20,6 +20,7 @@ import {
 import { recordsDialogsState } from '../hooks/recordsDialogsState';
 import { useRecordsQuery } from '../hooks/recordsQueries';
 import { useFormatState } from '../hooks/useFormatState';
+import { MobileNetItem } from './MobileNetItem';
 import { MobileRecordItem } from './MobileRecordItem';
 import { RecordsTable } from './RecordsTable';
 import { RecordsTableToolbar } from './RecordsTableToolbar';
@@ -125,6 +126,7 @@ export const RecordListContainer: FunctionComponent = () => {
 
   const noRecords = !paginatedResult?.data || paginatedResult.totalCount <= 0;
   const noRecordsText = 'No records yet. Start tracking by creating a record';
+
   return (
     <>
       <RecordsTableToolbar
@@ -144,6 +146,7 @@ export const RecordListContainer: FunctionComponent = () => {
             />
             <RecordTableBody
               records={paginatedResult.data}
+              net={paginatedResult.filteredNet}
               onRecordClicked={openEditRecordsDialog}
               categories={categories}
               wallets={wallets}
@@ -171,6 +174,7 @@ export const RecordListContainer: FunctionComponent = () => {
                   />
                 ))
               )}
+              <MobileNetItem net={paginatedResult.filteredNet} />
             </List>
             {recordsPagination}
           </Paper>

@@ -97,6 +97,7 @@ export class RecordController {
       page,
       dataCount: records.length,
       totalCount: recordCount,
+      filteredNet: records?.reduce((acc, record) => acc + record.value, 0),
     };
   }
 

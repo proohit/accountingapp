@@ -5,4 +5,5 @@ export class PaginatedResultDto {
   page: number;
   dataCount: number;
   totalCount: number;
+  filteredNet: number;
 }

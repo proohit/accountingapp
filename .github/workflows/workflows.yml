@@ -2,7 +2,8 @@ name: AccountingApp Pipeline
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   backend:
@@ -59,4 +60,4 @@ jobs:
         with:
           name: ${{ steps.extract_version.outputs.version }}
           tag: ${{ steps.extract_version.outputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true

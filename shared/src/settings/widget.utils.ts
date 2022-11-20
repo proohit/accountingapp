@@ -24,12 +24,12 @@ export const headerWidgetMapping: {
   [AvailableWidgets.OVERVIEW_HEADER]: [
     AvailableWidgets.MONTH_STATUS,
     AvailableWidgets.CATEGORY_DATA,
-    AvailableWidgets.CURRENT_STATUS,
     AvailableWidgets.DAILY_RECORDS,
   ],
   [AvailableWidgets.HISTORICAL_DATA_HEADER]: [
     AvailableWidgets.LATEST_RECORDS,
     AvailableWidgets.THIS_YEAR,
+    AvailableWidgets.CURRENT_STATUS,
   ],
 };
 

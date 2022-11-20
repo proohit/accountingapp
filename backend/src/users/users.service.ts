@@ -6,13 +6,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { SettingsService } from '../settings/settings.service';
 import { User } from './entities/user.entity';
-
+import { DEFAULT_WIDGETS } from '@accountingapp/shared';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private settingsService: SettingsService,
   ) {}
 
   async getByUsername(username: string): Promise<User> {
@@ -34,7 +36,9 @@ export class UsersService {
     user.username = username;
     user.email = email;
     user.password = password;
-    return this.usersRepository.save(user);
+    const createdUser = await this.usersRepository.save(user);
+    await this.settingsService.updateWidgets(username, DEFAULT_WIDGETS);
+    return createdUser;
   }
 
   async changePassword(username: string, password: string) {

@@ -8,5 +8,6 @@ import { SettingsService } from './settings.service';
   imports: [UseRepositories([DashboardSettings])],
   controllers: [SettingsController],
   providers: [SettingsService],
+  exports: [SettingsService],
 })
 export class SettingsModule {}

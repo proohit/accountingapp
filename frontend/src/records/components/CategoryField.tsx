@@ -37,6 +37,7 @@ export const CategoryField: FunctionComponent<CategoryFieldProps> = (props) => {
 
   return (
     <Autocomplete
+      multiple={false}
       value={categoryName}
       onChange={(_event, newValue) => {
         if (typeof newValue === 'string') {

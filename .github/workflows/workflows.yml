@@ -56,8 +56,9 @@ jobs:
         uses: Saionaro/extract-package-version@v1.1.1
         with:
           path: frontend
-      - uses: ncipollo/release-action@v1
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          name: ${{ steps.extract_version.outputs.version }}
-          tag: ${{ steps.extract_version.outputs.version }}
-          generateReleaseNotes: true
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: ${{ steps.extract_version.outputs.version }}
+          title: ${{ steps.extract_version.outputs.version }}

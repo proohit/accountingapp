@@ -10,7 +10,8 @@ import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { LoggedInUser } from '../auth/user.decorator';
 import { SecureUser } from '../users/entities/secure-user';
 import GetMonthStatusDto from './dtos/get-month-status.dto';
-import GetStatisticsQueryDto from './dtos/get-statistics-query.dto';
+import MonthYearQuery from './dtos/month-yearh-query.dto';
+import YearQuery from './dtos/year-query.dto';
 import { StatisticsService } from './statistics.service';
 
 @UseGuards(AuthenticatedGuard)
@@ -18,64 +19,59 @@ import { StatisticsService } from './statistics.service';
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
-  @Get()
-  async getStatistics(
-    @Query() query: GetStatisticsQueryDto,
+  @Get('daily')
+  async getDailyStatistics(
+    @Query() query: MonthYearQuery,
     @LoggedInUser() user: SecureUser,
   ): Promise<MonthlyStatisticsResultDto | DailyStatisticsResultDto> {
     const username = user.username;
-    const { type: requestedType, month, year } = query;
+    const { month, year } = query;
 
-    if (requestedType === StatisticsType.DAILY) {
-      const dailyData: DailyDataDto[] =
-        await this.statisticsService.getDailyDataForMonth(
-          username,
-          month,
-          year,
-        );
-      const dailyDataResult: DailyStatisticsResultDto = {
-        type: StatisticsType.DAILY,
-        month,
-        data: dailyData,
-      };
-      return dailyDataResult;
-    }
+    const dailyData: DailyDataDto[] =
+      await this.statisticsService.getDailyDataForMonth(username, month, year);
+    const dailyDataResult: DailyStatisticsResultDto = {
+      type: StatisticsType.DAILY,
+      month,
+      data: dailyData,
+    };
+    return dailyDataResult;
+  }
 
-    if (requestedType === StatisticsType.MONTHLY) {
-      const monthlyData = await this.statisticsService.getMonthlyDataForYear(
-        username,
-        year,
-      );
-      const monthlyDataResult: MonthlyStatisticsResultDto = {
-        type: StatisticsType.MONTHLY,
-        data: monthlyData,
-        year,
-      };
-      return monthlyDataResult;
-    }
+  @Get('monthly')
+  async getMonthlyStatistics(
+    @Query() query: YearQuery,
+    @LoggedInUser() user: SecureUser,
+  ): Promise<MonthlyStatisticsResultDto | DailyStatisticsResultDto> {
+    const username = user.username;
+    const { year } = query;
+
+    const monthlyData = await this.statisticsService.getMonthlyDataForYear(
+      username,
+      year,
+    );
+    const monthlyDataResult: MonthlyStatisticsResultDto = {
+      type: StatisticsType.MONTHLY,
+      data: monthlyData,
+      year,
+    };
+    return monthlyDataResult;
   }
 
   @Get('categories')
   async getCategoryStatistics(
     @LoggedInUser() user: SecureUser,
-    @Query() query: GetStatisticsQueryDto,
+    @Query() query: MonthYearQuery,
   ) {
     const username = user.username;
 
-    const { type: requestedType, month, year } = query;
-    if (requestedType === StatisticsType.CATEGORY_MONTHLY) {
-      const monthlyCategoryData =
-        await this.statisticsService.getMonthCategoryData(
-          username,
-          month,
-          year,
-        );
-      const monthlyCategoryDataResult = {
-        type: StatisticsType.CATEGORY_MONTHLY,
-        data: monthlyCategoryData,
-      };
-      return monthlyCategoryDataResult;
-    }
+    const { month, year } = query;
+    const monthlyCategoryData =
+      await this.statisticsService.getMonthCategoryData(username, month, year);
+    const monthlyCategoryDataResult = {
+      type: StatisticsType.CATEGORY_MONTHLY,
+      data: monthlyCategoryData,
+    };
+    return monthlyCategoryDataResult;
   }
 
   @Get('month-status')

@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useMonthlyStatisticsQuery } from '../hooks/monthQuery';
+import { useMonthlyStatisticsQuery } from '../hooks/statistics-query';
 
 const ThisYear: React.FunctionComponent = (props) => {
   const { palette } = useTheme();

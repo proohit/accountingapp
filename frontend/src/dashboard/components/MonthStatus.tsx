@@ -1,7 +1,7 @@
 import { Info } from '@mui/icons-material';
 import { Grid, LinearProgress, Tooltip, Typography } from '@mui/material';
 import React from 'react';
-import { useMonthStatusStatisticsQuery } from '../hooks/monthQuery';
+import { useMonthStatusStatisticsQuery } from '../hooks/statistics-query';
 import { DateableWidget } from '../models/DateableWidget';
 
 const MonthStatus: React.FC<DateableWidget> = (props) => {

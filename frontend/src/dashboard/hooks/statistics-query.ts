@@ -12,7 +12,7 @@ const statisticsApi = new StatisticsApiService();
 export const useDailyStatisticsQuery = (month: number, year: number) => {
   return useQuery<DailyStatisticsResultDto>(
     ['getDailyData', month, year],
-    () => statisticsApi.getMonthlyData(month, year),
+    () => statisticsApi.getDailyData(month, year),
     { staleTime: 15000 }
   );
 };
@@ -20,7 +20,7 @@ export const useDailyStatisticsQuery = (month: number, year: number) => {
 export const useMonthlyStatisticsQuery = (year: number) => {
   return useQuery<MonthlyStatisticsResultDto>(
     ['getMonthlyData', year],
-    () => statisticsApi.getYearlyData(year),
+    () => statisticsApi.getMonthlyData(year),
     { staleTime: 15000 }
   );
 };

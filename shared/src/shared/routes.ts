@@ -13,6 +13,8 @@ export class ApiRoutes {
   static readonly WALLETS = `${ApiRoutes.BASE_ROUTE}/wallets`;
   static readonly CATEGORIES = `${ApiRoutes.BASE_ROUTE}/categories`;
   static readonly STATISTICS = `${ApiRoutes.BASE_ROUTE}/statistics`;
+  static readonly STATISTICS_DAILY = `${ApiRoutes.BASE_ROUTE}/statistics/daily`;
+  static readonly STATISTICS_MONTHLY = `${ApiRoutes.BASE_ROUTE}/statistics/monthly`;
   static readonly STATISTICS_CATEGORIES = `${ApiRoutes.STATISTICS}/categories`;
   static readonly STATISTICS_STATUS = `${ApiRoutes.STATISTICS}/month-status`;
   static readonly SETTINGS = `${ApiRoutes.BASE_ROUTE}/settings`;

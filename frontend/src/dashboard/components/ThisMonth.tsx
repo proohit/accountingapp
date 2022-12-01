@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useDailyStatisticsQuery } from '../hooks/monthQuery';
+import { useDailyStatisticsQuery } from '../hooks/statistics-query';
 import { DateableWidget } from '../models/DateableWidget';
 
 type ThisMonthProps = DateableWidget & {

@@ -9,17 +9,14 @@ import {
 import { BASE_API } from '../../shared/models/Api';
 
 export class StatisticsApiService {
-  getYearlyData(year: number): Promise<MonthlyStatisticsResultDto> {
-    return BASE_API.get(ApiRoutes.STATISTICS, [
+  getMonthlyData(year: number): Promise<MonthlyStatisticsResultDto> {
+    return BASE_API.get(ApiRoutes.STATISTICS_MONTHLY, [
       ['year', year.toString()],
       ['type', StatisticsType.MONTHLY],
     ]);
   }
-  getMonthlyData(
-    month: number,
-    year: number
-  ): Promise<DailyStatisticsResultDto> {
-    return BASE_API.get(ApiRoutes.STATISTICS, [
+  getDailyData(month: number, year: number): Promise<DailyStatisticsResultDto> {
+    return BASE_API.get(ApiRoutes.STATISTICS_DAILY, [
       ['month', month.toString()],
       ['year', year.toString()],
       ['type', StatisticsType.DAILY],

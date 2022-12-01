@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { useCategoriesQuery } from '../../records/hooks/categoriesQueries';
 import { getCategoryById } from '../../records/utils/categoryUtils';
-import { useMonthlyCategoryStatisticsQuery } from '../hooks/monthQuery';
+import { useMonthlyCategoryStatisticsQuery } from '../hooks/statistics-query';
 import { DateableWidget } from '../models/DateableWidget';
 
 const MonthlyCategory: React.FC<DateableWidget> = (props) => {

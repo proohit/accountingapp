@@ -1,6 +1,6 @@
 {
   "name": "accountingapp",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "Accounting App is a project which helps to keep an overview of balances of personal wallets.",
   "main": "index.js",
   "scripts": {

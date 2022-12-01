@@ -227,6 +227,7 @@ export class StatisticsService {
 
     return {
       balance: totalBalance,
+      plannedBalance: totalBalance + totalPlannedIncome + totalPlannedOutcomes,
       plannedOutcomes: totalPlannedOutcomes,
       plannedIncomes: totalPlannedIncome,
     };

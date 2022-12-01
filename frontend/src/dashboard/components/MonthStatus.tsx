@@ -52,6 +52,14 @@ const MonthStatus: React.FC<DateableWidget> = (props) => {
           </Tooltip>
         </Typography>
       )}
+      {data.data.plannedIncomes > 0 && (
+        <Typography
+          color="primary"
+          sx={{ display: 'flex', alignItems: 'start' }}
+        >
+          ... which would result in a planned net of {data.data.plannedBalance}
+        </Typography>
+      )}
     </Grid>
   );
 };

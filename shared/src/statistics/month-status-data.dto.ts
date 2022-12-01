@@ -8,6 +8,7 @@ export class MonthStatusStatisticsResultDto extends StatisticsResultDto {
 }
 export class MonthStatusDataDto {
   balance: number;
+  plannedBalance: number;
   plannedOutcomes: number;
   plannedIncomes: number;
 }

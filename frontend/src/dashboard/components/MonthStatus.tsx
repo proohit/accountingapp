@@ -1,4 +1,5 @@
-import { Grid, LinearProgress, Typography } from '@mui/material';
+import { Info } from '@mui/icons-material';
+import { Grid, LinearProgress, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useMonthStatusStatisticsQuery } from '../hooks/monthQuery';
 import { DateableWidget } from '../models/DateableWidget';
@@ -8,7 +9,7 @@ const MonthStatus: React.FC<DateableWidget> = (props) => {
   const month = date.month();
   const year = date.year();
 
-  const query = useMonthStatusStatisticsQuery(month, year);
+  const query = useMonthStatusStatisticsQuery(month, year, date.toISOString());
   const { data, isLoading } = query;
   if (isLoading) {
     return <LinearProgress />;
@@ -17,7 +18,7 @@ const MonthStatus: React.FC<DateableWidget> = (props) => {
   return (
     <Grid style={{ maxHeight: 200 }}>
       <Typography display="inline" color="primary">
-        You have a net of{' '}
+        You have a current net of{' '}
       </Typography>
       <Typography
         display="inline"
@@ -29,6 +30,28 @@ const MonthStatus: React.FC<DateableWidget> = (props) => {
       <Typography display="inline" color="primary">
         for {date.format('MMMM YYYY')}
       </Typography>
+      {data.data.plannedOutcomes < 0 && (
+        <Typography
+          color="primary"
+          sx={{ display: 'flex', alignItems: 'start' }}
+        >
+          ... and planned expenses of {data.data.plannedOutcomes}
+          <Tooltip title="Currently only monthly recurring expenses are supported">
+            <Info />
+          </Tooltip>
+        </Typography>
+      )}
+      {data.data.plannedIncomes > 0 && (
+        <Typography
+          color="primary"
+          sx={{ display: 'flex', alignItems: 'start' }}
+        >
+          ... and planned income of {data.data.plannedIncomes}
+          <Tooltip title="Currently only monthly recurring incomes are supported">
+            <Info />
+          </Tooltip>
+        </Typography>
+      )}
     </Grid>
   );
 };

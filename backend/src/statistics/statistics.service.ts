@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { Between, LessThan, Repository } from 'typeorm';
 import Record from '../record/entities/record.entity';
+import { RecurrentRecordService } from '../record/recurrent-record/recurrent-record.service';
 import { WalletService } from '../wallet/wallet.service';
 dayjs.extend(isBetween);
 
@@ -18,6 +19,7 @@ export class StatisticsService {
   constructor(
     @InjectRepository(Record)
     private readonly recordsRepository: Repository<Record>,
+    private readonly recurrentRecordsService: RecurrentRecordService,
     private readonly walletService: WalletService,
   ) {}
 
@@ -186,11 +188,12 @@ export class StatisticsService {
     username: string,
     month: number,
     year: number,
+    calculatePlannedFromDate: string,
   ): Promise<MonthStatusDataDto> {
-    const recordsRepo = this.recordsRepository;
     const fromDay = dayjs().year(year).month(month).startOf('month');
     const untilDay = dayjs().year(year).month(month).endOf('month');
-    const recordsForMonth = await recordsRepo.find({
+
+    const requestedRecords = await this.recordsRepository.find({
       where: {
         timestamp: Between(fromDay.toISOString(), untilDay.toISOString()),
         ownerUsername: username,
@@ -198,12 +201,35 @@ export class StatisticsService {
       order: { timestamp: 'DESC' },
     });
 
-    const totalBalance = recordsForMonth.reduce(
+    const totalBalance = requestedRecords.reduce(
       (balance, record) => balance + record.value,
       0,
     );
 
-    return { balance: totalBalance };
+    const nextRecurrentRecords =
+      await this.recurrentRecordsService.getNextInvocationsByUserForMonth(
+        username,
+        month,
+        year,
+      );
+
+    const relevantNextRecurrentRecords = nextRecurrentRecords.filter((record) =>
+      dayjs(record.nextInvocation).isAfter(dayjs(calculatePlannedFromDate)),
+    );
+
+    const totalPlannedOutcomes = relevantNextRecurrentRecords
+      .filter((record) => record.value < 0)
+      .reduce((balance, record) => balance + record.value, 0);
+
+    const totalPlannedIncome = relevantNextRecurrentRecords
+      .filter((record) => record.value > 0)
+      .reduce((balance, record) => balance + record.value, 0);
+
+    return {
+      balance: totalBalance,
+      plannedOutcomes: totalPlannedOutcomes,
+      plannedIncomes: totalPlannedIncome,
+    };
   }
 
   private getDaysInMonth = (month: number, year: number, format?: string) => {

@@ -23,5 +23,6 @@ import { RecurrentRecordService } from './recurrent-record.service';
   ],
   controllers: [RecurrentRecordController],
   providers: [RecurrentRecordService, RecurrentRecordSchedulerService],
+  exports: [RecurrentRecordService],
 })
 export class RecurrentRecordModule {}

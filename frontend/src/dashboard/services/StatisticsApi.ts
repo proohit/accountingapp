@@ -8,23 +8,7 @@ import {
 } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
 
-export interface StatisticsApi {
-  getMonthlyData(
-    month: number,
-    year: number
-  ): Promise<DailyStatisticsResultDto>;
-  getYearlyData(year: number): Promise<MonthlyStatisticsResultDto>;
-  getMonthCategoryData(
-    month: number,
-    year: number
-  ): Promise<MonthCategoryStatisticsResultDto>;
-  getMonthStatusData(
-    month: number,
-    year: number
-  ): Promise<MonthStatusStatisticsResultDto>;
-}
-
-export class StatisticsApiService implements StatisticsApi {
+export class StatisticsApiService {
   getYearlyData(year: number): Promise<MonthlyStatisticsResultDto> {
     return BASE_API.get(ApiRoutes.STATISTICS, [
       ['year', year.toString()],
@@ -53,12 +37,13 @@ export class StatisticsApiService implements StatisticsApi {
   }
   getMonthStatusData(
     month: number,
-    year: number
+    year: number,
+    calculatePlannedFromDate: string
   ): Promise<MonthStatusStatisticsResultDto> {
     return BASE_API.get(ApiRoutes.STATISTICS_STATUS, [
       ['month', month.toString()],
       ['year', year.toString()],
-      ['type', StatisticsType.MONTH_STATUS],
+      ['calculatePlannedFromDate', calculatePlannedFromDate],
     ]);
   }
 }

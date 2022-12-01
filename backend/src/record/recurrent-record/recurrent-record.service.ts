@@ -186,6 +186,31 @@ export class RecurrentRecordService {
     return plannedRecurrentRecords;
   }
 
+  public async getNextInvocationsByUserForMonth(
+    username: User['username'],
+    month: number,
+    year: number,
+  ): Promise<PlannedRecurrentRecordDto[]> {
+    const records: RecurrentRecord[] =
+      await this.recurrentRecordRepository.findBy({ ownerUsername: username });
+    const nextInvocations =
+      this.recurrentRecordSchedulerService.getNextInvocations(records);
+    if (Array.isArray(nextInvocations)) {
+      const nextInvocationsInMonth = nextInvocations.filter((invocation) => {
+        const date = dayjs(invocation.nextInvocation);
+        return date.month() === month && date.year() === year;
+      });
+      return nextInvocationsInMonth.map((invocation) => {
+        const record = records.find((record) => record.id === invocation.id);
+        return {
+          ...record,
+          periodicity: record.periodicity as Periodicity,
+          nextInvocation: invocation.nextInvocation,
+        };
+      });
+    }
+  }
+
   async applyRecurrentRecord(record: RecurrentRecord) {
     await this.recordService.createRecord(
       record.description,

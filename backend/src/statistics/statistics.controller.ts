@@ -9,6 +9,7 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
 import { LoggedInUser } from '../auth/user.decorator';
 import { SecureUser } from '../users/entities/secure-user';
+import GetMonthStatusDto from './dtos/get-month-status.dto';
 import GetStatisticsQueryDto from './dtos/get-statistics-query.dto';
 import { StatisticsService } from './statistics.service';
 
@@ -80,22 +81,21 @@ export class StatisticsController {
   @Get('month-status')
   async getMonthStatus(
     @LoggedInUser() user: SecureUser,
-    @Query() query: GetStatisticsQueryDto,
+    @Query() query: GetMonthStatusDto,
   ): Promise<MonthStatusStatisticsResultDto> {
     const username = user.username;
-    const { type: requestedType, month, year } = query;
-    if (requestedType === StatisticsType.MONTH_STATUS) {
-      const monthlyStatusData = await this.statisticsService.getMonthStatusData(
-        username,
-        month,
-        year,
-      );
-      const monthlyStatusDataResult: MonthStatusStatisticsResultDto = {
-        type: StatisticsType.MONTH_STATUS,
-        month,
-        data: monthlyStatusData,
-      };
-      return monthlyStatusDataResult;
-    }
+    const { month, year, calculatePlannedFromDate } = query;
+    const monthlyStatusData = await this.statisticsService.getMonthStatusData(
+      username,
+      month,
+      year,
+      calculatePlannedFromDate,
+    );
+    const monthlyStatusDataResult: MonthStatusStatisticsResultDto = {
+      type: StatisticsType.MONTH_STATUS,
+      month,
+      data: monthlyStatusData,
+    };
+    return monthlyStatusDataResult;
   }
 }

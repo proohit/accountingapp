@@ -36,10 +36,15 @@ export const useMonthlyCategoryStatisticsQuery = (
   );
 };
 
-export const useMonthStatusStatisticsQuery = (month: number, year: number) => {
+export const useMonthStatusStatisticsQuery = (
+  month: number,
+  year: number,
+  calculatePlannedFromDate: string
+) => {
   return useQuery<MonthStatusStatisticsResultDto>(
-    ['getMonthStatusData', month, year],
-    () => statisticsApi.getMonthStatusData(month, year),
+    ['getMonthStatusData', month, year, calculatePlannedFromDate],
+    () =>
+      statisticsApi.getMonthStatusData(month, year, calculatePlannedFromDate),
     { staleTime: 15000 }
   );
 };

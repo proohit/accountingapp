@@ -52,7 +52,7 @@ const MonthStatus: React.FC<DateableWidget> = (props) => {
           </Tooltip>
         </Typography>
       )}
-      {data.data.plannedBalance > 0 && (
+      {data.data.plannedBalance !== 0 && (
         <Typography
           color="primary"
           sx={{ display: 'flex', alignItems: 'start' }}

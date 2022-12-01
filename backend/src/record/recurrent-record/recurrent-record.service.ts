@@ -200,14 +200,18 @@ export class RecurrentRecordService {
         const date = dayjs(invocation.nextInvocation);
         return date.month() === month && date.year() === year;
       });
-      return nextInvocationsInMonth.map((invocation) => {
-        const record = records.find((record) => record.id === invocation.id);
-        return {
-          ...record,
-          periodicity: record.periodicity as Periodicity,
-          nextInvocation: invocation.nextInvocation,
-        };
-      });
+      return nextInvocationsInMonth
+        .map((invocation) => {
+          const record = records.find((record) => record.id === invocation.id);
+          if (record) {
+            return {
+              ...record,
+              periodicity: record.periodicity as Periodicity,
+              nextInvocation: invocation.nextInvocation,
+            };
+          }
+        })
+        .filter((record) => !!record);
     }
   }
 

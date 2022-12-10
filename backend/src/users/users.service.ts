@@ -45,4 +45,9 @@ export class UsersService {
     const user = await this.getByUsername(username);
     return this.usersRepository.save({ ...user, password });
   }
+
+  async confirmUser(username: string): Promise<User> {
+    const user = await this.getByUsername(username);
+    return this.usersRepository.save({ ...user, confirmed: true });
+  }
 }

@@ -8,4 +8,6 @@ export class User {
   password: string;
   @Column()
   email: string;
+  @Column({ default: false })
+  confirmed: boolean;
 }

@@ -87,4 +87,11 @@ export class AuthController {
       }
     });
   }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get('confirm-registration')
+  async confirmRegistration(@LoggedInUser() user: SecureUser) {
+    await this.authService.confirmRegistration(user.username);
+    return 'Registration confirmed!';
+  }
 }

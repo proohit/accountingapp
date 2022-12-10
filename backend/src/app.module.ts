@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
+import { MailModule } from './mail/mail.module';
 import { RecordModule } from './record/record.module';
 import { RecurrentRecordModule } from './record/recurrent-record/recurrent-record.module';
 import { SettingsModule } from './settings/settings.module';
@@ -12,7 +13,9 @@ import { WalletModule } from './wallet/wallet.module';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     UsersModule,
     AuthModule,
     TypeOrmModule.forRootAsync({
@@ -29,6 +32,7 @@ import { WalletModule } from './wallet/wallet.module';
     WalletModule,
     StatisticsModule,
     RecurrentRecordModule,
+    MailModule,
   ],
   providers: [ConfigService],
 })

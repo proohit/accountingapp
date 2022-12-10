@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomBytes, scrypt } from 'crypto';
 import { Repository } from 'typeorm';
+import { MailService } from '../mail/mail.service';
 import { SecureUser } from '../users/entities/secure-user';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -14,6 +15,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private usersService: UsersService,
+    private mailService: MailService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<SecureUser> {
@@ -32,7 +34,14 @@ export class AuthService {
   ): Promise<SecureUser> {
     const hash = await this.hashPassword(password);
     const newUser = await this.usersService.create(username, hash, email);
-    return this.getSecureUser(newUser);
+    const secureUser = this.getSecureUser(newUser);
+    this.mailService.sendConfirmationMail(secureUser);
+    return secureUser;
+  }
+
+  public async confirmRegistration(username: string): Promise<SecureUser> {
+    const confirmedUser = await this.usersService.confirmUser(username);
+    return SecureUser.fromUser(confirmedUser);
   }
 
   public hashPassword(password: string): Promise<string> {

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
+import { MailModule } from '../mail/mail.module';
 import UseRepositories from '../use-repositories';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
@@ -13,6 +14,7 @@ import { SessionSerializer } from './session.serializer';
     UseRepositories([User]),
     UsersModule,
     PassportModule.register({ session: true }),
+    MailModule,
   ],
   providers: [AuthService, LocalStrategy, SessionSerializer],
   exports: [AuthService, SessionSerializer],

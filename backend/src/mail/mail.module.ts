@@ -14,7 +14,9 @@ import { MailService } from './mail.service';
         transport: {
           host: configService.get(EnvironmentVariables.MAIL_HOST),
           port: configService.get(EnvironmentVariables.MAIL_PORT),
-          secure: false,
+          secure:
+            configService.get(EnvironmentVariables.ENVIRONMENT) !==
+            'development',
           auth: {
             user: configService.get(EnvironmentVariables.MAIL_USER),
             pass: configService.get(EnvironmentVariables.MAIL_PASSWORD),

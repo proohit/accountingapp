@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0.31
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=25804b5f4c256894c831dbd0b89dc058bd391dfd4a9adb861bcd581aea40a199
+      - MYSQL_DATABASE=direnc_accounting
+
+  mailcatcher:
+    image: dockage/mailcatcher:0.8.2
+    ports:
+      - "1080:1080"
+      - "1025:1025"

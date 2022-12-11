@@ -130,6 +130,20 @@ export class AuthService {
     return {};
   }
 
+  public async requestConfirmToken(username: string) {
+    const user = await this.usersRepository.findOneBy({ username });
+    if (user) {
+      const token = this.generateToken();
+      const base64Token = token.toBase64();
+      await this.usersService.updateConfirmToken(username, base64Token);
+      this.mailService.sendConfirmationMail(
+        SecureUser.fromUser(user),
+        base64Token,
+      );
+    }
+    return {};
+  }
+
   private generateToken() {
     const validUntil = dayjs().add(1, 'day').toISOString();
     const id = randomUUID();

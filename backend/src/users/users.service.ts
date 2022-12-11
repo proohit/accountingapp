@@ -67,4 +67,9 @@ export class UsersService {
     const user = await this.getByUsername(username);
     return this.usersRepository.save({ ...user, resetToken: token });
   }
+
+  async updateConfirmToken(username: string, token: string): Promise<User> {
+    const user = await this.getByUsername(username);
+    return this.usersRepository.save({ ...user, confirmToken: token });
+  }
 }

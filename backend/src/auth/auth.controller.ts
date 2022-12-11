@@ -14,7 +14,7 @@ import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
 import ChangePasswordDto from './dtos/change-password.dto';
 import CreateUserDto from './dtos/create-user.dto';
-import RequestResetTokenDto from './dtos/request-reset-token.dto';
+import RequestTokenDto from './dtos/request-reset-token.dto';
 import ResetPasswordDto from './dtos/reset-password.dto';
 import InvalidTokenException from './errors/InvalidTokenException';
 import { LocalAuthGuard } from './local.guard';
@@ -103,12 +103,18 @@ export class AuthController {
   }
 
   @Put('request-reset-token')
-  async requestResetToken(@Body() body: RequestResetTokenDto): Promise<any> {
+  async requestResetToken(@Body() body: RequestTokenDto): Promise<any> {
     return this.authService.requestResetToken(body.username);
+  }
+
+  @Put('request-confirm-token')
+  async requestConfirmation(@Body() body: RequestTokenDto): Promise<any> {
+    return this.authService.requestConfirmToken(body.username);
   }
 
   @Get('confirm-registration')
   async confirmRegistration(
+    @Request() req,
     @Query('username') username: string,
     @Query('token') token: string,
   ): Promise<string> {
@@ -123,7 +129,21 @@ export class AuthController {
     } catch (e) {
       throw new InvalidTokenException();
     }
-    await this.authService.confirmRegistration(username, token);
-    return 'Registration completed! You can now close this tab.';
+    return new Promise(async (resolve, reject) => {
+      try {
+        const confirmedUser = await this.authService.confirmRegistration(
+          username,
+          token,
+        );
+        req.login(confirmedUser, (err) => {
+          if (err) {
+            reject(err);
+          }
+          resolve('Registration completed! You can now close this tab.');
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 }

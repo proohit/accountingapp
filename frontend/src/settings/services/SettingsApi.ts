@@ -28,6 +28,11 @@ export class SettingsApiService implements SettingsApi {
       username,
     });
   }
+  sendConfirmToken(username: string): Promise<void> {
+    return BASE_API.put(ApiRoutes.AUTHENTICATION_REQUEST_CONFIRM_TOKEN, {
+      username,
+    });
+  }
   getUserSettings(): Promise<UserSettingsDto> {
     return BASE_API.get(ApiRoutes.SETTINGS);
   }

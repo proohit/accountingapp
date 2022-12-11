@@ -1,28 +1,27 @@
-import { ApiRoutes } from '@accountingapp/shared';
+import { ApiRoutes, UserDto } from '@accountingapp/shared';
 import { BASE_API } from '../../shared/models/Api';
 import { LoginRequest, RegisterRequest } from '../models/Requests';
-import { LoginResponse, RegisterResponse } from '../models/Responses';
 
 export interface AuthenticationApi {
-  login: (username: string, password: string) => Promise<LoginResponse>;
+  login: (username: string, password: string) => Promise<UserDto>;
   register: (
     username: string,
     password: string,
     email: string
-  ) => Promise<RegisterResponse>;
+  ) => Promise<UserDto>;
   logout: () => Promise<void>;
-  getCurrentUser: () => Promise<LoginResponse>;
+  getCurrentUser: () => Promise<UserDto>;
 }
 
 export const AUTHENTICATION_API: AuthenticationApi = {
   login: async (username, password) => {
-    return BASE_API.post<LoginRequest, LoginResponse>(
+    return BASE_API.post<LoginRequest, UserDto>(
       ApiRoutes.AUTHENTICATION_LOGIN,
       { username, password }
     );
   },
   register: async (username, password, email) => {
-    return BASE_API.post<RegisterRequest, RegisterResponse>(
+    return BASE_API.post<RegisterRequest, UserDto>(
       ApiRoutes.AUTHENTICATION_REGISTER,
       { username, password, email }
     );

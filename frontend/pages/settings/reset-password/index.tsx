@@ -3,15 +3,15 @@ import {
   Container,
   Divider,
   Grid,
+  LinearProgress,
   Step,
   StepLabel,
   Stepper,
   TextField,
   Typography,
-  LinearProgress,
 } from '@mui/material';
 import Head from 'next/head';
-import React, { FC, PropsWithChildren, useState } from 'react';
+import { FC, PropsWithChildren, useState } from 'react';
 import { ResetPasswordForm } from '../../../src/settings/components/ResetPasswordForm';
 import { SettingsApiService } from '../../../src/settings/services/SettingsApi';
 import PageHeader from '../../../src/shared/components/PageHeader';
@@ -116,6 +116,7 @@ const PasswordResetSteps: FC<{
               label="Username"
               fullWidth
               disabled={disabled}
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </StepContainer>

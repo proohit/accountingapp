@@ -29,10 +29,6 @@ const ResetPasswordPage: FC = (props) => {
         setLoading(true);
         await api.sendResetToken(username);
       }
-
-      if (activeStep === 1) {
-        // check token
-      }
       setActiveStep(activeStep + 1);
     } finally {
       setLoading(false);
@@ -66,6 +62,7 @@ const ResetPasswordPage: FC = (props) => {
             activeStep={activeStep}
             setUsername={setUsername}
             setToken={setToken}
+            username={username}
             token={token}
           />
           {loading && (
@@ -91,8 +88,9 @@ const PasswordResetSteps: FC<{
   activeStep: number;
   setUsername: (username: string) => void;
   setToken: (token: string) => void;
+  username: string;
   token: string;
-}> = ({ activeStep, setUsername, setToken, token, disabled }) => {
+}> = ({ activeStep, setUsername, setToken, token, username, disabled }) => {
   return (
     <>
       <Grid item xs={12}>
@@ -134,7 +132,7 @@ const PasswordResetSteps: FC<{
         )}
         {activeStep === 2 && (
           <StepContainer description="Please enter your new password.">
-            <ResetPasswordForm resetToken={token} />
+            <ResetPasswordForm username={username} resetToken={token} />
           </StepContainer>
         )}
       </Grid>

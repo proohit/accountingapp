@@ -15,10 +15,11 @@ const changePasswordFormStyles = makeStyles()((theme) => ({
 
 type ResetPasswordFormProps = {
   resetToken: string;
+  username: string;
 };
 
 export const ResetPasswordForm: FC<ResetPasswordFormProps> = (props) => {
-  const { resetToken } = props;
+  const { resetToken, username } = props;
   const [, setNotificationsState] = useRecoilState(notificationState);
   const { classes } = changePasswordFormStyles();
   let schema = yup.object().shape({
@@ -58,7 +59,7 @@ export const ResetPasswordForm: FC<ResetPasswordFormProps> = (props) => {
   const resetPassword = async (newPassword: string) => {
     const apiService = new SettingsApiService();
     try {
-      await apiService.resetPassword(newPassword, resetToken);
+      await apiService.resetPassword(username, resetToken, newPassword);
       setNotificationsState({
         content: 'Successfully reset password',
         severity: 'success',

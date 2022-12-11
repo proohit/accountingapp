@@ -101,7 +101,7 @@ export class AuthService {
   }
 
   public async requestResetToken(username: string) {
-    const user = await this.usersService.getByUsername(username);
+    const user = await this.usersRepository.findOneBy({ username });
     if (user) {
       const token = this.generateResetToken();
       const base64Token = token.toBase64();
@@ -110,8 +110,8 @@ export class AuthService {
         SecureUser.fromUser(user),
         base64Token,
       );
-      return '';
     }
+    return {};
   }
 
   private generateResetToken() {

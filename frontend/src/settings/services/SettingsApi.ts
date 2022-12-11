@@ -12,10 +12,15 @@ export class SettingsApiService implements SettingsApi {
       newPassword,
     });
   }
-  resetPassword(newPassword: string, token: string): Promise<string> {
+  resetPassword(
+    username: string,
+    token: string,
+    newPassword: string
+  ): Promise<string> {
     return BASE_API.put(ApiRoutes.AUTHENTICATION_RESET_PASSWORD, {
-      newPassword,
+      username,
       token,
+      newPassword,
     });
   }
   sendResetToken(username: string): Promise<void> {

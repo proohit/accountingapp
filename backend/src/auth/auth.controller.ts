@@ -90,7 +90,7 @@ export class AuthController {
     });
   }
 
-  @Put('reset-password')
+  @Put('password-reset')
   async resetPassword(@Body() body: ResetPasswordDto): Promise<UserDto> {
     return this.authService.resetPassword(
       body.username,
@@ -100,8 +100,8 @@ export class AuthController {
   }
 
   @Put('request-reset-token')
-  async requestResetToken(@Body() body: RequestResetTokenDto): Promise<void> {
-    this.authService.requestResetToken(body.username);
+  async requestResetToken(@Body() body: RequestResetTokenDto): Promise<any> {
+    return this.authService.requestResetToken(body.username);
   }
 
   @UseGuards(AuthenticatedGuard)

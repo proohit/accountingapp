@@ -3,11 +3,11 @@ import { FunctionComponent, PropsWithChildren } from 'react';
 
 const ContentContainer: FunctionComponent<
   PropsWithChildren<{
-    isAuthenticationRoute?: boolean;
+    renderNavigationBar?: boolean;
   }>
-> = ({ children, isAuthenticationRoute }) => {
+> = ({ children, renderNavigationBar }) => {
   return (
-    <Grid container item lg={isAuthenticationRoute ? 12 : 10} padding={2}>
+    <Grid container item lg={renderNavigationBar ? 12 : 10} padding={2}>
       {children}
     </Grid>
   );

@@ -10,4 +10,6 @@ export class User {
   email: string;
   @Column({ default: false })
   confirmed: boolean;
+  @Column({ type: 'longtext', nullable: true })
+  resetToken: string;
 }

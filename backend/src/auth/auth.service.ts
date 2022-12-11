@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { randomBytes, scrypt } from 'crypto';
+import { randomBytes, scrypt, randomUUID } from 'crypto';
+import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { SecureUser } from '../users/entities/secure-user';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import InvalidCredentialsException from './errors/InvalidCredentialsException';
+import InvalidTokenException from './errors/InvalidTokenException';
+import { ResetToken } from './reset-token.model';
 
 @Injectable()
 export class AuthService {
@@ -75,6 +78,46 @@ export class AuthService {
     } else {
       throw new InvalidCredentialsException();
     }
+  }
+
+  public async resetPassword(
+    username: string,
+    token: string,
+    newPassword: string,
+  ) {
+    const user = await this.usersService.getByUsername(username);
+
+    if (!user.resetToken || token !== user.resetToken) {
+      throw new InvalidTokenException();
+    }
+
+    const newPasswordHash = await this.hashPassword(newPassword);
+    await this.usersService.changePassword(username, newPasswordHash);
+    const updatedUser = await this.usersService.updateResetToken(
+      username,
+      null,
+    );
+    return this.getSecureUser(updatedUser);
+  }
+
+  public async requestResetToken(username: string) {
+    const user = await this.usersService.getByUsername(username);
+    if (user) {
+      const token = this.generateResetToken();
+      const base64Token = token.toBase64();
+      await this.usersService.updateResetToken(username, base64Token);
+      this.mailService.sendResetTokenMail(
+        SecureUser.fromUser(user),
+        base64Token,
+      );
+      return '';
+    }
+  }
+
+  private generateResetToken() {
+    const validUntil = dayjs().add(1, 'day').toISOString();
+    const id = randomUUID();
+    return new ResetToken(id, validUntil);
   }
 
   private async checkPassword(password: string, encodedHash: string) {

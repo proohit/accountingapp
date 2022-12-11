@@ -27,4 +27,16 @@ export class MailService {
       },
     });
   }
+
+  async sendResetTokenMail(user: SecureUser, token: string) {
+    this.mailerService.sendMail({
+      to: user.email,
+      subject: '[Accounting App] Reset Password',
+      template: 'password-reset.hbs',
+      context: {
+        name: user.username,
+        token,
+      },
+    });
+  }
 }

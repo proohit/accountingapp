@@ -7,6 +7,7 @@ import { useAuthentication } from '../hooks/useAuthentication';
 import {
   isAuthenticationRoute,
   isOfflineRoute,
+  isPasswordResetRoute,
 } from '../services/RoutingService';
 
 const Authenticated: React.FunctionComponent<PropsWithChildren> = (props) => {
@@ -18,7 +19,8 @@ const Authenticated: React.FunctionComponent<PropsWithChildren> = (props) => {
       !authenticated &&
       !isLoginLoading &&
       !isAuthenticationRoute(router.route) &&
-      !isOfflineRoute(router.route)
+      !isOfflineRoute(router.route) &&
+      !isPasswordResetRoute(router.route)
     );
   };
 

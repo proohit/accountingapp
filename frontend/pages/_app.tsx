@@ -2,10 +2,14 @@ import { Grid } from '@mui/material';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import { RecoilRoot } from 'recoil';
 import Authenticated from '../src/authentication/components/Authenticated';
-import { isAuthenticationRoute } from '../src/authentication/services/RoutingService';
+import {
+  isAuthenticationRoute,
+  isOfflineRoute,
+  isPasswordResetRoute,
+} from '../src/authentication/services/RoutingService';
 import { AppToolbar } from '../src/shared/components/AppToolbar';
 import ContentContainer from '../src/shared/components/ContentContainer';
 import { NavigationBar } from '../src/shared/components/NavigationBar';
@@ -13,6 +17,15 @@ import Providers from '../src/shared/components/Providers';
 
 const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
+
+  const renderNavigationBar = useMemo(() => {
+    return (
+      !isAuthenticationRoute(router.route) &&
+      !isOfflineRoute(router.route) &&
+      !isPasswordResetRoute(router.route)
+    );
+  }, [router.route]);
+
   return (
     <RecoilRoot>
       <Providers>
@@ -27,14 +40,12 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
         <Authenticated>
           <AppToolbar />
           <Grid container>
-            {!isAuthenticationRoute(router.route) && (
+            {renderNavigationBar && (
               <Grid item lg={2}>
                 <NavigationBar />
               </Grid>
             )}
-            <ContentContainer
-              isAuthenticationRoute={isAuthenticationRoute(router.route)}
-            >
+            <ContentContainer renderNavigationBar={!renderNavigationBar}>
               <Component {...pageProps} />
             </ContentContainer>
           </Grid>

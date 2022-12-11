@@ -6,6 +6,8 @@ export class ApiRoutes {
   static readonly AUTHENTICATION_LOGOUT = `${ApiRoutes.AUTHENTICATION}/logout`;
   static readonly AUTHENTICATION_ME = `${ApiRoutes.AUTHENTICATION}/me`;
   static readonly AUTHENTICATION_CHANGE_PASSWORD = `${ApiRoutes.AUTHENTICATION}/password-change`;
+  static readonly AUTHENTICATION_RESET_PASSWORD = `${ApiRoutes.AUTHENTICATION}/password-reset`;
+  static readonly AUTHENTICATION_REQUEST_RESET_TOKEN = `${ApiRoutes.AUTHENTICATION}/request-reset-token`;
   static readonly RECORDS = `${ApiRoutes.BASE_ROUTE}/records`;
   static readonly RECORDS_CHECK_EXTERNAL_REFERENCES = `${ApiRoutes.RECORDS}/existingExternalReferences`;
   static readonly RECORDS_BULK_CREATE = `${ApiRoutes.RECORDS}/bulkCreate`;

@@ -13,6 +13,8 @@ import { AuthService } from './auth.service';
 import { AuthenticatedGuard } from './authenticated.guard';
 import ChangePasswordDto from './dtos/change-password.dto';
 import CreateUserDto from './dtos/create-user.dto';
+import RequestResetTokenDto from './dtos/request-reset-token.dto';
+import ResetPasswordDto from './dtos/reset-password.dto';
 import { LocalAuthGuard } from './local.guard';
 import { LoggedInUser } from './user.decorator';
 
@@ -86,6 +88,20 @@ export class AuthController {
         reject(e);
       }
     });
+  }
+
+  @Put('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto): Promise<UserDto> {
+    return this.authService.resetPassword(
+      body.username,
+      body.token,
+      body.newPassword,
+    );
+  }
+
+  @Put('request-reset-token')
+  async requestResetToken(@Body() body: RequestResetTokenDto): Promise<void> {
+    this.authService.requestResetToken(body.username);
   }
 
   @UseGuards(AuthenticatedGuard)

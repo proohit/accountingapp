@@ -1,3 +1,4 @@
+import { DEFAULT_WIDGETS } from '@accountingapp/shared';
 import {
   HttpException,
   HttpStatus,
@@ -8,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SettingsService } from '../settings/settings.service';
 import { User } from './entities/user.entity';
-import { DEFAULT_WIDGETS } from '@accountingapp/shared';
 @Injectable()
 export class UsersService {
   constructor(
@@ -25,7 +25,13 @@ export class UsersService {
     return foundUser;
   }
 
-  async create(username: string, password: string, email: string) {
+  async create(
+    username: string,
+    password: string,
+    email: string,
+    resetToken: string = null,
+    confirmToken: string = null,
+  ) {
     if (await this.usersRepository.findOneBy({ username })) {
       throw new HttpException(
         'Username already exists',
@@ -36,6 +42,8 @@ export class UsersService {
     user.username = username;
     user.email = email;
     user.password = password;
+    user.resetToken = resetToken;
+    user.confirmToken = confirmToken;
     const createdUser = await this.usersRepository.save(user);
     await this.settingsService.updateWidgets(username, DEFAULT_WIDGETS);
     return createdUser;
@@ -48,7 +56,11 @@ export class UsersService {
 
   async confirmUser(username: string): Promise<User> {
     const user = await this.getByUsername(username);
-    return this.usersRepository.save({ ...user, confirmed: true });
+    return this.usersRepository.save({
+      ...user,
+      confirmed: true,
+      confirmToken: null,
+    });
   }
 
   async updateResetToken(username: string, token: string): Promise<User> {

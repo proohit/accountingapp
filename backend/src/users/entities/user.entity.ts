@@ -12,4 +12,6 @@ export class User {
   confirmed: boolean;
   @Column({ type: 'longtext', nullable: true })
   resetToken: string;
+  @Column({ type: 'longtext', nullable: true })
+  confirmToken: string;
 }

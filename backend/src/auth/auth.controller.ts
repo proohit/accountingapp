@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Put,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,7 +16,9 @@ import ChangePasswordDto from './dtos/change-password.dto';
 import CreateUserDto from './dtos/create-user.dto';
 import RequestResetTokenDto from './dtos/request-reset-token.dto';
 import ResetPasswordDto from './dtos/reset-password.dto';
+import InvalidTokenException from './errors/InvalidTokenException';
 import { LocalAuthGuard } from './local.guard';
+import { Token } from './token.model';
 import { LoggedInUser } from './user.decorator';
 
 @Controller('auth')
@@ -104,10 +107,23 @@ export class AuthController {
     return this.authService.requestResetToken(body.username);
   }
 
-  @UseGuards(AuthenticatedGuard)
   @Get('confirm-registration')
-  async confirmRegistration(@LoggedInUser() user: SecureUser) {
-    await this.authService.confirmRegistration(user.username);
-    return 'Registration confirmed!';
+  async confirmRegistration(
+    @Query('username') username: string,
+    @Query('token') token: string,
+  ): Promise<string> {
+    if (!username || !token) {
+      throw new InvalidTokenException();
+    }
+    try {
+      const confirmToken = Token.fromBase64(token);
+      if (!confirmToken || !confirmToken.isValid()) {
+        throw new InvalidTokenException();
+      }
+    } catch (e) {
+      throw new InvalidTokenException();
+    }
+    await this.authService.confirmRegistration(username, token);
+    return 'Registration completed! You can now close this tab.';
   }
 }

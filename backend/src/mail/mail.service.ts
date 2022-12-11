@@ -11,19 +11,19 @@ export class MailService {
     private readonly configService: ConfigService,
   ) {}
 
-  async sendConfirmationMail(user: SecureUser) {
+  async sendConfirmationMail(user: SecureUser, token: string) {
     this.mailerService.sendMail({
       to: user.email,
       subject: '[Accounting App] Registration confirmation',
       template: 'registration-confirmation.hbs',
       context: {
         name: user.username,
-        url: [
+        url: `${[
           this.configService.get(EnvironmentVariables.BACKEND_URL),
           'api',
           'auth',
           'confirm-registration',
-        ].join('/'),
+        ].join('/')}?username=${user.username}&token=${token}`,
       },
     });
   }

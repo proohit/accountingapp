@@ -3,7 +3,10 @@ import { User } from './user.entity';
 
 export class SecureUser extends UserDto {
   static fromUser(user: User) {
-    const { password, ...secureUser } = user;
-    return secureUser;
+    return {
+      username: user.username,
+      email: user.email,
+      confirmed: user.confirmed,
+    };
   }
 }

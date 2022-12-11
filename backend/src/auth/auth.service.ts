@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { randomBytes, scrypt, randomUUID } from 'crypto';
+import { randomBytes, randomUUID, scrypt } from 'crypto';
 import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
@@ -9,7 +9,7 @@ import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import InvalidCredentialsException from './errors/InvalidCredentialsException';
 import InvalidTokenException from './errors/InvalidTokenException';
-import { ResetToken } from './reset-token.model';
+import { Token } from './token.model';
 
 @Injectable()
 export class AuthService {
@@ -36,13 +36,29 @@ export class AuthService {
     email: string,
   ): Promise<SecureUser> {
     const hash = await this.hashPassword(password);
-    const newUser = await this.usersService.create(username, hash, email);
+    const token = this.generateToken();
+    const newUser = await this.usersService.create(
+      username,
+      hash,
+      email,
+      null,
+      token.toBase64(),
+    );
     const secureUser = this.getSecureUser(newUser);
-    this.mailService.sendConfirmationMail(secureUser);
+    this.mailService.sendConfirmationMail(secureUser, newUser.confirmToken);
     return secureUser;
   }
 
-  public async confirmRegistration(username: string): Promise<SecureUser> {
+  public async confirmRegistration(
+    username: string,
+    token: string,
+  ): Promise<SecureUser> {
+    const user = await this.usersService.getByUsername(username);
+
+    if (!user.confirmToken || token !== user.confirmToken) {
+      throw new InvalidTokenException();
+    }
+
     const confirmedUser = await this.usersService.confirmUser(username);
     return SecureUser.fromUser(confirmedUser);
   }
@@ -103,7 +119,7 @@ export class AuthService {
   public async requestResetToken(username: string) {
     const user = await this.usersRepository.findOneBy({ username });
     if (user) {
-      const token = this.generateResetToken();
+      const token = this.generateToken();
       const base64Token = token.toBase64();
       await this.usersService.updateResetToken(username, base64Token);
       this.mailService.sendResetTokenMail(
@@ -114,10 +130,10 @@ export class AuthService {
     return {};
   }
 
-  private generateResetToken() {
+  private generateToken() {
     const validUntil = dayjs().add(1, 'day').toISOString();
     const id = randomUUID();
-    return new ResetToken(id, validUntil);
+    return new Token(id, validUntil);
   }
 
   private async checkPassword(password: string, encodedHash: string) {

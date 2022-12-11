@@ -113,6 +113,15 @@ export const LoginForm = () => {
           </Link>{' '}
           if you&apos;re new here
         </Typography>
+        <Typography variant="body2">
+          Trouble signing in? Try to
+          <Link href="/settings/reset-password" passHref>
+            <Button size="small" variant="outlined">
+              reset your password
+            </Button>
+          </Link>
+          .
+        </Typography>
       </Grid>
     </Container>
   );

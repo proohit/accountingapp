@@ -41,13 +41,15 @@ const RecordImportContainer: React.FC = () => {
   const [importType, setImportType] = React.useState('csv');
   const [localImportLoading, setLocalImportLoading] = React.useState(false);
 
-  const [previewData, setPreviewData] = React.useState<any[]>([]);
-  const {
-    createRecords: createRecordsFromCsv,
-    getPreviewData: getPreviewDataFromCsv,
-    updateFile: updateCsvFile,
-  } = useCsvImport();
   const { createRecords: createRecordsFromMt940 } = useMt940Import();
+
+  const {
+    previewData: csvPreviewData,
+    setPreviewData: setCsvPreviewData,
+    updateFile: updateCsvFile,
+    createRecords: createRecordsFromCsv,
+    loadPreviewData: loadCsvPreviewData,
+  } = useCsvImport();
 
   const { data: categories } = useCategoriesQuery();
   const { data: wallets } = useWalletsQuery();
@@ -101,15 +103,18 @@ const RecordImportContainer: React.FC = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
+
     if (!file) {
       return;
     }
+
     let recordsFromFile: Record[];
+
     if (importType === 'csv') {
       updateCsvFile(file);
-      const previewData = await getPreviewDataFromCsv(file);
-      setPreviewData(previewData.data);
+      await loadCsvPreviewData(file);
     }
+
     if (importType === 'mt940') {
       recordsFromFile = await createRecordsFromMt940(
         wallets[0].id,
@@ -118,11 +123,13 @@ const RecordImportContainer: React.FC = () => {
       );
       handleLocalImport(recordsFromFile);
     }
+
     event.target.value = '';
   };
 
   const handleLocalImport = async (recordsFromFile: Record[]) => {
     setLocalImportLoading(true);
+
     const existingReferences = await api.checkIfExternalReferencesExist(
       recordsFromFile?.map((record) => record.externalReference)
     );
@@ -130,7 +137,9 @@ const RecordImportContainer: React.FC = () => {
       (record) => !existingReferences.includes(record.externalReference)
     );
     setValues({ newRecords });
+
     setLocalImportLoading(false);
+
     if (existingReferences.length > 0) {
       setNotificationState({
         content: `Some records have already been imported. They will not be imported again.`,
@@ -171,7 +180,7 @@ const RecordImportContainer: React.FC = () => {
         mapping
       );
       handleLocalImport(recordsFromFile);
-      setPreviewData([]);
+      setCsvPreviewData([]);
     } catch (error) {
       console.error(error);
       setNotificationState({
@@ -212,9 +221,9 @@ const RecordImportContainer: React.FC = () => {
 
       <Grid item xs>
         <Typography variant="h6">Import editor</Typography>
-        {importType === 'csv' && previewData?.length > 0 && (
+        {importType === 'csv' && csvPreviewData?.length > 0 && (
           <RecordCsvFieldListNarrow
-            previewData={previewData}
+            previewData={csvPreviewData}
             onConfirm={handleCsvMappingConfirm}
           />
         )}

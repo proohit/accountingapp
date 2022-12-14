@@ -15,7 +15,6 @@ const useFileImport = () => {
 
 export const useMt940Import = () => {
   const { file, updateFile } = useFileImport();
-
   const createDescriptionFromTransaction = (transaction: any) => {
     const { structuredDetails, details } = transaction;
     const transactionPartnerKeys = ['32', '33'];
@@ -70,7 +69,7 @@ export const useMt940Import = () => {
   ) => {
     const mt940 = await import('mt940js');
     const parser = new mt940.Parser();
-    const fileContent = await (currentFile || file).text();
+    const fileContent = await (currentFile || file)?.text();
     const statements = parser.parse(fileContent);
     const transactions = statements
       ?.map?.((statement) => statement.transactions)
@@ -101,12 +100,15 @@ export const useMt940Import = () => {
 
   return {
     createRecords,
-    onFileChange: updateFile,
+
+    file,
+    updateFile,
   };
 };
 
 export const useCsvImport = () => {
   const { file, updateFile } = useFileImport();
+  const [previewData, setPreviewData] = useState<any[]>();
 
   const parseCsvFile = async (
     file: File,
@@ -124,7 +126,7 @@ export const useCsvImport = () => {
     });
   };
 
-  const getPreviewData = async (currentFile?: File) => {
+  const loadPreviewData = async (currentFile?: File) => {
     return parseCsvFile(currentFile || file, { preview: 1 });
   };
 
@@ -167,8 +169,12 @@ export const useCsvImport = () => {
   };
 
   return {
-    getPreviewData,
+    loadPreviewData,
     createRecords,
+
     updateFile,
+
+    previewData,
+    setPreviewData,
   };
 };

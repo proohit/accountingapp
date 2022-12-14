@@ -1,6 +1,6 @@
 {
   "name": "@accountingapp/web",
-  "version": "0.17.2",
+  "version": "0.18.0",
   "private": true,
   "scripts": {
     "lint": "next lint",

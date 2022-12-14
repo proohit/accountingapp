@@ -127,7 +127,9 @@ export const useCsvImport = () => {
   };
 
   const loadPreviewData = async (currentFile?: File) => {
-    return parseCsvFile(currentFile || file, { preview: 1 });
+    const result = await parseCsvFile(currentFile || file, { preview: 1 });
+    setPreviewData(result.data);
+    return result.data;
   };
 
   const sanitizeValue = (value: string) => {

@@ -67,7 +67,6 @@ const RecordImportContainer: React.FC = () => {
     validationSchema: RecordSchema(wallets?.map((wallet) => wallet.name)),
     validateOnChange: true,
     onSubmit: (submittedValues) => {
-      console.log(submittedValues);
       importRecords(submittedValues.newRecords);
     },
   });

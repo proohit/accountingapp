@@ -4,24 +4,14 @@ import React, { Fragment, PropsWithChildren, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { registerGreetingState } from '../hooks/registerGreetingState';
 import { useAuthentication } from '../hooks/useAuthentication';
-import {
-  isAuthenticationRoute,
-  isOfflineRoute,
-  isPasswordResetRoute,
-} from '../services/RoutingService';
+import { ignoreRoute, isAuthenticationRoute } from '../services/RoutingService';
 
 const Authenticated: React.FunctionComponent<PropsWithChildren> = (props) => {
   const router = useRouter();
   const { authenticated, isLoginLoading } = useAuthentication();
   const registerGreeting = useRecoilValue(registerGreetingState);
   const needsLogin = () => {
-    return (
-      !authenticated &&
-      !isLoginLoading &&
-      !isAuthenticationRoute(router.route) &&
-      !isOfflineRoute(router.route) &&
-      !isPasswordResetRoute(router.route)
-    );
+    return !authenticated && !isLoginLoading && ignoreRoute(router.route);
   };
 
   const isLoggedInAndAccessAuthentication = () => {

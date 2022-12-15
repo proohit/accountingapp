@@ -1,10 +1,7 @@
 import Router from 'next/router';
 import { MutationCache, QueryCache, QueryClient } from 'react-query';
 import { useSetRecoilState } from 'recoil';
-import {
-  isAuthenticationRoute,
-  isOfflineRoute,
-} from '../../authentication/services/RoutingService';
+import { ignoreRoute } from '../../authentication/services/RoutingService';
 import { notificationState } from './notificationState';
 
 type ApiError = Error & {
@@ -15,11 +12,7 @@ export const useCustomQueryClient = () => {
   const setNotification = useSetRecoilState(notificationState);
 
   const redirectToLoginIfNeeded = (error: ApiError) => {
-    if (
-      error.status === 401 &&
-      !isAuthenticationRoute(Router.route) &&
-      !isOfflineRoute(Router.route)
-    ) {
+    if (error.status === 401 && ignoreRoute(Router.route)) {
       Router.reload();
     }
   };

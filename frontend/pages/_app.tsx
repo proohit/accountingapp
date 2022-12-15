@@ -2,14 +2,10 @@ import { Grid } from '@mui/material';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head';
-import React, { FunctionComponent, useMemo } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 import { RecoilRoot } from 'recoil';
 import Authenticated from '../src/authentication/components/Authenticated';
-import {
-  isAuthenticationRoute,
-  isOfflineRoute,
-  isPasswordResetRoute,
-} from '../src/authentication/services/RoutingService';
+import { ignoreRoute } from '../src/authentication/services/RoutingService';
 import { AppToolbar } from '../src/shared/components/AppToolbar';
 import ContentContainer from '../src/shared/components/ContentContainer';
 import { NavigationBar } from '../src/shared/components/NavigationBar';
@@ -19,11 +15,7 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
   const renderNavigationBar = useMemo(() => {
-    return (
-      !isAuthenticationRoute(router.route) &&
-      !isOfflineRoute(router.route) &&
-      !isPasswordResetRoute(router.route)
-    );
+    return ignoreRoute(router.route);
   }, [router.route]);
 
   return (

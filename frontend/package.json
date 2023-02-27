@@ -30,7 +30,7 @@
     "recharts": "2.1.16",
     "recoil": "^0.7.6",
     "tss-react": "^4.4.4",
-    "yup": "^0.32.11"
+    "yup": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

@@ -11,7 +11,7 @@ const Authenticated: React.FunctionComponent<PropsWithChildren> = (props) => {
   const { authenticated, isLoginLoading } = useAuthentication();
   const registerGreeting = useRecoilValue(registerGreetingState);
   const needsLogin = () => {
-    return !authenticated && !isLoginLoading && ignoreRoute(router.route);
+    return !authenticated && !isLoginLoading && !ignoreRoute(router.route);
   };
 
   const isLoggedInAndAccessAuthentication = () => {

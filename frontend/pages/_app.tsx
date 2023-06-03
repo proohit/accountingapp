@@ -15,7 +15,7 @@ const MyApp: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
   const renderNavigationBar = useMemo(() => {
-    return ignoreRoute(router.route);
+    return !ignoreRoute(router.route);
   }, [router.route]);
 
   return (

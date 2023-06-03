@@ -12,8 +12,8 @@ export const isPasswordResetRoute = (route: string) => {
 
 export const ignoreRoute = (route: string) => {
   return (
-    !isAuthenticationRoute(route) ||
-    !isOfflineRoute(route) ||
-    !isPasswordResetRoute(route)
+    isAuthenticationRoute(route) ||
+    isOfflineRoute(route) ||
+    isPasswordResetRoute(route)
   );
 };

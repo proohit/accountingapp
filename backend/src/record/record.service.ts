@@ -214,10 +214,9 @@ export class RecordService {
 
     const updatedRecord = await recordRepo.save({
       id,
-      description:
-        description === '' ? '' : description || originalRecord.description,
+      description: description ?? originalRecord.description,
       value: Number.isNaN(value) ? originalRecord.value : value,
-      timestamp: timestamp || originalRecord.timestamp,
+      timestamp: timestamp ?? originalRecord.timestamp,
       ownerUsername: username,
       walletId: walletOfRecord.id,
       categoryId: categoryOfRecord.id,

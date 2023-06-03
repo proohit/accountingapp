@@ -1,5 +1,5 @@
 import { CategoryDto, RecordDto, WalletDto } from '@accountingapp/shared';
-import { Grid, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
@@ -124,18 +124,8 @@ export const RecordForm = (props: RecordFormProps) => {
         </Grid>
         <Grid item>
           <DateTimePicker
-            value={formFields.timestamp}
+            value={dayjs(formFields.timestamp)}
             onChange={(date) => setFieldValue('timestamp', date)}
-            renderInput={(inputProps) => (
-              <TextField
-                {...inputProps}
-                variant="outlined"
-                color="secondary"
-                label="timestamp"
-                name="timestamp"
-                fullWidth
-              />
-            )}
           />
         </Grid>
       </Grid>

@@ -1,5 +1,5 @@
 import { CategoryDto as Category, WalletDto } from '@accountingapp/shared';
-import { Grid, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
@@ -144,40 +144,16 @@ export const RecurrentRecordForm = (props: Props) => {
         </Grid>
         <Grid item>
           <DateTimePicker
-            renderInput={(inputProps) => (
-              <TextField
-                {...inputProps}
-                label="Start Date"
-                name="startDate"
-                color="secondary"
-                error={!!errors.startDate}
-                variant="outlined"
-                fullWidth
-                helperText={errors.startDate}
-              />
-            )}
-            value={values.startDate}
+            value={dayjs(values.startDate)}
             onChange={(date) => setFieldValue('startDate', date)}
           />
         </Grid>
         <Grid item>
           <DateTimePicker
-            renderInput={(inputProps) => (
-              <TextField
-                {...inputProps}
-                label="End Date"
-                name="endDate"
-                color="secondary"
-                error={!!errors.endDate}
-                variant="outlined"
-                fullWidth
-                helperText={errors.endDate}
-              />
-            )}
-            value={values.endDate}
+            value={dayjs(values.endDate)}
             onChange={(date) => setFieldValue('endDate', date)}
             disablePast
-            minDate={dayjs(values.startDate).format()}
+            minDate={dayjs(values.startDate)}
           />
         </Grid>
       </Grid>

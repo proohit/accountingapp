@@ -3,7 +3,6 @@ import {
   Divider,
   Grid,
   LinearProgress,
-  TextField,
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -149,34 +148,14 @@ export const RecordFilterBarContainer: FunctionComponent = (props) => {
         </Grid>
         <Grid item>
           <DatePicker
-            renderInput={(inputProps) => (
-              <TextField
-                {...inputProps}
-                fullWidth
-                name="timestampFrom"
-                label="From Timestamp"
-                color="secondary"
-                variant="outlined"
-              />
-            )}
-            value={values.timestampFrom}
+            value={dayjs(values.timestampFrom)}
             onChange={(date) => setFieldValue('timestampFrom', date)}
             maxDate={dayjs(values.timestampTo)}
           />
         </Grid>
         <Grid item>
           <DatePicker
-            renderInput={(inputProps) => (
-              <TextField
-                {...inputProps}
-                fullWidth
-                name="timestampTo"
-                label="To Timestamp"
-                color="secondary"
-                variant="outlined"
-              />
-            )}
-            value={values.timestampTo}
+            value={dayjs(values.timestampTo)}
             onChange={(date) => setFieldValue('timestampTo', date)}
             minDate={dayjs(values.timestampFrom)}
           />

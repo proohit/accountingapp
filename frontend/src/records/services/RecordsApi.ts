@@ -18,6 +18,7 @@ export class RecordsApiService implements RecordsApi {
     return BASE_API.delete(`${ApiRoutes.RECORDS}/${recordId}`);
   }
   editRecord(record: RecordDto): Promise<RecordDto> {
+    console.log(record);
     return BASE_API.put<RecordDto, RecordDto>(
       `${ApiRoutes.RECORDS}/${record.id}`,
       record

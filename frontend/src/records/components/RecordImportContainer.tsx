@@ -1,20 +1,15 @@
 import { RecordDto as Record } from '@accountingapp/shared';
-import { Delete } from '@mui/icons-material';
 import {
   Button,
   Divider,
   FormControlLabel,
   Grid,
-  IconButton,
   LinearProgress,
   Radio,
   RadioGroup,
-  TableBody,
-  TableCell,
-  TableRow,
   Typography,
 } from '@mui/material';
-import dayjs from 'dayjs';
+import { DataGrid } from '@mui/x-data-grid';
 import { useFormik } from 'formik';
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
@@ -33,8 +28,6 @@ import { CategoryField } from './CategoryField';
 import { DescriptionField } from './DescriptionField';
 import { RecordCsvFieldListNarrow } from './RecordCsvFieldMapList';
 import { RecordSchema } from './RecordForm';
-import { RecordsTable } from './RecordsTable';
-import { RecordTableHeader } from './RecordTableHeader';
 import { WalletField } from './WalletField';
 
 const RecordImportContainer: React.FC = () => {
@@ -165,6 +158,15 @@ const RecordImportContainer: React.FC = () => {
     }
   };
 
+  const updateNewRecordWithDescription = (
+    description: string,
+    index: number
+  ) => {
+    const updatedRecords = [...values.newRecords];
+    updatedRecords[index].description = description;
+    setValues({ newRecords: updatedRecords });
+  };
+
   const removeRecord = (index: number) => {
     const updatedRecords = [...values.newRecords];
     updatedRecords.splice(index, 1);
@@ -229,57 +231,99 @@ const RecordImportContainer: React.FC = () => {
         {localImportLoading && <LinearProgress />}
         {showNewRecords && (
           <form onSubmit={handleSubmit} id="import-form">
-            <RecordsTable>
-              <RecordTableHeader>
-                <TableCell key="actions" />
-              </RecordTableHeader>
-              <TableBody>
-                {values.newRecords.map((record, index) => (
-                  <TableRow key={record.externalReference}>
-                    <TableCell>
+            <div style={{ height: 500, width: '100%' }}>
+              <DataGrid
+                disableRowSelectionOnClick
+                rows={values.newRecords.map((record, index) => ({
+                  ...record,
+                  id: index,
+                  index,
+                }))}
+                getRowHeight={() => 'auto'}
+                sx={{
+                  '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': {
+                    py: '8px',
+                  },
+                  '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': {
+                    py: '15px',
+                  },
+                  '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': {
+                    py: '22px',
+                  },
+                }}
+                editMode="row"
+                columns={[
+                  {
+                    field: 'description',
+                    headerName: 'Description',
+                    flex: 1,
+                    editable: true,
+                    renderEditCell: (params) => (
                       <DescriptionField
                         multiline
-                        description={record.description}
-                        onDescriptionChange={handleChange}
-                        namePrefix={`newRecords[${index}].`}
+                        description={params.value}
+                        onDescriptionChange={(e) =>
+                          updateNewRecordWithDescription(
+                            e.target.value,
+                            params.row.index
+                          )
+                        }
                       />
-                    </TableCell>
-                    <TableCell>
+                    ),
+                  },
+                  {
+                    field: 'categoryId',
+                    headerName: 'Category',
+                    valueGetter: (params) => {
+                      return getCategoryById(categories, params.value)?.name;
+                    },
+                    editable: true,
+                    renderEditCell: (params) => (
                       <CategoryField
                         categories={categories}
-                        categoryName={
-                          getCategoryById(categories, record.categoryId)?.name
-                        }
-                        onCategoryChange={(categoryName) =>
-                          updateNewRecordWithCategory(categoryName, index)
+                        categoryName={params.value}
+                        onCategoryChange={(category) =>
+                          updateNewRecordWithCategory(
+                            category,
+                            params.row.index
+                          )
                         }
                       />
-                    </TableCell>
-                    <TableCell>
+                    ),
+                  },
+                  {
+                    field: 'walletId',
+                    headerName: 'Wallet',
+                    valueGetter: (params) => {
+                      return WalletUtils.getWalletById(wallets, params.value)
+                        ?.name;
+                    },
+                    editable: true,
+                    renderEditCell: (params) => (
                       <WalletField
                         wallets={wallets}
-                        walletName={
-                          WalletUtils.getWalletById(wallets, record.walletId)
-                            ?.name
-                        }
-                        onWalletChange={(event) =>
-                          updateNewRecordWithWallet(event.target.value, index)
+                        walletName={params.value}
+                        onWalletChange={(e) =>
+                          updateNewRecordWithWallet(
+                            e.target.value,
+                            params.row.index
+                          )
                         }
                       />
-                    </TableCell>
-                    <TableCell>
-                      {dayjs(record.timestamp).format(format.dateTimeFormat)}
-                    </TableCell>
-                    <TableCell>{record.value}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => removeRecord(index)}>
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </RecordsTable>
+                    ),
+                  },
+                  {
+                    field: 'value',
+                    headerName: 'Value',
+                  },
+                  {
+                    field: 'timestamp',
+                    headerName: 'Timestamp',
+                    flex: 1,
+                  },
+                ]}
+              />
+            </div>
           </form>
         )}
       </Grid>

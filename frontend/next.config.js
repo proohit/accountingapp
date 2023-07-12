@@ -6,4 +6,8 @@ const withPWA = require('next-pwa')({
 module.exports = withPWA({
   trailingSlash: true,
   swcMinify: false,
+  webpack: function (config, options) {
+    config.experiments = { asyncWebAssembly: true };
+    return config;
+  },
 });
